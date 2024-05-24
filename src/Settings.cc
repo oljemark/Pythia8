@@ -64,7 +64,7 @@ bool Settings::init(string startFile, bool append) {
       getfirst >> tag;
       if (tag.find("more") != string::npos) tag.erase( tag.find("more"), 4);
 
-      // Skip ahead if not interesting. Only look for new files in startfile.
+      // Skip ahead if not interesting.
       if (tag != "<flag" && tag != "<flagfix" && tag != "<mode"
          && tag != "<modeopen" && tag != "<modepick" && tag != "<modefix"
          && tag != "<parm" && tag != "<parmfix" && tag != "<word"
@@ -83,7 +83,7 @@ bool Settings::init(string startFile, bool append) {
       // Remove extra blanks before an = sign.
       while (line.find(" =") != string::npos) line.erase( line.find(" ="), 1);
 
-      // Add file also to be read.
+      // Add file also to be read. Avoid duplication.
       if (tag == "<aidx") {
         string name = attributeValue( line, "href");
         if (name == "") {
@@ -92,7 +92,11 @@ bool Settings::init(string startFile, bool append) {
           ++nError;
           continue;
         }
-        files.push_back(pathName + name + ".xml");
+        string fullName = pathName + name + ".xml";
+        bool inBase = false;
+        for (int ifile = 0; ifile < int(files.size()); ++ifile)
+          if (fullName == files[ifile]) inBase = true;
+        if (!inBase) files.push_back(fullName);
         continue;
       }
 
@@ -432,10 +436,11 @@ bool Settings::readString(string line, bool warn) {
     return false;
   }
 
-  // Find value. Warn if none found.
+  // Find value. Warn if none found, except that a word (string) can be empty.
   string valueString;
   splitLine >> valueString;
-  if (!splitLine) {
+  if (!splitLine && inDataBase == 4) valueString = "";
+  else if (!splitLine) {
     if (warn) cout << "\n PYTHIA Error: variable recognized, but its value"
       << " not meaningful:\n   " << line << endl;
     readingFailedSave = true;
@@ -603,7 +608,7 @@ bool Settings::readString(string line, bool warn) {
     wvec(name, value, force);
   }
 
-  // Store history of valid readString statements
+  // Store history of valid readString statements.
   readStringHistory.push_back(lineNow);
   int subrun = max(-1,mode("Main:subrun"));
   if (readStringSubrun.find(subrun) == readStringSubrun.end())
@@ -837,7 +842,7 @@ bool Settings::writeFile(ostream& os, bool writeAll) {
 
 //--------------------------------------------------------------------------
 
-  // Write updates or everything to user-defined stream (or file).
+// Write updates or everything to user-defined stream (or file).
 
 bool Settings::writeFileXML(ostream& os) {
 
@@ -884,12 +889,12 @@ bool Settings::writeFileXML(ostream& os) {
       ) {
       int valDefault = modeEntry->second.valDefault;
       os << "<mode name=\"" << modeEntry->second.name << "\" default=\""
-         << valDefault << "\">";
+         << valDefault << "\"";
       if (modeEntry->second.hasMin ) os << " min=\""
         << modeEntry->second.valMin << "\"";
       if (modeEntry->second.hasMax ) os << " max=\""
         << modeEntry->second.valMax << "\"";
-      os << "</mode>" << endl;
+      os << "></mode>" << endl;
       ++modeEntry;
 
     // Else check if parm is next, and if so print it; fixed or scientific.
@@ -908,7 +913,7 @@ bool Settings::writeFileXML(ostream& os) {
       else if ( abs(valDefault) < 1000. ) os << fixed << setprecision(5);
       else if ( abs(valDefault) < 1000000. ) os << fixed << setprecision(3);
       else os << scientific << setprecision(4);
-      os << valDefault << "\">";
+      os << valDefault << "\"";
       if (parmEntry->second.hasMin) {
         os << " min=\"";
         valDefault = parmEntry->second.valMin;
@@ -918,7 +923,7 @@ bool Settings::writeFileXML(ostream& os) {
         else if ( abs(valDefault) < 1000. ) os << fixed << setprecision(5);
         else if ( abs(valDefault) < 1000000. ) os << fixed << setprecision(3);
         else os << scientific << setprecision(4);
-        os << valDefault << "\">";
+        os << valDefault << "\"";
       }
       if (parmEntry->second.hasMax) {
         os << " max=\"";
@@ -929,9 +934,9 @@ bool Settings::writeFileXML(ostream& os) {
         else if ( abs(valDefault) < 1000. ) os << fixed << setprecision(5);
         else if ( abs(valDefault) < 1000000. ) os << fixed << setprecision(3);
         else os << scientific << setprecision(4);
-        os << valDefault << "\">";
+        os << valDefault << "\"";
       }
-      os << "</parm>" << endl;
+      os << "></parm>" << endl;
       ++parmEntry;
 
     // Else check if word is next, and if so print it.
@@ -954,7 +959,7 @@ bool Settings::writeFileXML(ostream& os) {
       ) {
       string state[2] = {"off", "on"};
       vector<bool> valDefault = fvecEntry->second.valDefault;
-      os << "<fvec name=\"" << fvecEntry->second.name << "\" default={\"";
+      os << "<fvec name=\"" << fvecEntry->second.name << "\" default=\"{";
       if (valDefault.size() > 0) {
         for (vector<bool>::iterator val = valDefault.begin();
              val != --valDefault.end(); ++val) os << state[*val] << ",";
@@ -968,17 +973,17 @@ bool Settings::writeFileXML(ostream& os) {
       && ( wvecEntry == wvecs.end() || mvecEntry->first < wvecEntry->first )
       ) {
       vector<int> valDefault = mvecEntry->second.valDefault;
-      os << "<mvec name=\"" << mvecEntry->second.name << "\" default={\"";
+      os << "<mvec name=\"" << mvecEntry->second.name << "\" default=\"{";
       if (valDefault.size() > 0) {
         for (vector<int>::iterator val = valDefault.begin();
              val != --valDefault.end(); ++val) os << *val << ",";
-        os << *(--valDefault.end()) << "}\">";
+        os << *(--valDefault.end()) << "}\"";
       } else os << "}\">";
       if (mvecEntry->second.hasMin ) os << " min=\""
         << mvecEntry->second.valMin << "\"";
       if (mvecEntry->second.hasMax ) os << " max=\""
         << mvecEntry->second.valMax << "\"";
-      os << "</mvec>" << endl;
+      os << "></mvec>" << endl;
       ++mvecEntry;
 
     // Else check if pvec is next; print fixed or scientific.
@@ -986,7 +991,7 @@ bool Settings::writeFileXML(ostream& os) {
       && ( wvecEntry == wvecs.end() || pvecEntry->first < wvecEntry->first )
       ) {
       vector<double> valDefault = pvecEntry->second.valDefault;
-      os << "<pvec name=\"" << pvecEntry->second.name << "\" default={\"";
+      os << "<pvec name=\"" << pvecEntry->second.name << "\" default=\"{";
       if (valDefault.size() > 0) {
         for (vector<double>::iterator val = valDefault.begin();
              val != --valDefault.end(); ++val) {
@@ -998,7 +1003,7 @@ bool Settings::writeFileXML(ostream& os) {
           else os << scientific << setprecision(4);
           os << *val << ",";
         }
-        os << *(--valDefault.end()) << "}\">";
+        os << *(--valDefault.end()) << "}\"";
       } else os << "}\">";
       if (pvecEntry->second.hasMin ) {
         double valLocal = pvecEntry->second.valMin;
@@ -1009,7 +1014,7 @@ bool Settings::writeFileXML(ostream& os) {
         else if ( abs(valLocal) < 1000. ) os << fixed << setprecision(5);
         else if ( abs(valLocal) < 1000000. ) os << fixed << setprecision(3);
         else os << scientific << setprecision(4);
-        os << valLocal << "\">";
+        os << valLocal << "\"";
       }
       if (pvecEntry->second.hasMax ) {
         double valLocal = pvecEntry->second.valMax;
@@ -1020,15 +1025,15 @@ bool Settings::writeFileXML(ostream& os) {
         else if ( abs(valLocal) < 1000. ) os << fixed << setprecision(5);
         else if ( abs(valLocal) < 1000000. ) os << fixed << setprecision(3);
         else os << scientific << setprecision(4);
-        os << valLocal << "\">";
+        os << valLocal << "\"";
       }
-      os << "</pvec>" <<       endl;
+      os << "></pvec>" <<       endl;
       ++pvecEntry;
 
     // Else print wvec.
     } else {
       vector<string> valDefault = wvecEntry->second.valDefault;
-      os << "<wvec name=\"" << wvecEntry->second.name << "\" default={\"";
+      os << "<wvec name=\"" << wvecEntry->second.name << "\" default=\"{";
       if (valDefault.size() > 0) {
         for (vector<string>::iterator val = valDefault.begin();
              val != --valDefault.end(); ++val) os << *val << ",";

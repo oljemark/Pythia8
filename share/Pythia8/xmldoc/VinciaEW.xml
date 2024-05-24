@@ -3,8 +3,8 @@
  
 <p>Here, parameters specific to VINCIA's QED and EW antenna 
 showers are collected, including VINCIA's interleaved treatment of 
-resonance decays. See the <aidx href="Vincia">main VINCIA 
-antenna shower page</aidx> for more general parameters that are 
+resonance decays. See the <aloc href="Vincia">main VINCIA 
+antenna shower page</aloc> for more general parameters that are 
 common to both the QCD and QED/EW showers. 
 </p> 
  
@@ -44,7 +44,7 @@ assign such helicities.
 Note that this requires Pythia to be configured using the 
 <code>--with-mg5mes</code> option 
 (see also the <aloc href="SampleMainPrograms">example program</aloc> 
-<code>main203.cc</code>). If the given hard process is not available 
+<code>main404.cc</code>). If the given hard process is not available 
 in the linked MG5 library, or if the helicity assignment fails for any 
 other reason, then the QED dipole shower is used as a fallback. 
 </option> 

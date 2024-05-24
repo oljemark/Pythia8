@@ -509,14 +509,14 @@ void Vec4::bst(const Vec4& pIn, double mIn) {
 void Vec4::bstback(const Vec4& pIn) {
 
   if (abs(pIn.tt) < Vec4::TINY) return;
-  double betaX = -pIn.xx / pIn.tt;
-  double betaY = -pIn.yy / pIn.tt;
-  double betaZ = -pIn.zz / pIn.tt;
-  double beta2 = betaX*betaX + betaY*betaY + betaZ*betaZ;
+  const double betaX = -pIn.xx / pIn.tt;
+  const double betaY = -pIn.yy / pIn.tt;
+  const double betaZ = -pIn.zz / pIn.tt;
+  const double beta2 = betaX*betaX + betaY*betaY + betaZ*betaZ;
   if (beta2 >= 1.) return;
-  double gamma = 1. / sqrt(1. - beta2);
-  double prod1 = betaX * xx + betaY * yy + betaZ * zz;
-  double prod2 = gamma * (gamma * prod1 / (1. + gamma) + tt);
+  const double gamma = 1. / sqrt(1. - beta2);
+  const double prod1 = betaX * xx + betaY * yy + betaZ * zz;
+  const double prod2 = gamma * (gamma * prod1 / (1. + gamma) + tt);
   xx          += prod2 * betaX;
   yy          += prod2 * betaY;
   zz          += prod2 * betaZ;
@@ -555,6 +555,25 @@ void Vec4::rotbst(const RotBstMatrix& M) {
   xx = M.M[1][0] * t + M.M[1][1] * x + M.M[1][2] * y +  M.M[1][3] * z;
   yy = M.M[2][0] * t + M.M[2][1] * x + M.M[2][2] * y +  M.M[2][3] * z;
   zz = M.M[3][0] * t + M.M[3][1] * x + M.M[3][2] * y +  M.M[3][3] * z;
+
+}
+
+//--------------------------------------------------------------------------
+
+// Function to calculate energy in the rest frame of other particle given
+// by input 4-momentum.
+
+double Vec4::eInFrame(const Vec4& pIn) const {
+
+  if (abs(pIn.tt) < Vec4::TINY) return tt;
+  const double betaX = -pIn.xx / pIn.tt;
+  const double betaY = -pIn.yy / pIn.tt;
+  const double betaZ = -pIn.zz / pIn.tt;
+  const double beta2 = betaX * betaX + betaY * betaY + betaZ * betaZ;
+  if (beta2 >= 1.) return tt;
+  const double gamma = 1. / sqrt(1. - beta2);
+  const double prod1 = betaX * xx + betaY * yy + betaZ * zz;
+  return gamma * (tt + prod1);
 
 }
 

@@ -86,7 +86,7 @@ public:
   // saved initialization must have been done with the same or a
   // larger eMax than the one now being used.
 
-  void init(double eMaxIn = 1e9, bool listFinalIn = false,
+  bool init(double eMaxIn = 1e9, bool listFinalIn = false,
     bool rapidDecaysIn = false, double smallTau0In = 1e-10,
     bool reuseMPI = true, string initFile = "pythiaCascade.mpi") {
 
@@ -113,8 +113,8 @@ public:
     pythiaMain.readString("Stat:showProcessLevel = off");
     pythiaMain.readString("Stat:showPartonLevel = off");
 
-    // Initialize.
-    pythiaMain.init();
+    // Initialize. Return if failure.
+    if (!pythiaMain.init()) return false;
 
     // Secondary Pythia object for performing individual collisions,
     // or decays. Variable incoming beam type and energy.
@@ -158,7 +158,8 @@ public:
     pythiaColl.settings.word("MultipartonInteractions:initFile", initFile);
 
     // Initialize.
-    pythiaColl.init();
+    if (!pythiaColl.init()) return false;
+    return true;
 
   }
 

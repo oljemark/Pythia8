@@ -63,9 +63,13 @@ void ImpactParameterGenerator::updateWidth() {
 // Generate an impact parameter according to a gaussian distribution.
 
 Vec4 ImpactParameterGenerator::generate(double & weight) const {
-  double b = sqrt(-2.0*log(rndmPtr->flat()))*width();
+  double R;
+  do
+    R = rndmPtr->flat();
+  while (R < 0.01);
+  double b = sqrt(-2.0*log(R))*width();
   double phi = 2.0*M_PI*rndmPtr->flat();
-  weight = 2.0*M_PI*width()*width()*exp(0.5*b*b/(width()*width()));
+  weight = 2.0 * M_PI * width() * width() / R;
   return Vec4(b*sin(phi), b*cos(phi), 0.0, 0.0);
 }
 
@@ -99,6 +103,7 @@ bool SubCollisionModel::init(int idAIn, int idBIn, double eCMIn) {
   // Store input.
   idASave = idAIn;
   idBSave = idBIn;
+  eSave   = eCMIn;
 
   // Read basic settings.
   NInt = settingsPtr->mode("HeavyIon:SigFitNInt");
@@ -108,9 +113,36 @@ bool SubCollisionModel::init(int idAIn, int idBIn, double eCMIn) {
   fitPrint = settingsPtr->flag("HeavyIon:SigFitPrint");
   impactFudge = settingsPtr->parm("Angantyr:impactFudge");
   doVarECM = settingsPtr->flag("Beams:allowVariableEnergy");
+  doVarBeams = settingsPtr->flag("Beams:allowIDASwitch");
+  if (doVarBeams) {
+    idAList = settingsPtr->mvec("Beams:idAList");
+    if (idAList.size() == 0) {
+      loggerPtr->ABORT_MSG(
+        "requested variable beams, but Beams:idAList is empty");
+      return false;
+    }
+    else if (idAList.size() == 1) {
+      loggerPtr->WARNING_MSG("requested variable beams, but "
+        "Beams:idAList contains only a single entry");
+    }
+    bool idAIsGood = false;
+    for (int idA : idAList) if (idA == idAIn) {
+      idAIsGood = true;
+      break;
+    }
+    if (!idAIsGood) {
+      loggerPtr->WARNING_MSG("Beams:idA not found in Beams:idAList",
+        "defaulting to " + to_string(idAList[0]));
+      idASave = idAList[0];
+    }
+  }
+  idAList = doVarBeams ? settingsPtr->mvec("Beams:idAList")
+                       : vector<int>{ idASave };
+
   if (doVarECM) {
     eMin = settingsPtr->parm("HeavyIon:varECMMin");
     eMax = settingsPtr->parm("HeavyIon:varECMMax");
+    eCMPts = settingsPtr->mode("HeavyIon:varECMSigFitNPts");
     if (eMax == 0)
       eMax = eCMIn;
     else if (eMax < eCMIn) {
@@ -118,8 +150,10 @@ bool SubCollisionModel::init(int idAIn, int idBIn, double eCMIn) {
       return false;
     }
   }
-  else
+  else {
+    eCMPts = 1;
     eMin = eMax = eCMIn;
+  }
   updateSig();
 
   // If there are parameters, no further initialization is necessary.
@@ -169,122 +203,138 @@ bool SubCollisionModel::genParms() {
 
   // Initialize with default parameters.
   int nGen = settingsPtr->mode("HeavyIon:SigFitNGen");
-  vector<double> defaultParms = settingsPtr->pvec("HeavyIon:SigFitDefPar");
+  vector<double> defPar = settingsPtr->pvec("HeavyIon:SigFitDefPar");
   if ( settingsPtr->isPVec("HI:SigFitDefPar") )
-    defaultParms = settingsPtr->pvec("HI:SigFitDefPar");
-  if (defaultParms.size() == 0)
-    defaultParms = defParm();
-  if (int(defaultParms.size()) < nParms()) {
+    defPar = settingsPtr->pvec("HI:SigFitDefPar");
+  if (defPar.size() == 0)
+    defPar = defParm();
+  if (int(defPar.size()) < nParms()) {
     loggerPtr->ERROR_MSG("too few parameters have been specified",
       "(expected " + to_string(nParms())
-      + ", got " + to_string(defaultParms.size()) + ")");
+      + ", got " + to_string(defPar.size()) + ")");
     return false;
   }
-  if (int(defaultParms.size()) > nParms()) {
+  if (int(defPar.size()) > nParms()) {
     loggerPtr->WARNING_MSG("too many parameters have been specified",
       "(expected " + to_string(nParms())
-      + ", got " + to_string(defaultParms.size()) + ")");
-    defaultParms.resize(nParms());
-  }
-  setParm(defaultParms);
-
-  // If nGen is zero, there is nothing to do, just use the default parameters.
-  if (nGen == 0) {
-    subCollParms = vector<LogInterpolator>(nParms());
-    for (int iParm = 0; iParm < nParms(); ++iParm)
-      subCollParms[iParm] = LogInterpolator(eMin, eMax, {defaultParms[iParm]});
-    return true;
+      + ", got " + to_string(defPar.size()) + ")");
+    defPar.resize(nParms());
   }
 
-  // Run evolutionary algorithm.
-  if ( fitPrint ) {
-    cout << " *------ HeavyIon fitting of SubCollisionModel to "
-         << "cross sections ------* " << endl;
-    flush(cout);
-  }
-  if (!evolve(nGen, eMax)) {
-    loggerPtr->ERROR_MSG("evolutionary algorithm failed");
-    return false;
-  }
-  defaultParms = getParm();
+  for (int idANow : idAList) {
 
-  // If we don't care about varECM, we are done.
-  if (!doVarECM) {
-    if (fitPrint) {
-      cout << " *--- End HeavyIon fitting of parameters in "
-        << "nucleon collision model ---* "
-        << endl << endl;
-      cout << " To avoid refitting, add the following lines to your "
-             "configuration file: " << endl;
-      cout << "  HeavyIon:SigFitNGen = 0" << endl;
-      cout << "  HeavyIon:SigFitDefPar = ";
-      for (int iParm = 0; iParm < nParms(); ++iParm) {
-        if (iParm > 0) cout << ",";
-        cout << defaultParms[iParm];
-      }
-      cout << endl << endl;
-    }
-    subCollParms = vector<LogInterpolator>(nParms());
-    for (int iParm = 0; iParm < nParms(); ++iParm)
-      subCollParms[iParm] = LogInterpolator(eMin, eMax, {defaultParms[iParm]});
-    return true;
-  }
-
-  // Read settings for varECM evolution.
-  eCMPts = settingsPtr->mode("HeavyIon:varECMSigFitNPts");
-  bool doStepwiseEvolve = settingsPtr->flag("HeavyIon:varECMStepwiseEvolve");
-  int nGenNext = settingsPtr->mode("HeavyIon:varECMSigFitNGen");
-
-  // Vector of size nParms, each entry contains the parameter values.
-  vector<vector<double>> parmsByECM(nParms(), vector<double>(eCMPts));
-
-  // Write parameters at original eCM.
-  for (int iParm = 0; iParm < nParms(); ++iParm)
-    parmsByECM[iParm].back() = defaultParms[iParm];
-
-  // Evolve down to eMin.
-  vector<double> eCMs = logSpace(eCMPts, eMin, eMax);
-  for (int i = eCMPts - 2; i >= 0; --i) {
-    // Update to correct eCM.
-    double eNow = eCMs[i];
-    sigTotPtr->calc(idASave, idBSave, eNow);
+    setParm(defPar);
+    sigTotPtr->calc(idANow, 2212, eMax);
     updateSig();
 
-    // Alternatively reset to default parameters (mostly for debug purposes).
-    if (!doStepwiseEvolve)
-      setParm(defaultParms);
+    vector<LogInterpolator> subCollParmsNow;
 
-    // Evolve and get next set of parameters.
-    if (fitPrint)
-      cout << " *------------------------------------------"
-             "---------------------------* "
-           << endl;
+    // If nGen is zero, there is nothing to do, just use the default
+    // parameters.
+    if (nGen == 0) {
+      subCollParmsNow = vector<LogInterpolator>(nParms());
+      for (int iParm = 0; iParm < nParms(); ++iParm)
+        subCollParmsNow[iParm] = LogInterpolator(eMin, eMax, {defPar[iParm]});
+      subCollParmsMap[idANow] = subCollParmsNow;
+      continue;
+    }
 
-    if (!evolve(nGenNext, eNow)) {
+    // Run evolutionary algorithm.
+    if ( fitPrint ) {
+      cout << " *------ HeavyIon fitting of SubCollisionModel to "
+          << "cross sections ------* " << endl;
+      flush(cout);
+    }
+    if (!evolve(nGen, eMax)) {
       loggerPtr->ERROR_MSG("evolutionary algorithm failed");
       return false;
     }
     vector<double> parmsNow = getParm();
-    for (int iParm = 0; iParm < nParms(); ++iParm)
-      parmsByECM[iParm][i] = parmsNow[iParm];
-  }
-  if (fitPrint){
-    cout << " *--- End HeavyIon fitting of parameters in "
-         << "nucleon collision model ---* "
-         << endl << endl;
-    cout << " To avoid refitting, you may use the HeavyIon:SigFitReuseInit"
-            " parameter \n to store the configuration to disk."
-         << endl << endl;
-  }
-  // Reset cross section and parameters to their eCM values.
-  sigTotPtr->calc(idASave, idBSave, eMax);
-  updateSig();
-  setParm(defaultParms);
 
-  // Store parameter values as logarithmic interpolators.
-  subCollParms = vector<LogInterpolator>(nParms());
+    // If we don't care about varECM, we are done.
+    if (!doVarECM) {
+      if (fitPrint) {
+        cout << " *--- End HeavyIon fitting of parameters in "
+          << "nucleon collision model ---* "
+          << endl << endl;
+        cout << " To avoid refitting, add the following lines to your "
+              "configuration file: " << endl;
+        cout << "  HeavyIon:SigFitNGen = 0" << endl;
+        cout << "  HeavyIon:SigFitDefPar = ";
+        for (int iParm = 0; iParm < nParms(); ++iParm) {
+          if (iParm > 0) cout << ",";
+          cout << parmsNow[iParm];
+        }
+        cout << endl << endl;
+      }
+      subCollParmsNow = vector<LogInterpolator>(nParms());
+      for (int iParm = 0; iParm < nParms(); ++iParm)
+        subCollParmsNow[iParm] = LogInterpolator(
+          eMin, eMax, {parmsNow[iParm]});
+      subCollParmsMap[idANow] = subCollParmsNow;
+      continue;
+    }
+
+    // Read settings for varECM evolution.
+    bool doStepwiseEvolve = settingsPtr->flag("HeavyIon:varECMStepwiseEvolve");
+
+    // Vector of size nParms, each entry contains the parameter values.
+    vector<vector<double>> parmsByECM(nParms(), vector<double>(eCMPts));
+
+    // Write parameters at original eCM.
+    for (int iParm = 0; iParm < nParms(); ++iParm)
+      parmsByECM[iParm].back() = parmsNow[iParm];
+
+    // Evolve down to eMin.
+    vector<double> eCMs = logSpace(eCMPts, eMin, eMax);
+    for (int i = eCMPts - 2; i >= 0; --i) {
+      // Update to correct eCM.
+      double eNow = eCMs[i];
+      sigTotPtr->calc(idASave, idBSave, eNow);
+      updateSig();
+
+      // Alternatively reset to default parameters (mostly for debug purposes).
+      if (!doStepwiseEvolve)
+        setParm(defPar);
+
+      // Evolve and get next set of parameters.
+      if (fitPrint)
+        cout << " *------------------------------------------"
+              "---------------------------* "
+            << endl;
+
+      if (!evolve(nGen, eNow)) {
+        loggerPtr->ERROR_MSG("evolutionary algorithm failed");
+        return false;
+      }
+      parmsNow = getParm();
+      for (int iParm = 0; iParm < nParms(); ++iParm)
+        parmsByECM[iParm][i] = parmsNow[iParm];
+    }
+    if (fitPrint){
+      cout << " *--- End HeavyIon fitting of parameters in "
+          << "nucleon collision model ---* "
+          << endl << endl;
+      cout << " To avoid refitting, you may use the HeavyIon:SigFitReuseInit"
+              " parameter \n to store the configuration to disk."
+          << endl << endl;
+    }
+    // Reset cross section and parameters to their eCM values.
+    sigTotPtr->calc(idASave, idBSave, eMax);
+    updateSig();
+    setParm(parmsNow);
+
+    // Store parameter values as logarithmic interpolators.
+    subCollParmsNow = vector<LogInterpolator>(nParms());
+    for (int iParm = 0; iParm < nParms(); ++iParm)
+      subCollParmsNow[iParm] = LogInterpolator(eMin, eMax, parmsByECM[iParm]);
+    subCollParmsMap[idANow] = subCollParmsNow;
+  }
+
+  // Set default parameters.
+  subCollParms = &subCollParmsMap.at(idASave);
   for (int iParm = 0; iParm < nParms(); ++iParm)
-    subCollParms[iParm] = LogInterpolator(eMin, eMax, parmsByECM[iParm]);
+    parmSave[iParm] = subCollParms->at(iParm).data().back();
 
   // Done.
   return true;
@@ -308,15 +358,21 @@ bool SubCollisionModel::saveParms(string fileName) const {
   }
 
   // Write energy range
-  stream << subCollParms.front().data().size()
-         << " " << eMin << " " << eMax << endl;
+  stream << eCMPts << " " << eMin << " " << eMax << endl;
 
-  // Each line corresponds to one parameter.
-  for (int iParm = 0; iParm < nParms(); ++iParm) {
-    stream << setprecision(14);
-    for (double val : subCollParms[iParm].data())
-      stream << val << " ";
-    stream << endl;
+  for (int idANow : idAList) {
+
+    // Write idA.
+    stream << idANow << endl;
+
+    // Each line corresponds to one parameter.
+    auto& subCollParmsNow = subCollParmsMap.at(idANow);
+    for (int iParm = 0; iParm < nParms(); ++iParm) {
+      stream << setprecision(14);
+      for (double val : subCollParmsNow[iParm].data())
+        stream << val << " ";
+      stream << endl;
+    }
   }
 
   // Done.
@@ -346,27 +402,53 @@ bool SubCollisionModel::loadParms(string fileName) {
     return false;
   };
 
-  // Read first line
+  // Read first line to get energy range and number of interpolation points.
   string line;
+  double eMinNow, eMaxNow;
   if (!getline(stream, line)) return formatError();
-  if (!(istringstream(line) >> eCMPts >> eMin >> eMax)) return formatError();
+  if (!(istringstream(line) >> eCMPts >> eMinNow >> eMaxNow))
+    return formatError();
+  if (!(eCMPts >= 1) || eMin < eMinNow || eMax > eMaxNow) {
+    loggerPtr->ERROR_MSG("stored file does not cover requested energy range");
+    return false;
+  }
 
-  // Read each line and use the data to define an interpolator.
-  subCollParms = vector<LogInterpolator>(nParms());
-  vector<double> defaultParms(nParms());
-  for (int iParm = 0; iParm < nParms(); ++iParm) {
-    if (!getline(stream, line)) return formatError();
+  eMin = eMinNow;
+  eMax = eMaxNow;
 
-    istringstream lineStream(line);
-    vector<double> parmData(eCMPts);
-    for (int iPt = 0; iPt < eCMPts; ++iPt) {
-      if (!(lineStream >> parmData[iPt]))
-        return formatError();
+  while (getline(stream, line)) {
+    // Read idA.
+    int idANow;
+    if (!(istringstream(line) >> idANow)) return formatError();
+
+    // Read each line and use the data to define an interpolator.
+    vector<LogInterpolator> subCollParmsNow(nParms());
+    for (int iParm = 0; iParm < nParms(); ++iParm) {
+      if (!getline(stream, line)) return formatError();
+
+      istringstream lineStream(line);
+      vector<double> parmData(eCMPts);
+      for (int iPt = 0; iPt < eCMPts; ++iPt)
+        if (!(lineStream >> parmData[iPt])) return formatError();
+
+      subCollParmsNow[iParm] = LogInterpolator(eMin, eMax, parmData);
     }
 
-    subCollParms[iParm] = LogInterpolator(eMin, eMax, parmData);
-    defaultParms[iParm] = parmData.back();
+    subCollParmsMap.emplace(idANow, subCollParmsNow);
   }
+
+  // Validate that requested ids have been loaded.
+  for (int idANow : idAList) {
+    if (subCollParmsMap.find(idANow) == subCollParmsMap.end()) {
+      loggerPtr->ERROR_MSG("requested ids not found in stored file");
+      return false;
+    }
+  }
+
+  // Set default parameters.
+  subCollParms = &subCollParmsMap[idASave];
+  for (int iParm = 0; iParm < nParms(); ++iParm)
+    parmSave[iParm] = subCollParms->at(iParm).data().back();
 
   // Done.
   return true;
@@ -377,13 +459,25 @@ bool SubCollisionModel::loadParms(string fileName) {
 // Update the parameters to the interpolated value at the given eCM.
 
 void SubCollisionModel::setKinematics(double eCMIn) {
+  eSave = eCMIn;
   if (nParms() > 0) {
-    vector<double> parmsNow(subCollParms.size());
+    vector<double> parmsNow(subCollParms->size());
     for (size_t iParm = 0; iParm < parmsNow.size(); ++iParm)
-      parmsNow[iParm] = subCollParms[iParm](eCMIn);
+      parmsNow[iParm] = subCollParms->at(iParm).at(eCMIn);
     setParm(parmsNow);
     avNDb = getSig().avNDb * impactFudge;
   }
+}
+
+//--------------------------------------------------------------------------
+
+void SubCollisionModel::setIDA(int idA) {
+  if (nParms() == 0)
+    return;
+  updateSig();
+  *subCollParms = subCollParmsMap[idA];
+  idASave = idA;
+  setKinematics(eSave);
 }
 
 //--------------------------------------------------------------------------

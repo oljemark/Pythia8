@@ -84,6 +84,11 @@ public:
     loggerPtr->ERROR_MSG("method not implemented for this heavy ion model");
     return false; }
 
+  // Set beam particles.
+  virtual bool setBeamIDs(int /*idAIn*/, int /*idBIn*/ = 0) {
+    loggerPtr->ERROR_MSG("method not implemented for this heavy ion model");
+    return false; }
+
   // The HIInfo object contains information about the last generated heavy
   // ion event as well as overall statistics of the generated events.
   HIInfo hiInfo;
@@ -110,6 +115,9 @@ protected:
   // Copy settings on the form HImatch: to the corresponding match:
   // in the given Pythia object.
   static void setupSpecials(Pythia& p, string match);
+
+  // Save current beam configuration.
+  int idProj, idTarg;
 
   // This is the pointer to the main Pythia object to which this
   // object is assigned.
@@ -192,10 +200,14 @@ public:
   bool setKinematics(Vec4, Vec4) override;
   bool setKinematics();
 
+  // Set beam IDs.
+  bool setBeamIDs(int idAIn, int idBIn = 0) override;
+
   // Make sure the correct information is available irrespective of frame type.
   void unifyFrames();
 
-  void banner(int idProj, int idTarg) const;
+  // Print the Angantyr banner.
+  void banner() const;
 
   // Subcollisions for the current event.
   const SubCollisionSet& subCollisions() const {

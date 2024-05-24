@@ -62,12 +62,20 @@ shared_ptr<NucleusModel> NucleusModel::create(int model) {
 
 void NucleusModel::initPtr(int idIn, bool isProjIn, Info& infoIn) {
   isProj = isProjIn;
-  idSave = idIn;
   infoPtr = &infoIn;
   settingsPtr = infoIn.settingsPtr;
   loggerPtr = infoIn.loggerPtr;
   rndmPtr = infoIn.rndmPtr;
-  mSave  = infoIn.particleDataPtr->m0(idSave);
+  setParticle(idIn);
+}
+
+//--------------------------------------------------------------------------
+
+// Set the id of the produced particle.
+
+void NucleusModel::setParticle(int idIn) {
+  idSave = idIn;
+  mSave  = infoPtr->particleDataPtr->m0(idSave);
   int decomp = abs(idSave);
   ISave = decomp%10;
   decomp /= 10;

@@ -10,8 +10,8 @@
 #define Pythia8_Pythia_H
 
 // Version number defined for use in macros and for consistency checks.
-#define PYTHIA_VERSION 8.311
-#define PYTHIA_VERSION_INTEGER 8311
+#define PYTHIA_VERSION 8.312
+#define PYTHIA_VERSION_INTEGER 8312
 
 // Header files for the Pythia class and for what else the user may need.
 #include "Pythia8/Analysis.h"
@@ -230,13 +230,7 @@ public:
   bool next(int procTypeIn);
 
   // Switch to new beam particle identities; for similar hadrons only.
-  bool setBeamIDs( int idAin, int idBin = 0) {
-    if (!isInit) { logger.ERROR_MSG("Pythia is not properly initialized");
-    return false; }
-    if (!beamSetup.setBeamIDs( idAin, idBin)) return false;
-    if (beamSetup.hasSwitchedIDs) { processLevel.updateBeamIDs();
-      partonLevel.setBeamID(beamSetup.iPDFAsave); }
-    return true;}
+  bool setBeamIDs( int idAin, int idBin = 0);
 
   // Switch beam kinematics.
   bool setKinematics(double eCMIn);
@@ -471,11 +465,15 @@ private:
   // Pointers to external calculation of resonance widths.
   vector<ResonanceWidthsPtr> resonancePtrs = {};
 
-  // Pointers to timelike and spacelike showers, including Vincia and Dire.
+  // Pointers to timelike and spacelike showers, including Vincia and
+  // Dire. Note, the showerModelPtr must be declared before the
+  // individual shower pointers, partonLevel, and hadronLevel. This
+  // ensures shared pointers that belong to showerModelPtr are
+  // unloaded correctly.
+  ShowerModelPtr showerModelPtr = {};
   TimeShowerPtr  timesDecPtr = {};
   TimeShowerPtr  timesPtr = {};
   SpaceShowerPtr spacePtr = {};
-  ShowerModelPtr showerModelPtr = {};
 
   // Pointer to assign space-time vertices during parton evolution.
   PartonVertexPtr partonVertexPtr;

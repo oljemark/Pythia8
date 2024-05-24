@@ -24,7 +24,7 @@ namespace Pythia8 {
 
 // The current Pythia (sub)version number, to agree with XML version.
 const double Pythia::VERSIONNUMBERHEAD = PYTHIA_VERSION;
-const double Pythia::VERSIONNUMBERCODE = 8.311;
+const double Pythia::VERSIONNUMBERCODE = 8.312;
 
 //--------------------------------------------------------------------------
 
@@ -1389,6 +1389,28 @@ bool Pythia::next(int procType) {
   endEvent(PhysicsBase::COMPLETE);
   return true;
 
+}
+
+//--------------------------------------------------------------------------
+
+// Switch to new beam particle identities.
+
+bool Pythia::setBeamIDs(int idAin, int idBin) {
+  if (!isInit) {
+    logger.ERROR_MSG("Pythia is not properly initialized");
+    return false;
+  }
+
+  if (doHeavyIons)
+    return heavyIonsPtr->setBeamIDs(idAin, idBin);
+
+  if (!beamSetup.setBeamIDs( idAin, idBin))
+    return false;
+  if (beamSetup.hasSwitchedIDs) {
+    processLevel.updateBeamIDs();
+    partonLevel.setBeamID(beamSetup.iPDFAsave);
+  }
+  return true;
 }
 
 //--------------------------------------------------------------------------

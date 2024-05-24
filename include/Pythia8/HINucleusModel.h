@@ -203,6 +203,9 @@ public:
   void initPtr(int idIn, bool isProjIn, Info& infoIn);
   virtual bool init() { return true; }
 
+  // Set the particle id of the produced nucleus.
+  void setParticle(int idIn);
+
   // Set (new) nucleon momentum.
   virtual void setPN(const Vec4 & pNIn) { pNSave = pNIn; }
 

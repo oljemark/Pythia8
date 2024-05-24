@@ -217,6 +217,9 @@ const int    Thrust::NSTUDYMIN    = 2;
 // Maximum number of times that an error warning will be printed.
 const int    Thrust::TIMESTOPRINT = 1;
 
+// Cross product not too low to avoid division by zero.
+const double Thrust::CROSSMIN     = 1e-10;
+
 // Major not too low or not possible to find major axis.
 const double Thrust::MAJORMIN     = 1e-10;
 
@@ -259,7 +262,7 @@ bool Thrust::analyze(const Event& event) {
   for (int i1 = 0; i1 < nStudy - 1; ++i1)
   for (int i2 = i1 + 1; i2 < nStudy; ++i2) {
     nRef = cross3( pOrder[i1], pOrder[i2]);
-    nRef /= nRef.pAbs();
+    nRef /= max( CROSSMIN, nRef.pAbs());
     pPart = 0.;
 
     // Add all momenta with sign; two choices for each reference particle.
@@ -304,7 +307,7 @@ bool Thrust::analyze(const Event& event) {
   pMax = 0.;
   for (int i1 = 0; i1 < nStudy; ++i1) {
     nRef = cross3( pOrder[i1], eVec1);
-    nRef /= nRef.pAbs();
+    nRef /= max(CROSSMIN, nRef.pAbs());
     pPart = 0.;
 
     // Add all momenta with sign; two choices for each reference particle.

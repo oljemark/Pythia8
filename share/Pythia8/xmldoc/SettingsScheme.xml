@@ -456,8 +456,8 @@ and <code>Pythia::readFile</code>.
 <method name="vector&lt;string&gt; Settings::getReadHistory(int subrun)"> 
 Method to retrieve the history of <code>readString</code> commands that 
 have been processed by <code>Settings</code>, for a specific subrun 
-(see the section on <aidx href="MainProgramSettings">Main-Program 
-Settings</aidx>). For <code>subrun = -1</code>, returns the 
+(see the section on <aloc href="MainProgramSettings">Main-Program 
+Settings</aloc>). For <code>subrun = -1</code>, returns the 
 <code>readString</code> history common to all subruns. For 
 <code>subrun >= 0</code>, returns the history of <code>readString</code> 
 commands for that specific subrun (omitting the common part). 

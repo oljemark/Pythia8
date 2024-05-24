@@ -148,6 +148,33 @@ bool BeamSetup::setPDFBPtr( PDFPtr pdfBPtrIn ) {
 
 //--------------------------------------------------------------------------
 
+int BeamSetup::represent(int idIn) const {
+  switch ((abs(idIn) / 10) % 1000) {
+    case 11: case 21: return 211;
+    case 31: case 32: case 13: return 311;
+    case 22: return (idIn == 221) ? 221 : 211;
+    case 33: return (abs(idIn) == 331) ? 331 : 333;
+    case 41: case 42: return 411;
+    case 43:          return 431;
+    case 44:          return 443;
+    case 51: case 52: return 511;
+    case 53:          return 531;
+    case 54:          return 541;
+    case 55:          return 553;
+    case 222: case 221: case 211: case 111: return 2212;
+    case 311: case 312: case 321: case 322: case 213: return 3212;
+    case 331: case 332:                     return 3312;
+    case 333:                               return 3334;
+    case 411: case 412: case 421: case 422: return 4112;
+    case 431: case 413: case 432: case 423: return 4312;
+    case 433:                               return 4332;
+    case 511: case 512: case 521: case 522: return 5112;
+    case 531: case 513: case 532: case 523: return 5312;
+    case 533: return 5332;
+    default: return abs(idIn);
+  }
+}
+
 // Switch to new beam particle identities; for similar hadrons only.
 
 bool BeamSetup::setBeamIDs( int idAIn, int idBIn) {
@@ -165,28 +192,32 @@ bool BeamSetup::setBeamIDs( int idAIn, int idBIn) {
   // Note that cases are (have to be!) synchronized with the idAList order.
   int iPDFAnew = -1;
   if (switchA && allowIDAswitch) {
-    switch ((abs(idAIn) / 10) % 1000) {
-      case 11: case 21: iPDFAnew = 1; break;
-      case 31: case 32: case 13: iPDFAnew = 2; break;
-      case 22: iPDFAnew = (abs(idAIn) == 221) ? 3 : 1; break;
-      case 33: iPDFAnew = (abs(idAIn) == 331) ? 4 : 5; break;
-      case 41: case 42: iPDFAnew = 6; break;
-      case 43: iPDFAnew = 7; break;
-      case 44: iPDFAnew = 8; break;
-      case 51: case 52: iPDFAnew = 9; break;
-      case 53: iPDFAnew = 10; break;
-      case 54: iPDFAnew = 11; break;
-      case 55: iPDFAnew = 12; break;
-      case 222: case 221: case 211: case 111: iPDFAnew = 0; break;
-      case 311: case 312: case 321: case 322: case 213: iPDFAnew = 13; break;
-      case 331: case 332: iPDFAnew = 14; break;
-      case 333: iPDFAnew = 15; break;
-      case 411: case 412: case 421: case 422: iPDFAnew = 16; break;
-      case 431: case 413: case 432: case 423: iPDFAnew = 17; break;
-      case 433: iPDFAnew = 18; break;
-      case 511: case 512: case 521: case 522: iPDFAnew = 19; break;
-      case 531: case 513: case 532: case 523: iPDFAnew = 20; break;
-      case 533: iPDFAnew = 21; break;
+    switch (represent(idAIn)) {
+      case 211: iPDFAnew = 1; break;
+      case 311: iPDFAnew = 2; break;
+      case 221: iPDFAnew = 3; break;
+      case 331: iPDFAnew = 4; break;
+      case 333: iPDFAnew = 5; break;
+      case 411: iPDFAnew = 6; break;
+      case 431: iPDFAnew = 7; break;
+      case 443: iPDFAnew = 8; break;
+      case 511: iPDFAnew = 9; break;
+      case 531: iPDFAnew = 10; break;
+      case 541: iPDFAnew = 11; break;
+      case 553: iPDFAnew = 12; break;
+      case 2212: iPDFAnew = 0; break;
+      case 3212: iPDFAnew = 13; break;
+      case 3312: iPDFAnew = 14; break;
+      case 3334: iPDFAnew = 15; break;
+      case 4112: iPDFAnew = 16; break;
+      case 4312: iPDFAnew = 17; break;
+      case 4332: iPDFAnew = 18; break;
+      case 5112: iPDFAnew = 19; break;
+      case 5312: iPDFAnew = 20; break;
+      case 5332: iPDFAnew = 21; break;
+      default:
+        loggerPtr->ERROR_MSG("PDF not found", "for idA = " + to_string(idAIn));
+        return false;
     }
 
     // It should have worked, but error if not.
@@ -365,6 +396,7 @@ bool BeamSetup::initFrame() {
           ? nullptr : lhefHeader.c_str();
         lhaUpPtr = make_shared<LHAupLHEF>(infoPtr, cstring1, cstring2,
           readHeaders, setScales);
+        useNewLHA = true;
       }
 
       // Check that file was properly opened.
@@ -747,10 +779,13 @@ bool BeamSetup::checkBeams() {
   bool isLeptonA    = (idAabs > 10 && idAabs < 17);
   bool isLeptonB    = (idBabs > 10 && idBabs < 17);
   bool isUnresLep   = !flag("PDF:lepton");
+  bool isUnresNu    = !flag("PDF:neutrino");
   bool isGammaA     = idAabs == 22;
   bool isGammaB     = idBabs == 22;
-  isUnresolvedA     = (isLeptonA && isUnresLep);
-  isUnresolvedB     = (isLeptonB && isUnresLep);
+  isUnresolvedA     = isLeptonA && ( (idAabs%2 == 1 && isUnresLep)
+    || (idAabs%2 == 0 && isUnresNu) );
+  isUnresolvedB     = isLeptonB && ( (idBabs%2 == 1 && isUnresLep)
+    || (idBabs%2 == 0 && isUnresNu) );
 
   // Also photons may be unresolved.
   if ( idAabs == 22 && !beamAResGamma ) isUnresolvedA = true;

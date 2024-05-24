@@ -106,6 +106,7 @@ public:
   void bstback(const Vec4& pIn);
   void bstback(const Vec4& pIn, double mIn);
   void rotbst(const RotBstMatrix& M);
+  double eInFrame(const Vec4& pIn) const;
 
   // Operator overloading with member functions
   inline Vec4 operator-() const {Vec4 tmp; tmp.xx = -xx; tmp.yy = -yy;
@@ -750,7 +751,7 @@ public:
   // Destructor should do final close.
   ~HistPlot() { toPython << "pp.close()" << endl; }
 
-  // New plot frame, with title, x and y labels, x and y sizes..
+  // New plot frame, with title, x and y labels, x and y sizes.
   void frame( string frameIn, string titleIn = "", string xLabIn = "",
     string yLabIn = "", double xSizeIn = 8., double ySizeIn = 6.) {
     framePrevious = frameName; frameName = frameIn; title = titleIn;

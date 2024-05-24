@@ -353,7 +353,7 @@ on how to do this.
  
 <p/> 
 An example how to generate events from an LHEF is found in 
-<code>main11.cc</code>. Note the use of 
+<code>main121.cc</code>. Note the use of 
 <code>Info::atEndOfFile()</code> to find out when the whole 
 LHEF has been processed. 
  
@@ -367,8 +367,8 @@ It is assumed (but never checked) that the initialization information is
 identical, and that the new file simply contains further events of 
 exactly the same kind as the previous one. An example of this possibility, 
 and the option to mix with internal processes, is found in 
-<code>main12.cc</code>. A variant, based on input in a command file, 
-is given in <code>main13.cc</code>. 
+<code>main122.cc</code>. A variant, based on input in a command file, 
+is given in <code>main123.cc</code>. 
  
 <p/> 
 In C++, real numbers are printed with an 'E' to denote the exponent part, 
@@ -523,7 +523,7 @@ details.
  
 Please find below the documentation of LHEF 3.0 information as stored in 
 the <code>Info</code> class. An example main program using LHEF 3.0 
-information is <code>main38.cc</code>. Note also the description of some 
+information is <code>main127.cc</code>. Note also the description of some 
 settings in the <aloc href="BeamParameters">Beam Parameters</aloc> section. 
  
 LHEF 3.0 offers new features both in the initialisation and the event sections 
@@ -767,7 +767,7 @@ Furthermore, <code>updateSigma()</code> can be used at the end
 of the run to update cross-section information, cf. 
 <code>closeLHEF(true)</code> above. An example how the 
 generation, translation and writing methods should be ordered is 
-found in <code>main20.cc</code>. 
+found in <code>main124.cc</code>. 
  
 <p/> 
 Currently there are some limitations, that could be overcome if 
@@ -788,7 +788,7 @@ that the above initialization is replaced by
 <br/><code>LHAupFromPYTHIA8 myLHA(&pythia.event, &pythia.info);</code> 
 <br/> i.e. that <code>process</code> is replaced by <code>event</code>. 
 In addition, the <code>PartonLevel:all = off</code> command found in 
-<code>main20.cc</code> obviously must be removed if one wants to 
+<code>main124.cc</code> obviously must be removed if one wants to 
 obtain complete events. 
  
 <h3>PYTHIA 8 output to a Les Houches Event File version 3.0</h3> 
@@ -800,7 +800,7 @@ file writer are used in the <code>LHEF3FromPYTHIA8</code>.
 This latter class allows users to output PYTHIA events 
 in LHEF3 format from a PYTHIA main program. An example of how to use 
 <code>LHEF3FromPYTHIA8</code> is found in the 
-<code>main20lhef3.cc</code> example. Please note that, although 
+<code>main125.cc</code> example. Please note that, although 
 similar, the usage of <code>LHEF3FromPYTHIA8</code> differs from 
 the usage of <code>LHAupFromPYTHIA8</code>, with  <code>LHEF3FromPYTHIA8 
 </code> requiring fewer function calls. 

@@ -454,10 +454,11 @@ A junction topology corresponds to an Y arrangement of strings
 i.e. where three string pieces have to be joined up in a junction. 
 Such topologies can arise if several valence quarks are kicked out 
 from a proton beam, or in baryon-number-violating SUSY decays. 
-Special attention is necessary to handle the region just around 
-the junction, where the baryon number topologically is located. 
-The junction fragmentation scheme is described in <ref>Sjo03</ref>. 
-The parameters in this section should not be touched except by experts. 
+Special attention is necessary to handle the region just around the 
+junction, where the baryon number topologically is located.  The 
+junction fragmentation scheme is described in <ref>Sjo03</ref> and 
+<ref>Alt24</ref>.  The parameters in this section should not be 
+touched except by experts. 
  
 <parm name="StringFragmentation:pNormJunction" default="2.0" min="0.5" 
 max="10"> 

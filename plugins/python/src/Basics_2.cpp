@@ -29,7 +29,7 @@
 
 void bind_Pythia8_Basics_2(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Pythia8::HistPlot file:Pythia8/Basics.h line:738
+	{ // Pythia8::HistPlot file:Pythia8/Basics.h line:739
 		pybind11::class_<Pythia8::HistPlot, std::shared_ptr<Pythia8::HistPlot>> cl(M("Pythia8"), "HistPlot", "");
 		pybind11::handle cl_type = cl;
 

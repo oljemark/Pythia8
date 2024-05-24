@@ -124,7 +124,7 @@ public:
     fracBhigh(), fracChigh(), fracABChigh(), expRev(), cDiv(), cMax(),
     enhanceBavg(), bIsSet(false), bSetInFirst(), isAtLowB(), pickOtherSel(),
     id1(), id2(), i1Sel(), i2Sel(), id1Sel(), id2Sel(), iPDFA(), nPDFA(1),
-    idAList(), bNow(), enhanceB(), pT2(), pT2shift(), pT2Ren(), pT2Fac(), x1(),
+    bNow(), enhanceB(), pT2(), pT2shift(), pT2Ren(), pT2Fac(), x1(),
     x2(), xT(), xT2(), tau(), y(), sHat(), tHat(), uHat(), alpS(), alpEM(),
     xPDF1now(), xPDF2now(), dSigmaSum(), x1Sel(), x2Sel(), sHatSel(),
     tHatSel(), uHatSel(), iPDFAsave(), nStep(), iStepFrom(), iStepTo(),

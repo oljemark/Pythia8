@@ -58,7 +58,7 @@ superseeded by the PYTHIA 8.3 manual.
  
 <p/> 
 Furthermore, a separate 
-<br/><a href="../pdfdoc/worksheet8309.pdf" target="page"> 
+<br/><a href="../pdfdoc/worksheet8312.pdf" target="page"> 
 <b>PYTHIA 8.3 Worksheet</b></a>, 
 <br/>also an attached PDF file, offers a practical introduction to 
 using the generator. It has been developed for and used at a few 
@@ -271,7 +271,7 @@ new cleanly compiled PYTHIA library code.</li>
 <li>Write a simple standalone main program <code>mymainNN.cc</code>, 
 with <code>NN</code> between 00 and 99, that demonstrates the 
 claimed bug. Feel free to use some of the existing sample main programs 
-<code>share/Pythia8/examples/mainNN.cc</code> as templates.</li> 
+<code>share/Pythia8/examples/mainNNN.cc</code> as templates.</li> 
 <li>Put the <code>mymainNN.cc</code> program in the 
 <code>share/Pythia8/examples</code> subdirectory and run it from there 
 (<code>make mymainNN</code> followed by <code>./mymainNN</code>).</li> 

@@ -8,17 +8,18 @@
  
 <h2>Update History</h2> 
 <ol id="toc">
-  <li><a href="#section0">8.311: 08 March 2024</a></li>
-  <li><a href="#section1">8.310: 25 July 2023</a></li>
-  <li><a href="#section2">8.309: 16 February 2023</a></li>
-  <li><a href="#section3">8.308: 16 November 2022</a></li>
-  <li><a href="#section4">8.307: 25 February 2022</a></li>
-  <li><a href="#section5">8.306: 28 June 2021</a></li>
-  <li><a href="#section6">8.305: 03 May 2021</a></li>
-  <li><a href="#section7">8.304: 09 April 2021</a></li>
-  <li><a href="#section8">8.303: 01 September 2020</a></li>
-  <li><a href="#section9">8.302: 24 April 2020</a></li>
-  <li><a href="#section10">8.301: 30 October 2019</a></li>
+  <li><a href="#section0">8.312: 23 May 2024</a></li>
+  <li><a href="#section1">8.311: 08 March 2024</a></li>
+  <li><a href="#section2">8.310: 25 July 2023</a></li>
+  <li><a href="#section3">8.309: 16 February 2023</a></li>
+  <li><a href="#section4">8.308: 16 November 2022</a></li>
+  <li><a href="#section5">8.307: 25 February 2022</a></li>
+  <li><a href="#section6">8.306: 28 June 2021</a></li>
+  <li><a href="#section7">8.305: 03 May 2021</a></li>
+  <li><a href="#section8">8.304: 09 April 2021</a></li>
+  <li><a href="#section9">8.303: 01 September 2020</a></li>
+  <li><a href="#section10">8.302: 24 April 2020</a></li>
+  <li><a href="#section11">8.301: 30 October 2019</a></li>
 </ol>
 
  
@@ -29,6 +30,80 @@ compatibility. The main change is that C++11 is now assumed.
 The impact on existing used code should be mild, however. 
  
 <a name="section0"></a> 
+<h3>8.312: 23 May 2024</h3> 
+<ul> 
+ 
+<li>The <a href="SampleMainPrograms.html" target="page">Sample Main Programs</a> in 
+the <code>examples</code> subdirectory have been completely 
+reorganized. Over the years, an expansion of examples has been driven 
+by the addition of new capabilities as well as by a strong user 
+demand. As the old two-digit <code>mainNN.cc</code> structure filled 
+up, empty slots were used more-or-less at random, before eventually 
+also three-digit codes were introduced. Now all examples have been 
+regrouped by topic as three-digit codes <code>mainNNN.cc</code>, with 
+empty space within each group for future expansion. No program keeps 
+its old code.  Some new examples have been introduced and some 
+existing ones have been modified. The matching and merging examples 
+have seen a significant restructuring, where 
+<a href="NLOMerging.html" target="page"><code>main162.cc</code></a> and 
+<a href="MatchingAndMerging.html" target="page"><code>main164.cc</code></a> provide 
+omnibus versions for several approaches.</li> 
+ 
+<li>Some related updates and cleanup in 
+<code>examples/Makefile</code>.</li> 
+ 
+<li>The <a href="../pdfdoc/worksheet8312.pdf" target="page"> 
+PYTHIA 8.3 Worksheet</a> has been updated and expanded.</li> 
+ 
+<li>The new more QCD based color reconnection model, 
+<code>ColourReconnection:mode = 1</code> has been sped up by over a 
+factor of two, thanks to Michal Kreps.</li> 
+ 
+<li>Variable energy beams have been added to Angantyr. See 
+<code>main424.cc</code> for details.</li> 
+ 
+<li>New parameters <code>BeamRemnants:heavyQuarkEnhance</code> 
+allows heavier quarks (<i>s, c, b</i>) to take more beam-remnant 
+momentum than the lighter <i>u</i> and <i>d</i> ones. 
+The same parameters also makes it more likely for a heavier quark 
+not to be kicked backwards in low-mass systems. Thanks to 
+Manuel Masip and Ivan Rosario Bonastre for pointing out the 
+issue.</li> 
+ 
+<li>Example of using Pythia as a custom shared library through 
+Python has been added in <code>main296.cc</code> and 
+<code>main296.py</code>.</li> 
+ 
+<li>The option <code>--version</code> is now available for 
+<code>pythia8-config</code> which will return the Pythia version, 
+thanks to Christopher Dilks for the suggestion.</li> 
+ 
+<li>A bug which caused popcorn destructive interference mechanism to 
+not work has now been fixed.</li> 
+ 
+<li>Added a new flag for neutrino PDFs to have them as unresolved 
+particles by default as no other options currently exists. Minor 
+related documentation update.</li> 
+ 
+<li>Some bug fixes in less commonly used methods of the 
+<code>Settings</code> and <code>ParticleData</code> classes.</li> 
+ 
+<li>Tiny correction in <code>configure</code> that fixes issue with 
+<code>pythia8-config</code> on some platforms, thanks to Gabriele 
+Inghirami for reporting.</li> 
+ 
+<li>Protect against potential division by zero in the Thrust method.</li> 
+ 
+<li>Fixed an issue where cross-sections could be reported incorrectly 
+when running a second hard process when the first hard process comes 
+from an LHE file.</li> 
+ 
+<li>Protection was added to Vincia FSR for the case where the charm 
+quark mass is set to zero.</li> 
+ 
+</ul> 
+ 
+<a name="section1"></a> 
 <h3>8.311: 08 March 2024</h3> 
  
 <ul> 
@@ -260,7 +335,7 @@ fixed.</li>
 <code>PhaseSpace::setupSampling123</code>.</li> 
 </ul> 
  
-<a name="section1"></a> 
+<a name="section2"></a> 
 <h3>8.310: 25 July 2023</h3> 
  
 <ul> 
@@ -395,7 +470,7 @@ additional settings files to be directly read in.</li>
 <li>Fixed a bug in the bookkeeping the number of hadrons in the string 
 fragmentation.</li> 
  
-<a name="section2"></a> 
+<a name="section3"></a> 
 <h3>8.309: 16 February 2023</h3> 
  
 <ul> 
@@ -493,7 +568,7 @@ input.</li>
 with GCC 12.2.</li> 
 </ul> 
  
-<a name="section3"></a> 
+<a name="section4"></a> 
 <h3>8.308: 16 November 2022</h3> 
  
 <ul> 
@@ -601,7 +676,7 @@ reference.</li>
 <li>Updating affiliation for Christian Bierlich.</li> 
 </ul> 
  
-<a name="section4"></a> 
+<a name="section5"></a> 
 <h3>8.307: 25 February 2022</h3> 
  
 <ul> 
@@ -777,7 +852,7 @@ events. Thanks to Giancarlo Panizzo and Marvin Flores for reporting
 the issue.</li> 
 </ul> 
  
-<a name="section5"></a> 
+<a name="section6"></a> 
 <h3>8.306: 28 June 2021</h3> 
  
 <ul> 
@@ -809,7 +884,7 @@ most collinear parent is the first mother.
 <li>Shortened Pythia constructor header.</li> 
 </ul> 
  
-<a name="section6"></a> 
+<a name="section7"></a> 
 <h3>8.305: 03 May 2021</h3> 
  
 <ul> 
@@ -850,7 +925,7 @@ small bug reported by Vittorio Zecca.</li>
 <code>main07.cc</code>. Thanks to M. Baker and A. Thamm.</li> 
 </ul> 
  
-<a name="section7"></a> 
+<a name="section8"></a> 
 <h3>8.304: 09 April 2021</h3> 
  
 <ul> 
@@ -999,7 +1074,7 @@ called twice. Now all available cases are looped over, but easy to
 change back to study only one.</li> 
 </ul> 
  
-<a name="section8"></a> 
+<a name="section9"></a> 
 <h3>8.303: 01 September 2020</h3> 
  
 <ul> 
@@ -1233,7 +1308,7 @@ diffractive systems.</li>
 for diffraction. Thanks to Valentina Zaccolo.</li> 
 </ul> 
  
-<a name="section9"></a> 
+<a name="section10"></a> 
 <h3>8.302: 24 April 2020</h3> 
  
 <ul> 
@@ -1328,7 +1403,7 @@ with Vincia reverting to the same (in-code) way of setting tune
 presets as Dire and Pythia.</li> 
 </ul> 
  
-<a name="section10"></a> 
+<a name="section11"></a> 
 <h3>8.301: 30 October 2019</h3> 
 <ul> 
 <li>Compilation is done with a new <code>-std=c++11</code> flag.</li> 

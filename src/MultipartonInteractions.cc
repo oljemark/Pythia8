@@ -1769,7 +1769,7 @@ bool MultipartonInteractions::loadMPIdata() {
   if (!foundMatch) return false;
 
   // Need to set up minimal mpis array for iDiffSys = 2 or 3.
-  if (nPDFA == 1 && mpis.size() == 0)
+  if (mpis.size() == 0)
     mpis  = vector<MPIInterpolationInfo>(nPDFA);
 
   // Loop over number of different PDF sets, and thereby projectiles.

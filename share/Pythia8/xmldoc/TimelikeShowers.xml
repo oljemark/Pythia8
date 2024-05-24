@@ -72,7 +72,7 @@ option 2 could be combined with <code>UserHooks</code> vetoes on
 emissions that would lead to double-counting, using more flexible 
 phase space boundaries. Further details are found in the 
 <aloc href="MatchingAndMerging">Matching and Merging</aloc> description, 
-with an example in <code>examples/main31</code>. 
+with an example in <code>examples/main152</code>. 
 Option 0, finally, may be most realistic when only Born-level processes 
 are involved, possibly in combination with a nonzero 
 <code>TimeShower:pTdampMatch</code>. 

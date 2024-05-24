@@ -28,6 +28,7 @@ PYTHIA configuration script are also valid for this script. See
 
 Available options.
 --help         : Print this help message (also -h, --h, and -help).
+--version      : Returns the Pythia version.
 --config       : Print the argument(s) used to configure Pythia.
 --prefix       : Installation prefix (cf. autoconf). Note that if the 
                  installation is spread over multiple directories, the
@@ -67,8 +68,8 @@ Available options.
   hdf5     : Support the use of HDF5.
   highfive : HighFive headers, also needed for reading HDF5 Les Houches.
 BLOCKTEXT
-OPTIONS="-h --h -help --help --config --prefix --bindir --libdir --includedir"
-OPTIONS+=" --datadir --xmldoc --cxxflags --cflags --ldflags --libs"
+OPTIONS="-h --h -help --help --version --config --prefix --bindir --libdir "
+OPTIONS+="--includedir --datadir --xmldoc --cxxflags --cflags --ldflags --libs"
 for PKG in "evtgen" "fastjet3" "hepmc2" "hepmc3" "lhapdf5" "lhapdf6" "powheg"\
     "rivet" "root" "gzip" "python" "mg5mes" "openmp" "mpich" "hdf5"\
     "highfive"; do
@@ -102,7 +103,9 @@ function error() {
 if [ $# -eq 0 ]; then echo "$USAGE"; exit; fi
 for VAR in "$@"; do
     if [ "$VAR" = "-h" ] || [ "$VAR" = "--h" ] || [ "$VAR" = "-help" ] \
-       || [ "$VAR" = "--help" ]; then echo "$USAGE"; exit; fi; done
+           || [ "$VAR" = "--help" ]; then echo "$USAGE"; exit;
+    elif [ "$VAR" = "--version" ]; then echo "8.312"; exit; fi
+done
 
 # Read the configuration (use local version first, then installed version).
 PREFIX=$(cd "$(dirname "${BASH_SOURCE[0]}")"; cd ../; pwd)

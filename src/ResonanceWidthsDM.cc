@@ -83,6 +83,7 @@ double ResonanceS::eta2gg() {
   for (int idNow = 3; idNow < 7; ++idNow) {
     mLoop   = particleDataPtr->m0(idNow);
     epsilon = pow2(2. * mLoop / mHat);
+    if (mLoop == 0.) continue;
 
     // Value of loop integral.
     if (epsilon <= 1.) {

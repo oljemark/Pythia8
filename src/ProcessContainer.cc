@@ -446,17 +446,16 @@ void ProcessContainer::accumulate() {
   if (wgtNow != 0.0) {
     ++nAcc;
 
-    // infoPtr->weight() performs coversion to pb if lhaStratAbs = 4
-    if (lhaStratAbs == 4) wgtNow /= 1e9;
-
-    wtAccSum += wgtNow;
     if (isLHA) {
       int codeLHANow = lhaUpPtr->idProcess();
       int iFill = -1;
       for (int i = 0; i < int(codeLHA.size()); ++i)
         if (codeLHANow == codeLHA[i]) iFill = i;
       if (iFill >= 0) ++nAccLHA[iFill];
+      wgtNow = lhaUpPtr->weight();
+      if (lhaStratAbs == 4) wgtNow *= PB2MB;
     }
+    wtAccSum += wgtNow;
   }
 
 }
@@ -1353,16 +1352,19 @@ void ProcessContainer::sigmaDelta() {
   // Only update once an event is accepted, as is needed if the event weight
   // can still change by a finite amount due to reweighting.
   double wgtNow = infoPtr->weight();
-  // infoPtr->weight() performs conversion to pb if lhaStratAbs = 4
-  if (lhaStrat    == 0) wgtNow  = sigmaTemp;
-  if (lhaStratAbs == 3) wgtNow *= sigmaTemp;
-  if (lhaStratAbs == 4) wgtNow /= 1e9;
+  if (lhaStratAbs <= 2) wgtNow  = sigmaTemp;
+  // If wgtNow includes the sign, do not include the sign again
+  if (lhaStratAbs == 3) wgtNow *= abs(sigmaTemp);
+  // Refetch the LHA weight in case of second hard
+  if (lhaStratAbs == 4) wgtNow = lhaUpPtr->weight() * PB2MB;
+  if (lhaStratAbs > 0 && infoPtr->atEndOfFile()) wgtNow = 0;
+
   sigmaSum += wgtNow;
 
   double wgtNow2 = 1.0;
-  if (lhaStrat    == 0) wgtNow2 = sigma2Temp;
+  if (lhaStratAbs <= 2) wgtNow2 = sigma2Temp;
   if (lhaStratAbs == 3) wgtNow2 = pow2(wgtNow)*sigma2Temp;
-  if (lhaStratAbs == 4) wgtNow2 = pow2(wgtNow/1e9);
+  if (lhaStratAbs == 4) wgtNow2 = pow2(wgtNow);
   sigma2Sum += wgtNow2;
 
   sigmaTemp  = 0.0;
@@ -1372,20 +1374,21 @@ void ProcessContainer::sigmaDelta() {
   double nTryInv  = 1. / nTry;
   double nSelInv  = 1. / nSel;
   double nAccInv  = 1. / nAcc;
-  sigmaAvg        = sigmaSum * nTryInv;
-  double fracAcc  = nAcc * nSelInv;
-
   // If Pythia should not perform the unweighting, always simply add accepted
   // event weights.
-  if (lhaStratAbs >= 3 ) fracAcc = 1.;
+  sigmaAvg        = sigmaSum * ( (lhaStratAbs >= 3) ? nAccInv : nTryInv );
+  double fracAcc  = nAcc * nSelInv;
+
   sigmaFin        = sigmaAvg * fracAcc;
   deltaFin        = sigmaFin;
   if (nAcc == 1) return;
 
   // Estimated error. Quadratic sum of cross section term and
   // binomial from accept/reject step.
-  double delta2Sig   = (lhaStratAbs == 3) ? normVar3
-    : (sigma2Sum * nTryInv - pow2(sigmaAvg)) * nTryInv / pow2(sigmaAvg);
+  double delta2Sig   = 0;
+  if (lhaStratAbs == 3)   delta2Sig = normVar3;
+  else if (sigmaAvg != 0) delta2Sig = (
+    sigma2Sum * nTryInv - pow2(sigmaAvg)) * nTryInv / pow2(sigmaAvg);
   double delta2Veto  = (nSel - nAcc) * nAccInv * nSelInv;
   double delta2Sum   = delta2Sig + delta2Veto;
   deltaFin           = sqrtpos(delta2Sum) * sigmaFin;

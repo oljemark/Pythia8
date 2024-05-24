@@ -144,7 +144,8 @@ public:
   bool fragment( int iSub, const ColConfig& colConfig, Event& event);
 
   // Find the boost matrix to the rest frame of a junction.
-  Vec4 junctionRestFrame(Vec4& p0, Vec4& p1, Vec4& p2, bool angleCheck = true);
+  Vec4 junctionRestFrame(const Vec4& p0, const Vec4& p1, const Vec4& p2,
+    const bool angleCheck = true) const;
 
 private:
 

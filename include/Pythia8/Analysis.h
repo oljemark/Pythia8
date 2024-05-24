@@ -106,7 +106,7 @@ private:
 
   // Constants: could only be changed in the code itself.
   static const int    NSTUDYMIN, TIMESTOPRINT;
-  static const double MAJORMIN;
+  static const double CROSSMIN, MAJORMIN;
 
   // Properties of analysis.
   int    select;

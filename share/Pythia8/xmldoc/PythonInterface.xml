@@ -107,8 +107,8 @@ the built-in print function in Python. Note this means that a string
 representation via <code>str</code> is also available for these 
 classes in Python.</li> 
 <li>Derived classes in Python can be passed back to PYTHIA, and should 
-be available for all classes. See <code>main10.py</code> for a direct 
-Python translation of the C++ <code>main10.cc</code> example which 
+be available for all classes. See <code>main293.py</code> for a direct 
+Python translation of the C++ <code>main242.cc</code> example which 
 uses a derived class from the UserHooks class to veto events.</li> 
 <li>The constant <code>Pythia::info</code> member is available as 
 <code>Pythia::infoPython</code>. Note, this creates a new instance of 
@@ -178,7 +178,7 @@ correctly recognize modules ending with the <code>dylib</code> suffix.
  
 To use the Python interface for PYTHIA, start Python 
 and <code>import pythia8</code>. The provided examples can be run 
-by <code>python mainXX.py</code> where <code>XX</code> is the number 
+by <code>python mainNNN.py</code> where <code>NNN</code> is the number 
 of the example. 
  
 <h3>Interface Generation</h3> 

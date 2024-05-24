@@ -379,6 +379,11 @@ perform a combined rotation and boost; see below for a description
 of the <code>RotBstMatrix</code>. 
 </method> 
  
+<method name="void Vec4::eInFrame(const Vec4& pIn)"> 
+calculate the energy of the four-momentum in the frame of the 
+four-momentum <code>pIn</code>. 
+</method> 
+ 
 <p/> 
 For a longer sequence of rotations and boosts, and where several 
 <code>Vec4</code> are to be rotated and boosted in the same way, 

@@ -1307,7 +1307,8 @@ void ParticleData::listFF(string outFile) {
        << setw(10) << particlePtr->mMin() << " "
        << setw(10) << particlePtr->mMax() << " "
        << scientific << setprecision(5)
-       << setw(12) << particlePtr->tau0() << "\n";
+       << setw(12) << particlePtr->tau0()
+       << setw(12) << particlePtr->varWidth() << "\n";
 
     // Loop through the decay channel table for each particle.
     if (particlePtr->sizeChannels() > 0) {

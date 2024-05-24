@@ -59,6 +59,10 @@ public:
   bool setLHAupPtr( LHAupPtr lhaUpPtrIn) {lhaUpPtr = lhaUpPtrIn;
     useNewLHA = false; return true;}
 
+  // For a given particle id, get a particle that represents its properties,
+  // i.e. a particle with the same PDF shape and parameters.
+  int represent(int idIn) const;
+
   // Switch to new beam particle identities; for similar hadrons only.
   bool setBeamIDs( int idAin, int idBin = 0);
 

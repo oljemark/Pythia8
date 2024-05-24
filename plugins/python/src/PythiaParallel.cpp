@@ -149,6 +149,19 @@ struct PyCallBack_Pythia8_HeavyIons : public Pythia8::HeavyIons {
 		}
 		return HeavyIons::setKinematics(a0, a1);
 	}
+	bool setBeamIDs(int a0, int a1) override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HeavyIons *>(this), "setBeamIDs");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return HeavyIons::setBeamIDs(a0, a1);
+	}
 	void stat() override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HeavyIons *>(this), "stat");
@@ -216,7 +229,7 @@ struct PyCallBack_Pythia8_HeavyIons : public Pythia8::HeavyIons {
 	}
 };
 
-// Pythia8::HeavyIons::InfoGrabber file:Pythia8/HeavyIons.h line:139
+// Pythia8::HeavyIons::InfoGrabber file:Pythia8/HeavyIons.h line:147
 struct PyCallBack_Pythia8_HeavyIons_InfoGrabber : public Pythia8::HeavyIons::InfoGrabber {
 	using Pythia8::HeavyIons::InfoGrabber::InfoGrabber;
 
@@ -853,7 +866,7 @@ void bind_Pythia8_PythiaParallel(std::function< pybind11::module &(std::string c
 		pybind11::class_<Pythia8::HeavyIons, std::shared_ptr<Pythia8::HeavyIons>, PyCallBack_Pythia8_HeavyIons> cl(M("Pythia8"), "HeavyIons", "");
 		pybind11::handle cl_type = cl;
 
-		{ // Pythia8::HeavyIons::InfoGrabber file:Pythia8/HeavyIons.h line:139
+		{ // Pythia8::HeavyIons::InfoGrabber file:Pythia8/HeavyIons.h line:147
 			auto & enclosing_class = cl;
 			pybind11::class_<Pythia8::HeavyIons::InfoGrabber, std::shared_ptr<Pythia8::HeavyIons::InfoGrabber>, PyCallBack_Pythia8_HeavyIons_InfoGrabber, Pythia8::UserHooks> cl(enclosing_class, "InfoGrabber", "");
 			pybind11::handle cl_type = cl;
@@ -866,6 +879,8 @@ void bind_Pythia8_PythiaParallel(std::function< pybind11::module &(std::string c
 		cl.def( pybind11::init<class Pythia8::Pythia &>(), pybind11::arg("mainPythiaIn") );
 
 		cl.def_readwrite("hiInfo", &Pythia8::HeavyIons::hiInfo);
+		cl.def_readwrite("idProj", &Pythia8::HeavyIons::idProj);
+		cl.def_readwrite("idTarg", &Pythia8::HeavyIons::idTarg);
 		cl.def_readwrite("sigTotNN", &Pythia8::HeavyIons::sigTotNN);
 		cl.def_readwrite("HIHooksPtr", &Pythia8::HeavyIons::HIHooksPtr);
 		cl.def_readwrite("pythia", &Pythia8::HeavyIons::pythia);
@@ -880,6 +895,8 @@ void bind_Pythia8_PythiaParallel(std::function< pybind11::module &(std::string c
 		cl.def("setKinematics", (bool (Pythia8::HeavyIons::*)(double, double)) &Pythia8::HeavyIons::setKinematics, "C++: Pythia8::HeavyIons::setKinematics(double, double) --> bool", pybind11::arg(""), pybind11::arg(""));
 		cl.def("setKinematics", (bool (Pythia8::HeavyIons::*)(double, double, double, double, double, double)) &Pythia8::HeavyIons::setKinematics, "C++: Pythia8::HeavyIons::setKinematics(double, double, double, double, double, double) --> bool", pybind11::arg(""), pybind11::arg(""), pybind11::arg(""), pybind11::arg(""), pybind11::arg(""), pybind11::arg(""));
 		cl.def("setKinematics", (bool (Pythia8::HeavyIons::*)(class Pythia8::Vec4, class Pythia8::Vec4)) &Pythia8::HeavyIons::setKinematics, "C++: Pythia8::HeavyIons::setKinematics(class Pythia8::Vec4, class Pythia8::Vec4) --> bool", pybind11::arg(""), pybind11::arg(""));
+		cl.def("setBeamIDs", [](Pythia8::HeavyIons &o, int const & a0) -> bool { return o.setBeamIDs(a0); }, "", pybind11::arg(""));
+		cl.def("setBeamIDs", (bool (Pythia8::HeavyIons::*)(int, int)) &Pythia8::HeavyIons::setBeamIDs, "C++: Pythia8::HeavyIons::setBeamIDs(int, int) --> bool", pybind11::arg(""), pybind11::arg(""));
 		cl.def("stat", (void (Pythia8::HeavyIons::*)()) &Pythia8::HeavyIons::stat, "C++: Pythia8::HeavyIons::stat() --> void");
 		cl.def("updateInfo", (void (Pythia8::HeavyIons::*)()) &Pythia8::HeavyIons::updateInfo, "C++: Pythia8::HeavyIons::updateInfo() --> void");
 		cl.def("clearProcessLevel", (void (Pythia8::HeavyIons::*)(class Pythia8::Pythia &)) &Pythia8::HeavyIons::clearProcessLevel, "C++: Pythia8::HeavyIons::clearProcessLevel(class Pythia8::Pythia &) --> void", pybind11::arg("pyt"));

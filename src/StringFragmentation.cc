@@ -3145,8 +3145,8 @@ bool StringFragmentation::pearlOnAString(Event& event, int iMin) {
 
 // Find the boost matrix to the mercedes rest frame of a junction.
 
-Vec4 StringFragmentation::junctionRestFrame(Vec4& p0, Vec4& p1,
-  Vec4& p2, bool angleCheck) {
+Vec4 StringFragmentation::junctionRestFrame(const Vec4& p0, const Vec4& p1,
+  const Vec4& p2, const bool angleCheck) const {
 
   // Calculate masses and other invariants.
   Vec4 pSumJun  = p0 + p1 + p2;
@@ -3492,7 +3492,7 @@ void StringFragmentation::kappaEffRatio(StringSystem& systemNow,
   double qqFacQmod = qqFacQ / (1.0 + pT2Had / closePackingPT20);
 
   // Survival probability for a diquark created via colour fluctuations.
-  probQQmod = pow( 1 - qqFacPmod, p/9) * pow( 1 - qqFacQmod, q/9);
+  probQQmod = pow( 1 - qqFacPmod, p/9.) * pow( 1 - qqFacQmod, q/9.);
 
 }
 

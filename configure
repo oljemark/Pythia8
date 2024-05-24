@@ -339,6 +339,12 @@ if [ -z "$LIB_SUFFIX" ]; then
     if [ "$ARCH" = "LINUX" ];  then LIB_SUFFIX=".so"; fi
     if [ "$ARCH" = "DARWIN" ]; then LIB_SUFFIX=".dylib"; fi; fi
 
+# Handle new versus old dynamic tags (prefer old transitive behaviour).
+CXX_DTAGS=$(echo "int main(){}" | $CXX -Wl,--disable-new-dtags -o \
+    /dev/null -xc - 2>&1)
+if [ -z "$CXX_DTAGS" ]; then CXX_DTAGS="-Wl,--disable-new-dtags";
+else CXX_DTAGS=""; fi
+
 # Configure the installation directories (order matters).
 if [ "$PREFIX_SET" != true ]; then PREFIX=$PWD; fi
 if [ -z "$PREFIX_BIN" ];      then PREFIX_BIN=$PREFIX/bin; fi
@@ -383,7 +389,7 @@ configure_package "MPICH" "" "" "" "" "" "" "mpic++" "mpi.h" "mpi" ""
 configure_package "HDF5" "$LCG_PATH/hdf5" "1.12.2" "" "" "" "" "" "hdf5.h"\
     "hdf5" ""
 configure_package "HIGHFIVE" "$LCG_PATH/highfive" "2.0" "" "" "" "" ""\
-    "H5File.hpp" "" ""
+    "highfive/H5File.hpp" "" ""
 
 # Check package dependencies (order does not matter).
 for IDX in ${!PKG_LIST[@]}; do
@@ -428,7 +434,7 @@ done
     
 # Write the configuation to screen and file, update the pythia8-config script.
 mkdir -p bin;
-sed 's|^CFG_FILE=.*|CFG_FILE='"$PREFIX_SHARE"'/examples/Makefile.inc|;n' \
+sed 's|^CFG_FILE=.*|CFG_FILE='"$PREFIX_SHARE"'/examples/Makefile.inc|' \
     pythia8-config.inc > bin/pythia8-config
 chmod a+x bin/pythia8-config
 echo "---------------------------------------------------------------------"
@@ -436,6 +442,7 @@ echo "|                    PYTHIA Configuration Summary                   |"
 echo "---------------------------------------------------------------------"
 echo "  Architecture                = "$ARCH 
 echo "  C++ compiler     CXX        = "$CXX
+echo "  C++ dynamic tags CXX_DTAGS  = "$CXX_DTAGS
 echo "  C++ flags        CXX_COMMON = "$CXX_COMMON
 echo "  C++ shared flag  CXX_SHARED = "$CXX_SHARED
 echo -n "  Further options             = "
@@ -454,6 +461,7 @@ PREFIX_SHARE=$PREFIX_SHARE
 
 # Compilation flags (see ./configure --help for further documentation).
 CXX=$CXX
+CXX_DTAGS=$CXX_DTAGS
 CXX_COMMON=$CXX_COMMON
 CXX_SHARED=$CXX_SHARED
 CXX_SONAME=$CXX_SONAME

@@ -65,6 +65,10 @@ but be mindful that a suitable  model geometry must be available for the
 nucleus added, see the available 
 <a href="#NucleusModel" target="page">nucleus models</a> below. 
  
+Angantyr supports beam switching if <code>Beams:allowIDAswitch</code> is 
+turned on. In this case, <code>idA</code> is allowed to be any hadron, while 
+<code>idB</code> is allowed to be a proton, nucleon or any ion. 
+ 
 <h3>Top level flags</h3> 
  
 <modepick name="HeavyIon:mode" default="1" min="1" max="2"> 
@@ -615,11 +619,11 @@ not yet been validated to work properly together.  Also the parameters
 in the model have not been properly tuned, so the results from running 
 must not be taken as definitive predictions.</li> 
 <li>A similar warning should be made regarding the use of 
-<aloc href="ColourReconnection">Colour Reconnection</aloc> models. In the 
-Angantyr model, colour reconnection takes place only inside individual 
-nucleon-nucleon collisions, and not in the nucleus-nucleus collision 
-as a whole.  One can therefore not expect large effects on eg. baryon 
-production by enabling the QCD colour reconnection.</li> 
+<aloc href="ColourReconnection">Colour Reconnection</aloc> models. By 
+default the colour reconnection takes place only inside individual 
+nucleon-nucleon sub-collisions, and not in the nucleus-nucleus collision 
+as a whole. To get reconnections also between sub-collisions, the 
+settings described in <ref>Lon23</ref> should be used.</li> 
 </ul> 
 <p/> 
 To determine which projectile nucleon interacts with which target 
@@ -857,13 +861,6 @@ If on, at each evolution point, the algorithm will use the generated
 parameters from the previous point. If off, it start from the default 
 parameter set given by <code>HeavyIon:SigFitDefPar</code> at each point. 
 </flag> 
-<mode name="HeavyIon:varECMSigFitNGen" default="10" min="1"> 
-When performing stepwise evolution, the evolution at each interpolation point 
-starts from the parameters generated at the previous point. This gives a 
-better original estimate, so that fewer generations are necessary to 
-converge. This setting determines the number of generations at each point 
-after the first one. 
-</mode> 
 <modepick name="HeavyIon:SigFitReuseInit" default="0" min="0" max="4"> 
 If set, the parameters calculated from the evolutionary algorithm can be 
 saved/loaded to disk, for faster initialization in subsequent runs. 

@@ -216,7 +216,7 @@ In detail, the list of used or foreseen status codes is:
   <li>159 : formation of a resonance particle</li> 
   </ul> 
 <li>181 - 189 : reserved for the tracking of a cascade through a medium. 
-  Is not (yet) used in the core code, but only in the <code>main183</code> 
+  Is not (yet) used in the core code, but only in the <code>main483</code> 
   example 
   <ul> 
   <li>181 : a nucleon hit in the medium, specifically the first 

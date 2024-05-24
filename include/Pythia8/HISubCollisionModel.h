@@ -214,6 +214,9 @@ public:
   // Set beam kinematics.
   void setKinematics(double eCMIn);
 
+  // Set projectile particle.
+  void setIDA(int idA);
+
   // Use a genetic algorithm to fit the parameters.
   bool evolve(int nGenerations, double eCM);
 
@@ -285,10 +288,19 @@ protected:
 
   // For variable energies.
   int idASave, idBSave;
-  bool doVarECM;
-  double eMin{}, eMax{};
+  bool doVarECM, doVarBeams;
+  double eMin, eMax, eSave;
   int eCMPts;
-  vector<LogInterpolator> subCollParms;
+
+  // The list of particles that have been fitted.
+  vector<int> idAList;
+
+  // A vector of interpolators for the current particle. Each entry
+  // corresponds to one parameter, each interpolator is over the energy range.
+  vector<LogInterpolator> *subCollParms;
+
+  // Mapping id -> interpolator, one entry for each particle.
+  map<int, vector<LogInterpolator>> subCollParmsMap;
 
 };
 

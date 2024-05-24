@@ -105,7 +105,7 @@ public:
 
     // 3. Fill vertex information.
     std::vector<GenVertexPtr> vertex_cache;
-    for (int i = 1; i < pyev.size(); ++i) {
+    for (int i = 3; i < pyev.size(); ++i) {
       std::vector<int> mothers = pyev[i].motherList();
       if (mothers.size()) {
         GenVertexPtr prod_vtx = hepevt_particles[mothers[0]]->end_vertex();

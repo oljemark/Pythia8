@@ -3499,7 +3499,8 @@ double VinciaFSR::getQ2Window(int iWindow, double q2cutoff) {
   switch (iWindow) {
   case 0:
     // [cutoff, mc]
-    qMinNow = min(sqrt(q2cutoff),particleDataPtr->m0(4));
+    qMinNow = particleDataPtr->m0(4) > 0. ?
+      min(sqrt(q2cutoff),particleDataPtr->m0(4)) : sqrt(q2cutoff);
     break;
   case 1:
     // [mc, mb] with 4-flavour running trial alphaS.

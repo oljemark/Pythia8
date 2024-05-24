@@ -141,11 +141,11 @@ public:
     maxValQuark(), companionPower(), valencePowerMeson(), valencePowerUinP(),
     valencePowerDinP(), valenceDiqEnhance(), pickQuarkNorm(), pickQuarkPower(),
     diffPrimKTwidth(), diffLargeMassSuppress(), beamSat(), gluonPower(),
-    xGluonCutoff(), idBeam(), idBeamAbs(), idVMDBeam(), mBeam(), mVMDBeam(),
-    scaleVMDBeam(), isUnresolvedBeam(), isLeptonBeam(), isHadronBeam(),
-    isMesonBeam(), isBaryonBeam(), isGammaBeam(), nValKinds(), idVal(), nVal(),
-    idSave(), iSkipSave(), nValLeft(), xqgTot(), xqVal(), xqgSea(),
-    xqCompSum(), doISR(), doMPI(), doND(), isResolvedGamma(),
+    xGluonCutoff(), heavyQuarkEnhance(), idBeam(), idBeamAbs(), idVMDBeam(),
+    mBeam(), mVMDBeam(), scaleVMDBeam(), isUnresolvedBeam(), isLeptonBeam(),
+    isHadronBeam(), isMesonBeam(), isBaryonBeam(), isGammaBeam(), nValKinds(),
+    idVal(), nVal(), idSave(), iSkipSave(), nValLeft(), xqgTot(), xqVal(),
+    xqgSea(), xqCompSum(), doISR(), doMPI(), doND(), isResolvedGamma(),
     hasResGammaInBeam(), isResUnres(), hasVMDstateInBeam(), initGammaBeam(),
     pTminISR(), pTminMPI(), pT2gm2qqbar(), iGamVal(), iPosVal(), gammaMode(),
     xGm(), Q2gm(), kTgamma(), phiGamma(), cPowerCache(-100), xsCache(-1),
@@ -488,7 +488,7 @@ private:
   double valencePowerMeson, valencePowerUinP, valencePowerDinP,
          valenceDiqEnhance, pickQuarkNorm, pickQuarkPower,
          diffPrimKTwidth, diffLargeMassSuppress, beamSat, gluonPower,
-         xGluonCutoff;
+         xGluonCutoff, heavyQuarkEnhance[6];
 
   // Basic properties of a beam particle.
   int    idBeam, idBeamAbs, idVMDBeam;
