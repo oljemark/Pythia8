@@ -1,5 +1,5 @@
 // ProcessContainer.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -56,8 +56,9 @@ public:
       sigmaAvg(), sigmaFin(), deltaFin(), weightNow(), wtAccSum(),
       beamAhasResGamma(), beamBhasResGamma(), beamHasResGamma(),
       beamHasGamma(), beamAgammaMode(), beamBgammaMode(), gammaModeEvent(),
-      approximatedGammaFlux(), doMerging(), nTryRequested(), nSelRequested(),
-      nAccRequested(), sigmaTemp(), sigma2Temp(), normVar3() {}
+      approximatedGammaFlux(), reweightNLO(), doMerging(), nTryRequested(),
+      nSelRequested(), nAccRequested(), sigmaTemp(), sigma2Temp(),
+      normVar3() {}
 
   // Initialize phase space and counters.
   bool init(bool isFirst, ResonanceDecays* resDecaysPtrIn,
@@ -206,6 +207,9 @@ private:
 
   // Use approximated photon flux for process sampling.
   bool   approximatedGammaFlux;
+
+  // Whether the cross section should be reweighted to the NLO cross section.
+  bool   reweightNLO;
 
   // Check if merging is enabled.
   bool   doMerging;

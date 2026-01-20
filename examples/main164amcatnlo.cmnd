@@ -25,20 +25,14 @@ SpaceShower:MEcorrections     = off
 
 ! Optionally write HepMC events.
 ! (Pythia has to be configured with --with-hepmc3 or --with-rivet).
-Main:HepMC                    = on
-HepMC:output                  = main164amcatnlo.hepmc
+! Init:plugins                  = {libpythia8hepmc3.so::HepMC3Hooks}
+! HepMC:filename                = main164amcatnlo.hepmc
 
 ! Optionally include Rivet analyses.
 ! (Pythia has to be configured with --with-rivet).
-Init:plugins                  = {libpythia8rivet.so::RivetHooks}
-Rivet:fileName                = main164ckkwl.yoda
-Rivet:analyses                = {MC_XS,MC_WEIGHTS}
-
-! Optionally include Rivet analyses.
-! (Pythia has to be configured with --with-rivet).
-Main:Rivet                    = on
-Rivet:output                  = main164amcatnlo.yoda
-Rivet:analyses                = {MC_XS,MC_WEIGHTS}
+! Init:plugins                  = {libpythia8rivet.so::RivetHooks}
+! Rivet:fileName                = main164ckkwl.yoda
+! Rivet:analyses                = {MC_XS,MC_WEIGHTS}
 
 ! Subruns for NLO matching with aMC@NLO events.
 Main:numberOfSubruns          = 1

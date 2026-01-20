@@ -1,5 +1,5 @@
 // SigmaEW.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -201,6 +201,12 @@ public:
 
   // Evaluate sigmaHat(sHat).
   virtual double sigmaHat();
+
+  // This process has an inclusive NLO correction.
+  virtual bool   hasNLO() const {return true;}
+  virtual double weightNLO();
+  double factRVDIS( int idLepton, double x, double y, double Q2,
+    BeamParticle* beamHadPtr);
 
   // Select flavour, colour and anticolour.
   virtual void setIdColAcol();

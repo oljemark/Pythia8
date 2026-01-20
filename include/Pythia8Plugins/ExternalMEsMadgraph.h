@@ -1,5 +1,5 @@
 // ExternalMEsMadgraph.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Peter Skands, Stefan Prestel, Philip Ilten, Torbjorn
+// Copyright (C) 2026 Peter Skands, Stefan Prestel, Philip Ilten, Torbjorn
 // Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
@@ -241,6 +241,8 @@ double ExternalMEsMadgraph::calcME2(vector<int>& idIn, vector<int>& idOut,
     for (int i(0); i<(int)hels.size(); ++i)
       if (hels[i] == 9) i9.push_back(i);
   }
+  // Otherwise clear helicity vector to tell MG5 to do helicity sum.
+  else if (helMode == 1) helConf.back().clear();
   // Manually calculate helicity average.
   double helAvgNorm = i9.size()>0 ? 1:proc_ptr->getHelicityAveragingFactor();
   while (i9.size() > 0) {

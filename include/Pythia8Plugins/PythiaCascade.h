@@ -1,5 +1,5 @@
 // PythiaCascade.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 // Author: Torbjorn Sjostrand.
@@ -19,19 +19,26 @@ namespace Pythia8 {
 // separate from PYTHIA, and specific input on production and decay
 // generates the next subevent.
 
+// Kindly note non-negligible changes as of Pythia 8.316. This is related
+// both to bug fixes in Angantyr, and to a better understanding of what
+// it is supposed to do. The main difference is that elastic scatterings
+// now are not simulated, it being assumed that they have no impact on
+// the evolution of the cascade. As a consequence cross sections and
+// event properties also change.
+
 // Intended flow:
 
 // - init sets up all generation, given a maximum energy. This may be
 //   time-consuming, less so if MPI initialization data can be reused.
 
 // - sigmaSetuphN prepares a possible collision for a given hadron by
-//   calculating the hadron-nucleon cross section (if possible).
+//   calculating the hadron-nucleon inelastic cross section (if possible).
 //   Moderately time-consuming.
 
 // - sigmahA uses the hN cross section calculated by sigaSetuphN and
-//   returns hadron-ion cross section for a collision with a specified
-//   nucleus.  It can be called several times to cover a mix of target
-//   nuclei, with minimal time usage.
+//   returns the hadron-ion inelastic cross section for a collision
+//   with a specified nucleus. It can be called several times to cover
+//   a mix of target nuclei, with minimal time usage.
 
 // - nextColl performs the hadron-nucleus collision, as a sequences of
 //   hadron-nucleon ones. Can be quite time-consuming.
@@ -39,7 +46,17 @@ namespace Pythia8 {
 // - nextDecay can be used anytime to decay a particle. Each
 //   individual decay is rather fast, but there may be many of them.
 
-// - stat can be used at end of run to give a summary of error
+// - After a nextColl three methods can give information about the
+//   collision just generated:
+//   * nCollisions() gives the number of hadron-nucleon inelastic
+//     (sub)collisions, i.e. the number of wounded target nucleons;
+//   * firstCollisionCode() gives the process number of the first
+//     (sub)collision, as enumerated in the Process Selection section
+//     of the html manual.
+//   * firstCollisionMPI() gives the number of multiparton interactions
+//     in the first (sub)collision.
+
+// - stat() can be used at end of run to give a summary of error
 //   messages.  Negligible time usage.
 
 // - references to particleData() and rndm() can be used in the main
@@ -62,91 +79,112 @@ class PythiaCascade {
 
 public:
 
-  // Default constructor, all setup is done in init().
+  // Default constructor; all setup is done in init().
   PythiaCascade() = default;
 
   //--------------------------------------------------------------------------
 
   // Initialize PythiaCascade for a given maximal incoming energy.
 
-  // Set eMax to the maximal incoming energy (in GeV) on fixed target.
+  // Hadrons below the kinetic energy threshold eKinMin will not be allowed
+  // to interact with the medium. If reduced from the 0.3 GeV default then
+  // some inelastic interactions are still allowed, while others fail
+  // (but the run keeps going).
 
-  // Keep listFinal = false if you want to get back the full event
-  // record, else only the "final" particles of the collision or decay
-  // are returned.
+  // The enhanceSDtarget provides an enhancement factor for target-side
+  // single diffraction, process codes 104 and 154, in subcollisions
+  // after the first. This gives topologies more similar to Angantyr ones.
+  // If 0 then no SD enhancement, if 1 only SD, with default in between.
+  // A larger value means a smaller multiplicity, and vice versa, so this
+  // is a quick way to obtain an envelope of hadronization uncertainties.
+
+  // The initFile, by default "../share/Pythia8/setups/InitDefaultMPI.cmnd",
+  // provides MPI initialization  data over a range of CM-frame energies,
+  // where the upper edge sets the limit for allowed collisions.
+  // Use main424.cc to rerun if you change any of the parameters that
+  // affect the MPI rates, such as the pT0 parameter, its energy dependence,
+  // the alpha_strong value, and the choice parton distributions.
 
   // Keep rapidDecays = false if you want to do every decay yourself,
   // else all particle types with a tau0 below smallTau0 will be
-  // decayed immediately.  The tau0 units are mm/c, so default gives c
-  // * tau0 = 1e-10 mm = 100 fm.  Note that time dilation effects are
-  // not included, and they can be large.
+  // decayed immediately.  The tau0 units are mm/c, so default gives
+  // c * tau0 = 1e-10 mm = 100 fm.  Note that time dilation effects are
+  // not included, and they can be large, hence the low default value.
+  // The Pythia default setup for decaying particles is obtained for
+  // rapidDecays = true and smallTau0 = 1000.
 
-  // The reuseMPI argument mimics MultipartonInteractions:reuseInit,
-  // but streamlined into three main options;
-  // 0 = current run is self-contained, so MPI is initialized from scratch,
-  //     but MPI data is stored on initFile for future use;
-  // 3 = read MPI initialization data from initFile, if it exists,
-  //     and else initialize and save the MPI data on initFile;
-  // -1 = read MPI initialization data and other run settings from
-  //    a .cmnd file, if not empty.
-  // In each case, the saved initialization must have been done with
-  // the same or a larger eMax than the one now being used.
+  // With slowDecays true the mu+-, pi+-, K+- and K0L are allowed to decay,
+  // as is expected in an atmospheric cascade but not for collider studies.
+  // Note that rapidDecays and smallTau0 still determine how those decays
+  // are handled, in the competition between interactions and decays.
 
-  bool init(double eMaxIn = 1e9, bool listFinalIn = false,
+  // Keep listFinalOnly = false if you want to get back the full event record,
+  // else only the "final" particles of the collision or decay are returned.
+
+  bool init( double eKinMinIn = 0.3, double enhanceSDtargetIn = 0.5,
+    string initFile = "../share/Pythia8/setups/InitDefaultMPI.cmnd",
     bool rapidDecaysIn = false, double smallTau0In = 1e-10,
-    int reuseMPI = 3, string initFile = "pythiaCascade.mpi") {
+    bool slowDecays = true, bool listFinalOnlyIn = false) {
 
     // Store input for future usage.
-    eMax        = eMaxIn;
-    listFinal   = listFinalIn;
-    rapidDecays = rapidDecaysIn;
-    smallTau0   = smallTau0In;
+    eKinMin         = eKinMinIn;
+    enhanceSDtarget = enhanceSDtargetIn;
+    rapidDecays     = rapidDecaysIn;
+    smallTau0       = smallTau0In;
+    listFinalOnly   = listFinalOnlyIn;
 
-    // Proton mass.
+    // Proton and neutron masses.
     mp      = pythiaMain.particleData.m0(2212);
+    mn      = pythiaMain.particleData.m0(2112);
 
-    // Main Pythia object for managing the cascade evolution in a
-    // nucleus. Can also do decays, but no hard processes.
+    // Main Pythia object for managing the cascade evolution in a nucleus.
+    // Can also do decays, but no hard processes.
     pythiaMain.readString("ProcessLevel:all = off");
-    pythiaMain.readString("13:mayDecay  = on");
-    pythiaMain.readString("211:mayDecay = on");
-    pythiaMain.readString("321:mayDecay = on");
-    pythiaMain.readString("130:mayDecay = on");
+    if (slowDecays) {
+      pythiaMain.readString("13:mayDecay  = on");
+      pythiaMain.readString("211:mayDecay = on");
+      pythiaMain.readString("321:mayDecay = on");
+      pythiaMain.readString("130:mayDecay = on");
+    }
     pythiaMain.settings.flag("ParticleDecays:limitTau0", rapidDecays);
     pythiaMain.settings.parm("ParticleDecays:tau0Max", smallTau0);
 
-    // Redure statistics printout to relevant ones.
+    // Reduce statistics printout to relevant ones.
+    pythiaMain.readString("Print:quiet = on");
     pythiaMain.readString("Stat:showProcessLevel = off");
     pythiaMain.readString("Stat:showPartonLevel = off");
 
     // Initialize. Return if failure.
     if (!pythiaMain.init()) return false;
 
-    if ( reuseMPI < 0 ) {
-      pythiaColl.readFile(initFile);
-      initFile = "";
+    // Secondary Pythia object for individual collisions, or decays.
+    // Reuse existing MPI initialization file. Failure if not found.
+    if ( !pythiaColl.readString("include = " + initFile)) {
+      cout << "\n Abort: failed to find or read MPI initialization file"
+           << endl;
+      return false;
     }
 
-    // Secondary Pythia object for performing individual collisions,
-    // or decays. Variable incoming beam type and energy.
+    // Variable incoming beam type and energy.
     pythiaColl.readString("Beams:allowVariableEnergy = on");
     pythiaColl.readString("Beams:allowIDAswitch = on");
 
-    // Set up for fixed-target collisions.
-    pythiaColl.readString("Beams:frameType = 3");
-    pythiaColl.settings.parm("Beams:pzA", eMax);
-    pythiaColl.readString("Beams:pzB = 0.");
+    // Initialization eCM energy according to initFile.
+    eCMMax = pythiaColl.settings.parm("Beams:eCMMaxMPI");
+    pythiaColl.settings.parm("Beams:eCM", eCMMax);
 
-    // Must use the soft and low-energy QCD processes.
-    pythiaColl.readString("SoftQCD:all = on");
-    pythiaColl.readString("LowEnergyQCD:all = on");
+    // Must use the soft and low-energy QCD processes, except elastic.
+    pythiaColl.readString("SoftQCD:inelastic = on");
+    pythiaColl.readString("LowEnergyQCD:inelastic = on");
 
     // Primary (single) decay to be done by pythiaColl, to circumvent
     // limitTau0.
-    pythiaColl.readString("13:mayDecay  = on");
-    pythiaColl.readString("211:mayDecay = on");
-    pythiaColl.readString("321:mayDecay = on");
-    pythiaColl.readString("130:mayDecay = on");
+    if (slowDecays) {
+      pythiaColl.readString("13:mayDecay  = on");
+      pythiaColl.readString("211:mayDecay = on");
+      pythiaColl.readString("321:mayDecay = on");
+      pythiaColl.readString("130:mayDecay = on");
+    }
 
     // Secondary decays to be done by pythiaMain, respecting limitTau0.
     pythiaColl.readString("HadronLevel:Decay = off");
@@ -162,37 +200,45 @@ public:
     pythiaColl.readString("Stat:showProcessLevel = off");
     pythiaColl.readString("Stat:showPartonLevel = off");
 
-    // Reuse MPI initialization file if it exists; else create a new one.
-    if (reuseMPI > 0)
-      pythiaColl.readString("MultipartonInteractions:reuseInit = 3");
-    else if (reuseMPI == 0)
-      pythiaColl.readString("MultipartonInteractions:reuseInit = 1");
-    if (reuseMPI >= 0)
-      pythiaColl.settings.word("MultipartonInteractions:initFile", initFile);
-
-    // Initialize.
-    if (!pythiaColl.init()) return false;
-    return true;
+    // Initialize and done.
+    return pythiaColl.init();
 
   }
 
   //--------------------------------------------------------------------------
 
-  // Calculate the average number of collisions. Average number of
-  // hadron-nucleon collisions in a hadron-nucleus one. If not in
-  // table then interpolate, knowing that <n> - 1 propto A^{2/3}.
+  // Calculate the average number of inelastic hadron-nucleon (hN) collisions
+  // in a hadron-nucleus one, as a function of the inelastic hN cross section.
+  // Interpolate if not in table, assuming <n> - 1 propto A^{2/3}.
 
   double nCollAvg(int A) {
+
+    // Studied nuclei by A number, with offset and slope of <nColl>(sigma):
+    // 1H, 2H, 4He, 9Be, 12C, 14N, 16O, 27Al, 40Ar, 56Fe, 63Cu, 84Kr,
+    // 107Ag, 129Xe, 197Au, 208Pb.
+    static const int nA = 16;
+    static const int tabA[] = {
+      1, 2, 4, 9, 12, 14, 16, 27, 40, 56, 63, 84, 107, 129, 197, 208};
+    static const double tabOffset[] = {
+      0.0000, 0.0510, 0.1164, 0.2036, 0.2328, 0.2520, 0.2624, 0.3190,
+      0.3562, 0.3898, 0.3900, 0.3446, 0.3496, 0.3504, 0.3484, 0.3415 };
+    static const double tabSlope[] = {
+      0.0000,0.00187,0.00496, 0.0107, 0.0136, 0.0152, 0.0169, 0.0243,
+      0.0314, 0.0385, 0.0415, 0.0506, 0.0581, 0.0644, 0.0806, 0.0830 };
+    static const double tabSlopeLo[] = {
+      0.0000,0.00361,0.00884, 0.0174, 0.0210, 0.0233, 0.0252, 0.0340,
+      0.0418, 0.0496, 0.0524, 0.0600, 0.0668, 0.0727, 0.0873, 0.0893 };
+
     for (int i = 0; i < nA; ++i) {
       if (A == tabA[i]) {
-        return (sigmaNow < tabBorder) ? 1. + tabSlopeLo[i] * sigmaNow
-          : 1. + tabOffset[i] + tabSlope[i] * sigmaNow;
+        return min( 1. + tabSlopeLo[i] * sigmaNow,
+          1. + tabOffset[i] + tabSlope[i] * sigmaNow);
       } else if (A < tabA[i]) {
-        double nColl1 = (sigmaNow < tabBorder) ? tabSlopeLo[i - 1] * sigmaNow
-          : tabOffset[i - 1] + tabSlope[i - 1] * sigmaNow;
-        double nColl2 = (sigmaNow < tabBorder) ? tabSlopeLo[i] * sigmaNow
-          : tabOffset[i] + tabSlope[i] * sigmaNow;
-        double wt1 = (tabA[i] - A) / (tabA[i] - tabA[i - 1]);
+        double nColl1 = min( tabSlopeLo[i - 1] * sigmaNow,
+          tabOffset[i - 1] + tabSlope[i - 1] * sigmaNow);
+        double nColl2 = min( tabSlopeLo[i] * sigmaNow,
+          tabOffset[i] + tabSlope[i] * sigmaNow);
+        double wt1 = double(tabA[i] - A) / double(tabA[i] - tabA[i - 1]);
         return 1. + wt1 * pow( A / tabA[i - 1], 2./3.) * nColl1
           + (1. - wt1) * pow( A / tabA[i], 2./3.) * nColl2;
       }
@@ -203,16 +249,17 @@ public:
 
   //--------------------------------------------------------------------------
 
-  // Calculate the hadron-proton collision cross section.
+  // Calculate the hadron-nucleon (proton) inelastic collision cross section.
   // Return false if not possible to find.
 
   bool sigmaSetuphN(int idNowIn, Vec4 pNowIn, double mNowIn) {
 
-    // Cannot handle low-energy hadrons.
+    // Cannot (or does not want to) handle low-energy hadrons.
     if (pNowIn.e() - mNowIn < eKinMin) return false;
 
     // Cannot handle hadrons above maximum energy set at initialization.
-    if (pNowIn.e() > eMax) {
+    eCMNow = (pNowIn + Vec4(0, 0, 0, mp)).mCalc();
+    if (eCMNow > eCMMax) {
       logger.ERROR_MSG("too high energy");
       return false;
     }
@@ -222,14 +269,14 @@ public:
     pNow  = pNowIn;
     mNow  = mNowIn;
 
-    // Calculate hadron-nucleon cross section. Check if cross section
-    // vanishes.
-    eCMNow = (pNow + Vec4(0, 0, 0, mp)).mCalc();
-    sigmaNow = pythiaColl.getSigmaTotal(idNow, 2212, eCMNow, mNow, mp);
-    if (sigmaNow <= 0.) {
+    // Calculate hadron-nucleon inelastic cross section.
+    // Check if cross section vanishes.
+    sigmaNow = pythiaColl.getSigmaTotal(idNow, 2212, eCMNow, mNow, mp)
+      - pythiaColl.getSigmaPartial(idNow, 2212, eCMNow, mNow, mp, 2);
+    if (sigmaNow < 0.001) {
       if (eCMNow - mNow - mp > eKinMin)
-        logger.ERROR_MSG("vanishing cross section");
-       return false;
+        logger.WARNING_MSG("vanishing cross section");
+      return false;
     }
 
     // Done.
@@ -271,6 +318,8 @@ public:
     Event& eventMain = pythiaMain.event;
     Event& eventColl = pythiaColl.event;
     eventMain.clear();
+    codeFirstColl = 0;
+    nMPIsave = 0;
 
     // Restrict to allowed range 1 <= A <= 208.
     if (Anow < 1 || Anow > 208) {
@@ -291,8 +340,10 @@ public:
     Vec4 dirNow = pNow / pNow.pAbs();
     Rndm& rndm  = pythiaMain.rndm;
 
-    // Drop rate of geometric series. (Deuterium has corrected nCollAvg.)
-    double probMore = 1. - 1. / nCollAvg(Anow);
+    // Drop rate of geometric series. (Deuterium is special case.)
+    double probMore = (Anow == 2) ? nCollAvg(Anow) - 1.
+                    : 1. - 1. / nCollAvg(Anow);
+    nCollAcc    = 0;
 
     // Loop over varying number of hit nucleons in target nucleus.
     for (int iColl = 1; iColl <= Anow; ++iColl) {
@@ -300,7 +351,6 @@ public:
 
       // Pick incoming projectile: trivial for first subcollision, else ...
       int iProj    = iHad;
-      int procType = 0;
 
       // ... find highest-pLongitudinal particle from latest subcollision.
       if (iColl > 1) {
@@ -316,12 +366,8 @@ public:
         }
 
         // No further subcollision if no particle with enough energy.
-        if ( iProj == 0 || eventMain[iProj].e() - eventMain[iProj].m()
-          < eKinMin) break;
-
-        // Choose process; only SD or ND at perturbative energies.
-        double eCMSub = (eventMain[iProj].p() + Vec4(0, 0, 0, mp)).mCalc();
-        if (eCMSub > 10.) procType = (rndm.flat() < probSD) ? 4 : 1;
+        if ( iProj == 0
+          || eventMain[iProj].e() - eventMain[iProj].m() < eKinMin) break;
       }
 
       // Pick one p or n from target.
@@ -331,13 +377,37 @@ public:
       else          nn -= 1;
       int idNuc = (doProton) ? 2212 : 2112;
 
+      // Current subcollision four-vectors and CM energy.
+      Vec4 pProj = eventMain[iProj].p();
+      double mTarg = (doProton) ? mp : mn;
+      Vec4 pTarg( 0., 0., 0., mTarg);
+      double eCMPT = (pProj + pTarg).mCalc();
+
+      // Reject if process is only possible because projectile is off-shell.
+      // (Current kinematics handling assumes that "beam particles" are
+      // on the mass shell, but this could be changed eventually.)
+      mProjMax = max(eventMain[iProj].m(), pythiaMain.particleData.m0(idProj));
+      if (sqrt(pProj.pAbs2() + pow2(mProjMax)) - mProjMax < eKinMin) break;
+
       // Do a projectile-nucleon subcollision. Return empty event if failure.
+      // Optionally enhance secondary single diffractive on target side.
+      // for non-first collision, i.e. make more of codes 104 or 154.
       pythiaColl.setBeamIDs(idProj, idNuc);
-      pythiaColl.setKinematics(eventMain[iProj].p(), Vec4());
-      if (!pythiaColl.next(procType)) {
+      pythiaColl.setKinematics(eCMPT);
+      int codeNow = (iColl > 1 && rndm.flat() < enhanceSDtarget) ? 4 : 0;
+      if (!pythiaColl.next(codeNow)) {
         eventMain.clear();
         return eventMain;
       }
+
+      // Statistics.
+      if (iColl == 1) codeFirstColl = pythiaColl.info.code();
+      if (iColl == 1) nMPIsave = pythiaColl.info.nMPI();
+
+      // Boost back collision to lab frame.
+      RotBstMatrix MtoLab;
+      MtoLab.fromCMframe( pProj, pTarg);
+      eventColl.rotbst( MtoLab);
 
       // Insert target nucleon. Mothers are (0,iProj) to mark who it
       // interacted with. Always use proton mass for simplicity.
@@ -346,8 +416,8 @@ public:
         0., 0., 0., mp, mp);
       eventMain[iNuc].vProdAdd(vNow);
 
-      // Update full energy of the event with the proton mass.
-      eventMain[0].e( eventMain[0].e() + mp);
+      // Update full energy of the event with the target mass.
+      eventMain[0].e( eventMain[0].e() + mTarg);
       eventMain[0].m( eventMain[0].p().mCalc() );
 
       // Insert secondary produced particles (but skip intermediate partons)
@@ -367,14 +437,15 @@ public:
       eventMain[iProj].statusNeg();
       eventMain[iProj].tau(0.);
 
-    // End of loop over interactions in a nucleus.
+      // End of loop over interactions in a nucleus.
+      ++nCollAcc;
     }
 
     // Optionally do decays of short-lived particles.
     if (rapidDecays) pythiaMain.moreDecays();
 
     // Optionally compress event record.
-    if (listFinal) compress();
+    if (listFinalOnly) compress();
 
     // Return generated collision.
     return eventMain;
@@ -414,7 +485,7 @@ public:
     if (rapidDecays) pythiaMain.moreDecays();
 
     // Optionally compress event record.
-    if (listFinal) compress();
+    if (listFinalOnly) compress();
 
     // Return generated collision.
     return eventMain;
@@ -460,6 +531,17 @@ public:
 
   //--------------------------------------------------------------------------
 
+  // Provide number of subcollisions, hardest subprocess, and whether elastic.
+  // The latter should always be false after the recent code changes.
+
+  int nCollisions() {return nCollAcc;}
+
+  int firstCollisionCode() {return codeFirstColl;}
+
+  int firstCollisionMPI() {return nMPIsave;}
+
+  //--------------------------------------------------------------------------
+
   // Possibility to access particle data and random numbers from
   // pythiaMain.
 
@@ -480,40 +562,13 @@ private:
   Logger logger;
 
   // Save quantities.
-  bool   listFinal, rapidDecays;
-  int    idNow;
-  double eMax, smallTau0, mp, mNow, eCMNow, sigmaNow;
+  bool   rapidDecays, listFinalOnly;
+  int    idNow, nCollAcc, codeFirstColl, nMPIsave;
+  double eKinMin, enhanceSDtarget, smallTau0, mp, mn, eCMMax, mNow, mProjMax,
+         eCMNow, sigmaNow;
   Vec4   pNow;
 
-  // Fraction of single diffractive events beyond first collision in nucleus.
-  static constexpr double probSD = 0.3;
-
-  // Hadrons below the kinetic energy threshold cannot interact with medium.
-  // (At least not using Pythia.) Used both in lab and in CM frame.
-  static constexpr double eKinMin = 0.2;
-
-  // Studied nuclei by A number, with offset and slope of <nColl>(sigma):
-  // 1H, 2H, 4He, 9Be, 12C, 14N, 16O, 27Al, 40Ar, 56Fe, 63Cu, 84Kr,
-  // 107Ag, 129Xe, 197Au, 208Pb.
-  static constexpr int nA = 16;
-  static constexpr double tabBorder = 20.;
-  static const double tabA[nA];
-  static const double tabOffset[nA];
-  static const double tabSlope[nA];
-  static const double tabSlopeLo[nA];
-
 };
-
-// Constant definitions.
-const double PythiaCascade::tabA[] = {1, 2, 4, 9, 12, 14, 16, 27, 40, 56,
-  63, 84, 107, 129, 197, 208};
-const double PythiaCascade::tabOffset[] = {0., 0.03, 0.08, 0.15, 0.20, 0.20,
-  0.20, 0.26, 0.30, 0.34, 0.40, 0.40, 0.40, 0.50, 0.50, 0.60};
-const double PythiaCascade::tabSlope[] = {0., 0.0016, 0.0033, 0.0075, 0.0092,
-  0.0105, 0.012, 0.017, 0.022, 0.027, 0.028, 0.034, 0.040, 0.044, 0.055,
-  0.055};
-const double PythiaCascade::tabSlopeLo[] = {0., 0.0031, 0.0073, 0.015, 0.0192,
-  0.0205, 0.022, 0.03, 0.037, 0.044, 0.048, 0.054, 0.06, 0.069, 0.08, 0.085};
 
 //==========================================================================
 

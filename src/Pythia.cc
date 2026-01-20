@@ -1,5 +1,5 @@
 // Pythia.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -24,7 +24,7 @@ namespace Pythia8 {
 
 // The current Pythia (sub)version number, to agree with XML version.
 const double Pythia::VERSIONNUMBERHEAD = PYTHIA_VERSION;
-const double Pythia::VERSIONNUMBERCODE = 8.316;
+const double Pythia::VERSIONNUMBERCODE = 8.317;
 
 //--------------------------------------------------------------------------
 
@@ -617,6 +617,7 @@ bool Pythia::init() {
   doPartonLevel    = flag("PartonLevel:all");
   doHadronLevel    = flag("HadronLevel:all");
   doLowEnergy      = flag("LowEnergyQCD:all")
+                  || flag("LowEnergyQCD:inelastic")
                   || flag("LowEnergyQCD:nonDiffractive")
                   || flag("LowEnergyQCD:elastic")
                   || flag("LowEnergyQCD:singleDiffractiveXB")
@@ -654,7 +655,7 @@ bool Pythia::init() {
   mTolWarn         = parm("Check:mTolWarn");
 
   // Warn/abort for unallowed process and beam combinations.
-  bool doHardProc  = settings.hasHardProc() || doLHA;
+  doHardProc  = settings.hasHardProc() || doLHA;
   if (doSoftQCD && doHardProc) {
     logger.WARNING_MSG("should not combine softQCD processes with hard ones");
   }
@@ -928,6 +929,14 @@ bool Pythia::init() {
   isInit = true;
   infoPrivate.addCounter(2);
   if (useNewLHA && showPro) lhaUpPtr->listInit();
+
+  // Make sure we have properly switched to the desired beam.
+  if ( beamSetup.allowIDAswitch) {
+    int idASave = beamSetup.idA;
+    beamSetup.idA = 0;
+    setBeamIDs(idASave, beamSetup.idB );
+  }
+
   return true;
 
 }
@@ -1009,10 +1018,10 @@ bool Pythia::next(int procType) {
     cout << "\n Pythia::next(): " << nPrevious
          << " events have been generated " << endl;
 
-  // Set/reset info counters specific to each event. Also procType.
+  // Set/reset info counters specific to each event.
   infoPrivate.addCounter(3);
   for (int i = 10; i < 13; ++i) infoPrivate.setCounter(i);
-  if (!beamSetup.doVarEcm) procType = 0;
+  if (!beamSetup.doVarEcm || doHardProc) procType = 0;
 
   // Simpler option when no hard process, i.e. mainly hadron level.
   if (!doProcessLevel && !doNonPert) {
@@ -1077,8 +1086,9 @@ bool Pythia::next(int procType) {
     double pertRate = (beamSetup.eCM - eMinPertNow) / eWidthPert;
     if ( (doNonPert && !doSoftQCD)
       || ( beamSetup.doVarEcm && pertRate < 10
-        && (pertRate <= 0 || exp( -pertRate ) > rndm.flat())) ) {
-      bool nextNP = nextNonPert();
+        && (pertRate <= 0 || exp( -pertRate ) > rndm.flat()))
+      || procType > 6 ) {
+      bool nextNP = nextNonPert(procType);
 
       // Optionally check final event for problems.
       if (nextNP && checkEvent && !check()) {
@@ -1602,14 +1612,18 @@ bool Pythia::nextNonPert(int procType) {
   process.append( 90, -11, 0, 0, 0, 0, 0, 0,
     Vec4(0., 0., 0., beamSetup.eCM), beamSetup.eCM, 0. );
   process.append(beamSetup.idA, -12, 0, 0, 0, 0, 0, 0,
-    Vec4(0., 0., beamSetup.pzAcm, beamSetup.eA), beamSetup.mA, 0. );
+    Vec4(0., 0., beamSetup.pzAcm, beamSetup.eAcm), beamSetup.mA, 0. );
   process.append(beamSetup.idB, -12, 0, 0, 0, 0, 0, 0,
-    Vec4(0., 0., beamSetup.pzBcm, beamSetup.eB), beamSetup.mB, 0. );
+    Vec4(0., 0., beamSetup.pzBcm, beamSetup.eBcm), beamSetup.mB, 0. );
   for (int i = 0; i < 3; ++i) event.append( process[i] );
 
   // Pick process type if it has not already been set.
   if (procType == 0) procType = hadronLevel.pickLowEnergyProcess(
     beamSetup.idA, beamSetup.idB, beamSetup.eCM, beamSetup.mA, beamSetup.mB);
+  else if (procType == 9)
+    procType = sigmaLowEnergy.pickResonance(
+      beamSetup.idA, beamSetup.idB, beamSetup.eCM);
+
   int procCode = 150 + min( 9, abs(procType));
 
   if (procType == 0) {
@@ -1783,10 +1797,10 @@ void Pythia::banner() {
        << "                                      |  | \n"
        << " |  |   Javira Altmann, Christian Bierlich, N"
        << "aomi Cooke, Nishita Desai,            |  | \n"
-       << " |  |   Ilkka Helenius, Philip Ilten, Leif Lo"
-       << "nnblad, Stephen Mrenna,               |  | \n"
-       << " |  |   Christian Preuss, Torbjorn Sjostrand,"
-       << " and Peter Skands.                    |  | \n"
+       << " |  |   Ilkka Helenius, Philip Ilten, Joni La"
+       << "ulainen, Leif Lonnblad,               |  | \n"
+       << " |  |   Stephen Mrenna, Christian Preuss, Tor"
+       << "bjorn Sjostrand, and Peter Skands.    |  | \n"
        << " |  |                                        "
        << "                                      |  | \n"
        << " |  |   The complete list of authors, includi"
@@ -1819,7 +1833,7 @@ void Pythia::banner() {
        << " when interpreting results.           |  | \n"
        << " |  |                                        "
        << "                                      |  | \n"
-       << " |  |   Copyright (C) 2025 Torbjorn Sjostrand"
+       << " |  |   Copyright (C) 2026 Torbjorn Sjostrand"
        << "                                      |  | \n"
        << " |  |                                        "
        << "                                      |  | \n"

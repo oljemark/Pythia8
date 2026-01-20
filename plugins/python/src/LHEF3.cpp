@@ -47,7 +47,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
 
-// Pythia8::WeightsBase file:Pythia8/Weights.h line:36
+// Pythia8::WeightsBase file:Pythia8/Weights.h line:37
 struct PyCallBack_Pythia8_WeightsBase : public Pythia8::WeightsBase {
 	using Pythia8::WeightsBase::WeightsBase;
 
@@ -170,7 +170,7 @@ struct PyCallBack_Pythia8_WeightsBase : public Pythia8::WeightsBase {
 	}
 };
 
-// Pythia8::WeightsShower file:Pythia8/Weights.h line:145
+// Pythia8::WeightsShower file:Pythia8/Weights.h line:146
 struct PyCallBack_Pythia8_WeightsShower : public Pythia8::WeightsShower {
 	using Pythia8::WeightsShower::WeightsShower;
 
@@ -345,7 +345,7 @@ struct PyCallBack_Pythia8_WeightsShower : public Pythia8::WeightsShower {
 	}
 };
 
-// Pythia8::WeightsSimpleShower file:Pythia8/Weights.h line:164
+// Pythia8::WeightsSimpleShower file:Pythia8/Weights.h line:165
 struct PyCallBack_Pythia8_WeightsSimpleShower : public Pythia8::WeightsSimpleShower {
 	using Pythia8::WeightsSimpleShower::WeightsSimpleShower;
 
@@ -551,7 +551,7 @@ void bind_Pythia8_LHEF3(std::function< pybind11::module &(std::string const &nam
 		cl.def("weights_detailed_vector", (class std::vector<double, class std::allocator<double> > (Pythia8::Reader::*)()) &Pythia8::Reader::weights_detailed_vector, "C++: Pythia8::Reader::weights_detailed_vector() --> class std::vector<double, class std::allocator<double> >");
 		cl.def("weightnames_detailed_vector", (class std::vector<std::string, class std::allocator<std::string > > (Pythia8::Reader::*)()) &Pythia8::Reader::weightnames_detailed_vector, "C++: Pythia8::Reader::weightnames_detailed_vector() --> class std::vector<std::string, class std::allocator<std::string > >");
 	}
-	{ // Pythia8::WeightsBase file:Pythia8/Weights.h line:36
+	{ // Pythia8::WeightsBase file:Pythia8/Weights.h line:37
 		pybind11::class_<Pythia8::WeightsBase, std::shared_ptr<Pythia8::WeightsBase>, PyCallBack_Pythia8_WeightsBase> cl(M("Pythia8"), "WeightsBase", "");
 		pybind11::handle cl_type = cl;
 
@@ -580,7 +580,7 @@ void bind_Pythia8_LHEF3(std::function< pybind11::module &(std::string const &nam
 		cl.def("setPtrs", (void (Pythia8::WeightsBase::*)(class Pythia8::Info *)) &Pythia8::WeightsBase::setPtrs, "C++: Pythia8::WeightsBase::setPtrs(class Pythia8::Info *) --> void", pybind11::arg("infoPtrIn"));
 		cl.def("assign", (class Pythia8::WeightsBase & (Pythia8::WeightsBase::*)(const class Pythia8::WeightsBase &)) &Pythia8::WeightsBase::operator=, "C++: Pythia8::WeightsBase::operator=(const class Pythia8::WeightsBase &) --> class Pythia8::WeightsBase &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::WeightsShower file:Pythia8/Weights.h line:145
+	{ // Pythia8::WeightsShower file:Pythia8/Weights.h line:146
 		pybind11::class_<Pythia8::WeightsShower, std::shared_ptr<Pythia8::WeightsShower>, PyCallBack_Pythia8_WeightsShower, Pythia8::WeightsBase> cl(M("Pythia8"), "WeightsShower", "");
 		pybind11::handle cl_type = cl;
 
@@ -595,7 +595,7 @@ void bind_Pythia8_LHEF3(std::function< pybind11::module &(std::string const &nam
 		cl.def("getGroupWeight", (double (Pythia8::WeightsShower::*)(int) const) &Pythia8::WeightsShower::getGroupWeight, "C++: Pythia8::WeightsShower::getGroupWeight(int) const --> double", pybind11::arg(""));
 		cl.def("assign", (class Pythia8::WeightsShower & (Pythia8::WeightsShower::*)(const class Pythia8::WeightsShower &)) &Pythia8::WeightsShower::operator=, "C++: Pythia8::WeightsShower::operator=(const class Pythia8::WeightsShower &) --> class Pythia8::WeightsShower &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::WeightsSimpleShower file:Pythia8/Weights.h line:164
+	{ // Pythia8::WeightsSimpleShower file:Pythia8/Weights.h line:165
 		pybind11::class_<Pythia8::WeightsSimpleShower, std::shared_ptr<Pythia8::WeightsSimpleShower>, PyCallBack_Pythia8_WeightsSimpleShower, Pythia8::WeightsShower> cl(M("Pythia8"), "WeightsSimpleShower", "");
 		pybind11::handle cl_type = cl;
 

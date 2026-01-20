@@ -1,5 +1,5 @@
 // Weights.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -22,6 +22,7 @@ class PartonLevel;
 class Merging;
 class WeightContainer;
 class StringFlav;
+class StringZ;
 
 //==========================================================================
 
@@ -357,13 +358,19 @@ public:
 
   // Friends for fragmentation reweighitng.
   friend class StringFlav;
+  friend class StringZ;
+  friend class StringPT;
+
+  // Destructor.
+  ~WeightsFragmentation();
 
   // Initialize the weights.
   void init() override;
 
   // Clear the weights.
   void clear() override {
-    WeightsBase::clear(); fill(flavBreaks.begin(), flavBreaks.end(), 0);}
+    WeightsBase::clear(); fill(flavBreaks.begin(), flavBreaks.end(), 0);
+    zIntBreaks.clear(); zDblBreaks.clear(); pTBreaks.clear();}
 
   int nWeightGroups() const {return externalGroupNames.size();}
 
@@ -383,21 +390,36 @@ public:
   void collectWeightValues(vector<double>& outputWeights,
     double norm = 1.) override;
 
-  // Calculate the derived flavor parameters.
+  // Calculate the derived flavour parameters.
   vector<double> flavParms(double xi, double rho, double x, double y);
 
-  // Calculate a flavor weight.
+  // Calculate a flavour weight.
   double flavWeight(const vector<double>& parms) {
     return flavWeight(parms, flavBreaks);}
   double flavWeight(const vector<double>& parms, const vector<int>& breaks);
+
+  // Calculate kinematic weights.
+  double zWeight(double aLund, double bLund, double rFactC, double rFactB,
+    int idOld, int idNew, double mT2, double z, double fPrel);
+  double pTWeight(double sigma, double pT2, double mult);
 
   // Vectors for weight group handling.
   vector<map<vector<double>, int> > weightParms{};
   vector<string>       externalGroupNames{};
   vector<vector<int> > externalMap{};
 
-  // Track the breaks needed for reweighting.
+  // Track the breaks needed for flavour reweighting.
   vector<int> flavBreaks;
+
+  // Track the break information for z reweighting. These are flat vectors.
+  // The integer vector is {idOld_0, idNew_0, ..., idOld_n, idNew_n}.
+  // The double vector is {mT2_0, z_0, fPrel}.
+  vector<int> zIntBreaks;
+  vector<double> zDblBreaks;
+
+  // Track the break information for pT reweighting. This is a flat vector.
+  // The double vector is {pT2_0, mult_0, ..., pT2_n, mult_n}.
+  vector<double> pTBreaks;
 
   // Factorization indices.
   enum FactIndex{Z, Flav, PT};
@@ -413,14 +435,27 @@ private:
      {"frag:y", "StringFlav:ProbQQ1toQQ0"}},
     {{"frag:ptsigma", "StringPT:sigma"}}};
 
-  // Flavor spin ratios to store in derived.
+  // Flavour spin ratios to store in derived.
   const vector<int> flavIdxs{0, 1, 2, 3, 6};
 
-  // Stored parameters for flavor reweighting.
+  // Stored parameters for flavour reweighting.
   vector<double> flavBase;
 
-  // Count the flavor breaks for variations.
-  void flavCount(int idIn, bool early, bool noChoice);
+  // Stored parameters for pT reweighting.
+  vector<double> pTBase;
+
+  // Pointer for z selection.
+  StringZ* zSelPtr{};
+
+  // Store the flavour breaks for flavour variations.
+  void flavStore(int idIn, bool early, bool noChoice);
+
+  // Store the break information for z variations.
+  void zStore(int idOld, int idNew, double mT2,
+    bool accept, double z, double fPrel);
+
+  // Store the break information for pT variations.
+  void pTStore(double pT2, double mult);
 
 };
 

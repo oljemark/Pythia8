@@ -1,5 +1,5 @@
 // PhaseSpace.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -160,7 +160,7 @@ protected:
     sLower(), sUpper(), fracFlatS(), fracFlatM(), fracInv(),
     fracInv2(), atanLower(), atanUpper(), intBW(), intFlatS(),
     intFlatM(), intInv(), intInv2(), doTopPair(), topThresholdModel(),
-    topThresholdWidth(), eThreshold(), m3Threshold(), m4Threshold() {}
+    topThresholdRegion(), eThreshold(), m3Threshold(), m4Threshold() {}
 
   // Constants: could only be changed in the code itself.
   static const int    NMAXTRY, NTRY3BODY;
@@ -268,7 +268,7 @@ protected:
   // Properties specific to top threshold enhancement.
   bool   doTopPair;
   int    topThresholdModel;
-  double topThresholdWidth, eThreshold, m3Threshold, m4Threshold;
+  double topThresholdRegion, eThreshold, m3Threshold, m4Threshold;
 
   // Setup mass selection for one resonance at a time. Split in two parts.
   void   setupMass1(int iM);

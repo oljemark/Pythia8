@@ -49,7 +49,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
 
-// Pythia8::NucleusModel file:Pythia8/HINucleusModel.h line:187
+// Pythia8::NucleusModel file:Pythia8/HINucleusModel.h line:198
 struct PyCallBack_Pythia8_NucleusModel : public Pythia8::NucleusModel {
 	using Pythia8::NucleusModel::NucleusModel;
 
@@ -171,7 +171,6 @@ void bind_Pythia8_PythiaParallel(std::function< pybind11::module &(std::string c
 		pybind11::handle cl_type = cl;
 
 		cl.def( pybind11::init( [](){ return new Pythia8::EventInfo(); } ) );
-		cl.def( pybind11::init( [](Pythia8::EventInfo const &o){ return new Pythia8::EventInfo(o); } ) );
 		cl.def_readwrite("event", &Pythia8::EventInfo::event);
 		cl.def_readwrite("info", &Pythia8::EventInfo::info);
 		cl.def_readwrite("code", &Pythia8::EventInfo::code);
@@ -179,6 +178,10 @@ void bind_Pythia8_PythiaParallel(std::function< pybind11::module &(std::string c
 		cl.def_readwrite("ok", &Pythia8::EventInfo::ok);
 		cl.def_readwrite("projs", &Pythia8::EventInfo::projs);
 		cl.def_readwrite("targs", &Pythia8::EventInfo::targs);
+		cl.def_readwrite("projRems", &Pythia8::EventInfo::projRems);
+		cl.def_readwrite("targRems", &Pythia8::EventInfo::targRems);
+		cl.def_readwrite("projEl", &Pythia8::EventInfo::projEl);
+		cl.def_readwrite("targEl", &Pythia8::EventInfo::targEl);
 	}
 	{ // Pythia8::Nucleon file:Pythia8/HINucleusModel.h line:28
 		pybind11::class_<Pythia8::Nucleon, std::shared_ptr<Pythia8::Nucleon>> cl(M("Pythia8"), "Nucleon", "");
@@ -210,8 +213,8 @@ void bind_Pythia8_PythiaParallel(std::function< pybind11::module &(std::string c
 		cl.def("altState", [](Pythia8::Nucleon &o) -> const std::vector<double, class std::allocator<double> > & { return o.altState(); }, "", pybind11::return_value_policy::reference);
 		cl.def("altState", (const class std::vector<double, class std::allocator<double> > & (Pythia8::Nucleon::*)(int)) &Pythia8::Nucleon::altState, "C++: Pythia8::Nucleon::altState(int) --> const class std::vector<double, class std::allocator<double> > &", pybind11::return_value_policy::reference, pybind11::arg("i"));
 		cl.def("status", (void (Pythia8::Nucleon::*)(enum Pythia8::Nucleon::Status)) &Pythia8::Nucleon::status, "C++: Pythia8::Nucleon::status(enum Pythia8::Nucleon::Status) --> void", pybind11::arg("s"));
-		cl.def("state", (void (Pythia8::Nucleon::*)(class std::vector<double, class std::allocator<double> >)) &Pythia8::Nucleon::state, "C++: Pythia8::Nucleon::state(class std::vector<double, class std::allocator<double> >) --> void", pybind11::arg("s"));
-		cl.def("addAltState", (void (Pythia8::Nucleon::*)(class std::vector<double, class std::allocator<double> >)) &Pythia8::Nucleon::addAltState, "C++: Pythia8::Nucleon::addAltState(class std::vector<double, class std::allocator<double> >) --> void", pybind11::arg("s"));
+		cl.def("state", (void (Pythia8::Nucleon::*)(const class std::vector<double, class std::allocator<double> > &)) &Pythia8::Nucleon::state, "C++: Pythia8::Nucleon::state(const class std::vector<double, class std::allocator<double> > &) --> void", pybind11::arg("s"));
+		cl.def("addAltState", (void (Pythia8::Nucleon::*)(const class std::vector<double, class std::allocator<double> > &)) &Pythia8::Nucleon::addAltState, "C++: Pythia8::Nucleon::addAltState(const class std::vector<double, class std::allocator<double> > &) --> void", pybind11::arg("s"));
 		cl.def("select", (void (Pythia8::Nucleon::*)(class Pythia8::EventInfo &, enum Pythia8::Nucleon::Status)) &Pythia8::Nucleon::select, "C++: Pythia8::Nucleon::select(class Pythia8::EventInfo &, enum Pythia8::Nucleon::Status) --> void", pybind11::arg("evp"), pybind11::arg("s"));
 		cl.def("select", (void (Pythia8::Nucleon::*)()) &Pythia8::Nucleon::select, "C++: Pythia8::Nucleon::select() --> void");
 		cl.def("debug", (void (Pythia8::Nucleon::*)()) &Pythia8::Nucleon::debug, "C++: Pythia8::Nucleon::debug() --> void");
@@ -225,9 +228,12 @@ void bind_Pythia8_PythiaParallel(std::function< pybind11::module &(std::string c
 		cl.def( pybind11::init( [](){ return new Pythia8::Nucleus(); } ) );
 		cl.def( pybind11::init<class std::vector<class Pythia8::Nucleon, class std::allocator<class Pythia8::Nucleon> >, class Pythia8::Vec4>(), pybind11::arg("nucleons"), pybind11::arg("bPos") );
 
+		cl.def("reposition", (class Pythia8::Nucleus & (Pythia8::Nucleus::*)(const class Pythia8::Vec4 &)) &Pythia8::Nucleus::reposition, "C++: Pythia8::Nucleus::reposition(const class Pythia8::Vec4 &) --> class Pythia8::Nucleus &", pybind11::return_value_policy::reference, pybind11::arg("bPosNew"));
+		cl.def("size", (int (Pythia8::Nucleus::*)() const) &Pythia8::Nucleus::size, "C++: Pythia8::Nucleus::size() const --> int");
+		cl.def("bPos", (const class Pythia8::Vec4 & (Pythia8::Nucleus::*)()) &Pythia8::Nucleus::bPos, "C++: Pythia8::Nucleus::bPos() --> const class Pythia8::Vec4 &", pybind11::return_value_policy::reference);
 		cl.def("assign", (class Pythia8::Nucleus & (Pythia8::Nucleus::*)(const class Pythia8::Nucleus &)) &Pythia8::Nucleus::operator=, "C++: Pythia8::Nucleus::operator=(const class Pythia8::Nucleus &) --> class Pythia8::Nucleus &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::NucleusModel file:Pythia8/HINucleusModel.h line:187
+	{ // Pythia8::NucleusModel file:Pythia8/HINucleusModel.h line:198
 		pybind11::class_<Pythia8::NucleusModel, std::shared_ptr<Pythia8::NucleusModel>, PyCallBack_Pythia8_NucleusModel> cl(M("Pythia8"), "NucleusModel", "");
 		pybind11::handle cl_type = cl;
 
@@ -244,6 +250,8 @@ void bind_Pythia8_PythiaParallel(std::function< pybind11::module &(std::string c
 		cl.def_readwrite("pNSave", &Pythia8::NucleusModel::pNSave);
 		cl.def_readwrite("mNSave", &Pythia8::NucleusModel::mNSave);
 		cl.def_readwrite("idNSave", &Pythia8::NucleusModel::idNSave);
+		cl.def_readwrite("cacheSize", &Pythia8::NucleusModel::cacheSize);
+		cl.def_readwrite("nucleonCache", &Pythia8::NucleusModel::nucleonCache);
 		cl.def_static("create", (class std::shared_ptr<class Pythia8::NucleusModel> (*)(int)) &Pythia8::NucleusModel::create, "C++: Pythia8::NucleusModel::create(int) --> class std::shared_ptr<class Pythia8::NucleusModel>", pybind11::arg("model"));
 		cl.def("initPtr", (void (Pythia8::NucleusModel::*)(int, bool, class Pythia8::Info &)) &Pythia8::NucleusModel::initPtr, "C++: Pythia8::NucleusModel::initPtr(int, bool, class Pythia8::Info &) --> void", pybind11::arg("idIn"), pybind11::arg("isProjIn"), pybind11::arg("infoIn"));
 		cl.def("init", (bool (Pythia8::NucleusModel::*)()) &Pythia8::NucleusModel::init, "C++: Pythia8::NucleusModel::init() --> bool");

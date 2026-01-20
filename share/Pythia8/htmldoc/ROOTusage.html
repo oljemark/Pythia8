@@ -14,17 +14,13 @@
 </ol>
 
  
-Many PYTHIA users wish to use <a href="http://root.cern.ch/">ROOT</a> 
+Many PYTHIA users wish to use <a href="https://root.cern.ch/">ROOT</a> 
 to produce histograms, or even to run PYTHIA as a plugin to ROOT. 
 This is possible. It is not a task supported by the PYTHIA team, 
 however. All issues involving ROOT usage should be directed to the 
 ROOT team, or to the local support team of your collaboration. 
 Below some helpful hints have been collected. The text is based on 
 contributions by Rene Brun, Andreas Morsch and Axel Naumann. 
-Another example may be found in the 
-<a href="http://vincia.hepforge.org">VINCIA</a> 
-add-on program for parton showers, but this should also work for 
-a PYTHIA standalone run. 
 <br/><br/> 
 Note that in all that follows, a Linux-type system with a Bash shell 
 and GNU Make is assumed. In particular, for Mac OS X, the 
@@ -184,9 +180,9 @@ PYTHIA 8. The code for these interfaces are located in
 <br/> 
 The two interfaces are 
 <ul> 
-  <li><code><a href="http://root.cern.ch/root/html/TPythia8.html"> 
+  <li><code><a href="https://root.cern/doc/master/classTPythia8.html"> 
   TPythia8</a></code> is an implementation of the 
-  <code><a href="http://root.cern.ch/root/html/TGenerator.html"> 
+  <code><a href="https://root.cern/doc/master/classTGenerator.html"> 
   TGenerator</a></code> interface for PYTHIA 8.<br/> 
   It allows you to use PYTHIA within a ROOT macro or as a plug-in 
   for a general-purpose particle generator based on this interface. The 
@@ -196,9 +192,9 @@ The two interfaces are
     generation of the next event, and </li> 
     <li><code>ImportParticles(TClonesArray* particles)</code> 
     which copies the native PYTHIA stack into a 
-    <code><a href="http://root.cern.ch/root/html/TClonesArray.html"> 
+    <code><a href="https://root.cern/doc/master/classTClonesArray.html"> 
     TClonesArray</a></code> of 
-    <code><a href="http://root.cern.ch/root/html/TParticle.html"> 
+    <code><a href="https://root.cern/doc/master/classTParticle.html"> 
     TParticles</a></code>.</li> 
   </ul> 
  
@@ -234,9 +230,9 @@ The two interfaces are
   functionality in the CINT interpreter see the "Advanced usage" 
   section below.</li> 
  
-  <li><code><a href="http://root.cern.ch/root/html/TPythia8Decayer.html"> 
+  <li><code><a href="https://root.cern/doc/master/classTPythia8Decayer.html"> 
   TPythia8Decayer</a></code> is an implementation of the 
-  <code><a href="http://root.cern.ch/root/html/TVirtualMCDecayer.html"> 
+  <code><a href="https://root.cern/doc/master/classTVirtualMCDecayer.html"> 
   TVirtualMCDecayer</a></code> interface.<br/> 
   It allows you to use PYTHIA as a plug-in decayer for simulation 
   frameworks based on the Virtual Monte Carlo 
@@ -246,20 +242,20 @@ The two interfaces are
     <li><code>TPythia8Decayer::Init()</code> for initialisation,</li> 
     <li><code>TPythia8Decayer::Decay(Int_t pdg, TLorentzVector* p)</code> 
     to decay a particle with PDG code <code>pdg</code> and 
-    <a href="http://root.cern.ch/root/html/TLorentzVector.html"> 
+    <a href="https://root.cern/doc/master/classTLorentzVector.html"> 
     4-momentum</a> <code>p</code>, and </li> 
     <li><code>ImportParticles(TClonesArray* particles)</code> 
     to retrieve the decay products as 
-    <code><a href="http://root.cern.ch/root/html/TParticle.html"> 
+    <code><a href="https://root.cern/doc/master/classTParticle.html"> 
     TParticles</a></code> in the 
-    <code><a href="http://root.cern.ch/root/html/TClonesArray.html"> 
+    <code><a href="https://root.cern/doc/master/classTClonesArray.html"> 
     TClonesArray</a> particles</code>.</li> 
   </ul></li> 
 </ul> 
  
 <h4>An example</h4> 
  
-A <a href="http://root.cern.ch/root/html/tutorials/pythia/pythia8.C.html"> 
+A <a href="https://root.cern/doc/master/evegen__000__pythia8_8C.html"> 
 basic example</a> for generating minimum-bias events with PYTHIA 8 inside 
 a ROOT macro, and filling some histograms with the kinematics of the 
 final-state particles is provided in either of the locations below 
@@ -310,4 +306,4 @@ functionality, e.g. in an interactive session
 </body>
 </html>
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

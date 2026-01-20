@@ -1169,20 +1169,36 @@ studied.
    
  
 <a name="anchor42"></a>
-<p/><strong> bool Pythia::moreDecays() &nbsp;</strong> <br/>
+<p/><strong> bool Pythia::moreDecays(bool allowPartons = false) &nbsp;</strong> <br/>
 perform decays of all particles in the event record that have not been 
 decayed but should have been done so. This can be used e.g. for 
-repeated decay attempts, in schemes intended to save computer time. 
-Further details are found <a href="HadronLevelStandalone.html" target="page">here</a>. 
+repeated decay attempts, in schemes intended to save computer time, 
+or when tracing a cosmic-ray cascade where interactions and decays 
+compete for what happens next.Further details are found 
+<a href="HadronLevelStandalone.html" target="page">here</a>. 
+<br/><code>argument</code><strong> allowPartons </strong> (<code>default = <strong>off</strong></code>) :  
+the issue is that a few hadrons can decay to partons, like Upsilon to 
+three gluons. In a normal <code>Pythia::next()</code> call these partons 
+subsequently fragment to hadrons that can decay in their turn, and that 
+also applies for the <code>Pythia::forceHadronLevel()</code> method above. 
+In the <code>moreDecays</code> method instead only decay methods are 
+called. This saves time, but would leave partons in the final state, 
+whether wanted or not, as is obtained for <code>on</code>. The new 
+default<code>off</code> handling instead will use the existing simple 
+phase space model to turn these partons into hadrons. This misses some 
+of the detailed decay structure, but is good enough if there is no 
+intention to study these particles in detail. 
+   
 <br/><b>Note:</b> The method returns false if the decays fail. The 
 event record is then not consistent and should not be studied. 
    
  
 <a name="anchor43"></a>
-<p/><strong> bool Pythia::moreDecays(int i) &nbsp;</strong> <br/>
+<p/><strong> bool Pythia::moreDecays(int i, bool allowPartons = false) &nbsp;</strong> <br/>
 perform decay of the particle at index <code>i</code> of the event record, 
 when possible. Sequential decays are not performed, but have to be taken 
-care of successively, if so desired. 
+care of successively, if so desired. The <code>allowPartons</code> argument 
+is explained above. 
    
  
 <a name="anchor44"></a>
@@ -1450,4 +1466,4 @@ see <a href="AdvancedUsage.html" target="page">here</a> for further details.
 </body>
 </html>
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

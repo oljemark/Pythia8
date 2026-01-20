@@ -1,5 +1,5 @@
 // BeamSetup.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -121,8 +121,8 @@ public:
   int    idA = {}, idB = {}, frameType = {}, boostType = {}, iPDFAsave = {},
          gammaMode = {};
   double mA = {}, mB = {}, pxA = {}, pxB = {}, pyA = {}, pyB = {}, pzA = {},
-         pzB = {}, eA = {}, eB = {}, pzAcm = {}, pzBcm = {}, eCM = {},
-         betaZ = {}, gammaZ = {};
+         pzB = {}, eA = {}, eB = {}, pzAcm = {}, pzBcm = {}, eAcm = {},
+         eBcm = {}, eCM = {}, betaZ = {}, gammaZ = {};
   Vec4   pAinit = {}, pBinit = {}, pAnow = {}, pBnow = {};
   RotBstMatrix MfromCM = {}, MtoCM = {};
   LHAupPtr lhaUpPtr = {};

@@ -76,7 +76,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
 
-// Pythia8::SuppressSmallPT file:Pythia8/UserHooks.h line:279
+// Pythia8::SuppressSmallPT file:Pythia8/UserHooks.h line:285
 struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 	using Pythia8::SuppressSmallPT::SuppressSmallPT;
 
@@ -691,6 +691,32 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "onEndHadronLevel");
@@ -771,7 +797,7 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 	}
 };
 
-// Pythia8::UserHooksVector file:Pythia8/UserHooks.h line:313
+// Pythia8::UserHooksVector file:Pythia8/UserHooks.h line:319
 struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 	using Pythia8::UserHooksVector::UserHooksVector;
 
@@ -1360,6 +1386,32 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 		}
 		return UserHooksVector::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooksVector::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooksVector::doSetEnhanceB();
+	}
 	bool canSetLowEnergySigma(int a0, int a1) const override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canSetLowEnergySigma");
@@ -1565,7 +1617,7 @@ struct PyCallBack_Pythia8_HardProcess : public Pythia8::HardProcess {
 
 void bind_Pythia8_UserHooks(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Pythia8::SuppressSmallPT file:Pythia8/UserHooks.h line:279
+	{ // Pythia8::SuppressSmallPT file:Pythia8/UserHooks.h line:285
 		pybind11::class_<Pythia8::SuppressSmallPT, std::shared_ptr<Pythia8::SuppressSmallPT>, PyCallBack_Pythia8_SuppressSmallPT, Pythia8::UserHooks> cl(M("Pythia8"), "SuppressSmallPT", "");
 		pybind11::handle cl_type = cl;
 
@@ -1578,7 +1630,7 @@ void bind_Pythia8_UserHooks(std::function< pybind11::module &(std::string const 
 		cl.def("multiplySigmaBy", (double (Pythia8::SuppressSmallPT::*)(const class Pythia8::SigmaProcess *, const class Pythia8::PhaseSpace *, bool)) &Pythia8::SuppressSmallPT::multiplySigmaBy, "C++: Pythia8::SuppressSmallPT::multiplySigmaBy(const class Pythia8::SigmaProcess *, const class Pythia8::PhaseSpace *, bool) --> double", pybind11::arg("sigmaProcessPtr"), pybind11::arg("phaseSpacePtr"), pybind11::arg(""));
 		cl.def("assign", (class Pythia8::SuppressSmallPT & (Pythia8::SuppressSmallPT::*)(const class Pythia8::SuppressSmallPT &)) &Pythia8::SuppressSmallPT::operator=, "C++: Pythia8::SuppressSmallPT::operator=(const class Pythia8::SuppressSmallPT &) --> class Pythia8::SuppressSmallPT &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::UserHooksVector file:Pythia8/UserHooks.h line:313
+	{ // Pythia8::UserHooksVector file:Pythia8/UserHooks.h line:319
 		pybind11::class_<Pythia8::UserHooksVector, std::shared_ptr<Pythia8::UserHooksVector>, PyCallBack_Pythia8_UserHooksVector, Pythia8::UserHooks> cl(M("Pythia8"), "UserHooksVector", "");
 		pybind11::handle cl_type = cl;
 
@@ -1632,6 +1684,8 @@ void bind_Pythia8_UserHooks(std::function< pybind11::module &(std::string const 
 		cl.def("doVetoAfterHadronization", (bool (Pythia8::UserHooksVector::*)(const class Pythia8::Event &)) &Pythia8::UserHooksVector::doVetoAfterHadronization, "C++: Pythia8::UserHooksVector::doVetoAfterHadronization(const class Pythia8::Event &) --> bool", pybind11::arg("e"));
 		cl.def("canSetImpactParameter", (bool (Pythia8::UserHooksVector::*)() const) &Pythia8::UserHooksVector::canSetImpactParameter, "C++: Pythia8::UserHooksVector::canSetImpactParameter() const --> bool");
 		cl.def("doSetImpactParameter", (double (Pythia8::UserHooksVector::*)()) &Pythia8::UserHooksVector::doSetImpactParameter, "C++: Pythia8::UserHooksVector::doSetImpactParameter() --> double");
+		cl.def("canSetEnhanceB", (bool (Pythia8::UserHooksVector::*)() const) &Pythia8::UserHooksVector::canSetEnhanceB, "C++: Pythia8::UserHooksVector::canSetEnhanceB() const --> bool");
+		cl.def("doSetEnhanceB", (double (Pythia8::UserHooksVector::*)()) &Pythia8::UserHooksVector::doSetEnhanceB, "C++: Pythia8::UserHooksVector::doSetEnhanceB() --> double");
 		cl.def("assign", (class Pythia8::UserHooksVector & (Pythia8::UserHooksVector::*)(const class Pythia8::UserHooksVector &)) &Pythia8::UserHooksVector::operator=, "C++: Pythia8::UserHooksVector::operator=(const class Pythia8::UserHooksVector &) --> class Pythia8::UserHooksVector &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::HardProcess file:Pythia8/MergingHooks.h line:38

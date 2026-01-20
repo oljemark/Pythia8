@@ -1,5 +1,5 @@
 // VinciaAntennaFunctions.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Peter Skands, Torbjorn Sjostrand.
+// Copyright (C) 2026 Peter Skands, Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -3772,6 +3772,7 @@ void MECs::init() {
   maxMECsResDec      = settingsPtr->mode("Vincia:maxMECsResDec");
   maxMECsMPI         = settingsPtr->mode("Vincia:maxMECsMPI");
   nFlavZeroMass      = settingsPtr->mode("Vincia:nFlavZeroMass");
+  useInternalMEs     = settingsPtr->flag("Vincia:useInternalMEs");
   sizeOutBornSav.clear();
 
   // Some settings hardcoded for now.
@@ -3781,15 +3782,9 @@ void MECs::init() {
   q2Match            = pow2(matchingScale);
   matchingRegOrder   = 2;
   matchingRegShape   = 1;
-  matchingIRcutoff   = 2.;
-
-  // Sanity checks.
-  // MECs currently not supported.
-  if (modeMECs > 0) {
-    loggerPtr->ERROR_MSG("matrix-element corretions not yet supported");
-    isInit = false;
-    return;
-  }
+  matchingIRcutoff   = max(max(settingsPtr->parm("Vincia:cutoffScaleFF"),
+                               settingsPtr->parm("Vincia:cutoffScaleIF")),
+                               settingsPtr->parm("Vincia:cutoffScaleII"));
 
   // Initialise MG5 interface
   if (mg5mesPtr != nullptr && mg5mesPtr->init(infoPtr)) {
@@ -3799,13 +3794,13 @@ void MECs::init() {
     if (verbose >= Logger::REPORT) printOut(__METHOD_NAME__,
       "Could not initialise VinciaMG5MEs interface");
     // Check if we wanted to do matching.
-    if (modeMECs > 0) {
+    if (modeMECs > 0 && !useInternalMEs) {
       // Abort. We should not try to do anything.
       isInit = false;
       return;
     }
     // Set everything explicitly to negative values, but continue.
-    else {
+    else if (!useInternalMEs) {
       maxMECs2to1   = -1;
       maxMECs2to2   = -1;
       maxMECs2toN   = -1;
@@ -4035,6 +4030,7 @@ bool MECs::doMEC(int iSys, int nBranch) {
 // Check whether we have a matrix element for a given configuration.
 
 bool MECs::meAvailable(int iSys, const Event& event) {
+
   // Make vectors of ID codes.
   vector<int> idIn, idOut;
   if (partonSystemsPtr->hasInAB(iSys)) {
@@ -4045,7 +4041,42 @@ bool MECs::meAvailable(int iSys, const Event& event) {
     idIn.push_back(event[partonSystemsPtr->getInRes(iSys)].id());
   for (int i = 0; i < partonSystemsPtr->sizeOut(iSys); ++i)
     idOut.push_back(event[partonSystemsPtr->getOut(iSys, i)].id());
-  bool avail = mg5mesPtr->isAvailable(idIn, idOut);
+  return meAvailable(idIn, idOut);
+}
+
+bool MECs::meAvailable(const vector<Particle>& state) {
+
+  // Make vectors of ID codes.
+  vector<int> idIn, idOut;
+  for (const auto& p : state) {
+    if (!p.isFinal()) idIn.push_back(p.id());
+    else idOut.push_back(p.id());
+  }
+  return meAvailable(idIn, idOut);
+}
+
+bool MECs::meAvailable(const vector<int>& idIn, const vector<int>& idOut) {
+
+  // Check internal MEs.
+  bool avail = false;
+  if (useInternalMEs) {
+    if (idIn.size() == 2) {
+      bool isLeptonA = abs(idIn[0]) >= 11 && abs(idIn[0]) <= 13;
+      bool isPartonA = idIn[0] == 21
+        || (abs(idIn[0]) >= 1 && abs(idIn[0]) <= 6);
+      bool isLeptonB = abs(idIn[1]) >= 11 && abs(idIn[1]) <= 13;
+      bool isPartonB = idIn[1] == 21
+        || (abs(idIn[1]) >= 1 && abs(idIn[1]) <= 6);
+
+      // NC DIS 2->2 and 2->3.
+      if ((isLeptonA && isPartonB) || (isPartonA && isLeptonB))
+        if (idOut.size() <= 3) avail = true;
+    }
+  }
+
+  // Check MG5 interface.
+  if (!avail) avail = mg5mesPtr->isAvailable(idIn, idOut);
+
   if (verbose >= VinciaConstants::DEBUG) {
     stringstream ss;
     ss << "Matrix element for ";
@@ -4058,22 +4089,79 @@ bool MECs::meAvailable(int iSys, const Event& event) {
   return avail;
 }
 
-bool MECs::meAvailable(const vector<Particle>& state) {
-  // Make vectors of ID codes.
-  vector<int> idIn, idOut;
-  for (const auto& p : state) {
-    if (!p.isFinal()) idIn.push_back(p.id());
-    else idOut.push_back(p.id());
-  }
-  return mg5mesPtr->isAvailable(idIn, idOut);
-}
-
 //--------------------------------------------------------------------------
 
 // Get squared matrix element.
 
 double MECs::getME2(const vector<Particle>& state, int ) {
-  return mg5mesPtr->calcME2(state);}
+  // Check internal MEs.
+  if (useInternalMEs) {
+    // Make vectors of ID codes.
+    vector<int> idIn, idOut;
+    for (const auto& p : state) {
+      if (!p.isFinal()) idIn.push_back(p.id());
+      else idOut.push_back(p.id());
+    }
+
+    // Find MEs.
+    if (idIn.size() == 2) {
+      bool isLeptonA = abs(idIn[0]) >= 11 && abs(idIn[0]) <= 13;
+      bool isPartonA = idIn[0] == 21
+        || (abs(idIn[0]) >= 1 && abs(idIn[0]) <= 6);
+      bool isLeptonB = abs(idIn[1]) >= 11 && abs(idIn[1]) <= 13;
+      bool isPartonB = idIn[1] == 21
+        || (abs(idIn[1]) >= 1 && abs(idIn[1]) <= 6);
+
+      // NC DIS 2->2 and 2->3.
+      if ((isLeptonA && isPartonB) || (isPartonA && isLeptonB)) {
+        int iIn = isPartonB ? 1 : 0;
+        Vec4 p = state[iIn].p();
+        if (idOut.size() == 2) {
+          // gamma^* q -> q.
+          bool isParton1 = abs(idOut[1]) >= 1 && abs(idOut[1]) <= 6;
+          Vec4 pK = (isParton1) ? state[3].p() : state[2].p();
+          return 2.*p*pK;
+        }
+        if (idOut.size() == 3) {
+          if (idIn[iIn] == 21) {
+            // gamma^* g -> q qbar.
+            int iq = -1, iqb = -1;
+            for (int j=0; j<(int)idOut.size(); ++j) {
+              if (idOut[j] >= 1 && idOut[j] <= 6) iq = j;
+              if (idOut[j] <= -1 && idOut[j] >= -6) iqb = j;
+              if (iq >= 0 && iqb >= 0) break;
+            }
+            if (iq < 0 && iqb < 0) return -1.;
+            // Calculate matrix element squared,
+            // cf. Eq. (4.25) in arXiv:hep-ph/0612257.
+            double s = m2(state[2+iq].p() + state[2+iqb].p());
+            double t = m2(state[iIn].p() - state[2+iq].p());
+            double u = m2(state[iIn].p() - state[2+iqb].p());
+            return 2.*s/t + 2.*s/u + 2*pow2(s)/t/u + u/t + t/u;
+          } else {
+            // gamma^* q(bar) -> q(bar) g.
+            int iq = -1, ig = -1;
+            for (int j=0; j<(int)idOut.size(); ++j) {
+              if (abs(idOut[j]) >= 1 && abs(idOut[j]) <= 6) iq = j;
+              if (idOut[j] == 21) ig = j;
+              if (iq >= 0 && ig >= 0) break;
+            }
+            if (iq < 0 && ig < 0) return -1.;
+            // Calculate matrix element squared,
+            // cf. Eq. (4.15) in arXiv:hep-ph/0612257.
+            double s = m2(state[2+ig].p() + state[2+iq].p());
+            double t = m2(state[iIn].p() - state[2+ig].p());
+            double u = m2(state[iIn].p() - state[2+iq].p());
+            return -(2.*u/s + 2.*u/t + 2*pow2(u)/s/t + t/s + s/t);
+          }
+        }
+      }
+    }
+  }
+
+  // Check MG5 interface.
+  return mg5mesPtr->calcME2(state);
+}
 
 double MECs::getME2(const int iSys, const Event& event) {
   vector<Particle> state = vinComPtr->makeParticleList(iSys, event);
@@ -4102,6 +4190,8 @@ double MECs::getMECSector(int iSys, const vector<Particle>& stateNow,
   if (!meAvailable(statePost)) {
     loggerPtr->WARNING_MSG(
       "matrix element for post-branching configuration not available");
+    for (auto& ptcl : statePost) cout << ptcl.id() << " ";
+    cout << endl;
     hasME2post[iSys] = false;
     return 1.;
   }
@@ -4191,11 +4281,16 @@ double MECs::getMECSector(int iSys, const vector<Particle>& stateNow,
       printOut(__METHOD_NAME__, ss.str());
     }
     hasME2now[iSys] = true;
-  }
-  else if (verbose >= VinciaConstants::DEBUG) {
+  } else if (verbose >= VinciaConstants::DEBUG) {
     stringstream ss;
     ss << "using saved ME2 for current state in system "
        << iSys << " (ME2 = " << num2str(me2now[iSys],9) << ")";
+    printOut(__METHOD_NAME__, ss.str());
+  }
+  if (verbose >= VinciaConstants::DEBUG) {
+    stringstream ss;
+    ss << "matrix-element ratio in system "
+       << iSys << " (ME2 = " << num2str(me2post[iSys]/me2now[iSys],6) << ")";
     printOut(__METHOD_NAME__, ss.str());
   }
 

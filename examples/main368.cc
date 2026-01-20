@@ -1,5 +1,5 @@
 // main368.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -40,7 +40,7 @@ public:
     double q2Thr = pow2(eNow) + pow2(gammat);
     double q2alp = mt * sqrt(q2Thr);
     alps         = alphas.alphaS(q2alp);
-    double beta  =  sqrtpos(1. - pow2( 2. * mt / (2. * mt + eNow)));
+    double beta  = sqrtpos(1. - pow2( 2. * mt / (2. * mt + eNow)));
 
     // Attractive expressions for singlet case.
     if (isSinglet) {
@@ -82,7 +82,7 @@ public:
   // Factor m_t^2 / (4 pi) omitted since cancelled when applied for sigma.
   double imGreenOct(double eNow) {
 
-  // Basic expressions.
+    // Basic expressions.
     double p8   = - (1. / 12.) * mt * alps;
     double egrt = sqrt(eNow * eNow + gammat * gammat);
     double p1   = sqrt( 0.5 * mt * (egrt - eNow));
@@ -93,12 +93,12 @@ public:
     for (int n = 1; n < 21; ++n)
       ressum += mt * p2 / (pow2(n * p1 - p8) + pow2(n * p2));
 
-      // Combine with non-resonant terms and done.
+    // Combine with non-resonant terms and done.
     return p2 / mt + (2. * p8 / mt) * atan(p2 / p1)
       + 2. * pow2(p8 / mt) * ressum;
   }
 
-private:
+ private:
 
   // Commonly available variables.
   double mt, gammat, alps;
@@ -114,6 +114,13 @@ int main() {
 
   // useOld = true to reproduce FKS figures, else use more modern values.
   bool useOld = false;
+
+  // showMod = true shows Green's function also with modified argument.
+  // May give too busy figures, so optional.
+  bool showMod = false;
+
+  // splitFigs = true gives each figure separately, else as one single file.
+  bool splitFigs = false;
 
   // Generator.
   Pythia pythia;
@@ -142,11 +149,15 @@ int main() {
   // Histograms, for narrower or broader E range around threshold.
   Hist greensin("imGreen singlet", 200, -10., 30.);
   Hist greenoct("imGreen octet", 200, -10., 30.);
+  Hist greensinMod("imGreen singlet", 200, -10., 30.);
+  Hist greenoctMod("imGreen octet", 200, -10., 30.);
   Hist betaval("beta threshold factor",200, -10., 30.);
   Hist coulsin("singlet Coulomb factor",200, -10., 30.);
   Hist couloct("octet Coulomb factor",200, -10., 30.);
   Hist greensin2("imGreen singlet", 240, -20., 100.);
   Hist greenoct2("imGreen octet", 240, -20., 100.);
+  Hist greensin2Mod("imGreen singlet", 240, -20., 100.);
+  Hist greenoct2Mod("imGreen octet", 240, -20., 100.);
   Hist betaval2("beta threshold factor",240, -20., 100.);
   Hist coulsin2("singlet Coulomb factor",240, -20., 100.);
   Hist couloct2("octet Coulomb factor",240, -20., 100.);
@@ -154,6 +165,7 @@ int main() {
   // Loop over energies to plot - narrower range.
   for (int iE = 0; iE < 200; ++iE) {
     double eNow  = -9.9 + 0.2 * iE;
+    double beta2 = 1. - pow2( 2. * mt / (2. * mt + eNow));
 
     // Green's function expressions.
     double valNowS = topThr.value( eNow, true, true);
@@ -161,9 +173,16 @@ int main() {
     double valNowO = topThr.value( eNow, true, false);
     greenoct.fill( eNow, valNowO);
 
+    // Relativistic argument to Green's function is equivalent at threshold.
+    double eMod  = mt * beta2;
+    double valNowSMod = topThr.value( eMod, true, true);
+    greensinMod.fill( eNow, valNowSMod);
+    double valNowOMod = topThr.value( eMod, true, false);
+    greenoctMod.fill( eNow, valNowOMod);
+
     // For positive energies also beta and Coulomb.
     if (eNow > 0.) {
-      double beta = sqrt(1. - pow2( 2. * mt / (2. * mt + eNow)));
+      double beta = sqrt(beta2);
       betaval.fill( eNow, beta);
       double fAttr = topThr.value( eNow, false, true);
       coulsin.fill( eNow, fAttr);
@@ -175,6 +194,7 @@ int main() {
   // Loop over energies to plot - broader range.
   for (int iE = 0; iE < 240; ++iE) {
     double eNow = -19.75 + 0.5 * iE;
+    double beta2 = 1. - pow2( 2. * mt / (2. * mt + eNow));
 
     // Green's function expressions.
     double valNowS = topThr.value( eNow, true, true);
@@ -182,9 +202,16 @@ int main() {
     double valNowO = topThr.value( eNow, true, false);
     greenoct2.fill( eNow, valNowO);
 
+    // Relativistic argument to Green's function is equivalent at threshold.
+    double eMod  = mt * beta2;
+    double valNowSMod = topThr.value( eMod, true, true);
+    greensin2Mod.fill( eNow, valNowSMod);
+    double valNowOMod = topThr.value( eMod, true, false);
+    greenoct2Mod.fill( eNow, valNowOMod);
+
     // For positive energies also beta and Coulomb.
     if (eNow > 0.) {
-      double beta = sqrt(1. - pow2( 2. * mt / (2. * mt + eNow)));
+      double beta = sqrt(beta2);
       betaval2.fill( eNow, beta);
       double fAttr = topThr.value( eNow, false, true);
       coulsin2.fill( eNow, fAttr);
@@ -199,40 +226,52 @@ int main() {
   double height = 4.8;
 
   // Singet and octet contribution in -10 < E < 30.
-  hpl.frame("fig368narrow", "", "$E$ (GeV)",
+  hpl.frame(splitFigs ? "fig368narrow" : "fig368", "", "$E$ (GeV)",
     "rate (arbitrary units)", width, height);
   hpl.add( betaval, "-,black", "pure beta threshold");
   hpl.add( coulsin, "--,blue", "singlet Coulomb factor");
   hpl.add( couloct, "--,cyan", "octet Coulomb factor");
-  hpl.add( greensin, "-.,red", "singlet Green's function");
-  hpl.add( greenoct, "-.,magenta", "octet Green's function");
+  hpl.add( greensin, "--,red", "singlet Green's function");
+  hpl.add( greenoct, "--,magenta", "octet Green's function");
+  if (showMod) {
+    hpl.add( greensinMod, "-.,red", "modified singlet Green's function");
+    hpl.add( greenoctMod, "-.,magenta", "modified octet Green's function");
+  }
   hpl.plot();
 
   // Singet and octet contribution in -20 < E < 100.
-  hpl.frame("fig368wide", "", "$E$ (GeV)",
+  hpl.frame(splitFigs ? "fig368wide" : "", "", "$E$ (GeV)",
     "rate (arbitrary units)", width, height);
   hpl.add( betaval2, "-,black", "pure beta threshold");
   hpl.add( coulsin2, "--,blue", "singlet Coulomb factor");
   hpl.add( couloct2, "--,cyan", "octet Coulomb factor");
-  hpl.add( greensin2, "-.,red", "singlet Green's function");
-  hpl.add( greenoct2, "-.,magenta", "octet Green's function");
+  hpl.add( greensin2, "--,red", "singlet Green's function");
+  hpl.add( greenoct2, "--,magenta", "octet Green's function");
+  if (showMod) {
+    hpl.add( greensin2Mod, "-.,red", "modified singlet Green's function");
+    hpl.add( greenoct2Mod, "-.,magenta", "modified octet Green's function");
+  }
   hpl.plot();
 
   // Singlet contribution only, for direct comparison with FKS figure.
-  hpl.frame("fig368singlet", "",  "$E$ (GeV)",
+  hpl.frame(splitFigs ? "fig368singlet" : "", "",  "$E$ (GeV)",
     "rate (arbitrary units)", width, height);
   hpl.add( betaval, "-,black", "pure beta threshold");
   hpl.add( coulsin, "--,blue", "singlet Coulomb factor");
   hpl.add( greensin, "-.,red", "singlet Green's function");
+  if (showMod && !useOld) hpl.add( greensinMod, "-.,blue",
+    "modified singlet Green's function");
   if (useOld) hpl.plot(-10., 30., 0., 0.74);
   else hpl.plot();
 
   // Octet contribution only, for direct comparison with FKS figure.
-  hpl.frame("fig368octet", "",  "$E$ (GeV)",
+  hpl.frame(splitFigs ? "fig368octet" : "", "",  "$E$ (GeV)",
     "rate (arbitrary units)", width, height);
   hpl.add( betaval, "-,black", "pure beta threshold");
   hpl.add( couloct, "--,cyan", "octet Coulomb factor");
   hpl.add( greenoct, "-.,magenta", "octet Green's function");
+  if (showMod && !useOld) hpl.add( greenoctMod, "-.,blue",
+    "octet Green's function");
   if (useOld) hpl.plot(-10., 30., 0., 0.37);
   else hpl.plot();
 

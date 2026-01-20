@@ -95,6 +95,21 @@ This degree of freedom is primarily intended for hadron colliders, and
 should not normally be used for <i>e^+e^-</i> annihilation processes. 
    
  
+<p/> 
+For some processes, the appropriate inclusive NLO K-factor can be 
+calculated dynamically in the event generation and be included in the 
+unweighting process. These events then obtain formal NLO accuracy 
+for the inclusive cross section. If they are showered with a matrix-element 
+matched shower afterwards, the sample also describes inclusive observables 
+at formal NLO accuracy, see 
+<a href="MatchingAndMerging.html" target="page">matching and merging</a>. 
+<a name="anchor5"></a>
+<p/><code>flag&nbsp; </code><strong> SigmaProcess:reweightNLO &nbsp;</strong> 
+ (<code>default = <strong>off</strong></code>)<br/>
+Dynamically reweight Born-level events by the appropriate inclusive NLO 
+K-factor before doing the unweighting. 
+   
+ 
 <a name="section1"></a> 
 <h3>Renormalization scales</h3> 
  
@@ -103,7 +118,7 @@ alternatives, separately for <i>2 &rarr; 1</i>, <i>2 &rarr; 2</i> and two
 different kinds of <i>2 &rarr; 3</i> processes. In addition a common 
 multiplicative factor may be imposed. 
  
-<a name="anchor5"></a>
+<a name="anchor6"></a>
 <p/><code>mode&nbsp; </code><strong> SigmaProcess:renormScale1 &nbsp;</strong> 
  (<code>default = <strong>1</strong></code>; <code>minimum = 1</code>; <code>maximum = 2</code>)<br/>
 The <i>Q^2</i> renormalization scale for <i>2 &rarr; 1</i> processes. 
@@ -118,7 +133,7 @@ below.
    
    
  
-<a name="anchor6"></a>
+<a name="anchor7"></a>
 <p/><code>mode&nbsp; </code><strong> SigmaProcess:renormScale2 &nbsp;</strong> 
  (<code>default = <strong>2</strong></code>; <code>minimum = 1</code>; <code>maximum = 6</code>)<br/>
 The <i>Q^2</i> renormalization scale for <i>2 &rarr; 2</i> processes. 
@@ -148,7 +163,7 @@ case <i>-tHat=Q^2</i>.
    
    
  
-<a name="anchor7"></a>
+<a name="anchor8"></a>
 <p/><code>mode&nbsp; </code><strong> SigmaProcess:renormScale3 &nbsp;</strong> 
  (<code>default = <strong>3</strong></code>; <code>minimum = 1</code>; <code>maximum = 6</code>)<br/>
 The <i>Q^2</i> renormalization scale for "normal" <i>2 &rarr; 3</i> 
@@ -178,7 +193,7 @@ below.
    
    
  
-<a name="anchor8"></a>
+<a name="anchor9"></a>
 <p/><code>mode&nbsp; </code><strong> SigmaProcess:renormScale3VV &nbsp;</strong> 
  (<code>default = <strong>3</strong></code>; <code>minimum = 1</code>; <code>maximum = 6</code>)<br/>
 The <i>Q^2</i> renormalization scale for <i>2 &rarr; 3</i> 
@@ -209,7 +224,7 @@ below.
    
    
  
-<a name="anchor9"></a>
+<a name="anchor10"></a>
 <p/><code>parm&nbsp; </code><strong> SigmaProcess:renormMultFac &nbsp;</strong> 
  (<code>default = <strong>1.</strong></code>; <code>minimum = 0.1</code>; <code>maximum = 10.</code>)<br/>
 The <i>Q^2</i> renormalization scale for <i>2 &rarr; 1</i>, 
@@ -218,7 +233,7 @@ this factor relative to the scale described above (except for the options
 with a fix scale). Should be use sparingly for <i>2 &rarr; 1</i> processes. 
    
  
-<a name="anchor10"></a>
+<a name="anchor11"></a>
 <p/><code>parm&nbsp; </code><strong> SigmaProcess:renormFixScale &nbsp;</strong> 
  (<code>default = <strong>10000.</strong></code>; <code>minimum = 1.</code>)<br/>
 A fix <i>Q^2</i> value used as renormalization scale for 
@@ -237,7 +252,7 @@ for each event class separately, between normalization and factorization
 scales, and the description has therefore been slightly shortened. The 
 default values are <b>not</b> necessarily the same, however. 
  
-<a name="anchor11"></a>
+<a name="anchor12"></a>
 <p/><code>mode&nbsp; </code><strong> SigmaProcess:factorScale1 &nbsp;</strong> 
  (<code>default = <strong>1</strong></code>; <code>minimum = 1</code>; <code>maximum = 2</code>)<br/>
 The <i>Q^2</i> factorization scale for <i>2 &rarr; 1</i> processes. 
@@ -251,7 +266,7 @@ below.
    
    
  
-<a name="anchor12"></a>
+<a name="anchor13"></a>
 <p/><code>mode&nbsp; </code><strong> SigmaProcess:factorScale2 &nbsp;</strong> 
  (<code>default = <strong>1</strong></code>; <code>minimum = 1</code>; <code>maximum = 6</code>)<br/>
 The <i>Q^2</i> factorization scale for <i>2 &rarr; 2</i> processes. 
@@ -278,7 +293,7 @@ case <i>-tHat=Q^2</i>.
    
    
  
-<a name="anchor13"></a>
+<a name="anchor14"></a>
 <p/><code>mode&nbsp; </code><strong> SigmaProcess:factorScale3 &nbsp;</strong> 
  (<code>default = <strong>2</strong></code>; <code>minimum = 1</code>; <code>maximum = 6</code>)<br/>
 The <i>Q^2</i> factorization scale for "normal" <i>2 &rarr; 3</i> 
@@ -303,7 +318,7 @@ below.
    
    
  
-<a name="anchor14"></a>
+<a name="anchor15"></a>
 <p/><code>mode&nbsp; </code><strong> SigmaProcess:factorScale3VV &nbsp;</strong> 
  (<code>default = <strong>2</strong></code>; <code>minimum = 1</code>; <code>maximum = 6</code>)<br/>
 The <i>Q^2</i> factorization scale for <i>2 &rarr; 3</i> 
@@ -332,7 +347,7 @@ below.
    
    
  
-<a name="anchor15"></a>
+<a name="anchor16"></a>
 <p/><code>parm&nbsp; </code><strong> SigmaProcess:factorMultFac &nbsp;</strong> 
  (<code>default = <strong>1.</strong></code>; <code>minimum = 0.1</code>; <code>maximum = 10.</code>)<br/>
 The <i>Q^2</i> factorization scale for <i>2 &rarr; 1</i>, 
@@ -341,7 +356,7 @@ this factor relative to the scale described above (except for the options
 with a fix scale). Should be use sparingly for <i>2 &rarr; 1</i> processes. 
    
  
-<a name="anchor16"></a>
+<a name="anchor17"></a>
 <p/><code>parm&nbsp; </code><strong> SigmaProcess:factorFixScale &nbsp;</strong> 
  (<code>default = <strong>10000.</strong></code>; <code>minimum = 1.</code>)<br/>
 A fix <i>Q^2</i> value used as factorization scale for <i>2 &rarr; 1</i>, 
@@ -352,4 +367,4 @@ above.
 </body>
 </html>
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

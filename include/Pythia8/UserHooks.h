@@ -1,5 +1,5 @@
 // UserHooks.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -237,6 +237,12 @@ public:
   // Set the overall impact parameter for the MPI treatment.
   virtual double doSetImpactParameter() { return 0.0; }
 
+  // Can set the enhancement for the MPI treatment.
+  virtual bool canSetEnhanceB() const { return false; }
+
+  // Set the enhancement for the MPI treatment.
+  virtual double doSetEnhanceB() { return 0.0; }
+
   // Custom processing at the end of HadronLevel::next.
   virtual bool onEndHadronLevel(HadronLevel&, Event&) { return true; }
 
@@ -328,12 +334,14 @@ public:
     int nCanSetResonanceScale  = 0;
     int nCanChangeFragPar      = 0;
     int nCanSetImpactParameter = 0;
+    int nCanSetEnhanceB        = 0;
     for ( int i = 0, N = hooks.size(); i < N; ++i ) {
       registerSubObject(*hooks[i]);
       if ( !hooks[i]->initAfterBeams() ) return false;
       if (hooks[i]->canSetResonanceScale()) ++nCanSetResonanceScale;
       if (hooks[i]->canChangeFragPar()) ++nCanChangeFragPar;
       if (hooks[i]->canSetImpactParameter()) ++nCanSetImpactParameter;
+      if (hooks[i]->canSetEnhanceB()) ++nCanSetEnhanceB;
     }
     if (nCanSetResonanceScale > 1) {
       loggerPtr->ERROR_MSG(
@@ -350,7 +358,12 @@ public:
         "multiple UserHooks with canSetImpactParameter() not allowed");
       return false;
     }
-    return true;
+    if (nCanSetEnhanceB > 1) {
+      loggerPtr->ERROR_MSG(
+        "multiple UserHooks with canSetEnhanceB() not allowed");
+      return false;
+    }
+     return true;
   }
 
   // Possibility to modify cross section of process.
@@ -731,6 +744,21 @@ public:
     for ( int i = 0, N = hooks.size(); i < N; ++i )
       if ( hooks[i]->canSetImpactParameter() )
         return hooks[i]->doSetImpactParameter();
+    return 0.0;
+  }
+
+  // Can set the enhancement for the MPI treatment.
+  virtual bool canSetEnhanceB() const {
+    for ( int i = 0, N = hooks.size(); i < N; ++i )
+      if ( hooks[i]->canSetEnhanceB() ) return true;
+    return false;
+  }
+
+  // Set the enhancement for the MPI treatment.
+  virtual double doSetEnhanceB() {
+    for ( int i = 0, N = hooks.size(); i < N; ++i )
+      if ( hooks[i]->canSetEnhanceB() )
+        return hooks[i]->doSetEnhanceB();
     return 0.0;
   }
 

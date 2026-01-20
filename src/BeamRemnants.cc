@@ -1,5 +1,5 @@
 // BeamRemnants.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -547,6 +547,9 @@ bool BeamRemnants::setKinematics( Event& event) {
             pair<double, double> gauss2 = rndmPtr->gauss2();
             double px = kTwidth[iPar] * gauss2.first;
             double py = kTwidth[iPar] * gauss2.second;
+            // Emergency pT reduction/zeroing if in trouble.
+            if (iTry == NTRYKINMATCH - 2) {px *= 0.5; py *= 0.5;}
+            if (iTry == NTRYKINMATCH - 1) {px = 0.001; py = 0.001;}
             beam[iPar].px(px);
             beam[iPar].py(py);
             pxSum += px;
@@ -632,8 +635,18 @@ bool BeamRemnants::setKinematics( Event& event) {
       // Pick unrescaled x values for remnants. Sum up (unscaled) p+ and p-.
       xSum[iBeam]  = 0.;
       xInvM[iBeam] = 0.;
+      double summT = 0.;
+      for (int iRem = nSys; iRem < nPar; ++iRem)
+        summT += sqrtpos(beam[iRem].mT2());
       for (int iRem = nSys; iRem < nPar; ++iRem) {
         double xPrel = beam.xRemnant( iRem);
+        // Emergency zooming in on equal-velocity scenario if in trouble.
+        if (summT != 0) {
+          if (iTry == NTRYKINMATCH - 2)
+            xPrel = 0.5 * (xPrel + sqrtpos(beam[iRem].mT2()) / summT);
+          if (iTry == NTRYKINMATCH - 1)
+            xPrel = sqrtpos(beam[iRem].mT2()) / summT;
+        }
         beam[iRem].x(xPrel);
         xSum[iBeam]  += xPrel;
         xInvM[iBeam] += beam[iRem].mT2()/xPrel;

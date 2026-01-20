@@ -4,7 +4,7 @@
 Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 <pre><code class="language-c++">
 // main264.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -58,7 +58,7 @@ int main() {
   pythia.readString(&quot;VariationFrag:List = {flav frag:rho=&quot; + to_string(rho)
     + &quot; frag:xi=&quot; + to_string(xi) + &quot; frag:x=&quot; + to_string(x)
     + &quot; frag:y=&quot; + to_string(y) + &quot;}&quot;);
-  pythia.init();
+  if (!pythia.init()) return 1;
 
   // Define the plot title.
   string title = &quot;default: (&quot; +
@@ -110,7 +110,7 @@ int main() {
   // This defines a lambda function that acts as a callback.
   // This function is called for each event generated.
   // The argument is a pointer to the instance that generated the event.
-  pythia.run( nEvent,[&amp;](Pythia* pythiaPtr) {
+  pythia.run(nEvent, [&amp;](Pythia* pythiaPtr) {
 
     Event &amp;event = pythiaPtr-&gt;event;
 
@@ -131,10 +131,12 @@ int main() {
 
     // If instead we have saved the breaks to a string, as we did
     // above, we can calculate the weight from the saved string.
-    wgts[&quot;posthoc-str&quot;] = vars.weight(parms, vars.read(saved));
+    wgts[&quot;posthoc-str&quot;] = vars.weight(parms,
+      intVectorAttributeValue(saved, &quot;&quot;));
 
     // We can also use the in-situ reweighting.
-    wgts[&quot;insitu&quot;] = pythiaPtr-&gt;info.weightValueByIndex(1);
+    wgts[&quot;insitu&quot;] = pythiaPtr-&gt;info.weightValueByIndex(
+      pythiaPtr-&gt;info.numberOfWeights() - 1);
 
     // Keep track of the weights.
     for (string &amp;name : names) {
@@ -161,8 +163,7 @@ int main() {
   pythia.settings.parm(&quot;StringFlav:ProbSQtoQQ&quot;,   x);
   pythia.settings.parm(&quot;StringFlav:ProbQQ1toQQ0&quot;, y);
   pythia.settings.wvec(&quot;VariationFrag:List&quot;,      {});
-  pythia.init();
-
+  if (!pythia.init()) return 1;
   pythia.run( nEvent, [&amp;](Pythia* pythiaPtr) {
 
     Event &amp;event = pythiaPtr-&gt;event;
@@ -206,8 +207,8 @@ int main() {
   }
 
   // Create Python plot.
-  HistPlot hpl(&quot;main264plot&quot;);
-  hpl.frame(&quot;main264plot&quot;, title, xlabel, &quot;n(variation)/n(default)&quot;);
+  HistPlot hpl(&quot;plot264&quot;);
+  hpl.frame(&quot;fig264&quot;, title, xlabel, &quot;n(variation)/n(default)&quot;);
   for (string &amp;name : names)
     hpl.add(hists[name]/hists[&quot;default&quot;], &quot;e&quot;, name);
   hpl.add(hists[&quot;rerun&quot;]/hists[&quot;default&quot;], &quot;e&quot;, &quot;rerun&quot;);

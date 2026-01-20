@@ -129,8 +129,8 @@ perform the desired analyses.
 <p/> 
 In order to create a PYTHIA 8 process library with MadGraph5, first 
 download the MadGraph5 package from 
-<a href="https://launchpad.net/madgraph5" target="page"> 
-https://launchpad.net/madgraph5</a>, and untar the package. You can 
+<a href="https://launchpad.net/mg5amcnlo" target="page"> 
+https://launchpad.net/mg5amcnlo</a>, and untar the package. You can 
 then specify the location of your <code>pythia81xx</code> directory 
 in the file <code>input/mg5_configuration.txt</code>: 
 <br/><code>pythia8_path = ./pythia81xx</code> 
@@ -334,4 +334,4 @@ initialization can be skipped after the initial run.
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

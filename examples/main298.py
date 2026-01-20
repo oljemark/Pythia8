@@ -1,5 +1,5 @@
 # main298.py is a part of the PYTHIA event generator.
-# Copyright (C) 2025 Artem Havryliuk and Torbjorn Sjostrand.
+# Copyright (C) 2026 Artem Havryliuk and Torbjorn Sjostrand.
 # PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 # Please respect the MCnet Guidelines, see GUIDELINES for details.
 

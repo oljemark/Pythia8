@@ -1,5 +1,5 @@
 // VinciaAntennaFunctions.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Peter Skands, Torbjorn Sjostrand.
+// Copyright (C) 2026 Peter Skands, Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -1306,6 +1306,7 @@ public:
   // Check whether we have a matrix element for this configuration.
   bool meAvailable(int iSys, const Event& event);
   bool meAvailable(const vector<Particle>& state);
+  bool meAvailable(const vector<int>& idIn, const vector<int>& idOut);
 
   // Get squared matrix element.
   double getME2(const vector<Particle>& state, int nIn);
@@ -1382,7 +1383,7 @@ private:
   HelicitySampler helSampler;
 
   // Matching settings.
-  bool matchingFullColour, matchingScaleIsAbs;
+  bool matchingFullColour, matchingScaleIsAbs, useInternalMEs;
   int  modeMECs;
   int  matchingRegOrder, matchingRegShape;
   int  maxMECs2to1, maxMECs2to2, maxMECs2toN, maxMECsResDec, maxMECsMPI;

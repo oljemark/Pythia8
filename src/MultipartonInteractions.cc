@@ -1,5 +1,5 @@
 // MultipartonInteractions.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -624,7 +624,7 @@ bool MultipartonInteractions::init( bool doMPIinit, int iDiffSysIn,
         eStepMin  = mGmGmMin;
         eStepMax  = mGmGmMax;
       }
-      nStep     = min( 20, int( 2. + 2. * log( eStepMax / eStepMin)) );
+      nStep     = min( 30, int( 2. + 2. * log( eStepMax / eStepMin)) );
       if ( eStepMax >= eStepMin )
         eStepSize   = log( eStepMax / eStepMin) / (nStep - 1.);
       else
@@ -1851,7 +1851,7 @@ bool MultipartonInteractions::loadMPIdata() {
   for ( unsigned int iPA = 0; iPA < idAListIn.size(); ++iPA )
     mapIdA[idAListIn[iPA]] = iPA;
   for ( int idA : idAList )
-    if ( mapIdA.find(idA) != mapIdA.end() )
+    if ( iDiffSys > 1 || mapIdA.find(idA) != mapIdA.end() )
       mpis.push_back(mpisIn[mapIdA[idA]]);
     else {
       loggerPtr->ERROR_MSG("the requested beam particle was not included "
@@ -1860,8 +1860,8 @@ bool MultipartonInteractions::loadMPIdata() {
       return false;
     }
 
-  if ( infoPtr->eCM() > mpis[0].eStepMaxSave ||
-       infoPtr->eCM() < mpis[0].eStepMinSave ) {
+  if ( infoPtr->eCM() > mpis[0].eStepMaxSave*1.001 ||
+       infoPtr->eCM() < mpis[0].eStepMinSave*0.999 ) {
     loggerPtr->ERROR_MSG("the requested CM energy is outside the limits of"
                          "the loaded init file.", "Reuested energy: "
                          + to_string(infoPtr->eCM()));
@@ -1869,61 +1869,75 @@ bool MultipartonInteractions::loadMPIdata() {
   }
 
   // Set up for the default beam configuration
-  iPDFAsave    = 0;
-  nStep     = mpis[0].nStepSave;
-  eStepMin  = mpis[0].eStepMinSave;
-  eStepMax  = mpis[0].eStepMaxSave;
-  eStepSize = mpis[0].eStepSizeSave;
+  auto idApos = mapIdA.find(infoPtr->idA());
+  if ( iDiffSys < 2 && idApos == mapIdA.end() ) {
+    loggerPtr->ERROR_MSG("the requested Beam A was not present in the "
+                         "loaded init file.", "Requested beam: "
+                         + to_string(infoPtr->idA()));
+    return false;
+  }
+  iPDFA     = idApos->second;
+  iPDFAsave = -1;
+  nStep     = mpis[iPDFA].nStepSave;
+  eStepMin  = mpis[iPDFA].eStepMinSave;
+  eStepMax  = mpis[iPDFA].eStepMaxSave;
+  eStepSize = mpis[iPDFA].eStepSizeSave;
 
   // Current interpolation point.
   eCM = infoPtr->eCM();
   eCMsave   = eCM;
-  eStepMix  = log(eCM / eStepMin)     / eStepSize;
-  iStepFrom = max( 0, min( nStep - 2, int( eStepMix) ) );
-  iStepTo   = min(iStepFrom + 1, nStep - 1);
-  eStepTo   = max( 0., min( 1., eStepMix - iStepFrom) );
-  eStepFrom = 1. - eStepTo;
-
+   if (nStep == 1) {
+     iStepFrom = 0;
+     iStepTo   = 0;
+     eStepFrom = 1.;
+     eStepTo   = 0.;
+   } else {
+     eStepMix  = max(log(eCM / eStepMin), 0.0)     / eStepSize;
+     iStepFrom = max( 0, min( nStep - 2, int( eStepMix) ) );
+     iStepTo   = iStepFrom + 1;
+     eStepTo   = max( 0., min( 1., eStepMix - iStepFrom) );
+     eStepFrom = 1. - eStepTo;
+   }
   // Update pT0 and combinations derived from it.
-  pT0           = eStepFrom * mpis[0].pT0Save[iStepFrom]
-                + eStepTo   * mpis[0].pT0Save[iStepTo];
+  pT0           = eStepFrom * mpis[iPDFA].pT0Save[iStepFrom]
+                + eStepTo   * mpis[iPDFA].pT0Save[iStepTo];
 
   // Update other parameters used in pT choice.
-  pT4dSigmaMax  = eStepFrom * mpis[0].pT4dSigmaMaxSave[iStepFrom]
-                + eStepTo   * mpis[0].pT4dSigmaMaxSave[iStepTo];
-  pT4dProbMax   = eStepFrom * mpis[0].pT4dProbMaxSave[iStepFrom]
-                + eStepTo   * mpis[0].pT4dProbMaxSave[iStepTo];
-  sigmaInt      = eStepFrom * mpis[0].sigmaIntSave[iStepFrom]
-                + eStepTo   * mpis[0].sigmaIntSave[iStepTo];
+  pT4dSigmaMax  = eStepFrom * mpis[iPDFA].pT4dSigmaMaxSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].pT4dSigmaMaxSave[iStepTo];
+  pT4dProbMax   = eStepFrom * mpis[iPDFA].pT4dProbMaxSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].pT4dProbMaxSave[iStepTo];
+  sigmaInt      = eStepFrom * mpis[iPDFA].sigmaIntSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].sigmaIntSave[iStepTo];
   for (int j = 0; j <= NSUDPTS; ++j)
-    sudExpPT[j] = eStepFrom * mpis[0].sudExpPTSave[iStepFrom][j]
-                + eStepTo   * mpis[0].sudExpPTSave[iStepTo][j];
+    sudExpPT[j] = eStepFrom * mpis[iPDFA].sudExpPTSave[iStepFrom][j]
+                + eStepTo   * mpis[iPDFA].sudExpPTSave[iStepTo][j];
 
   // Update parameters related to the impact-parameter picture.
-  zeroIntCorr   = eStepFrom * mpis[0].zeroIntCorrSave[iStepFrom]
-                + eStepTo   * mpis[0].zeroIntCorrSave[iStepTo];
-  normOverlap   = eStepFrom * mpis[0].normOverlapSave[iStepFrom]
-                + eStepTo   * mpis[0].normOverlapSave[iStepTo];
-  kNow          = eStepFrom * mpis[0].kNowSave[iStepFrom]
-                + eStepTo   * mpis[0].kNowSave[iStepTo];
-  bAvg          = eStepFrom * mpis[0].bAvgSave[iStepFrom]
-                + eStepTo   * mpis[0].bAvgSave[iStepTo];
-  bDiv          = eStepFrom * mpis[0].bDivSave[iStepFrom]
-                + eStepTo   * mpis[0].bDivSave[iStepTo];
-  probLowB      = eStepFrom * mpis[0].probLowBSave[iStepFrom]
-                + eStepTo   * mpis[0].probLowBSave[iStepTo];
-  fracAhigh     = eStepFrom * mpis[0].fracAhighSave[iStepFrom]
-                + eStepTo   * mpis[0].fracAhighSave[iStepTo];
-  fracBhigh     = eStepFrom * mpis[0].fracBhighSave[iStepFrom]
-                + eStepTo   * mpis[0].fracBhighSave[iStepTo];
-  fracChigh     = eStepFrom * mpis[0].fracChighSave[iStepFrom]
-                + eStepTo   * mpis[0].fracChighSave[iStepTo];
-  fracABChigh   = eStepFrom * mpis[0].fracABChighSave[iStepFrom]
-                + eStepTo   * mpis[0].fracABChighSave[iStepTo];
-  cDiv          = eStepFrom * mpis[0].cDivSave[iStepFrom]
-                + eStepTo   * mpis[0].cDivSave[iStepTo];
-  cMax          = eStepFrom * mpis[0].cMaxSave[iStepFrom]
-                + eStepTo   * mpis[0].cMaxSave[iStepTo];
+  zeroIntCorr   = eStepFrom * mpis[iPDFA].zeroIntCorrSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].zeroIntCorrSave[iStepTo];
+  normOverlap   = eStepFrom * mpis[iPDFA].normOverlapSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].normOverlapSave[iStepTo];
+  kNow          = eStepFrom * mpis[iPDFA].kNowSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].kNowSave[iStepTo];
+  bAvg          = eStepFrom * mpis[iPDFA].bAvgSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].bAvgSave[iStepTo];
+  bDiv          = eStepFrom * mpis[iPDFA].bDivSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].bDivSave[iStepTo];
+  probLowB      = eStepFrom * mpis[iPDFA].probLowBSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].probLowBSave[iStepTo];
+  fracAhigh     = eStepFrom * mpis[iPDFA].fracAhighSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].fracAhighSave[iStepTo];
+  fracBhigh     = eStepFrom * mpis[iPDFA].fracBhighSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].fracBhighSave[iStepTo];
+  fracChigh     = eStepFrom * mpis[iPDFA].fracChighSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].fracChighSave[iStepTo];
+  fracABChigh   = eStepFrom * mpis[iPDFA].fracABChighSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].fracABChighSave[iStepTo];
+  cDiv          = eStepFrom * mpis[iPDFA].cDivSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].cDivSave[iStepTo];
+  cMax          = eStepFrom * mpis[iPDFA].cMaxSave[iStepFrom]
+                + eStepTo   * mpis[iPDFA].cMaxSave[iStepTo];
 
   // Derived pT kinematics combinations and some others.
   pT20         = pT0*pT0;
@@ -2732,6 +2746,8 @@ void MultipartonInteractions::overlapFirst() {
     else overlapNow = normPi * exp( -pow( bNow, expPow));
     // Same enhancement for hardest process and all subsequent MPI.
     enhanceB = enhanceBmax = enhanceBnow = (normOverlap / normPi) * overlapNow;
+    if ( userHooksPtr && userHooksPtr->canSetEnhanceB() )
+      enhanceB = enhanceBmax = enhanceBnow = userHooksPtr->doSetEnhanceB();
 
     // Done.
     bNow  /= bAvg;

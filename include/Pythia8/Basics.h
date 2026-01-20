@@ -1,5 +1,5 @@
 // Basics.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -217,6 +217,11 @@ Vec4 cross3(const Vec4& v1, const Vec4& v2);
 
 // Cross-product of three 4-vectors ( p_i = epsilon_{iabc} p_a p_b p_c).
 Vec4 cross4(const Vec4& a, const Vec4& b, const Vec4& c);
+
+// Fully antisymetric product of four 4-vectors
+// (Levi-Civita epsilon_{abcd} p_a p_b p_c p_d ).
+double eps4(const Vec4& a, const Vec4& b, const Vec4& c,
+  const Vec4& d);
 
 // theta is polar angle between v1 and v2.
 double theta(const Vec4& v1, const Vec4& v2);
@@ -709,6 +714,10 @@ public:
 
   // Scale each bin content by 1 / (wtSum * bin width).
   void normalizeSpectrum(double wtSum);
+
+  // Add contents of all previous bins to each bin, like an integral.
+  void makeCumulative( bool updateStatistics = false,
+    bool withUnderflow = false);
 
   // Operator overloading with member functions
   Hist& operator+=(const Hist& h) ;

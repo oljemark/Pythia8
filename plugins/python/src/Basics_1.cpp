@@ -32,9 +32,44 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
 
+// Pythia8::RndmEngine file:Pythia8/Basics.h line:360
+struct PyCallBack_Pythia8_RndmEngine : public Pythia8::RndmEngine {
+	using Pythia8::RndmEngine::RndmEngine;
+
+	double flat() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RndmEngine *>(this), "flat");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return RndmEngine::flat();
+	}
+};
+
 void bind_Pythia8_Basics_1(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Pythia8::RndmState file:Pythia8/Basics.h line:373
+	// Pythia8::toCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:345
+	M("Pythia8").def("toCMframe", (class Pythia8::RotBstMatrix (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::toCMframe, "C++: Pythia8::toCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> class Pythia8::RotBstMatrix", pybind11::arg("ptot"), pybind11::arg("pz"), pybind11::arg("pxz"));
+
+	// Pythia8::fromCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:352
+	M("Pythia8").def("fromCMframe", (class Pythia8::RotBstMatrix (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::fromCMframe, "C++: Pythia8::fromCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> class Pythia8::RotBstMatrix", pybind11::arg("ptot"), pybind11::arg("pz"), pybind11::arg("pxz"));
+
+	{ // Pythia8::RndmEngine file:Pythia8/Basics.h line:360
+		pybind11::class_<Pythia8::RndmEngine, std::shared_ptr<Pythia8::RndmEngine>, PyCallBack_Pythia8_RndmEngine> cl(M("Pythia8"), "RndmEngine", "");
+		pybind11::handle cl_type = cl;
+
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_RndmEngine const &o){ return new PyCallBack_Pythia8_RndmEngine(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::RndmEngine const &o){ return new Pythia8::RndmEngine(o); } ) );
+		cl.def( pybind11::init( [](){ return new Pythia8::RndmEngine(); }, [](){ return new PyCallBack_Pythia8_RndmEngine(); } ) );
+		cl.def("flat", (double (Pythia8::RndmEngine::*)()) &Pythia8::RndmEngine::flat, "C++: Pythia8::RndmEngine::flat() --> double");
+		cl.def("assign", (class Pythia8::RndmEngine & (Pythia8::RndmEngine::*)(const class Pythia8::RndmEngine &)) &Pythia8::RndmEngine::operator=, "C++: Pythia8::RndmEngine::operator=(const class Pythia8::RndmEngine &) --> class Pythia8::RndmEngine &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	}
+	{ // Pythia8::RndmState file:Pythia8/Basics.h line:378
 		pybind11::class_<Pythia8::RndmState, std::shared_ptr<Pythia8::RndmState>> cl(M("Pythia8"), "RndmState", "");
 		pybind11::handle cl_type = cl;
 
@@ -50,7 +85,7 @@ void bind_Pythia8_Basics_1(std::function< pybind11::module &(std::string const &
 		cl.def("__eq__", (bool (Pythia8::RndmState::*)(const struct Pythia8::RndmState &) const) &Pythia8::RndmState::operator==, "C++: Pythia8::RndmState::operator==(const struct Pythia8::RndmState &) const --> bool", pybind11::arg("other"));
 		cl.def("assign", (struct Pythia8::RndmState & (Pythia8::RndmState::*)(const struct Pythia8::RndmState &)) &Pythia8::RndmState::operator=, "C++: Pythia8::RndmState::operator=(const struct Pythia8::RndmState &) --> struct Pythia8::RndmState &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::Rndm file:Pythia8/Basics.h line:388
+	{ // Pythia8::Rndm file:Pythia8/Basics.h line:393
 		pybind11::class_<Pythia8::Rndm, std::shared_ptr<Pythia8::Rndm>> cl(M("Pythia8"), "Rndm", "");
 		pybind11::handle cl_type = cl;
 
@@ -75,7 +110,7 @@ void bind_Pythia8_Basics_1(std::function< pybind11::module &(std::string const &
 		cl.def("getState", (struct Pythia8::RndmState (Pythia8::Rndm::*)() const) &Pythia8::Rndm::getState, "C++: Pythia8::Rndm::getState() const --> struct Pythia8::RndmState");
 		cl.def("setState", (void (Pythia8::Rndm::*)(const struct Pythia8::RndmState &)) &Pythia8::Rndm::setState, "C++: Pythia8::Rndm::setState(const struct Pythia8::RndmState &) --> void", pybind11::arg("state"));
 	}
-	{ // Pythia8::Hist file:Pythia8/Basics.h line:485
+	{ // Pythia8::Hist file:Pythia8/Basics.h line:490
 		pybind11::class_<Pythia8::Hist, std::shared_ptr<Pythia8::Hist>> cl(M("Pythia8"), "Hist", "");
 		pybind11::handle cl_type = cl;
 
@@ -198,6 +233,9 @@ void bind_Pythia8_Basics_1(std::function< pybind11::module &(std::string const &
 		cl.def("normalizeIntegral", [](Pythia8::Hist &o, double const & a0) -> void { return o.normalizeIntegral(a0); }, "", pybind11::arg("f"));
 		cl.def("normalizeIntegral", (void (Pythia8::Hist::*)(double, bool)) &Pythia8::Hist::normalizeIntegral, "C++: Pythia8::Hist::normalizeIntegral(double, bool) --> void", pybind11::arg("f"), pybind11::arg("overflow"));
 		cl.def("normalizeSpectrum", (void (Pythia8::Hist::*)(double)) &Pythia8::Hist::normalizeSpectrum, "C++: Pythia8::Hist::normalizeSpectrum(double) --> void", pybind11::arg("wtSum"));
+		cl.def("makeCumulative", [](Pythia8::Hist &o) -> void { return o.makeCumulative(); }, "");
+		cl.def("makeCumulative", [](Pythia8::Hist &o, bool const & a0) -> void { return o.makeCumulative(a0); }, "", pybind11::arg("updateStatistics"));
+		cl.def("makeCumulative", (void (Pythia8::Hist::*)(bool, bool)) &Pythia8::Hist::makeCumulative, "C++: Pythia8::Hist::makeCumulative(bool, bool) --> void", pybind11::arg("updateStatistics"), pybind11::arg("withUnderflow"));
 		cl.def("__iadd__", (class Pythia8::Hist & (Pythia8::Hist::*)(const class Pythia8::Hist &)) &Pythia8::Hist::operator+=, "C++: Pythia8::Hist::operator+=(const class Pythia8::Hist &) --> class Pythia8::Hist &", pybind11::return_value_policy::reference, pybind11::arg("h"));
 		cl.def("__isub__", (class Pythia8::Hist & (Pythia8::Hist::*)(const class Pythia8::Hist &)) &Pythia8::Hist::operator-=, "C++: Pythia8::Hist::operator-=(const class Pythia8::Hist &) --> class Pythia8::Hist &", pybind11::return_value_policy::reference, pybind11::arg("h"));
 		cl.def("__imul__", (class Pythia8::Hist & (Pythia8::Hist::*)(const class Pythia8::Hist &)) &Pythia8::Hist::operator*=, "C++: Pythia8::Hist::operator*=(const class Pythia8::Hist &) --> class Pythia8::Hist &", pybind11::return_value_policy::reference, pybind11::arg("h"));

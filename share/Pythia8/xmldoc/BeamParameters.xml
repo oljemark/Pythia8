@@ -314,6 +314,17 @@ current version, some initialization may be performed for all particles, even
 if they are omitted from the list. 
 </mvec> 
  
+<parm name="Beams:eCMMaxMPI" default="10." min="10."> 
+When a file with MPI initialization parameters is generated with 
+<code>main424.cc</code>, mainly for cosmic-ray simulation with variable 
+beams and energies, this parameter is set as a separate line in the 
+<code>.cmnd</code> file to provide information on the maximum CM energy 
+of the grid. In a run where the <code>.cmnd</code> file is read the 
+parameter can then be interrogated to find the largest allowed energy. 
+The value is also stored in the <code>Init:reuseMPIiDiffSys</code> blocks, 
+but not as easily accessible. 
+</parm> 
+ 
 <h3>Beam momentum spread</h3> 
  
 This framework currently is intended for a modest beam spread, such as 
@@ -470,4 +481,4 @@ The time <ei>t</ei> of the interaction vertex is centered at this value.
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

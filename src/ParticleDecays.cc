@@ -1,5 +1,5 @@
 // ParticleDecays.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -113,9 +113,11 @@ void ParticleDecays::init(TimeShowerPtr timesDecPtrIn,
 
 //--------------------------------------------------------------------------
 
-// Decay a particle; main method.
+// Decay a particle; main method. If allowPartons is true the
+// decay products may consist of partons, which need to be
+// hadronised.
 
-bool ParticleDecays::decay( int iDec, Event& event) {
+bool ParticleDecays::decay( int iDec, Event& event, bool allowPartons) {
 
   // Check whether a decay is allowed, given the upcoming decay vertex.
   Particle& decayer = event[iDec];
@@ -238,7 +240,7 @@ bool ParticleDecays::decay( int iDec, Event& event) {
       // Pick new channel. Read out basics.
       DecayChannel& channel = decDataPtr->pickChannel();
       meMode = channel.meMode();
-      keepPartons = (meMode > 90 && meMode <= 100);
+      keepPartons = meMode > 90 && meMode <= 100;
       mult = channel.multiplicity();
 
       // Allow up to ten tries for each channel (e.g with different masses).
@@ -251,16 +253,32 @@ bool ParticleDecays::decay( int iDec, Event& event) {
 
         // Extract and store the decay products in local arrays.
         hasPartons = false;
+        int nNormalPartons = 0;
         for (int i = 0; i < mult; ++i) {
           int idNow = channel.product(i);
           int idAbs = abs(idNow);
-          if ( idAbs < 10 || idAbs == 21 || idAbs == 81 || idAbs == 82
-            || idAbs == 83 || (idAbs > 1000 && idAbs < 10000
-            && (idAbs/10)%10 == 0) ) hasPartons = true;
+          bool isNormalParton = idAbs < 10 || idAbs == 21
+            || (idAbs > 1000 && idAbs < 10000 && (idAbs/10)%10 == 0);
+          if (isNormalParton) ++nNormalPartons;
+          bool isSpecialParton = idAbs > 80 && idAbs < 84;
+          if (isNormalParton || isSpecialParton) hasPartons = true;
           if (idDec < 0 && particleDataPtr->hasAnti(idNow)) idNow = -idNow;
-          double mNow = particleDataPtr->mSel(idNow);
-          idProd.push_back( idNow);
-          mProd.push_back( mNow);
+          if (allowPartons || !isNormalParton) {
+            double mNow = particleDataPtr->mSel(idNow);
+            idProd.push_back( idNow);
+            mProd.push_back( mNow);
+          }
+        }
+
+        // Normal partons converted to simple q qbar pair when desired.
+        if (!allowPartons && nNormalPartons > 0) {
+          meMode = 42;
+          keepPartons = false;
+          mult = mult - nNormalPartons + 2;
+          idProd.push_back(83);
+          idProd.push_back(-83);
+          mProd.push_back( 0.);
+          mProd.push_back( 0.);
         }
 
         // Decays into partons usually translate into hadrons.
@@ -351,10 +369,9 @@ bool ParticleDecays::decay( int iDec, Event& event) {
     }
   }
 
-  bool checkForHadronization = false;
-
   // In a decay explicitly to partons then optionally do a shower,
   // and always flag that partonic system should be fragmented.
+  bool checkForHadronization = false;
   if (hasPartons && keepPartons && doFSRinDecays)
     timesDecPtr->shower( iProd[1], iProd.back(), event, mProd[0]);
 
@@ -372,6 +389,8 @@ bool ParticleDecays::decay( int iDec, Event& event) {
     if (timesDecPtr->showerQED( iProd[1], iProd.back(), event, mProd[0]) >= 0)
     checkForHadronization = true;
   }
+
+  // Extra check whether partons exist in the final state.
   if( checkForHadronization ) {
     for(int i = iProd.back()+1; i < event.size(); ++i ) {
       if( event[i].status() > 0  && event[i].colType() != 0 ) {

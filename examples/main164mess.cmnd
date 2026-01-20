@@ -31,15 +31,15 @@ Merging:muRenInME           = 91.188
 ! TimeShower:alphaSvalue    = 0.118
 
 ! Optionally write HepMC events.
-! (Pythia has to be configured with --with-hepmc3).
-Main:HepMC                  = on
-HepMC:output                = main164mess.hepmc
+! (Pythia has to be configured with --with-hepmc3 or --with-rivet).
+! Init:plugins                = {libpythia8hepmc3.so::HepMC3Hooks}
+! HepMC:filename              = main164mess.hepmc
 
 ! Optionally include Rivet analyses.
 ! (Pythia has to be configured with --with-rivet).
-Init:plugins                = {libpythia8rivet.so::RivetHooks}
-Rivet:fileName              = main164mess.yoda
-Rivet:analyses              = {MC_XS,MC_WEIGHTS}
+! Init:plugins                = {libpythia8rivet.so::RivetHooks}
+! Rivet:fileName              = main164mess.yoda
+! Rivet:analyses              = {MC_XS,MC_WEIGHTS}
 
 ! Subruns for CKKW-L merging.
 Main:numberOfSubruns        = 1

@@ -309,18 +309,18 @@ struct PyCallBack_Pythia8_StringZ : public Pythia8::StringZ {
 		}
 		return StringZ::zFrag(a0, a1, a2);
 	}
-	double zLund(double a0, double a1, double a2, double a3, double a4, int a5, bool a6, bool a7, bool a8, bool a9) override { 
+	double zLund(double a0, double a1, double a2, double a3) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::StringZ *>(this), "zLund");
 		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
 			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
 			else return pybind11::detail::cast_safe<double>(std::move(o));
 		}
-		return StringZ::zLund(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
+		return StringZ::zLund(a0, a1, a2, a3);
 	}
 	double zPeterson(double a0) override { 
 		pybind11::gil_scoped_acquire gil;
@@ -593,19 +593,29 @@ void bind_Pythia8_FragmentationFlavZpT(std::function< pybind11::module &(std::st
 		cl.def_readwrite("stopM", &Pythia8::StringZ::stopM);
 		cl.def_readwrite("stopNF", &Pythia8::StringZ::stopNF);
 		cl.def_readwrite("stopS", &Pythia8::StringZ::stopS);
+		cl.def_readwrite("zHead", &Pythia8::StringZ::zHead);
+		cl.def_readwrite("idFrag", &Pythia8::StringZ::idFrag);
+		cl.def_readwrite("isOldSQuark", &Pythia8::StringZ::isOldSQuark);
+		cl.def_readwrite("isNewSQuark", &Pythia8::StringZ::isNewSQuark);
+		cl.def_readwrite("isOldDiquark", &Pythia8::StringZ::isOldDiquark);
+		cl.def_readwrite("isNewDiquark", &Pythia8::StringZ::isNewDiquark);
+		cl.def_readwrite("aShape", &Pythia8::StringZ::aShape);
+		cl.def_readwrite("bShape", &Pythia8::StringZ::bShape);
+		cl.def_readwrite("cShape", &Pythia8::StringZ::cShape);
+		cl.def_readwrite("bNow", &Pythia8::StringZ::bNow);
+		cl.def_readwrite("fVal", &Pythia8::StringZ::fVal);
+		cl.def_readwrite("fPrb", &Pythia8::StringZ::fPrb);
+		cl.def_readwrite("posthoc", &Pythia8::StringZ::posthoc);
+		cl.def_readwrite("idOldNow", &Pythia8::StringZ::idOldNow);
+		cl.def_readwrite("idNewNow", &Pythia8::StringZ::idNewNow);
+		cl.def_readwrite("mT2Now", &Pythia8::StringZ::mT2Now);
 		cl.def("init", (bool (Pythia8::StringZ::*)()) &Pythia8::StringZ::init, "C++: Pythia8::StringZ::init() --> bool");
 		cl.def("zFrag", [](Pythia8::StringZ &o, int const & a0) -> double { return o.zFrag(a0); }, "", pybind11::arg("idOld"));
 		cl.def("zFrag", [](Pythia8::StringZ &o, int const & a0, int const & a1) -> double { return o.zFrag(a0, a1); }, "", pybind11::arg("idOld"), pybind11::arg("idNew"));
 		cl.def("zFrag", (double (Pythia8::StringZ::*)(int, int, double)) &Pythia8::StringZ::zFrag, "C++: Pythia8::StringZ::zFrag(int, int, double) --> double", pybind11::arg("idOld"), pybind11::arg("idNew"), pybind11::arg("mT2"));
 		cl.def("zLund", [](Pythia8::StringZ &o, double const & a0, double const & a1) -> double { return o.zLund(a0, a1); }, "", pybind11::arg("a"), pybind11::arg("b"));
 		cl.def("zLund", [](Pythia8::StringZ &o, double const & a0, double const & a1, double const & a2) -> double { return o.zLund(a0, a1, a2); }, "", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"));
-		cl.def("zLund", [](Pythia8::StringZ &o, double const & a0, double const & a1, double const & a2, double const & a3) -> double { return o.zLund(a0, a1, a2, a3); }, "", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("head"));
-		cl.def("zLund", [](Pythia8::StringZ &o, double const & a0, double const & a1, double const & a2, double const & a3, double const & a4) -> double { return o.zLund(a0, a1, a2, a3, a4); }, "", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("head"), pybind11::arg("bNow"));
-		cl.def("zLund", [](Pythia8::StringZ &o, double const & a0, double const & a1, double const & a2, double const & a3, double const & a4, int const & a5) -> double { return o.zLund(a0, a1, a2, a3, a4, a5); }, "", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("head"), pybind11::arg("bNow"), pybind11::arg("idFrag"));
-		cl.def("zLund", [](Pythia8::StringZ &o, double const & a0, double const & a1, double const & a2, double const & a3, double const & a4, int const & a5, bool const & a6) -> double { return o.zLund(a0, a1, a2, a3, a4, a5, a6); }, "", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("head"), pybind11::arg("bNow"), pybind11::arg("idFrag"), pybind11::arg("isOldSQuark"));
-		cl.def("zLund", [](Pythia8::StringZ &o, double const & a0, double const & a1, double const & a2, double const & a3, double const & a4, int const & a5, bool const & a6, bool const & a7) -> double { return o.zLund(a0, a1, a2, a3, a4, a5, a6, a7); }, "", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("head"), pybind11::arg("bNow"), pybind11::arg("idFrag"), pybind11::arg("isOldSQuark"), pybind11::arg("isNewSQuark"));
-		cl.def("zLund", [](Pythia8::StringZ &o, double const & a0, double const & a1, double const & a2, double const & a3, double const & a4, int const & a5, bool const & a6, bool const & a7, bool const & a8) -> double { return o.zLund(a0, a1, a2, a3, a4, a5, a6, a7, a8); }, "", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("head"), pybind11::arg("bNow"), pybind11::arg("idFrag"), pybind11::arg("isOldSQuark"), pybind11::arg("isNewSQuark"), pybind11::arg("isOldDiquark"));
-		cl.def("zLund", (double (Pythia8::StringZ::*)(double, double, double, double, double, int, bool, bool, bool, bool)) &Pythia8::StringZ::zLund, "C++: Pythia8::StringZ::zLund(double, double, double, double, double, int, bool, bool, bool, bool) --> double", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("head"), pybind11::arg("bNow"), pybind11::arg("idFrag"), pybind11::arg("isOldSQuark"), pybind11::arg("isNewSQuark"), pybind11::arg("isOldDiquark"), pybind11::arg("isNewDiquark"));
+		cl.def("zLund", (double (Pythia8::StringZ::*)(double, double, double, double)) &Pythia8::StringZ::zLund, "C++: Pythia8::StringZ::zLund(double, double, double, double) --> double", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("head"));
 		cl.def("zPeterson", (double (Pythia8::StringZ::*)(double)) &Pythia8::StringZ::zPeterson, "C++: Pythia8::StringZ::zPeterson(double) --> double", pybind11::arg("epsilon"));
 		cl.def("zLundMax", [](Pythia8::StringZ &o, double const & a0, double const & a1) -> double { return o.zLundMax(a0, a1); }, "", pybind11::arg("a"), pybind11::arg("b"));
 		cl.def("zLundMax", (double (Pythia8::StringZ::*)(double, double, double)) &Pythia8::StringZ::zLundMax, "C++: Pythia8::StringZ::zLundMax(double, double, double) --> double", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"));
@@ -619,6 +629,9 @@ void bind_Pythia8_FragmentationFlavZpT(std::function< pybind11::module &(std::st
 		cl.def("deriveABLund", [](Pythia8::StringZ &o, bool const & a0, bool const & a1) -> bool { return o.deriveABLund(a0, a1); }, "", pybind11::arg("derivaA"), pybind11::arg("deriveAExtraDiquark"));
 		cl.def("deriveABLund", (bool (Pythia8::StringZ::*)(bool, bool, bool)) &Pythia8::StringZ::deriveABLund, "C++: Pythia8::StringZ::deriveABLund(bool, bool, bool) --> bool", pybind11::arg("derivaA"), pybind11::arg("deriveAExtraDiquark"), pybind11::arg("deriveAExtraSQuark"));
 		cl.def("deriveBLund", (double (Pythia8::StringZ::*)(double, double, double)) &Pythia8::StringZ::deriveBLund, "C++: Pythia8::StringZ::deriveBLund(double, double, double) --> double", pybind11::arg("avgZ"), pybind11::arg("a"), pybind11::arg("mT2ref"));
+		cl.def("initFlav", (void (Pythia8::StringZ::*)(int, int)) &Pythia8::StringZ::initFlav, "C++: Pythia8::StringZ::initFlav(int, int) --> void", pybind11::arg("idOld"), pybind11::arg("idNew"));
+		cl.def("initShape", (void (Pythia8::StringZ::*)(double)) &Pythia8::StringZ::initShape, "C++: Pythia8::StringZ::initShape(double) --> void", pybind11::arg("mT2"));
+		cl.def("initFunc", (void (Pythia8::StringZ::*)(double, double, double, double, double, double, double)) &Pythia8::StringZ::initFunc, "C++: Pythia8::StringZ::initFunc(double, double, double, double, double, double, double) --> void", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("z"), pybind11::arg("zMax"), pybind11::arg("fPrel"), pybind11::arg("head"));
 		cl.def("assign", (class Pythia8::StringZ & (Pythia8::StringZ::*)(const class Pythia8::StringZ &)) &Pythia8::StringZ::operator=, "C++: Pythia8::StringZ::operator=(const class Pythia8::StringZ &) --> class Pythia8::StringZ &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 }

@@ -1,5 +1,5 @@
 // ColourReconnection.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -169,7 +169,7 @@ class ColourReconnection : public ColourReconnectionBase {
 public:
 
   // Constructor
-  ColourReconnection() : allowJunctions(), sameNeighbourCol(),
+  ColourReconnection() : allowVarE(), allowJunctions(), sameNeighbourCol(),
     singleReconOnly(), lowerLambdaOnly(), allowDiqJunCR(), nSys(),
     nReconCols(), swap1(), swap2(), reconnectMode(), flipMode(),
     timeDilationMode(), eCM(), sCM(), pT0(), pT20Rec(), pT0Ref(), ecmRef(),
@@ -195,8 +195,8 @@ private:
   static const int MAXRECONNECTIONS;
 
   // Variables needed.
-  bool   allowJunctions, sameNeighbourCol, singleReconOnly, lowerLambdaOnly;
-  bool   allowDiqJunCR;
+  bool   allowVarE, allowJunctions, sameNeighbourCol, singleReconOnly,
+         lowerLambdaOnly, allowDiqJunCR;
   int    nSys, nReconCols, swap1, swap2, reconnectMode, flipMode,
          timeDilationMode;
   double eCM, sCM, pT0, pT20Rec, pT0Ref, ecmRef, ecmPow, reconnectRange,

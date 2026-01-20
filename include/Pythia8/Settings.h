@@ -1,5 +1,5 @@
 // Settings.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -426,17 +426,6 @@ public:
   void initTuneEE(int eeTune, int subrun = SUBRUNDEFAULT);
   void initTunePP(int ppTune, int subrun = SUBRUNDEFAULT);
   void initTuneVincia(int vinciaTune, int subrun = SUBRUNDEFAULT);
-
-  // Useful functions for string handling.
-  bool   boolString(string tag);
-  string attributeValue(string line, string attribute);
-  bool   boolAttributeValue(string line, string attribute);
-  int    intAttributeValue(string line, string attribute);
-  double doubleAttributeValue(string line, string attribute);
-  vector<bool>   boolVectorAttributeValue(string line, string attribute);
-  vector<int>    intVectorAttributeValue(string line, string attribute);
-  vector<double> doubleVectorAttributeValue(string line, string attribute);
-  vector<string> stringVectorAttributeValue(string line, string attribute);
 
   // Track the current subrun and xmlpath.
   int subrunNow{SUBRUNDEFAULT};

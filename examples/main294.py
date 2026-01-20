@@ -1,5 +1,5 @@
 # main294.py is a part of the PYTHIA event generator.
-# Copyright (C) 2025 Torbjorn Sjostrand.
+# Copyright (C) 2026 Torbjorn Sjostrand.
 # PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 # Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -45,7 +45,7 @@ class ParticleData:
         self.mMax = float(mMax)
         self.varWidth = varWidth == "on"
         self.anti = antiName if antiName else None
-        self.n = tuple([(self.id/pow(10, i)) % 10 for i in range(10)])
+        self.n = tuple([int(self.id/pow(10, i)) % 10 for i in range(10)])
         if self.mMax == 0: self.mMax = float("inf")
         
     #----------------------------------------------------------------------

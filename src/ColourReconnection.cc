@@ -1,5 +1,5 @@
 // ColourReconnection.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -190,6 +190,7 @@ bool ColourReconnection::init() {
   reconnectMode       = mode("ColourReconnection:mode");
 
   // pT0 scale of MPI; used in the MPI-based reconnection model.
+  allowVarE           = flag("Beams:allowVariableEnergy");
   pT0Ref              = parm("MultipartonInteractions:pT0Ref");
   ecmRef              = parm("MultipartonInteractions:ecmRef");
   ecmPow              = parm("MultipartonInteractions:ecmPow");
@@ -2424,6 +2425,13 @@ void ColourReconnection::listJunctions() const {
 // Note: owing to rescatterings some outgoing partons must be skipped.
 
 bool ColourReconnection::reconnectMPIs( Event&  event, int oldSize) {
+
+  // Update pT0 to current colision energy where necessary.
+  if (allowVarE) {
+    eCM     = infoPtr->eCM();
+    pT0     = pT0Ref * pow(eCM / ecmRef, ecmPow);
+    pT20Rec = pow2(reconnectRange * pT0);
+  }
 
   // References to beams to simplify indexing.
   BeamParticle& beamA = *beamAPtr;

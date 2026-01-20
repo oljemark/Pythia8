@@ -279,7 +279,7 @@ void bind_Pythia8_ProcessContainer(std::function< pybind11::module &(std::string
 		cl.def("isSame", (bool (Pythia8::ProcessContainer::*)() const) &Pythia8::ProcessContainer::isSame, "C++: Pythia8::ProcessContainer::isSame() const --> bool");
 		cl.def("assign", (class Pythia8::ProcessContainer & (Pythia8::ProcessContainer::*)(const class Pythia8::ProcessContainer &)) &Pythia8::ProcessContainer::operator=, "C++: Pythia8::ProcessContainer::operator=(const class Pythia8::ProcessContainer &) --> class Pythia8::ProcessContainer &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::SetupContainers file:Pythia8/ProcessContainer.h line:233
+	{ // Pythia8::SetupContainers file:Pythia8/ProcessContainer.h line:237
 		pybind11::class_<Pythia8::SetupContainers, std::shared_ptr<Pythia8::SetupContainers>> cl(M("Pythia8"), "SetupContainers", "");
 		pybind11::handle cl_type = cl;
 

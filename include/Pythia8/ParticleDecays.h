@@ -1,5 +1,5 @@
 // ParticleDecays.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -72,8 +72,10 @@ public:
   void init(TimeShowerPtr timesDecPtrIn, StringFlav* flavSelPtrIn,
             DecayHandlerPtr decayHandlePtrIn, vector<int> handledParticles);
 
-  // Perform a decay of a single particle.
-  bool decay(int iDec, Event& event);
+  // Perform a decay of a single particle. If allowPartons is true the
+  // decay products may consist of partons, which need to be
+  // hadronised.
+  bool decay(int iDec, Event& event, bool allowPartons = true);
 
   // Perform decays on all particles in the event.
   bool decayAll(Event& event, double minWidth = 0.);

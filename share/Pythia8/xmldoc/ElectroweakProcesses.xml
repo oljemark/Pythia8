@@ -121,7 +121,9 @@ or <ei>W^+-</ei> exchange between two fermions.
 <flag name="WeakBosonExchange:ff2ff(t:gmZ)" default="off"> 
 Scattering <ei>f f' &rarr; f f'</ei> via <ei>gamma^*/Z^0</ei> 
 <ei>t</ei>-channel exchange, with full interference 
-between the <ei>gamma^*</ei> and <ei>Z^0</ei>. 
+between the <ei>gamma^*</ei> and <ei>Z^0</ei>. This process can be 
+reweighted via inclusive NLO-matching with the flag 
+<code>SigmaProcess:reweightNLO = on</code>. 
 Code 211. 
 </flag> 
  
@@ -356,4 +358,4 @@ Code 275 (285).
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

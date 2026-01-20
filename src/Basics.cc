@@ -1,5 +1,5 @@
 // Basics.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -646,6 +646,11 @@ Vec4 cross4(const Vec4& a, const Vec4& b, const Vec4& c) {
            + a.xx*b.tt*c.yy + a.tt*b.yy*c.xx + a.yy*b.xx*c.tt);
   return v;
 }
+
+//--------------------------------------------------------------------------
+
+double eps4(const Vec4& a, const Vec4& b, const Vec4& c, const Vec4& d) {
+  return a * cross4(b, c, d); }
 
 //--------------------------------------------------------------------------
 
@@ -2126,6 +2131,25 @@ void Hist::normalizeSpectrum(double wtSum) {
 
 //--------------------------------------------------------------------------
 
+// Add contents of all previous bins to each bin, like an integral.
+
+void Hist::makeCumulative( bool updateStatistics, bool withUnderflow) {
+  double x, w;
+  for (int ix = 0; ix < nBin; ++ix) {
+    w = (ix > 0) ? res[ix - 1] : (withUnderflow ? under : 0.);
+    res[ix] += w;
+    if (updateStatistics) {
+      x = (linX) ? xMin + (ix + 0.5) * dx : xMin * pow(10., (ix + 0.5) * dx);
+      res2[ix]  += w * w;
+      inside    += w;
+      sumxNw[0] += w;
+      sumxNw[1] += x * w;
+    }
+  }
+}
+
+//--------------------------------------------------------------------------
+
 // Add histogram to existing one.
 
 Hist& Hist::operator+=(const Hist& h) {
@@ -2474,6 +2498,7 @@ void HistPlot::plot( bool logY, bool logX, bool userBorders) {
                 << endl << "plt.hist( valx, vale, weights = valy,"
                 << " histtype='step',";
     else toPython << "plt.plot( valx, valy, '" << style1 << "',";
+    if (style1 == ".") toPython << " markersize=2,";
     if (style2 != "") toPython << " color='" << style2 << "',";
     toPython << " label=r\"" << legendNow << "\")" << endl;
     if (style1 == "e") {

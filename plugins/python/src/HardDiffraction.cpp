@@ -792,7 +792,7 @@ void bind_Pythia8_HardDiffraction(std::function< pybind11::module &(std::string 
 		cl.def_readwrite("nZ", &Pythia8::PhaseSpace::nZ);
 		cl.def_readwrite("doTopPair", &Pythia8::PhaseSpace::doTopPair);
 		cl.def_readwrite("topThresholdModel", &Pythia8::PhaseSpace::topThresholdModel);
-		cl.def_readwrite("topThresholdWidth", &Pythia8::PhaseSpace::topThresholdWidth);
+		cl.def_readwrite("topThresholdRegion", &Pythia8::PhaseSpace::topThresholdRegion);
 		cl.def_readwrite("eThreshold", &Pythia8::PhaseSpace::eThreshold);
 		cl.def_readwrite("m3Threshold", &Pythia8::PhaseSpace::m3Threshold);
 		cl.def_readwrite("m4Threshold", &Pythia8::PhaseSpace::m4Threshold);

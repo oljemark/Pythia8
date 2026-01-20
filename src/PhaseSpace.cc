@@ -1,5 +1,5 @@
 // PhaseSpace.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -202,11 +202,11 @@ void PhaseSpace::init(bool isFirst, SigmaProcessPtr sigmaProcessPtrIn) {
   if (canBias2Sel) pTHatGlobalMin = max( pTHatGlobalMin, pTHatMinDiverge);
 
   // Parameters for special top threshold handling in gg/qqbar -> ttbar.
-  int codeTmp       = sigmaProcessPtr->code();
-  doTopPair         = (codeTmp == 601 || codeTmp == 602);
-  topThresholdModel = (doTopPair) ? mode("TopThreshold:model") : 0;
-  topThresholdWidth = (topThresholdModel == 4)
-    ? parm("TopThreshold:width") : 0.;
+  int codeTmp        = sigmaProcessPtr->code();
+  doTopPair          = (codeTmp == 601 || codeTmp == 602);
+  topThresholdModel  = (doTopPair) ? mode("TopThreshold:model") : 0;
+  topThresholdRegion = (topThresholdModel > 1)
+    ? parm("TopThreshold:thrRegion") : 0.;
 
   // Default event-specific kinematics properties.
   x1H             = 1.;
@@ -1033,7 +1033,7 @@ bool PhaseSpace::trialKin123(bool is2, bool is3, bool inEvent) {
   selectTau( iTau, rndmPtr->flat(), is2);
 
   // Special case for ttbar production below threshold.
-  if (topThresholdModel == 4 && sqrt(sH) - m3 - m4 < MASSMARGIN) return false;
+  if (topThresholdModel > 1 && sqrt(sH) - m3 - m4 < MASSMARGIN) return false;
 
   // Choose y according to h2(y), where
   // h2(y) = (c0/I0) * 1/cosh(y)
@@ -1169,7 +1169,7 @@ bool PhaseSpace::limitTau(bool is2, bool is3) {
     double mT4Min = sqrt(s4 + pT2HatMin);
     double mT5Min = (is3) ? sqrt(s5 + pT2HatMin) : 0.;
     tauMin = max( tauMin, pow2(mT3Min + mT4Min + mT5Min
-      - 2. * topThresholdWidth) / s);
+      - 2. * topThresholdRegion) / s);
   }
 
   // Check that there is an open range.

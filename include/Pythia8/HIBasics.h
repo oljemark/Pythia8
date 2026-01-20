@@ -1,5 +1,5 @@
 // HIBasics.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -27,7 +27,7 @@ class EventInfo {
 public:
 
   // Empty constructor.
-  EventInfo(): code(0), ordering(-1.0), coll(0), ok(false) {}
+  EventInfo() = default;
 
   // The Event object.
   Event event;
@@ -36,23 +36,30 @@ public:
   Info info;
 
   // The code for the subprocess.
-  int code;
+  int code = 0;
 
   // The ordering variable of this event.
-  double ordering;
+  double ordering = -1.0;
   bool operator<(const EventInfo & ei) const {
     return ordering < ei.ordering;
   }
 
   // The associated SubCollision object.
-  const SubCollision* coll;
+  const SubCollision* coll = {};
 
   // Is the event properly generated?
-  bool ok;
+  bool ok = false;
 
   // Which projectile and target nucleons are included and where are
   // they placed?
   map<Nucleon*, pair<int,int> > projs, targs;
+
+  // Also map the remnants for thie for the projectile and/or target, if any.
+  map<Nucleon*, vector<int> > projRems, targRems;
+
+  // ... and the location of the projectile's and/or target's (quasi)
+  // elastically scattered nucleon. (Note that this is also a remnant.)
+  map<Nucleon*, int> projEl, targEl;
 
 };
 

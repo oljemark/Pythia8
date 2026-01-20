@@ -1,5 +1,5 @@
 // SigmaProcess.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -159,6 +159,9 @@ public:
   virtual bool final2KinMPI( int = 0, int = 0, Vec4 = 0., Vec4 = 0.,
     double = 0., double = 0.) {return true;}
 
+  // Evaluate inclusive NLO weight.
+  virtual double weightNLO() {return 1.;}
+
   // Evaluate weight for simultaneous flavours (only gamma*/Z0 gamma*/Z0).
   // Usage: weightDecayFlav( process).
   virtual double weightDecayFlav( Event&) {return 1.;}
@@ -200,6 +203,9 @@ public:
 
   // Special treatment needed if negative cross sections allowed.
   virtual bool   allowNegativeSigma() const {return false;}
+
+  // Whether this process has an inclusive NLO correction implemented.
+  virtual bool   hasNLO()          const {return false;}
 
   // Flavours in 2 -> 2/3 processes where masses needed from beginning.
   // (For a light quark masses will be used in the final kinematics,

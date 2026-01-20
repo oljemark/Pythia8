@@ -27,27 +27,20 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
 
-// Pythia8::RndmEngine file:Pythia8/Basics.h line:355
-struct PyCallBack_Pythia8_RndmEngine : public Pythia8::RndmEngine {
-	using Pythia8::RndmEngine::RndmEngine;
-
-	double flat() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RndmEngine *>(this), "flat");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return RndmEngine::flat();
-	}
-};
-
 void bind_Pythia8_Basics(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
+	// Pythia8::m(const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:149
+	M("Pythia8").def("m", (double (*)(const class Pythia8::Vec4 &)) &Pythia8::m, "C++: Pythia8::m(const class Pythia8::Vec4 &) --> double", pybind11::arg("v1"));
+
+	// Pythia8::m(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:150
+	M("Pythia8").def("m", (double (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::m, "C++: Pythia8::m(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> double", pybind11::arg("v1"), pybind11::arg("v2"));
+
+	// Pythia8::m2(const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:151
+	M("Pythia8").def("m2", (double (*)(const class Pythia8::Vec4 &)) &Pythia8::m2, "C++: Pythia8::m2(const class Pythia8::Vec4 &) --> double", pybind11::arg("v1"));
+
+	// Pythia8::m2(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:152
+	M("Pythia8").def("m2", (double (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::m2, "C++: Pythia8::m2(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> double", pybind11::arg("v1"), pybind11::arg("v2"));
+
 	// Pythia8::m2(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:153
 	M("Pythia8").def("m2", (double (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::m2, "C++: Pythia8::m2(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> double", pybind11::arg("v1"), pybind11::arg("v2"), pybind11::arg("v3"));
 
@@ -96,10 +89,13 @@ void bind_Pythia8_Basics(std::function< pybind11::module &(std::string const &na
 	// Pythia8::getTwoPerpendicular(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:185
 	M("Pythia8").def("getTwoPerpendicular", (struct std::pair<class Pythia8::Vec4, class Pythia8::Vec4> (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::getTwoPerpendicular, "C++: Pythia8::getTwoPerpendicular(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> struct std::pair<class Pythia8::Vec4, class Pythia8::Vec4>", pybind11::arg("v1"), pybind11::arg("v2"));
 
-	// Pythia8::costheta(double, double, double, double, double) file:Pythia8/Basics.h line:225
+	// Pythia8::eps4(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:223
+	M("Pythia8").def("eps4", (double (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::eps4, "C++: Pythia8::eps4(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> double", pybind11::arg("a"), pybind11::arg("b"), pybind11::arg("c"), pybind11::arg("d"));
+
+	// Pythia8::costheta(double, double, double, double, double) file:Pythia8/Basics.h line:230
 	M("Pythia8").def("costheta", (double (*)(double, double, double, double, double)) &Pythia8::costheta, "C++: Pythia8::costheta(double, double, double, double, double) --> double", pybind11::arg("e1"), pybind11::arg("e2"), pybind11::arg("m1"), pybind11::arg("m2"), pybind11::arg("s12"));
 
-	{ // Pythia8::RotBstMatrix file:Pythia8/Basics.h line:254
+	{ // Pythia8::RotBstMatrix file:Pythia8/Basics.h line:259
 		pybind11::class_<Pythia8::RotBstMatrix, std::shared_ptr<Pythia8::RotBstMatrix>> cl(M("Pythia8"), "RotBstMatrix", "");
 		pybind11::handle cl_type = cl;
 
@@ -134,33 +130,17 @@ void bind_Pythia8_Basics(std::function< pybind11::module &(std::string const &na
 
 		cl.def("__str__", [](Pythia8::RotBstMatrix const &o) -> std::string { std::ostringstream s; s << o; return s.str(); } );
 	}
-	// Pythia8::toCMframe(const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:319
+	// Pythia8::toCMframe(const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:324
 	M("Pythia8").def("toCMframe", (class Pythia8::RotBstMatrix (*)(const class Pythia8::Vec4 &)) &Pythia8::toCMframe, "C++: Pythia8::toCMframe(const class Pythia8::Vec4 &) --> class Pythia8::RotBstMatrix", pybind11::arg("p"));
 
-	// Pythia8::fromCMframe(const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:323
+	// Pythia8::fromCMframe(const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:328
 	M("Pythia8").def("fromCMframe", (class Pythia8::RotBstMatrix (*)(const class Pythia8::Vec4 &)) &Pythia8::fromCMframe, "C++: Pythia8::fromCMframe(const class Pythia8::Vec4 &) --> class Pythia8::RotBstMatrix", pybind11::arg("p"));
 
-	// Pythia8::toCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:328
+	// Pythia8::toCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:333
 	M("Pythia8").def("toCMframe", (class Pythia8::RotBstMatrix (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::toCMframe, "C++: Pythia8::toCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> class Pythia8::RotBstMatrix", pybind11::arg("p1"), pybind11::arg("p2"));
 
-	// Pythia8::fromCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, bool) file:Pythia8/Basics.h line:334
+	// Pythia8::fromCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, bool) file:Pythia8/Basics.h line:339
 	M("Pythia8").def("fromCMframe", [](const class Pythia8::Vec4 & a0, const class Pythia8::Vec4 & a1) -> Pythia8::RotBstMatrix { return Pythia8::fromCMframe(a0, a1); }, "", pybind11::arg("p1"), pybind11::arg("p2"));
 	M("Pythia8").def("fromCMframe", (class Pythia8::RotBstMatrix (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, bool)) &Pythia8::fromCMframe, "C++: Pythia8::fromCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, bool) --> class Pythia8::RotBstMatrix", pybind11::arg("p1"), pybind11::arg("p2"), pybind11::arg("flip"));
 
-	// Pythia8::toCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:340
-	M("Pythia8").def("toCMframe", (class Pythia8::RotBstMatrix (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::toCMframe, "C++: Pythia8::toCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> class Pythia8::RotBstMatrix", pybind11::arg("ptot"), pybind11::arg("pz"), pybind11::arg("pxz"));
-
-	// Pythia8::fromCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) file:Pythia8/Basics.h line:347
-	M("Pythia8").def("fromCMframe", (class Pythia8::RotBstMatrix (*)(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::fromCMframe, "C++: Pythia8::fromCMframe(const class Pythia8::Vec4 &, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> class Pythia8::RotBstMatrix", pybind11::arg("ptot"), pybind11::arg("pz"), pybind11::arg("pxz"));
-
-	{ // Pythia8::RndmEngine file:Pythia8/Basics.h line:355
-		pybind11::class_<Pythia8::RndmEngine, std::shared_ptr<Pythia8::RndmEngine>, PyCallBack_Pythia8_RndmEngine> cl(M("Pythia8"), "RndmEngine", "");
-		pybind11::handle cl_type = cl;
-
-		cl.def( pybind11::init( [](PyCallBack_Pythia8_RndmEngine const &o){ return new PyCallBack_Pythia8_RndmEngine(o); } ) );
-		cl.def( pybind11::init( [](Pythia8::RndmEngine const &o){ return new Pythia8::RndmEngine(o); } ) );
-		cl.def( pybind11::init( [](){ return new Pythia8::RndmEngine(); }, [](){ return new PyCallBack_Pythia8_RndmEngine(); } ) );
-		cl.def("flat", (double (Pythia8::RndmEngine::*)()) &Pythia8::RndmEngine::flat, "C++: Pythia8::RndmEngine::flat() --> double");
-		cl.def("assign", (class Pythia8::RndmEngine & (Pythia8::RndmEngine::*)(const class Pythia8::RndmEngine &)) &Pythia8::RndmEngine::operator=, "C++: Pythia8::RndmEngine::operator=(const class Pythia8::RndmEngine &) --> class Pythia8::RndmEngine &", pybind11::return_value_policy::reference, pybind11::arg(""));
-	}
 }

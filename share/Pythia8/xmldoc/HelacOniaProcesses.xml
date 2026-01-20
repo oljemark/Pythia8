@@ -11,11 +11,9 @@ internal processes provided in <aloc href="OniaProcesses">Onia</aloc>
 are needed, including matrix elements which are not spin-averaged, as 
 well as the ability to produce <ei>n</ei>-leg matrix elements beyond 
 the leading tree-level diagrams. The HelacOnia code can be downloaded 
-from 
-<br><a href="http://helac-phegas.web.cern.ch/helac-phegas/helac-onia.html" 
-       target="page"> 
-  http://helac-phegas.web.cern.ch/helac-phegas/helac-onia.html</a>, 
-</br>where only version 2 and above is compatible with PYTHIA. 
+from <a href="https://helac-phegas.web.cern.ch/helac-onia.html" target="page"> 
+the HelacOnia page</a>, where only version 2 and above is compatible with 
+PYTHIA. 
  
 <p/> 
 Within HelacOnia, events can automatically be passed to PYTHIA for 
@@ -114,4 +112,4 @@ setEvents can be used to increase the number of events generated per run.
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

@@ -173,6 +173,8 @@ void bind_Pythia8_BeamSetup(std::function< pybind11::module &(std::string const 
 		cl.def_readwrite("eB", &Pythia8::BeamSetup::eB);
 		cl.def_readwrite("pzAcm", &Pythia8::BeamSetup::pzAcm);
 		cl.def_readwrite("pzBcm", &Pythia8::BeamSetup::pzBcm);
+		cl.def_readwrite("eAcm", &Pythia8::BeamSetup::eAcm);
+		cl.def_readwrite("eBcm", &Pythia8::BeamSetup::eBcm);
 		cl.def_readwrite("eCM", &Pythia8::BeamSetup::eCM);
 		cl.def_readwrite("betaZ", &Pythia8::BeamSetup::betaZ);
 		cl.def_readwrite("gammaZ", &Pythia8::BeamSetup::gammaZ);

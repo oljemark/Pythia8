@@ -1,5 +1,5 @@
 // HeavyIons.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -25,8 +25,8 @@ class Pythia;
 // HeavyIons contains several standard Pythia objects to allow for
 // the combination of different kinds of nucleon-nucleon events into
 // a heavy ion collision event. The actual model for doing this must
-// be implemented in a subclass overriding the the virtual'init()'
-// and 'next()' functions.
+// be implemented in a subclass overriding the the virtual init()
+// and next() methods.
 
 class HeavyIons : public PhysicsBase {
 
@@ -60,6 +60,10 @@ public:
   // Static function to allow Pythia to duplicate some setting names
   // to be used for secondary Pythia objects.
   static void addSpecialSettings(Settings& settings);
+
+  // Clear SoftQCD flags for Pythia subobjects, but return processes
+  // explicitly turned off.
+  static set<int> clearSoftQCDFlags(Settings& settings);
 
   // Return true if the beams in the Primary Pythia object contains
   // heavy ions.
@@ -98,6 +102,10 @@ public:
 
 protected:
 
+  // Report status of glauber calculation. Return 0 for none, 1 for
+  // total cross section only, and 2 for full calculation.
+  virtual int hasGlauberCalculation() const { return 0; }
+
   // Update the cross section in the main Pythia Info object using
   // information in the hiInfo object.
   void updateInfo();
@@ -121,7 +129,7 @@ protected:
 
   // This is the pointer to the main Pythia object to which this
   // object is assigned.
-  Pythia * mainPythiaPtr;
+  Pythia * mainPythiaPtr = {};
 
   // Object containing information on inclusive pp cross sections to
   // be used in Glauber calculations in subclasses.
@@ -129,7 +137,7 @@ protected:
 
   // Optional HIUserHooks object able to modify the behavior of the
   // HeavyIon model.
-  HIUserHooksPtr HIHooksPtr;
+  HIUserHooksPtr HIHooksPtr = {};
 
   // The internal Pythia objects. Index zero will always correspond
   // to the mainPythiaPtr.
@@ -173,6 +181,10 @@ public:
     SIGNN = 6,    // Optional object for signal processes (nn).
     ALL = 7       // Indicates all objects.
   };
+
+  // Convenient typedef for adding secondary sub-collisions.
+  typedef tuple<SubCollision::CollisionType, int,
+                Nucleon::Status, Nucleon::Status> CollDesc;
 
 public:
 
@@ -222,7 +234,7 @@ public:
   }
 
   // Get the underlying impact parameter generator.
-  const ImpactParameterGenerator impactParameterGenerator() const {
+  const ImpactParameterGenerator& impactParameterGenerator() const {
     return *bGenPtr.get(); }
 
   // Projectile nucleus configuration for the current event.
@@ -242,7 +254,7 @@ public:
     return *targPtr.get(); }
 
   // Hadronic cross sections used by the subcollision model.
-  const SigmaTotal sigmaNN() const {
+  const SigmaTotal & sigmaNN() const {
     return sigTotNN; }
 
 protected:
@@ -253,67 +265,71 @@ protected:
   // Figure out what beams the user want.
   void setBeamKinematics(int idA, int idB);
 
-  // Initiaize a specific Pythia object and optionally run a number
+  // Initialize a specific Pythia object and optionally run a number.
   // of events to get a handle of the cross section.
   bool init(PythiaObject sel, string name, int n = 0);
 
+  // Generate events from the internal Pythia objects;
+  EventInfo getSignal(const SubCollision& coll);
+  EventInfo getMBIAS(const SubCollision * coll, int procid);
+  EventInfo getSASD(const SubCollision * coll, int procid, EventInfo * evp);
+  EventInfo getSABS(const SubCollision * coll, int procid, EventInfo * evp);
+
   // Setup an EventInfo object from a Pythia instance.
   EventInfo mkEventInfo(Pythia &, Info &, const SubCollision * coll = 0);
-
-  // Generate events from the internal Pythia oblects;
-  EventInfo getSignal(const SubCollision& coll);
-  EventInfo getND() { return getMBIAS(0, 101); }
-  EventInfo getND(const SubCollision& coll) { return getMBIAS(&coll, 101); }
-  EventInfo getEl(const SubCollision& coll) { return getMBIAS(&coll, 102); }
-  EventInfo getSDP(const SubCollision& coll) { return getMBIAS(&coll, 103); }
-  EventInfo getSDT(const SubCollision& coll) { return getMBIAS(&coll, 104); }
-  EventInfo getDD(const SubCollision& coll) { return getMBIAS(&coll, 105); }
-  EventInfo getCD(const SubCollision& coll) { return getMBIAS(&coll, 106); }
-  EventInfo getSDabsP(const SubCollision& coll)
-    { return getSASD(&coll, 103); }
-  EventInfo getSDabsT(const SubCollision& coll)
-    { return getSASD(&coll, 104); }
-  EventInfo getMBIAS(const SubCollision * coll, int procid);
-  EventInfo getSASD(const SubCollision * coll, int procid);
-
-  bool genAbs(SubCollisionSet& subCollsIn, list<EventInfo>& subEventsIn);
-  void addSASD(const SubCollisionSet& subCollsIn);
-  bool addDD(const SubCollisionSet& subCollsIn, list<EventInfo>& subEventsIn);
-  bool addSD(const SubCollisionSet& subCollsIn, list<EventInfo>& subEventsIn);
-  void addSDsecond(const SubCollisionSet& subCollsIn);
-  bool addCD(const SubCollisionSet& subCollsIn, list<EventInfo>& subEventsIn);
-  void addCDsecond(const SubCollisionSet& subCollsIn);
-  bool addEL(const SubCollisionSet& subCollsIn, list<EventInfo>& subEventsIn);
-  void addELsecond(const SubCollisionSet& subCollsIn);
-
-  void resetEvent();
-  bool buildEvent(list<EventInfo>& subEventsIn);
-
-  bool setupFullCollision(EventInfo& ei, const SubCollision& coll,
-    Nucleon::Status projStatus, Nucleon::Status targStatus);
-  bool isRemnant(const EventInfo& ei, int i, int past = 1 ) const {
-    int statNow = ei.event[i].status()*past;
-    if ( statNow == 63 ) return true;
-    if ( statNow > 70 && statNow < 80 )
-      return isRemnant(ei, ei.event[i].mother1(), -1);
-    return false;
-  }
+  static bool streamline(EventInfo& ei);
   bool fixIsoSpin(EventInfo& ei);
   EventInfo& shiftEvent(EventInfo& ei);
   static int getBeam(Event& ev, int i);
+  static int isRemnant(const EventInfo& ei, int i, int past = 1 ) {
+    if ( i < 3 ) return 0;
+    int statNow = ei.event[i].status()*past;
+    if ( statNow == 63 ) return ei.event[i].mother1();
+    if ( statNow/10 == 7 )
+      return isRemnant(ei, ei.event[i].mother1(), -1);
+    return false;
+  }
+
+  // Special procedures for generating primary hard or ND events and
+  // secondary ones.
+  bool genAbs(SubCollisionSet& subCollsIn, list<EventInfo>& subEventsIn);
+  void addSASD(const SubCollisionSet& subCollsIn);
+
+  // Setup sub-events.
+  bool setupFullCollision(EventInfo& ei, const SubCollision& coll,
+    Nucleon::Status projStatus, Nucleon::Status targStatus);
+  bool addSubCollisions(const SubCollisionSet& subCollsIn,
+                        list<EventInfo>& subEventsIn,
+                        vector<CollDesc> colldescs);
+  void addSecondaries(const SubCollisionSet& subCollsIn,
+                        vector<CollDesc> colldescs);
+
+  // Fix the final event.
+  void resetEvent();
+  bool buildEvent(list<EventInfo>& subEventsIn);
+
 
   // Generate a single diffractive
   bool nextSASD(int proc);
 
-  // Add a diffractive event to an exsisting one. Optionally connect
+  // Add a diffractive event to an existing one. Optionally connect
   // the colours of the added event to the original.
   bool addNucleonExcitation(EventInfo& orig, EventInfo& add,
+                            bool colConnect = false);
+  bool addNucleonExcitation2(EventInfo& orig, EventInfo& add,
                             bool colConnect = false);
 
   // Find the recoilers in the current event to conserve energy and
   // momentum in addNucleonExcitation.
   vector<int> findRecoilers(const Event& e, bool tside, int beam, int end,
                             const Vec4& pdiff, const Vec4& pbeam);
+
+  // Add entries in the middle of the event record.
+  static void insertEntries(Event & e, int pos, int n);
+
+  // Fix a non-diffractive event so that one side looks like an single
+  // diffractive event.
+  bool fixSecondaryAbsorptive(Event & ev, double xpom);
 
   // Add a sub-event to the final event record.
   void addSubEvent(Event& evnt, Event& sub);
@@ -322,6 +338,9 @@ protected:
   // Add a nucleus remnant to the given event. Possibly introducing
   // a new particle type.
   bool addNucleusRemnants();
+
+  // Update the medium cross section overestimates for the cascade mode.
+  void updateMedium();
 
 public:
 
@@ -335,7 +354,8 @@ public:
 
 private:
 
-  // Private UserHooks class to select a specific process.
+  // Private UserHooks class to select a specific process and restrict
+  // emissions.
   struct ProcessSelectorHook: public UserHooks {
 
     ProcessSelectorHook(): proc(0), b(-1.0) {}
@@ -346,8 +366,95 @@ private:
     }
 
     // Veto any unwanted process.
-    virtual bool doVetoProcessLevel(Event&) {
-      return proc > 0 && infoPtr->code() != proc;
+    virtual bool doVetoProcessLevel(Event& process) {
+      failcount = 0;
+      if ( proc > 0 && infoPtr->code()%10 != proc%10 ) return true;
+
+      // *** TODO *** This is a workaround for problems with
+      // diffractively excited bottom mesons.
+      if ( infoPtr->code() == 103 && process[1].idAbs() < 600 &&
+           process[1].idAbs() > 500 && process[3].status() == 15 &&
+           process[3].m() < process[1].m() + 1.0 + 0.4)
+        return true;
+      if ( infoPtr->code() == 105 && process[1].idAbs() < 600 &&
+           process[1].idAbs() > 500 && process[3].status() == 15 &&
+           process[3].m() < process[1].m() + 1.0 + 0.4)
+        return true;
+      return false;
+    }
+
+    // Possibility to veto an emission in the ISR machinery.
+    virtual bool canVetoISREmission() { return true; }
+
+    // Decide whether to veto current ISR emission or not, based on
+    // event record.
+    virtual bool doVetoISREmission( int oldsize, const Event& ev, int iSys) {
+      return xveto(4, ev, oldsize, iSys);
+    }
+
+    // Possibility to veto an emission in the FSR machinery.
+    virtual bool canVetoFSREmission() { return true; }
+
+    // Decide whether to veto current FSR emission or not, based on
+    // event record.
+    virtual bool doVetoFSREmission( int oldsize, const Event& ev,
+                                    int iSys, bool = false ) {
+      return xveto(5, ev, oldsize, iSys);
+    }
+
+    // Possibility to veto an MPI.
+    virtual bool canVetoMPIEmission() { return true; }
+
+    // Decide whether to veto an MPI based on event record.
+    virtual bool doVetoMPIEmission( int oldsize, const Event & ev) {
+      return xveto(3, ev, oldsize, -1);
+    }
+
+    // Possibility to veto MPI evolution and kill event, making
+    // decision after fixed number of MPI steps.
+    virtual bool canVetoMPIStep() {return true;}
+
+    // Up to how many MPI steps should be checked.
+    virtual int numberVetoMPIStep() {return 1;}
+
+    // Decide whether to veto current event or not, based on event
+    // record.
+    virtual bool doVetoMPIStep( int istep, const Event& ev) {
+      return istep == 1? procveto(ev): giveUp;
+    }
+
+    // Possibility to veto ISR + FSR evolution and kill event, making
+    // decision after fixed number of ISR and FSR steps.
+    virtual bool canVetoStep() {return true;}
+
+    // Up to how many MPI steps should be checked.
+    virtual int numberVetoStep() {return 1000000;}
+
+    // Check if we have already given up on this event.
+    virtual bool doVetoStep( int , int, int, const Event&) {
+      if ( giveUp ) infoPtr->setAbortPartonLevel(true);
+      return giveUp;
+    }
+
+    // We must veto the before we get beam remnants.
+    virtual bool canVetoPartonLevelEarly() {
+      return true;
+    }
+
+    // Check that how much valance flavour has been extracted. This is
+    // the final veto.
+    virtual bool doVetoPartonLevelEarly(const Event & event) {
+      return finalveto(event);
+    }
+
+    // Can set the enhancement for the MPI treatment.
+    virtual bool canSetEnhanceB() const {
+      return olap >= 0.0;
+    }
+
+    // Set the enhancement for the MPI treatment.
+    virtual double doSetEnhanceB() {
+      return olap;
     }
 
     // Can set the overall impact parameter for the MPI treatment.
@@ -360,11 +467,49 @@ private:
       return b;
     }
 
+    // When generating non-diffractive events to get a secondary
+    // absorptive, figure out if an emission or a MPI should be
+    // vetoed.
+    bool xveto(int type, const Event & event, int oldsize, int iSys);
+
+    // Check that we are generating the correct process.
+    bool procveto(const Event& ev);
+
+    // Check that we are happy with the final parton level of this
+    // event.
+    bool finalveto(const Event& ev);
+
+    bool checkVeto(bool ret) {
+      if ( ret ) {
+        ++failcount;
+        if ( failcount >= 100  ) {
+          giveUp = true;
+        }
+      } else
+        failcount = 0;
+      return ( giveUp? false: ret );
+    }
+
     // The wanted process;
-    int proc;
+    int proc = 0;
 
     // The selected b-value.
-    double b;
+    double b = -1;
+
+    // The selected b-value (scaled with average overlap).
+    double olap = 0;
+
+    // The absolute value gives of the maximum energy allowed to be
+    // taken out from the nucleon. The sign indicates which side is
+    // affected.
+    double xmax = 0.0;
+
+    // Handle initial state quarks.
+    int nAllowQuarkTries = 1;
+    int iAllowQuarkTries = 0;
+    bool hasQuark = false;
+    bool giveUp = false;
+    int failcount = 0;
 
   };
 
@@ -373,9 +518,16 @@ private:
 
     // Set the given process for the given hook object.
     HoldProcess(shared_ptr<ProcessSelectorHook> hook, int proc,
-      double b = -1.0) : saveHook(hook), saveProc(hook->proc), saveB(hook->b) {
+      double b = -1.0, double olap = -1.0, double xmax = 0.0)
+      : saveHook(hook), saveProc(hook->proc), saveB(hook->b),
+        saveOlap(hook->olap), saveXmax(hook->xmax) {
       hook->proc = proc;
       hook->b = b;
+      hook->olap = olap;
+      hook->xmax = xmax;
+      hook->iAllowQuarkTries = 0;
+      hook->hasQuark = hook->giveUp = false;
+      hook->failcount = 0;
     }
 
     // Reset the process of the hook object given in the constructor.
@@ -383,6 +535,8 @@ private:
       if ( saveHook ) {
         saveHook->proc = saveProc;
         saveHook->b = saveB;
+        saveHook->olap = saveOlap;
+        saveHook->xmax = saveXmax;
       }
     }
 
@@ -395,6 +549,12 @@ private:
     // The previous b-value of the hook object.
     double saveB;
 
+    // The previous olap-value of the hook object.
+    double saveOlap;
+
+    // The previous xpom value of the hook object.
+    double saveXmax;
+
   };
 
   // The process selector for standard minimum bias processes.
@@ -403,6 +563,11 @@ private:
   // The process selector for the SASD object.
   shared_ptr<ProcessSelectorHook> selectSASD;
 
+  // Report status of glauber calculation. Return 0 for none, 1 for
+  // total cross section only, and 2 for full calculation.
+  virtual int hasGlauberCalculation() const override {
+    return doLowEnergyNow? 1: 2; }
+
 private:
 
   static const int MAXTRY = 999;
@@ -410,48 +575,91 @@ private:
 
   // Flag set if there is a specific signal process specified beyond
   // minimum bias.
-  bool hasSignal;
+  bool hasSignal = false;
+
+  // If only certain SoftQCD processes has been specified, this only
+  // applies to the primary processes. Here is listed the ones that
+  // then will not be considered as primary.
+  set<int> vetoPrimaryProcess = {};
 
   // Whether to do hadronization and hadron level effects.
-  bool doHadronLevel;
+  bool doHadronLevel = true;
 
   // Flag to determine whether to do single diffractive test.
-  bool doSDTest;
+  bool doSDTest = false;
 
   // Flag to determine whether to do only Glauber modelling.
-  bool glauberOnly;
+  bool glauberOnly = false;
 
   // All subcollisions in current collision.
   SubCollisionSet subColls;
 
   // The underlying SubCollisionModel for generating nucleon-nucleon
   // subcollisions.
-  shared_ptr<SubCollisionModel> collPtr;
+  shared_ptr<SubCollisionModel> collPtr = {};
+
+  // Additional SubCollisionModel for low-energy collisions.
+  shared_ptr<SubCollisionModel> lowEnergyCollPtr = {};
 
   // The impact parameter generator.
-  shared_ptr<ImpactParameterGenerator> bGenPtr;
+  shared_ptr<ImpactParameterGenerator> bGenPtr = {};
 
   // The projectile and target nuclei in the current collision.
   Nucleus proj;
   Nucleus targ;
 
-  // The underlying nucleus model for generating nuclons inside the
+  // The underlying nucleus model for generating nucleons inside the
   // projectile and target nucleus.
-  shared_ptr<NucleusModel> projPtr;
-  shared_ptr<NucleusModel> targPtr;
+  shared_ptr<NucleusModel> projPtr = {};
+  shared_ptr<NucleusModel> targPtr = {};
 
   // Flag to indicate whether variable energy is enabled.
-  bool doVarECM;
+  bool doVarECM = false;
+
+  // Flag to indicate if we are allowed to switch beams.
+  bool allowIDAswitch = false;
+
+  // Flag to indicate that the low energy option enabled.
+  bool doLowEnergy = false;
+
+  // Flag to indicate that the low energy option was selected for the
+  // next event.
+  bool doLowEnergyNow = false;
+
+  // The energy below which we will use the LowEnergyQCD machinery.
+  double eCMlow = 20.0;
 
   // Different choices in choosing recoilers when adding
   // diffractively excited nucleon.
-  int recoilerMode;
+  int recoilerMode = 1;
 
   // Different choices for handling impact parameters.
-  int bMode;
+  int bMode = 0;
+
+  // Different options for secondary absorptives.
+  int sabsMode = 4;
+
+  // The slope in the diffractive mass used in generating secondary
+  // absorptive sub-collisions.
+  double sabsEps = 0.0;
+
+  // The minimum diffractive mass used in generating secondary
+  // absorptive sub-collisions.
+  double sabsMinMX = 1.23;
+
+  // The minimum diffractive mass used in generating secondary
+  // absorptive sub-collisions using non-diffractive events.
+  double sabsCutMX = 20.0;
+
+  // Use Angantyr in a hadronic cascade.
+  bool cascadeMode = false;
+
+  // The ion content in the medium where the hadronic cascade takes
+  // place.
+  vector<int> cascadeMediumIons = { 1000070140, 1000080160, 1000180400 };
 
   // Critical internal error, abort the event.
-  bool doAbort;
+  bool doAbort = false;
 
 };
 

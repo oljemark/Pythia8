@@ -1,5 +1,5 @@
 // NucleonExcitations.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -19,41 +19,6 @@ static double pCMS(double eCM, double mA, double mB) {
   if (eCM <= mA + mB) return 0;
   double sCM = eCM * eCM;
   return sqrt((sCM - pow2(mA + mB)) * (sCM - pow2(mA - mB))) / (2. * eCM);
-}
-
-static string attributeValue(string line, string attribute) {
-  if (line.find(attribute) == string::npos) return "";
-  int iBegAttri = line.find(attribute);
-  int iBegQuote = line.find("\"", iBegAttri + 1);
-  int iEndQuote = line.find("\"", iBegQuote + 1);
-  return line.substr(iBegQuote + 1, iEndQuote - iBegQuote - 1);
-
-}
-
-static int intAttributeValue(string line, string attribute) {
-  string valString = attributeValue(line, attribute);
-  if (valString == "") return 0;
-  istringstream valStream(valString);
-  int intVal;
-  valStream >> intVal;
-  return intVal;
-}
-
-static double doubleAttributeValue(string line, string attribute) {
-  string valString = attributeValue(line, attribute);
-  if (valString == "") return 0.;
-  istringstream valStream(valString);
-  double doubleVal;
-  valStream >> doubleVal;
-  return doubleVal;
-}
-
-static void completeTag(istream& stream, string& line) {
-  while (line.find(">") == string::npos) {
-    string addLine;
-    if (!getline(stream, addLine)) break;
-    line += " " + addLine;
-  }
 }
 
 //--------------------------------------------------------------------------

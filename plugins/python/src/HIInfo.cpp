@@ -71,7 +71,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
 
-// Pythia8::HIUserHooks file:Pythia8/HIInfo.h line:313
+// Pythia8::HIUserHooks file:Pythia8/HIInfo.h line:328
 struct PyCallBack_Pythia8_HIUserHooks : public Pythia8::HIUserHooks {
 	using Pythia8::HIUserHooks::HIUserHooks;
 
@@ -433,6 +433,19 @@ struct PyCallBack_Pythia8_HeavyIons : public Pythia8::HeavyIons {
 		}
 		return HeavyIons::stat();
 	}
+	int hasGlauberCalculation() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HeavyIons *>(this), "hasGlauberCalculation");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return HeavyIons::hasGlauberCalculation();
+	}
 	void onInitInfoPtr() override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HeavyIons *>(this), "onInitInfoPtr");
@@ -500,7 +513,7 @@ struct PyCallBack_Pythia8_HeavyIons : public Pythia8::HeavyIons {
 	}
 };
 
-// Pythia8::HeavyIons::InfoGrabber file:Pythia8/HeavyIons.h line:146
+// Pythia8::HeavyIons::InfoGrabber file:Pythia8/HeavyIons.h line:154
 struct PyCallBack_Pythia8_HeavyIons_InfoGrabber : public Pythia8::HeavyIons::InfoGrabber {
 	using Pythia8::HeavyIons::InfoGrabber::InfoGrabber;
 
@@ -1115,6 +1128,32 @@ struct PyCallBack_Pythia8_HeavyIons_InfoGrabber : public Pythia8::HeavyIons::Inf
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HeavyIons::InfoGrabber *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HeavyIons::InfoGrabber *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HeavyIons::InfoGrabber *>(this), "onEndHadronLevel");
@@ -1195,7 +1234,7 @@ struct PyCallBack_Pythia8_HeavyIons_InfoGrabber : public Pythia8::HeavyIons::Inf
 	}
 };
 
-// Pythia8::Angantyr file:Pythia8/HeavyIons.h line:161
+// Pythia8::Angantyr file:Pythia8/HeavyIons.h line:169
 struct PyCallBack_Pythia8_Angantyr : public Pythia8::Angantyr {
 	using Pythia8::Angantyr::Angantyr;
 
@@ -1316,6 +1355,19 @@ struct PyCallBack_Pythia8_Angantyr : public Pythia8::Angantyr {
 		}
 		return HeavyIons::stat();
 	}
+	int hasGlauberCalculation() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Angantyr *>(this), "hasGlauberCalculation");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return HeavyIons::hasGlauberCalculation();
+	}
 	void onBeginEvent() override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Angantyr *>(this), "onBeginEvent");
@@ -1372,7 +1424,7 @@ struct PyCallBack_Pythia8_Angantyr : public Pythia8::Angantyr {
 
 void bind_Pythia8_HIInfo(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Pythia8::HIUserHooks file:Pythia8/HIInfo.h line:313
+	{ // Pythia8::HIUserHooks file:Pythia8/HIInfo.h line:328
 		pybind11::class_<Pythia8::HIUserHooks, std::shared_ptr<Pythia8::HIUserHooks>, PyCallBack_Pythia8_HIUserHooks> cl(M("Pythia8"), "HIUserHooks", "");
 		pybind11::handle cl_type = cl;
 
@@ -1406,7 +1458,7 @@ void bind_Pythia8_HIInfo(std::function< pybind11::module &(std::string const &na
 		pybind11::class_<Pythia8::HeavyIons, std::shared_ptr<Pythia8::HeavyIons>, PyCallBack_Pythia8_HeavyIons, Pythia8::PhysicsBase> cl(M("Pythia8"), "HeavyIons", "");
 		pybind11::handle cl_type = cl;
 
-		{ // Pythia8::HeavyIons::InfoGrabber file:Pythia8/HeavyIons.h line:146
+		{ // Pythia8::HeavyIons::InfoGrabber file:Pythia8/HeavyIons.h line:154
 			auto & enclosing_class = cl;
 			pybind11::class_<Pythia8::HeavyIons::InfoGrabber, std::shared_ptr<Pythia8::HeavyIons::InfoGrabber>, PyCallBack_Pythia8_HeavyIons_InfoGrabber, Pythia8::UserHooks> cl(enclosing_class, "InfoGrabber", "");
 			pybind11::handle cl_type = cl;
@@ -1429,6 +1481,7 @@ void bind_Pythia8_HIInfo(std::function< pybind11::module &(std::string const &na
 		cl.def("init", (bool (Pythia8::HeavyIons::*)()) &Pythia8::HeavyIons::init, "C++: Pythia8::HeavyIons::init() --> bool");
 		cl.def("next", (bool (Pythia8::HeavyIons::*)()) &Pythia8::HeavyIons::next, "C++: Pythia8::HeavyIons::next() --> bool");
 		cl.def_static("addSpecialSettings", (void (*)(class Pythia8::Settings &)) &Pythia8::HeavyIons::addSpecialSettings, "C++: Pythia8::HeavyIons::addSpecialSettings(class Pythia8::Settings &) --> void", pybind11::arg("settings"));
+		cl.def_static("clearSoftQCDFlags", (class std::set<int, struct std::less<int>, class std::allocator<int> > (*)(class Pythia8::Settings &)) &Pythia8::HeavyIons::clearSoftQCDFlags, "C++: Pythia8::HeavyIons::clearSoftQCDFlags(class Pythia8::Settings &) --> class std::set<int, struct std::less<int>, class std::allocator<int> >", pybind11::arg("settings"));
 		cl.def_static("isHeavyIon", (bool (*)(class Pythia8::Settings &)) &Pythia8::HeavyIons::isHeavyIon, "C++: Pythia8::HeavyIons::isHeavyIon(class Pythia8::Settings &) --> bool", pybind11::arg("settings"));
 		cl.def("setHIUserHooksPtr", (bool (Pythia8::HeavyIons::*)(class std::shared_ptr<class Pythia8::HIUserHooks>)) &Pythia8::HeavyIons::setHIUserHooksPtr, "C++: Pythia8::HeavyIons::setHIUserHooksPtr(class std::shared_ptr<class Pythia8::HIUserHooks>) --> bool", pybind11::arg("userHooksPtrIn"));
 		cl.def("setKinematics", (bool (Pythia8::HeavyIons::*)(double)) &Pythia8::HeavyIons::setKinematics, "C++: Pythia8::HeavyIons::setKinematics(double) --> bool", pybind11::arg(""));
@@ -1438,13 +1491,14 @@ void bind_Pythia8_HIInfo(std::function< pybind11::module &(std::string const &na
 		cl.def("setBeamIDs", [](Pythia8::HeavyIons &o, int const & a0) -> bool { return o.setBeamIDs(a0); }, "", pybind11::arg(""));
 		cl.def("setBeamIDs", (bool (Pythia8::HeavyIons::*)(int, int)) &Pythia8::HeavyIons::setBeamIDs, "C++: Pythia8::HeavyIons::setBeamIDs(int, int) --> bool", pybind11::arg(""), pybind11::arg(""));
 		cl.def("stat", (void (Pythia8::HeavyIons::*)()) &Pythia8::HeavyIons::stat, "C++: Pythia8::HeavyIons::stat() --> void");
+		cl.def("hasGlauberCalculation", (int (Pythia8::HeavyIons::*)() const) &Pythia8::HeavyIons::hasGlauberCalculation, "C++: Pythia8::HeavyIons::hasGlauberCalculation() const --> int");
 		cl.def("updateInfo", (void (Pythia8::HeavyIons::*)()) &Pythia8::HeavyIons::updateInfo, "C++: Pythia8::HeavyIons::updateInfo() --> void");
 		cl.def("clearProcessLevel", (void (Pythia8::HeavyIons::*)(class Pythia8::Pythia &)) &Pythia8::HeavyIons::clearProcessLevel, "C++: Pythia8::HeavyIons::clearProcessLevel(class Pythia8::Pythia &) --> void", pybind11::arg("pyt"));
 		cl.def_static("setupSpecials", (void (*)(class Pythia8::Settings &, std::string)) &Pythia8::HeavyIons::setupSpecials, "C++: Pythia8::HeavyIons::setupSpecials(class Pythia8::Settings &, std::string) --> void", pybind11::arg("settings"), pybind11::arg("match"));
 		cl.def_static("setupSpecials", (void (*)(class Pythia8::Pythia &, std::string)) &Pythia8::HeavyIons::setupSpecials, "C++: Pythia8::HeavyIons::setupSpecials(class Pythia8::Pythia &, std::string) --> void", pybind11::arg("p"), pybind11::arg("match"));
 		cl.def("assign", (class Pythia8::HeavyIons & (Pythia8::HeavyIons::*)(const class Pythia8::HeavyIons &)) &Pythia8::HeavyIons::operator=, "C++: Pythia8::HeavyIons::operator=(const class Pythia8::HeavyIons &) --> class Pythia8::HeavyIons &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::Angantyr file:Pythia8/HeavyIons.h line:161
+	{ // Pythia8::Angantyr file:Pythia8/HeavyIons.h line:169
 		pybind11::class_<Pythia8::Angantyr, std::shared_ptr<Pythia8::Angantyr>, PyCallBack_Pythia8_Angantyr, Pythia8::HeavyIons> cl(M("Pythia8"), "Angantyr", "");
 		pybind11::handle cl_type = cl;
 
@@ -1478,48 +1532,43 @@ void bind_Pythia8_HIInfo(std::function< pybind11::module &(std::string const &na
 		cl.def("subCollisions", (const class Pythia8::SubCollisionSet & (Pythia8::Angantyr::*)() const) &Pythia8::Angantyr::subCollisions, "C++: Pythia8::Angantyr::subCollisions() const --> const class Pythia8::SubCollisionSet &", pybind11::return_value_policy::reference);
 		cl.def("subCollisionModel", (const class Pythia8::SubCollisionModel & (Pythia8::Angantyr::*)() const) &Pythia8::Angantyr::subCollisionModel, "C++: Pythia8::Angantyr::subCollisionModel() const --> const class Pythia8::SubCollisionModel &", pybind11::return_value_policy::reference);
 		cl.def("subCollPtr", (class Pythia8::SubCollisionModel * (Pythia8::Angantyr::*)()) &Pythia8::Angantyr::subCollPtr, "C++: Pythia8::Angantyr::subCollPtr() --> class Pythia8::SubCollisionModel *", pybind11::return_value_policy::automatic);
-		cl.def("impactParameterGenerator", (const class Pythia8::ImpactParameterGenerator (Pythia8::Angantyr::*)() const) &Pythia8::Angantyr::impactParameterGenerator, "C++: Pythia8::Angantyr::impactParameterGenerator() const --> const class Pythia8::ImpactParameterGenerator");
+		cl.def("impactParameterGenerator", (const class Pythia8::ImpactParameterGenerator & (Pythia8::Angantyr::*)() const) &Pythia8::Angantyr::impactParameterGenerator, "C++: Pythia8::Angantyr::impactParameterGenerator() const --> const class Pythia8::ImpactParameterGenerator &", pybind11::return_value_policy::reference);
 		cl.def("projectile", (const class Pythia8::Nucleus & (Pythia8::Angantyr::*)() const) &Pythia8::Angantyr::projectile, "C++: Pythia8::Angantyr::projectile() const --> const class Pythia8::Nucleus &", pybind11::return_value_policy::reference);
 		cl.def("target", (const class Pythia8::Nucleus & (Pythia8::Angantyr::*)() const) &Pythia8::Angantyr::target, "C++: Pythia8::Angantyr::target() const --> const class Pythia8::Nucleus &", pybind11::return_value_policy::reference);
 		cl.def("projectileModel", (const class Pythia8::NucleusModel & (Pythia8::Angantyr::*)() const) &Pythia8::Angantyr::projectileModel, "C++: Pythia8::Angantyr::projectileModel() const --> const class Pythia8::NucleusModel &", pybind11::return_value_policy::reference);
 		cl.def("targetModel", (const class Pythia8::NucleusModel & (Pythia8::Angantyr::*)() const) &Pythia8::Angantyr::targetModel, "C++: Pythia8::Angantyr::targetModel() const --> const class Pythia8::NucleusModel &", pybind11::return_value_policy::reference);
-		cl.def("sigmaNN", (const class Pythia8::SigmaTotal (Pythia8::Angantyr::*)() const) &Pythia8::Angantyr::sigmaNN, "C++: Pythia8::Angantyr::sigmaNN() const --> const class Pythia8::SigmaTotal");
+		cl.def("sigmaNN", (const class Pythia8::SigmaTotal & (Pythia8::Angantyr::*)() const) &Pythia8::Angantyr::sigmaNN, "C++: Pythia8::Angantyr::sigmaNN() const --> const class Pythia8::SigmaTotal &", pybind11::return_value_policy::reference);
 		cl.def("onInitInfoPtr", (void (Pythia8::Angantyr::*)()) &Pythia8::Angantyr::onInitInfoPtr, "C++: Pythia8::Angantyr::onInitInfoPtr() --> void");
 		cl.def("setBeamKinematics", (void (Pythia8::Angantyr::*)(int, int)) &Pythia8::Angantyr::setBeamKinematics, "C++: Pythia8::Angantyr::setBeamKinematics(int, int) --> void", pybind11::arg("idA"), pybind11::arg("idB"));
 		cl.def("init", [](Pythia8::Angantyr &o, enum Pythia8::Angantyr::PythiaObject const & a0, class std::basic_string<char> const & a1) -> bool { return o.init(a0, a1); }, "", pybind11::arg("sel"), pybind11::arg("name"));
 		cl.def("init", (bool (Pythia8::Angantyr::*)(enum Pythia8::Angantyr::PythiaObject, std::string, int)) &Pythia8::Angantyr::init, "C++: Pythia8::Angantyr::init(enum Pythia8::Angantyr::PythiaObject, std::string, int) --> bool", pybind11::arg("sel"), pybind11::arg("name"), pybind11::arg("n"));
+		cl.def("getSignal", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision &)) &Pythia8::Angantyr::getSignal, "C++: Pythia8::Angantyr::getSignal(const class Pythia8::SubCollision &) --> class Pythia8::EventInfo", pybind11::arg("coll"));
+		cl.def("getMBIAS", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision *, int)) &Pythia8::Angantyr::getMBIAS, "C++: Pythia8::Angantyr::getMBIAS(const class Pythia8::SubCollision *, int) --> class Pythia8::EventInfo", pybind11::arg("coll"), pybind11::arg("procid"));
+		cl.def("getSASD", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision *, int, class Pythia8::EventInfo *)) &Pythia8::Angantyr::getSASD, "C++: Pythia8::Angantyr::getSASD(const class Pythia8::SubCollision *, int, class Pythia8::EventInfo *) --> class Pythia8::EventInfo", pybind11::arg("coll"), pybind11::arg("procid"), pybind11::arg("evp"));
+		cl.def("getSABS", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision *, int, class Pythia8::EventInfo *)) &Pythia8::Angantyr::getSABS, "C++: Pythia8::Angantyr::getSABS(const class Pythia8::SubCollision *, int, class Pythia8::EventInfo *) --> class Pythia8::EventInfo", pybind11::arg("coll"), pybind11::arg("procid"), pybind11::arg("evp"));
 		cl.def("mkEventInfo", [](Pythia8::Angantyr &o, class Pythia8::Pythia & a0, class Pythia8::Info & a1) -> Pythia8::EventInfo { return o.mkEventInfo(a0, a1); }, "", pybind11::arg(""), pybind11::arg(""));
 		cl.def("mkEventInfo", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(class Pythia8::Pythia &, class Pythia8::Info &, const class Pythia8::SubCollision *)) &Pythia8::Angantyr::mkEventInfo, "C++: Pythia8::Angantyr::mkEventInfo(class Pythia8::Pythia &, class Pythia8::Info &, const class Pythia8::SubCollision *) --> class Pythia8::EventInfo", pybind11::arg(""), pybind11::arg(""), pybind11::arg("coll"));
-		cl.def("getSignal", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision &)) &Pythia8::Angantyr::getSignal, "C++: Pythia8::Angantyr::getSignal(const class Pythia8::SubCollision &) --> class Pythia8::EventInfo", pybind11::arg("coll"));
-		cl.def("getND", (class Pythia8::EventInfo (Pythia8::Angantyr::*)()) &Pythia8::Angantyr::getND, "C++: Pythia8::Angantyr::getND() --> class Pythia8::EventInfo");
-		cl.def("getND", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision &)) &Pythia8::Angantyr::getND, "C++: Pythia8::Angantyr::getND(const class Pythia8::SubCollision &) --> class Pythia8::EventInfo", pybind11::arg("coll"));
-		cl.def("getEl", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision &)) &Pythia8::Angantyr::getEl, "C++: Pythia8::Angantyr::getEl(const class Pythia8::SubCollision &) --> class Pythia8::EventInfo", pybind11::arg("coll"));
-		cl.def("getSDP", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision &)) &Pythia8::Angantyr::getSDP, "C++: Pythia8::Angantyr::getSDP(const class Pythia8::SubCollision &) --> class Pythia8::EventInfo", pybind11::arg("coll"));
-		cl.def("getSDT", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision &)) &Pythia8::Angantyr::getSDT, "C++: Pythia8::Angantyr::getSDT(const class Pythia8::SubCollision &) --> class Pythia8::EventInfo", pybind11::arg("coll"));
-		cl.def("getDD", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision &)) &Pythia8::Angantyr::getDD, "C++: Pythia8::Angantyr::getDD(const class Pythia8::SubCollision &) --> class Pythia8::EventInfo", pybind11::arg("coll"));
-		cl.def("getCD", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision &)) &Pythia8::Angantyr::getCD, "C++: Pythia8::Angantyr::getCD(const class Pythia8::SubCollision &) --> class Pythia8::EventInfo", pybind11::arg("coll"));
-		cl.def("getSDabsP", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision &)) &Pythia8::Angantyr::getSDabsP, "C++: Pythia8::Angantyr::getSDabsP(const class Pythia8::SubCollision &) --> class Pythia8::EventInfo", pybind11::arg("coll"));
-		cl.def("getSDabsT", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision &)) &Pythia8::Angantyr::getSDabsT, "C++: Pythia8::Angantyr::getSDabsT(const class Pythia8::SubCollision &) --> class Pythia8::EventInfo", pybind11::arg("coll"));
-		cl.def("getMBIAS", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision *, int)) &Pythia8::Angantyr::getMBIAS, "C++: Pythia8::Angantyr::getMBIAS(const class Pythia8::SubCollision *, int) --> class Pythia8::EventInfo", pybind11::arg("coll"), pybind11::arg("procid"));
-		cl.def("getSASD", (class Pythia8::EventInfo (Pythia8::Angantyr::*)(const class Pythia8::SubCollision *, int)) &Pythia8::Angantyr::getSASD, "C++: Pythia8::Angantyr::getSASD(const class Pythia8::SubCollision *, int) --> class Pythia8::EventInfo", pybind11::arg("coll"), pybind11::arg("procid"));
-		cl.def("addSASD", (void (Pythia8::Angantyr::*)(const class Pythia8::SubCollisionSet &)) &Pythia8::Angantyr::addSASD, "C++: Pythia8::Angantyr::addSASD(const class Pythia8::SubCollisionSet &) --> void", pybind11::arg("subCollsIn"));
-		cl.def("addSDsecond", (void (Pythia8::Angantyr::*)(const class Pythia8::SubCollisionSet &)) &Pythia8::Angantyr::addSDsecond, "C++: Pythia8::Angantyr::addSDsecond(const class Pythia8::SubCollisionSet &) --> void", pybind11::arg("subCollsIn"));
-		cl.def("addCDsecond", (void (Pythia8::Angantyr::*)(const class Pythia8::SubCollisionSet &)) &Pythia8::Angantyr::addCDsecond, "C++: Pythia8::Angantyr::addCDsecond(const class Pythia8::SubCollisionSet &) --> void", pybind11::arg("subCollsIn"));
-		cl.def("addELsecond", (void (Pythia8::Angantyr::*)(const class Pythia8::SubCollisionSet &)) &Pythia8::Angantyr::addELsecond, "C++: Pythia8::Angantyr::addELsecond(const class Pythia8::SubCollisionSet &) --> void", pybind11::arg("subCollsIn"));
-		cl.def("resetEvent", (void (Pythia8::Angantyr::*)()) &Pythia8::Angantyr::resetEvent, "C++: Pythia8::Angantyr::resetEvent() --> void");
-		cl.def("setupFullCollision", (bool (Pythia8::Angantyr::*)(class Pythia8::EventInfo &, const class Pythia8::SubCollision &, enum Pythia8::Nucleon::Status, enum Pythia8::Nucleon::Status)) &Pythia8::Angantyr::setupFullCollision, "C++: Pythia8::Angantyr::setupFullCollision(class Pythia8::EventInfo &, const class Pythia8::SubCollision &, enum Pythia8::Nucleon::Status, enum Pythia8::Nucleon::Status) --> bool", pybind11::arg("ei"), pybind11::arg("coll"), pybind11::arg("projStatus"), pybind11::arg("targStatus"));
-		cl.def("isRemnant", [](Pythia8::Angantyr const &o, const class Pythia8::EventInfo & a0, int const & a1) -> bool { return o.isRemnant(a0, a1); }, "", pybind11::arg("ei"), pybind11::arg("i"));
-		cl.def("isRemnant", (bool (Pythia8::Angantyr::*)(const class Pythia8::EventInfo &, int, int) const) &Pythia8::Angantyr::isRemnant, "C++: Pythia8::Angantyr::isRemnant(const class Pythia8::EventInfo &, int, int) const --> bool", pybind11::arg("ei"), pybind11::arg("i"), pybind11::arg("past"));
+		cl.def_static("streamline", (bool (*)(class Pythia8::EventInfo &)) &Pythia8::Angantyr::streamline, "C++: Pythia8::Angantyr::streamline(class Pythia8::EventInfo &) --> bool", pybind11::arg("ei"));
 		cl.def("fixIsoSpin", (bool (Pythia8::Angantyr::*)(class Pythia8::EventInfo &)) &Pythia8::Angantyr::fixIsoSpin, "C++: Pythia8::Angantyr::fixIsoSpin(class Pythia8::EventInfo &) --> bool", pybind11::arg("ei"));
 		cl.def("shiftEvent", (class Pythia8::EventInfo & (Pythia8::Angantyr::*)(class Pythia8::EventInfo &)) &Pythia8::Angantyr::shiftEvent, "C++: Pythia8::Angantyr::shiftEvent(class Pythia8::EventInfo &) --> class Pythia8::EventInfo &", pybind11::return_value_policy::reference, pybind11::arg("ei"));
 		cl.def_static("getBeam", (int (*)(class Pythia8::Event &, int)) &Pythia8::Angantyr::getBeam, "C++: Pythia8::Angantyr::getBeam(class Pythia8::Event &, int) --> int", pybind11::arg("ev"), pybind11::arg("i"));
+		cl.def_static("isRemnant", [](const class Pythia8::EventInfo & a0, int const & a1) -> int { return Pythia8::Angantyr::isRemnant(a0, a1); }, "", pybind11::arg("ei"), pybind11::arg("i"));
+		cl.def_static("isRemnant", (int (*)(const class Pythia8::EventInfo &, int, int)) &Pythia8::Angantyr::isRemnant, "C++: Pythia8::Angantyr::isRemnant(const class Pythia8::EventInfo &, int, int) --> int", pybind11::arg("ei"), pybind11::arg("i"), pybind11::arg("past"));
+		cl.def("addSASD", (void (Pythia8::Angantyr::*)(const class Pythia8::SubCollisionSet &)) &Pythia8::Angantyr::addSASD, "C++: Pythia8::Angantyr::addSASD(const class Pythia8::SubCollisionSet &) --> void", pybind11::arg("subCollsIn"));
+		cl.def("setupFullCollision", (bool (Pythia8::Angantyr::*)(class Pythia8::EventInfo &, const class Pythia8::SubCollision &, enum Pythia8::Nucleon::Status, enum Pythia8::Nucleon::Status)) &Pythia8::Angantyr::setupFullCollision, "C++: Pythia8::Angantyr::setupFullCollision(class Pythia8::EventInfo &, const class Pythia8::SubCollision &, enum Pythia8::Nucleon::Status, enum Pythia8::Nucleon::Status) --> bool", pybind11::arg("ei"), pybind11::arg("coll"), pybind11::arg("projStatus"), pybind11::arg("targStatus"));
+		cl.def("resetEvent", (void (Pythia8::Angantyr::*)()) &Pythia8::Angantyr::resetEvent, "C++: Pythia8::Angantyr::resetEvent() --> void");
 		cl.def("nextSASD", (bool (Pythia8::Angantyr::*)(int)) &Pythia8::Angantyr::nextSASD, "C++: Pythia8::Angantyr::nextSASD(int) --> bool", pybind11::arg("proc"));
 		cl.def("addNucleonExcitation", [](Pythia8::Angantyr &o, class Pythia8::EventInfo & a0, class Pythia8::EventInfo & a1) -> bool { return o.addNucleonExcitation(a0, a1); }, "", pybind11::arg("orig"), pybind11::arg("add"));
 		cl.def("addNucleonExcitation", (bool (Pythia8::Angantyr::*)(class Pythia8::EventInfo &, class Pythia8::EventInfo &, bool)) &Pythia8::Angantyr::addNucleonExcitation, "C++: Pythia8::Angantyr::addNucleonExcitation(class Pythia8::EventInfo &, class Pythia8::EventInfo &, bool) --> bool", pybind11::arg("orig"), pybind11::arg("add"), pybind11::arg("colConnect"));
+		cl.def("addNucleonExcitation2", [](Pythia8::Angantyr &o, class Pythia8::EventInfo & a0, class Pythia8::EventInfo & a1) -> bool { return o.addNucleonExcitation2(a0, a1); }, "", pybind11::arg("orig"), pybind11::arg("add"));
+		cl.def("addNucleonExcitation2", (bool (Pythia8::Angantyr::*)(class Pythia8::EventInfo &, class Pythia8::EventInfo &, bool)) &Pythia8::Angantyr::addNucleonExcitation2, "C++: Pythia8::Angantyr::addNucleonExcitation2(class Pythia8::EventInfo &, class Pythia8::EventInfo &, bool) --> bool", pybind11::arg("orig"), pybind11::arg("add"), pybind11::arg("colConnect"));
 		cl.def("findRecoilers", (class std::vector<int, class std::allocator<int> > (Pythia8::Angantyr::*)(const class Pythia8::Event &, bool, int, int, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &)) &Pythia8::Angantyr::findRecoilers, "C++: Pythia8::Angantyr::findRecoilers(const class Pythia8::Event &, bool, int, int, const class Pythia8::Vec4 &, const class Pythia8::Vec4 &) --> class std::vector<int, class std::allocator<int> >", pybind11::arg("e"), pybind11::arg("tside"), pybind11::arg("beam"), pybind11::arg("end"), pybind11::arg("pdiff"), pybind11::arg("pbeam"));
+		cl.def_static("insertEntries", (void (*)(class Pythia8::Event &, int, int)) &Pythia8::Angantyr::insertEntries, "C++: Pythia8::Angantyr::insertEntries(class Pythia8::Event &, int, int) --> void", pybind11::arg("e"), pybind11::arg("pos"), pybind11::arg("n"));
+		cl.def("fixSecondaryAbsorptive", (bool (Pythia8::Angantyr::*)(class Pythia8::Event &, double)) &Pythia8::Angantyr::fixSecondaryAbsorptive, "C++: Pythia8::Angantyr::fixSecondaryAbsorptive(class Pythia8::Event &, double) --> bool", pybind11::arg("ev"), pybind11::arg("xpom"));
 		cl.def("addSubEvent", (void (Pythia8::Angantyr::*)(class Pythia8::Event &, class Pythia8::Event &)) &Pythia8::Angantyr::addSubEvent, "C++: Pythia8::Angantyr::addSubEvent(class Pythia8::Event &, class Pythia8::Event &) --> void", pybind11::arg("evnt"), pybind11::arg("sub"));
 		cl.def_static("addJunctions", (void (*)(class Pythia8::Event &, class Pythia8::Event &, int)) &Pythia8::Angantyr::addJunctions, "C++: Pythia8::Angantyr::addJunctions(class Pythia8::Event &, class Pythia8::Event &, int) --> void", pybind11::arg("evnt"), pybind11::arg("sub"), pybind11::arg("coloff"));
 		cl.def("addNucleusRemnants", (bool (Pythia8::Angantyr::*)()) &Pythia8::Angantyr::addNucleusRemnants, "C++: Pythia8::Angantyr::addNucleusRemnants() --> bool");
+		cl.def("updateMedium", (void (Pythia8::Angantyr::*)()) &Pythia8::Angantyr::updateMedium, "C++: Pythia8::Angantyr::updateMedium() --> void");
 		cl.def_static("mT2", (double (*)(const class Pythia8::Vec4 &)) &Pythia8::Angantyr::mT2, "C++: Pythia8::Angantyr::mT2(const class Pythia8::Vec4 &) --> double", pybind11::arg("p"));
 		cl.def_static("mT", (double (*)(const class Pythia8::Vec4 &)) &Pythia8::Angantyr::mT, "C++: Pythia8::Angantyr::mT(const class Pythia8::Vec4 &) --> double", pybind11::arg("p"));
 		cl.def("assign", (class Pythia8::Angantyr & (Pythia8::Angantyr::*)(const class Pythia8::Angantyr &)) &Pythia8::Angantyr::operator=, "C++: Pythia8::Angantyr::operator=(const class Pythia8::Angantyr &) --> class Pythia8::Angantyr &", pybind11::return_value_policy::reference, pybind11::arg(""));

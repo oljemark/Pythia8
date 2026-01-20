@@ -1,5 +1,5 @@
 // FragmentationFlavZpT.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -220,13 +220,15 @@ class StringZ : public PhysicsBase {
 
 public:
 
+  friend WeightsFragmentation;
+
   // Constructor.
   StringZ() : useNonStandC(), useNonStandB(), useNonStandH(), usePetersonC(),
     usePetersonB(), usePetersonH(), useOldAExtra(), mc2(), mb2(),
     aLund(), bLund(), aExtraSQuark(), aExtraDiquark(), rFactC(),
     rFactB(), rFactH(), aNonC(), aNonB(), aNonH(), bNonC(), bNonB(),
     bNonH(), epsilonC(), epsilonB(), epsilonH(), stopM(), stopNF(),
-    stopS() {}
+    stopS(), zHead(), posthoc() {}
 
   // Destructor.
   virtual ~StringZ() {}
@@ -239,9 +241,7 @@ public:
 
   // Fragmentation function: select z according to provided parameters.
   virtual double zLund( double a, double b, double c = 1.,
-    double head = 1., double bNow = 0., int idFrag = 0,
-    bool isOldSQuark = false, bool isNewSQuark = false,
-    bool isOldDiquark = false, bool isNewDiquark = false);
+    double head = 1.);
   virtual double zPeterson( double epsilon);
   virtual double zLundMax( double a, double b, double c = 1.);
 
@@ -270,10 +270,26 @@ public:
          usePetersonC, usePetersonB, usePetersonH, useOldAExtra;
   double mc2, mb2, aLund, bLund, aExtraSQuark, aExtraDiquark, rFactC,
          rFactB, rFactH, aNonC, aNonB, aNonH, bNonC, bNonB, bNonH,
-         epsilonC, epsilonB, epsilonH, stopM, stopNF, stopS;
+         epsilonC, epsilonB, epsilonH, stopM, stopNF, stopS, zHead;
 
   // Fragmentation weights container.
   WeightsFragmentation* wgtsPtr{};
+
+  // Initialize flavour and shape parameters.
+  void initFlav(int idOld, int idNew);
+  void initShape(double mT2);
+  void initFunc(double a, double b, double c, double z, double zMax,
+    double fPrel, double head);
+
+  // Objects needed for the post-hoc kinematic reweighting.
+  int idFrag;
+  bool isOldSQuark, isNewSQuark, isOldDiquark, isNewDiquark;
+  double aShape, bShape, cShape, bNow, fVal, fPrb;
+
+  // Store the information needed for post-hoc reweighting.
+  bool posthoc;
+  int idOldNow, idNewNow;
+  double mT2Now;
 
 };
 
@@ -285,9 +301,11 @@ class StringPT : public PhysicsBase {
 
 public:
 
+  friend WeightsFragmentation;
+
   // Constructor.
   StringPT() : sigmaQ(), enhancedFraction(), enhancedWidth(), sigma2Had(),
-    closePacking(), enhancePT(), exponentMPI(), exponentNSP() {}
+    closePacking(), enhancePT(), exponentMPI(), exponentNSP(), posthoc() {}
 
   // Destructor.
   virtual ~StringPT() {}
@@ -319,6 +337,9 @@ private:
 
   // Fragmentation weights container.
   WeightsFragmentation* wgtsPtr{};
+
+  // Flag to enable post-hoc reweigthing.
+  bool posthoc;
 
 };
 

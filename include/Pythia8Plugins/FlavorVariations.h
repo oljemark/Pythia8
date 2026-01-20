@@ -1,5 +1,5 @@
 // FlavorVariations.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Stephen Mrenna, Christian Bierlich, Philip Ilten,
+// Copyright (C) 2026 Stephen Mrenna, Christian Bierlich, Philip Ilten,
 // Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
@@ -42,10 +42,7 @@ public:
     pythia.init();
   }
 
-  // Read and write string break counts.
-  vector<int> read(string breaks) {
-    pythia.settings.readString(key + " = " + breaks);
-    return pythia.settings.mvec(key);}
+  // Write string break counts.
   string write(const vector<int>& breaks) {
     string out = "{";
     for (const int& val : breaks) out += toString(val) + ",";
@@ -67,7 +64,7 @@ private:
   Pythia pythia;
 
   // Key to serialize the string breaks.
-  string key{"VariationFrag:breaks"};
+  string key{"VariationFrag:flavBreaks"};
 
 };
 

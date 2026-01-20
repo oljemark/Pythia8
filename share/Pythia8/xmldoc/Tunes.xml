@@ -121,7 +121,7 @@ unstable particles.
 Further comparisons have been posted on the 
 <a href="http://mcplots.cern.ch/">MCPLOTS</a> pages. 
 They have been produced with help of the 
-<a href="http://projects.hepforge.org/rivet/">Rivet</a> package 
+<a href="https://rivet.hepforge.org/">Rivet</a> package 
 <ref>Buc10</ref>. 
  
 <p/> 
@@ -446,4 +446,4 @@ NNPDF 3.1 LO PDF set. See <ref>Agu22</ref>.
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

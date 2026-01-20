@@ -599,9 +599,14 @@ The output compares multiplicity distributions from the default
 parameters to the reweighted output with the varied parameters 
 and the output using the varied parameters without reweighting.</li> 
  
-<li><code>main264.cc</code> (name) : 
-runs the same analysis as <code>main264.cc</code> but only for flavor 
-hadronization parameters and demonstrates post-hoc reweighting rathern 
+<li><code>main264.cc</code> (new) : 
+runs the same analysis as <code>main263.cc</code> but only for flavor 
+hadronization parameters and demonstrates post-hoc reweighting rather 
+than in-situ.</li> 
+ 
+<li><code>main265.cc</code> (new) : 
+runs the same analysis as <code>main263.cc</code> but only for kinematic 
+hadronization parameters and demonstrates post-hoc reweighting rather 
 than in-situ.</li> 
  
 </ul> 
@@ -855,6 +860,12 @@ analysis.</li>
 in <ei>t-tbar</ei> production, from (by default) the most likely of the 
 alternatives constructed from the equations in <ref>Fad90</ref>.</li> 
  
+<li><code>main372.cc</code> (new) : study angular distributions in 
+<ei>t-tbar</ei> production and decay, specifically between two final leptons 
+in decay channels <ei>t &rarr; b W &rarr; b l nu</ei> (+corresponding for 
+<ei>tbar</ei>), with or without the <ei>t-tbar</ei>-correlated 
+decay matrix element.</li> 
+ 
 </ul> 
  
 <h3>Standard Model</h3> 
@@ -1071,15 +1082,10 @@ plot PDFs for a large number of hadrons.</li>
 test switching between hadron beams on an event-by-event basis. Compare 
 running times for different scenarios.</li> 
  
-<li><code>main483.cc</code> (was <code>main183.cc</code>) : 
-simple example of how Pythia can be used to simulate a basic hadronic 
-cascade in a few simple atmospheres, either as a sequence of hadron-hadron 
-collisions or making use of the Angantyr module.</li> 
- 
 <li><code>main484.cc</code> (was <code>main184.cc</code>) : 
-as <code>main483.cc</code>, but using the <code>PythiaCascade</code> class 
-to perform the separate collisions or decays, while the bookkeeping 
-of the cascade evolution remains in the main program.</li> 
+simple example of how <code>PythiaCascade</code> can be used to simulate 
+a basic hadronic cascade in a few simple atmospheres as a sequence of 
+hadron-hadron collisions.</li> 
  
 <li><code>main485.cc</code> (was <code>main185.cc</code>) : 
 an even simpler example of one collision or decay at a time, as performed 
@@ -1289,7 +1295,6 @@ Tables for the translation from the old C++ names to the new ones:
 <tr><td>main171</td><td>main509</td><td></td></tr> 
 <tr><td>main181</td><td>main481</td><td></td></tr> 
 <tr><td>main182</td><td>main482</td><td></td></tr> 
-<tr><td>main183</td><td>main483</td><td></td></tr> 
 <tr><td>main184</td><td>main484</td><td></td></tr> 
 <tr><td>main185</td><td>main485</td><td></td></tr> 
 <tr><td>main200</td><td>main401</td><td></td></tr> 
@@ -1320,4 +1325,4 @@ Table for the translation from the old Python names to the new ones:
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

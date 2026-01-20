@@ -1,5 +1,5 @@
 // FragmentationFlavZpT.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -239,7 +239,7 @@ FlavContainer StringFlav::pick(FlavContainer& flavOld, double, double,
 
     // Count breaks for variations, then done for simple-quark case.
     if (wgtsPtr != nullptr)
-      wgtsPtr->flavCount(abs(flavNew.id), true, doOldBaryon);
+      wgtsPtr->flavStore(abs(flavNew.id), true, doOldBaryon);
     return flavNew;
   }
 
@@ -287,7 +287,7 @@ FlavContainer StringFlav::pick(FlavContainer& flavOld, double, double,
   if ( (flavOld.id < 0 && flavOld.id > -9) || flavOld.id > 1000 )
     flavNew.id = -flavNew.id;
   if (wgtsPtr != nullptr)
-    wgtsPtr->flavCount(abs(flavNew.id), false, doOldBaryon);
+    wgtsPtr->flavStore(abs(flavNew.id), false, doOldBaryon);
   return flavNew;
 
 }
@@ -790,11 +790,6 @@ const double StringZ::EXPMAX     = 50.;
 
 bool StringZ::init() {
 
-  // Set the fragmentation weights container.
-  if (!infoPtr->weightContainerPtr->weightsFragmentation.weightParms[
-      WeightsFragmentation::Z].empty())
-    wgtsPtr = &infoPtr->weightContainerPtr->weightsFragmentation;
-
   // c and b quark masses.
   mc2           = pow2( particleDataPtr->m0(4));
   mb2           = pow2( particleDataPtr->m0(5));
@@ -847,6 +842,16 @@ bool StringZ::init() {
   stopNF        = parm("StringFragmentation:stopNewFlav");
   stopS         = parm("StringFragmentation:stopSmear");
 
+  // Parameters for reweighting.
+  zHead         = parm("VariationFrag:zHead");
+  posthoc       = flag("VariationFrag:z");
+
+  // Set the fragmentation weights container.
+  if (posthoc || !infoPtr->weightContainerPtr->
+    weightsFragmentation.weightParms[WeightsFragmentation::Z].empty())
+    wgtsPtr = &infoPtr->weightContainerPtr->weightsFragmentation;
+
+
   // All is well.
   return true;
 
@@ -863,7 +868,7 @@ double StringZ::deriveBLund(double avgZ, double a, double mT2ref) {
   auto lundFF = [=](double b) { return LundFFAvg(a, b, mT2ref); };
 
   // Solve for b and return.
-  double bNow = -1;
+  bNow = -1;
   bool check = brent(bNow, lundFF, avgZ, 0.0, 20.0, 1.e-7);
   return check ? bNow : -1;
 
@@ -899,14 +904,15 @@ bool StringZ::deriveABLund( bool deriveA, bool deriveAExtraDiquark,
   // Always use same starting point for derived parameters,
   // so that results are independent of previous settings/inits.
   double aNow        = (deriveA) ? 0.5 : parm("StringZ:aLund") ;
-  double bNow        = 1.0;
+         bNow        = 1.0;
   double aExtraQQNow = parm("StringZ:aExtraDiquark");
   double aExtraSNow  = parm("StringZ:aExtraSQuark");
 
   // Debug output if requested.
   bool doReport = settingsPtr->mode("Print:verbosity") >= 3;
   if (doReport) {
-    cout << "\n Deriving Lund FF parameter(s) with avgZ = " << avgZ;
+    cout << scientific << setprecision(3) << setw(9)
+         << "\n Deriving Lund FF parameter(s) with avgZ = " << avgZ;
     if (deriveA) cout << " rmsZ = " << rmsZ;
     else cout << " aLund = " << aNow;
     if (deriveAExtraDiquark) cout << " facADiquark = " << facAQQ;
@@ -944,7 +950,8 @@ bool StringZ::deriveABLund( bool deriveA, bool deriveAExtraDiquark,
       const double TOLRMSZ = 1.e-5;
       double avgZNow   = LundFFAvg(aNow, bNow, mT2ref, 1.e-7);
       double rmsZNow   = LundFFRms(aNow, bNow, mT2ref, 1.e-7);
-      if (doReport) cout << "   For aNow = " << aNow << " bNow = " << bNow
+      if (doReport) cout << scientific << setprecision(3) << setw(9)
+                         << "   For aNow = " << aNow << " bNow = " << bNow
                          << "  =>  avgZNow = " << avgZNow
                          << " rmsZNow = " << rmsZNow << endl;
       double deltaAvg = avgZNow - avgZ;
@@ -1071,35 +1078,33 @@ bool StringZ::deriveABLund( bool deriveA, bool deriveAExtraDiquark,
 
 //--------------------------------------------------------------------------
 
-// Generate the fraction z that the next hadron will take,
-// using either Lund/Bowler or, for heavy, Peterson/SLAC functions.
-// Note: for a heavy new coloured particle we assume pT negligible.
+// Initialize the flavour parameters.
 
-double StringZ::zFrag( int idOld, int idNew, double mT2) {
+void StringZ::initFlav(int idOld, int idNew) {
 
   // Find if old or new flavours correspond to diquarks.
   int idOldAbs = abs(idOld);
   int idNewAbs = abs(idNew);
-  bool isOldSQuark = (idOldAbs == 3);
-  bool isNewSQuark = (idNewAbs == 3);
-  bool isOldDiquark = (idOldAbs > 1000 && idOldAbs < 10000);
-  bool isNewDiquark = (idNewAbs > 1000 && idNewAbs < 10000);
+  isOldSQuark = (idOldAbs == 3);
+  isNewSQuark = (idNewAbs == 3);
+  isOldDiquark = (idOldAbs > 1000 && idOldAbs < 10000);
+  isNewDiquark = (idNewAbs > 1000 && idNewAbs < 10000);
 
   // Find heaviest quark in fragmenting parton/diquark.
-  int idFrag = idOldAbs;
+  idFrag = idOldAbs;
   if (isOldDiquark) idFrag = max( idOldAbs / 1000, (idOldAbs / 100) % 10);
 
-  // Use Peterson where explicitly requested for heavy flavours.
-  if (idFrag == 4 && usePetersonC) return zPeterson( epsilonC);
-  if (idFrag == 5 && usePetersonB) return zPeterson( epsilonB);
-  if (idFrag >  5 && usePetersonH) {
-    double epsilon = epsilonH * mb2 / mT2;
-    return zPeterson( epsilon);
-  }
+}
+
+//--------------------------------------------------------------------------
+
+// Initialize the shape parameters.
+
+void StringZ::initShape(double mT2) {
 
   // Nonstandard a and b values implemented for heavy flavours.
   double aNow = aLund;
-  double bNow = bLund;
+  bNow = bLund;
   if (idFrag == 4 && useNonStandC) {
     aNow = aNonC;
     bNow = bNonC;
@@ -1112,7 +1117,7 @@ double StringZ::zFrag( int idOld, int idNew, double mT2) {
   }
 
   // Shape parameters of Lund symmetric fragmentation function.
-  double aShape = aNow;
+  aShape = aNow;
   // Old behavior used a_old instead of a_new in the
   // (1-z)^a factor for strange quarks and diquarks.
   // This is a bug but is kept for older tune compatibility.
@@ -1124,8 +1129,8 @@ double StringZ::zFrag( int idOld, int idNew, double mT2) {
     if (isNewSQuark)  aShape += aExtraSQuark;
     if (isNewDiquark) aShape += aExtraDiquark;
   }
-  double bShape = bNow * mT2;
-  double cShape = 1.;
+  bShape = bNow * mT2;
+  cShape = 1.;
   if (isOldSQuark)  cShape -= aExtraSQuark;
   if (isNewSQuark)  cShape += aExtraSQuark;
   if (isOldDiquark) cShape -= aExtraDiquark;
@@ -1133,11 +1138,55 @@ double StringZ::zFrag( int idOld, int idNew, double mT2) {
   if (idFrag == 4) cShape += rFactC * bNow * mc2;
   if (idFrag == 5) cShape += rFactB * bNow * mb2;
   if (idFrag >  5) cShape += rFactH * bNow * mT2;
-  if (!infoPtr->weightContainerPtr->weightsFragmentation.
-    weightParms[WeightsFragmentation::Z].empty())
-    return zLund(aShape, bShape, cShape, 10, bNow, idFrag, isOldSQuark,
-      isNewSQuark, isOldDiquark, isNewDiquark);
-  else return zLund( aShape, bShape, cShape);
+
+}
+
+//--------------------------------------------------------------------------
+
+// Initialize the function sampling parameters.
+
+void StringZ::initFunc(double a, double b, double c, double z, double zMax,
+  double fPrel, double head) {
+
+  bool aIsZero = (a < AFROMZERO);
+  double fExp = b * (1. / zMax - 1. / z)+ c * log(zMax / z);
+  if (!aIsZero) {
+    if (z == 1) fExp = -numeric_limits<double>::infinity();
+    else fExp += a * log( (1. - z) / (1. - zMax) );
+  }
+  fVal = exp( max( -EXPMAX, min( EXPMAX, fExp) ) ) ;
+  fPrb = fVal / (fPrel * head);
+
+}
+
+//--------------------------------------------------------------------------
+
+// Generate the fraction z that the next hadron will take,
+// using either Lund/Bowler or, for heavy, Peterson/SLAC functions.
+// Note: for a heavy new coloured particle we assume pT negligible.
+
+double StringZ::zFrag(int idOld, int idNew, double mT2) {
+
+  // Store the info needed for post-hoc reweighting.
+  idNewNow = idNew;
+  idOldNow = idOld;
+  mT2Now   = mT2;
+
+  // Use Peterson where explicitly requested for heavy flavours.
+  initFlav(idOld, idNew);
+  if (idFrag == 4 && usePetersonC) return zPeterson( epsilonC);
+  if (idFrag == 5 && usePetersonB) return zPeterson( epsilonB);
+  if (idFrag >  5 && usePetersonH) {
+    double epsilon = epsilonH * mb2 / mT2;
+    return zPeterson( epsilon);
+  }
+
+  // Determine the shape parameters and return the z.
+  initShape(mT2);
+  if (posthoc || (wgtsPtr != nullptr && !wgtsPtr->
+      weightParms[WeightsFragmentation::Z].empty()))
+    return zLund(aShape, bShape, cShape, zHead);
+  else return zLund(aShape, bShape, cShape);
 
 }
 
@@ -1146,6 +1195,7 @@ double StringZ::zFrag( int idOld, int idNew, double mT2) {
 // Determine the maximum for zLund.
 
 double StringZ::zLundMax( double a, double b, double c) {
+
   // Normalization for Lund fragmentation function so that f <= 1.
   // Special cases for a = 0 and a = c.
   bool aIsZero = (a < AFROMZERO);
@@ -1170,21 +1220,14 @@ double StringZ::zLundMax( double a, double b, double c) {
 
 // The arguments beginning with head are only needed for reweighting.
 
-double StringZ::zLund( double a, double b, double c,
-  double head, double bNow, int idFrag, bool isOldSQuark, bool isNewSQuark,
-  bool isOldDiquark, bool isNewDiquark) {
+double StringZ::zLund(double a, double b, double c, double head) {
 
   // Special cases for c = 1, a = 0 and a = c.
   bool cIsUnity = (abs( c - 1.) < CFROMUNITY);
   bool aIsZero = (a < AFROMZERO);
-  bool aIsC = (abs(a - c) < AFROMC);
 
   // Determine position of maximum.
-  double zMax;
-  if (aIsZero) zMax = (c > b) ? b / c : 1.;
-  else if (aIsC) zMax = b / (b + c);
-  else { zMax = 0.5 * (b + c - sqrt( pow2(b - c) + 4. * a * b)) / (c - a);
-         if (zMax > 0.9999 && b > 100.) zMax = min(zMax, 1. - a / b); }
+  double zMax = zLundMax(a, b, c);
 
   // Subdivide z range if distribution very peaked near either endpoint.
   bool peakedNearZero = (zMax < 0.1);
@@ -1223,14 +1266,12 @@ double StringZ::zLund( double a, double b, double c,
 
   // Choice of z, preweighted for peaks at low or high z. (Dummy start values.)
   double z = 0.5;
-  double fPrel = 1.;
-  double fVal = 1.;
   bool   accept = false;
   do {
     // Choice of z flat good enough for distribution peaked in the middle;
     // if not this z can be reused as a random number in general.
     z = rndmPtr->flat();
-    fPrel = 1.;
+    double fPrel = 1.;
     // When z_max small use flat below z_div and 1/z^c above z_div.
     if (peakedNearZero) {
       if (fInt * rndmPtr->flat() < fIntLow) z = zDiv * z;
@@ -1249,66 +1290,19 @@ double StringZ::zLund( double a, double b, double c,
     // Evaluate actual f(z) (if in physical range) and correct.
     if (z > 0 && z < 1) {
       double fRnd = rndmPtr->flat();
-      double fExp = b * (1. / zMax - 1. / z)+ c * log(zMax / z);
-      if (!aIsZero) fExp += a * log( (1. - z) / (1. - zMax) );
-      fVal = exp( max( -EXPMAX, min( EXPMAX, fExp) ) ) ;
-      double fPrb = fVal / (fPrel * head);
+      initFunc(a, b, c, z, zMax, fPrel, head);
       accept = fPrb > fRnd;
 
       // Loop over the variation parameters.
-      if (wgtsPtr == nullptr) continue;
-      for (auto &parms : wgtsPtr->weightParms[WeightsFragmentation::Z]) {
-        const vector<double>& vals = parms.first;
-        int iWgt = parms.second;
-
-        // Skip non-standard c, b, or h.
-        if (vals[0] < 0 && ((idFrag == 4 && useNonStandC) ||
-            (idFrag == 5 && useNonStandB) || (idFrag > 5 && useNonStandH)))
-          break;
-
-        // Determine the varied a, b, and c parameters.
-        double ap = vals[0] > 0 ? vals[0] : a ;
-        if (isOldSQuark)  ap += aExtraSQuark;
-        if (isOldDiquark) ap += aExtraDiquark;
-        double bp = vals[1] > 0 ? vals[1] : bNow;
-        // Determine position of the maximum. Assuming that no
-        // special options are being used, i.e bShape = bLund. This
-        // is because b is scaled by mT2.
-        double bpin = bp / bNow * b;
-
-        // When b is changed, so is c.
-        double rFactmsq = 0.;
-        if (idFrag == 4) rFactmsq = (vals[2] > 0 ? vals[2] : rFactC)*mc2;
-        else if (idFrag == 5) rFactmsq = (vals[3] > 0 ? vals[3] : rFactB)*mb2;
-        double cp = 1 + rFactmsq * bp;
-        if (isOldSQuark)  cp -= aExtraSQuark;
-        if (isNewSQuark)  cp += aExtraSQuark;
-        if (isOldDiquark) cp -= aExtraDiquark;
-        if (isNewDiquark) cp += aExtraDiquark;
-
-        // Determine the new position of maximum.
-        double zMax0 = zLundMax(ap, bpin, cp);
-        // Recalculate the coefficients.
-        double aCoefp = log( (1. - z) / (1. - zMax0));
-        double bCoefp = (1. / zMax0 - 1. / z);
-        double cCoefp = log(zMax0 / z);
-        double fVar = bpin * bCoefp + cp * cCoefp;
-        if (ap >= AFROMZERO) fVar += ap * aCoefp;
-        double fValp = exp(max( -EXPMAX, min(EXPMAX, fVar)));
-
-        // Determine the weight and reduce if necessary.
-        double wgt = min(fValp/fVal, head);
-        if( wgt*fPrb > 1 ) {
-          stringstream msg;
-          msg << "proposed variation in zFrag is too extreme for "
-              << "parameters " << fixed << setprecision(2) << vals[0]
-              << setw(5) << vals[1] << setw(5) << vals[2] << setw(5)
-              << vals[3] << ";  weight reduced.";
-          loggerPtr->WARNING_MSG(msg.str());
-          wgt = 0.95 / fPrb;
+      if (wgtsPtr != nullptr) {
+        if (posthoc)
+          wgtsPtr->zStore(idOldNow, idNewNow, mT2Now, accept, z, fPrel);
+        for (auto &parms : wgtsPtr->weightParms[WeightsFragmentation::Z]) {
+          wgtsPtr->reweightValueByIndex(parms.second,
+            wgtsPtr->zWeight(parms.first[0], parms.first[1], parms.first[2],
+              parms.first[3], idOldNow, idNewNow,
+              accept ? mT2Now : -mT2Now, z, fPrel));
         }
-        wgtsPtr->reweightValueByIndex(iWgt, accept ? wgt :
-          (1. - wgt*fPrb)/(1. - fPrb));
       }
     }
   } while (!accept);
@@ -1326,7 +1320,7 @@ double StringZ::zLund( double a, double b, double c,
 
 double StringZ::zPeterson( double epsilon) {
 
-  double z, fVal;
+  double z;
 
   // For large epsilon pick z flat and reject,
   // knowing that 4 * epsilon * f(z) < 1 everywhere.
@@ -1378,11 +1372,6 @@ const double StringPT::SIGMAMIN     = 0.2;
 
 void StringPT::init() {
 
-  // Set the fragmentation weights container.
-  if (!infoPtr->weightContainerPtr->weightsFragmentation.weightParms[
-      WeightsFragmentation::PT].empty())
-    wgtsPtr = &infoPtr->weightContainerPtr->weightsFragmentation;
-
   // Parameters of the pT width and enhancements.
   double sigma     = parm("StringPT:sigma");
   sigmaQ           = sigma / sqrt(2.);
@@ -1402,6 +1391,14 @@ void StringPT::init() {
 
   // Parameter for pT suppression in MiniStringFragmentation.
   sigma2Had        = 2. * pow2( max( SIGMAMIN, sigma) );
+
+  // Parameters for reweighting.
+  posthoc          = flag("VariationFrag:pT");
+
+  // Set the fragmentation weights container.
+  if (posthoc || !infoPtr->weightContainerPtr->
+    weightsFragmentation.weightParms[WeightsFragmentation::PT].empty())
+    wgtsPtr = &infoPtr->weightContainerPtr->weightsFragmentation;
 
 }
 
@@ -1439,11 +1436,13 @@ pair<double, double> StringPT::pxy(int idIn, double kappaModifier) {
   pair<double, double> gauss2 = rndmPtr->gauss2();
 
   // Calculate the weights from the variations.
+  double pT2 = pow2(gauss2.first) + pow2(gauss2.second);
   if (wgtsPtr != nullptr) {
-    double pre = -0.5*(pow2(gauss2.first) + pow2(gauss2.second));
+    if (posthoc)
+      wgtsPtr->pTStore(pT2, mult);
     for (auto &parms : wgtsPtr->weightParms[WeightsFragmentation::PT]) {
-      double ratio =  pow2(sigma / (parms.first[0] * mult/sqrt(2.)));
-      wgtsPtr->reweightValueByIndex(parms.second, ratio*exp(pre*(ratio - 1.)));
+      wgtsPtr->reweightValueByIndex(parms.second,
+        wgtsPtr->pTWeight(parms.first[0], pT2, mult));
     }
   }
 

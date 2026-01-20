@@ -1,5 +1,5 @@
 // SimpleSpaceShower.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -3800,7 +3800,7 @@ void SimpleSpaceShower::calcUncertainties(bool accept, double pAccept,
 
 // Find class of ME correction.
 
-  int SimpleSpaceShower::findMEtype( int iSys, Event& event,
+int SimpleSpaceShower::findMEtype( int iSys, Event& event,
     bool weakRadiation) {
 
   // Default values and no action.
@@ -3828,6 +3828,18 @@ void SimpleSpaceShower::calcUncertainties(bool accept, double pAccept,
     // f + fbar  -> Higgs boson.
     if ( (idRes == 25 || idRes == 35 || idRes == 36)
       && abs(idIn1) < 20 && abs(idIn2) < 20 ) MEtype = 3;
+  }
+
+  // MEtype = 4 for NC DIS.
+  if (infoPtr->isDIS()) {
+    int idIn1 = event[partonSystemsPtr->getInA(iSys)].id();
+    int idIn2 = event[partonSystemsPtr->getInB(iSys)].id();
+
+    // q + gamma -> q + g or g + gamma -> q + qbar.
+    if ( ((abs(idIn1) < 10 || idIn1 == 21)
+        && (abs(idIn2) < 20 && abs(idIn2) > 10))
+      || ((abs(idIn2) < 10 || idIn2 == 21)
+        && (abs(idIn1) < 20 && abs(idIn1) > 10)) ) MEtype = 4;
   }
 
   // Weak ME corrections.
@@ -3914,6 +3926,23 @@ double SimpleSpaceShower::calcMEcorr(int MEtype, int idMother,
              / (pow2(sH - M2) + M2*M2);
     }
 
+  // Corrections for NC DIS.
+  } else if (MEtype == 4) {
+
+    // Using notation from Catani & Seymour hep-ph/9605323.
+    double x = z;
+    double z1 = 1. - Q2*x/M2;
+
+    // q + gamma -> q + g.
+    if (idMabs < 10) {
+      return ( (pow2(z1) + pow2(x)) + 2. * (1. + 3. * x * z1)
+               * ( (1. - x) * (1. - z1) ) ) / (1. + pow2(x));
+    // g + gamma -> q + qbar.
+    } else if (idMabs == 21) {
+      return ( pow2(z1) + pow2(1. - z1) )
+        / z1 + 8. * x * (1. - x) * (1. - z1) / (pow2(x) + pow2(1.-x));
+    }
+
   // Corrections for f -> f' + W/Z (s-channel).
   } else if (MEtype == 200 || MEtype == 205) {
     // Need to redo calculations of uH since we now emit a massive particle.
@@ -3923,8 +3952,10 @@ double SimpleSpaceShower::calcMEcorr(int MEtype, int idMother,
     double wtPS =  (sH*sH + pow2(M2 + m2Sister)) / (tH*uH);
     return wtME / wtPS;
   } else if (MEtype == 201 || MEtype == 202 || MEtype == 203 ||
-             MEtype == 206 ||  MEtype == 207 || MEtype == 208)
+             MEtype == 206 || MEtype == 207 || MEtype == 208) {
     return calcMEmax(MEtype, 0, 0);
+  }
+
 
   // Default.
   return 1.;

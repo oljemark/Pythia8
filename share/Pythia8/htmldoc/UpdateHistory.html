@@ -8,22 +8,23 @@
  
 <h2>Update History</h2> 
 <ol id="toc">
-  <li><a href="#section0">8.316: 03 October 2025</a></li>
-  <li><a href="#section1">8.315: 27 May 2025</a></li>
-  <li><a href="#section2">8.314: 11 April 2025</a></li>
-  <li><a href="#section3">8.313: 10 January 2025</a></li>
-  <li><a href="#section4">8.312: 23 May 2024</a></li>
-  <li><a href="#section5">8.311: 08 March 2024</a></li>
-  <li><a href="#section6">8.310: 25 July 2023</a></li>
-  <li><a href="#section7">8.309: 16 February 2023</a></li>
-  <li><a href="#section8">8.308: 16 November 2022</a></li>
-  <li><a href="#section9">8.307: 25 February 2022</a></li>
-  <li><a href="#section10">8.306: 28 June 2021</a></li>
-  <li><a href="#section11">8.305: 03 May 2021</a></li>
-  <li><a href="#section12">8.304: 09 April 2021</a></li>
-  <li><a href="#section13">8.303: 01 September 2020</a></li>
-  <li><a href="#section14">8.302: 24 April 2020</a></li>
-  <li><a href="#section15">8.301: 30 October 2019</a></li>
+  <li><a href="#section0">8.317: 20 January 2026</a></li>
+  <li><a href="#section1">8.316: 03 October 2025</a></li>
+  <li><a href="#section2">8.315: 27 May 2025</a></li>
+  <li><a href="#section3">8.314: 11 April 2025</a></li>
+  <li><a href="#section4">8.313: 10 January 2025</a></li>
+  <li><a href="#section5">8.312: 23 May 2024</a></li>
+  <li><a href="#section6">8.311: 08 March 2024</a></li>
+  <li><a href="#section7">8.310: 25 July 2023</a></li>
+  <li><a href="#section8">8.309: 16 February 2023</a></li>
+  <li><a href="#section9">8.308: 16 November 2022</a></li>
+  <li><a href="#section10">8.307: 25 February 2022</a></li>
+  <li><a href="#section11">8.306: 28 June 2021</a></li>
+  <li><a href="#section12">8.305: 03 May 2021</a></li>
+  <li><a href="#section13">8.304: 09 April 2021</a></li>
+  <li><a href="#section14">8.303: 01 September 2020</a></li>
+  <li><a href="#section15">8.302: 24 April 2020</a></li>
+  <li><a href="#section16">8.301: 30 October 2019</a></li>
 </ol>
 
  
@@ -34,6 +35,198 @@ compatibility. The main change is that C++11 is now assumed.
 The impact on existing used code should be mild, however. 
  
 <a name="section0"></a> 
+<h3>8.317: 20 January 2026</h3> 
+<ul> 
+ 
+<li>Joni Laulainen joins the author team.</li> 
+ 
+<li>Introduced a multiplicative NLO matching scheme for neutral-current DIS, 
+accessible with the flag <code>SigmaProcess:reweightNLO = on</code>. 
+This setup reweights the Born-level events to inclusive NLO accuracy, 
+assuming the existence of matrix-element-corrected first emission and 
+preserved Born kinematics. Currently only available for incoming charged 
+lepton and hadron.</li> 
+ 
+<li>Added matrix-element corrections <i>q + gamma &rarr; q + g</i> and 
+<code>g + gamma &rarr; q + qbar</code> to the simple shower and VINCIA 
+for DIS processes.</li> 
+ 
+<li>The code for production of <i>t-tbar</i> pairs in hadron 
+collisions near the threshold, introduced in 8.316, has been further 
+developed, see <a href="TopProcesses.html" target="page">Top Processes</a>. 
+<ul> 
+<li>Two simplified options have been removed, making the previous 
+number 4 become option 2. Further flexibility has been added, 
+notably for the top width, where the usage in Breit-Wigners and in 
+bound-state matrix-element calculations has been separated, making 
+it possible to reduce doublecounting.</li> 
+<li>The <code>main368.cc</code> to <code>main371.cc</code> main programs 
+have been updated.</li> 
+<li> New code has been introduced for the angular correlations in the decay 
+sequence <i>t tbar &rarr; b W^+ bbar W^- &rarr; 6</i> fermions, assuming 
+that the <i>t tbar</i> system is in a pseudoscalar state. The new 
+<code>main372.cc</code> example illustrates how to study this behaviour.</li> 
+<li> Related to this, <code>eps4</code> has been introduced to give the 
+fully antisymmetric product of four four-vectors.</li> 
+</ul> 
+</li> 
+ 
+<li>Post-hoc kinematic fragmentation reweighting has been implemented, 
+see <code>main265</code> for details. Note, 5 doubles, and 2 integers 
+must be stored per string break (both accepted and rejected) to enable 
+post-hoc reweighting. This can result in a substantial increase in the 
+memory used by the event record.</li> 
+ 
+<li>Several bug fixes and improvements for Angantyr related to beam 
+switching and the simulation of cosmic ray cascades. 
+<ul> 
+<li>Angantyr can now handle very low energies using 
+the <code>NaiveSubCollisionModel</code>, the new 
+parameter <code>HeavyIon:eCMLowEnergy</code> specifies below which 
+energy Angantyr enters this low energy mode. This also requires 
+the <code>LowEnergyQCD</code> processes in Pythia to be switched on.</li> 
+<li>The generation of nucleon positions in a nucleus in Angantyr can 
+now be cached and reused to save CPU cycles. The number of 
+configurations cached is controlled by the setting 
+<code>HeavyIon:WScacheSize</code>. In addition the positions of the 
+nucleons are now three-dimensional, rather than only specified in 
+impact parameter.</li> 
+<li>A new collision model (<code>Angantyr:CollisionModel = 6</code>) 
+has been introduced, which improves the handling of double 
+diffraction compared to the default model. This will become the 
+default in an upcoming release.</li> 
+<li>A new option for generating secondary absorptive sub-collisions 
+has been introduced (<code>Angantyr:SASDmode = -1</code>). Rather that 
+using modified single diffraction events, Angantyr now takes normal 
+non-diffractive events where cuts are applied on the MPI and shower 
+emissions to obtain the same effect. Thanks to Carl Rosenkvist who 
+wrote the original code for this. This will become the default in a 
+future release.</li> 
+<li>Angantyr does not handle elastic sub-collisions correctly. There 
+is now a new setting (<code>Angantyr:elasticMode</code>) which 
+allows the user to switch off elastic sub-collisions 
+completely.</li> 
+<li>Improved handling of nucleus remnants. Fixing a bug where energy 
+and momentum was not conserved when all nucleons in a nucleus had 
+interracted.</li> 
+<li>Removed printout of Glauber statistics 
+in <code>Pythia:stat()</code> for cases where it is not relevant, 
+e.g., when using the <code>NaiveSubCollisionModel</code> or when 
+constantly switching beam types and energies.</li> 
+<li>Better handling of switching between different nuclei and 
+energies. Angantyr will now calculate an overestimated cross section 
+for each nucleus listed 
+in <code>Angantyr:cascadeMediumIons</code>. These cross sections are 
+now available in <code>vector&lt;double&gt; 
+HIInfo::mediumXSecs()</code>.</li> 
+<li>A new mode for using Angantyr for hadronic cascades in a medium 
+has been introduced: <code>Angantyr:cascadeMode</code>. It assumes 
+that the user generates a next interaction point in the medium 
+using the overestimated cross sections 
+in <code>HIInfo::mediumXSecs()</code>. The call 
+to <code>Pythia::next()</code> will then return 
+<code>true/false</code> to indicate that the user should accept the 
+generated interaction point or generate a new one (starting from the 
+old one). This allows Angantyr to generate the different cross 
+sections on-the fly. </li> 
+</ul> 
+</li> 
+ 
+<li>Several changes in the <code>PythiaCascade</code> code for the 
+simulation of cosmic ray cascades. 
+<ul> 
+<li>To adhere closer to the normal Angantyr event generation, 
+elastic scatterings are no longer simulated, only inelastic ones.</li> 
+<li>For the same reason, the handling of secondary hadron-nucleon 
+subcollisions in a hadron-nucleus one is somewhat updated. The new 
+<code>enhanceSDtarget</code> initialization input argument sets 
+the fraction of collisions that are handled as target-side single 
+diffraction, while the rest are shared according to the normal 
+mixture of inelastic processes. Default is 0.5, and a lower or 
+higher value can be used to obtain a higher or lower multiplicity.</li> 
+<li>The list of input variables to the <code>init(...)</code> call 
+has been reorganized, including some removed and some new. The new 
+setup is documented in the <code>PythiaCascade.h</code> file.</li> 
+<li>MPI grid parameters generated with <code>main424.cc</code> 
+are always used; the old option to generate the MPI files at 
+initialization has been removed. By default the file stored in 
+<code>share/Pythia8/setups/InitDefaultMPI.cmnd</code> is used.</li> 
+<li>Rearranged handling of boosts between fixed-target and CM frame 
+for better numerical precision.</li> 
+<li>Reject secondary collisions with CM energies below sum of on-shell 
+masses of incoming "beam" particles (which here may be off-shell).</li> 
+<li>Some other smaller changes, such as possibility to let <i>mu+-</i>, 
+<i>pi+-</i>, <i>K+-</i> and <i>K0L</i> decay or not, and a 
+few new information methods.</li> 
+</ul> 
+</li> 
+ 
+<li>Also some updates for the simulation of cosmic ray cascades that 
+affect both Angantyr and <code>PythiaCascade</code>. 
+<ul> 
+<li>The <code>main424.cc</code> grids, central in the simulation of 
+varying beam energy and hadron cascades, have been expanded up to 
+<i>10^7</i> GeV CM energy, for the highest-energy cosmic rays. 
+(Event generation validation at the new higher energies remains to 
+be done.) More MPI energy grid points and statistics is used; and 
+<code>Beams:eCM</code> is not written to output.  It is possible 
+to generate either MPI grids, nuclear geometry fits, or both. 
+A common <code>main424.cmnd</code> file is updated accordingly. 
+Two separate files are stored in 
+<code>share/Pythia8/setups/InitDefaultMPI.cmnd</code> and 
+<code>share/Pythia8/setups/InitDefaultAngantyr.cmnd</code>, 
+respectively.</li> 
+<li>Updated <code>main484.cc</code>, <code>main485.cc</code> and 
+<code>main487.cc</code> example codes. The last one has been further 
+extended and serves as the main example of cosmic-ray evolution in the 
+atmosphere, comparing Angantyr with <code>PythiaCascade</code>. 
+The <code>main483.cc</code> example has become superfluous and 
+is removed.</li> 
+</ul> 
+</li> 
+ 
+<li>Thanks to Chloe Gaudu for valuable input, notably the encoding of 
+nuclear isotope data for all stable nuclear isotopes up to iron.</li> 
+ 
+<li>Extra check to ensure that leptoquark decay products are arranged 
+with the quark flavour first and the lepton one second. Thanks to 
+Junichi Tanaka and Andy Buckley.</li> 
+ 
+<li>Updated <code>Makefile</code> to allow the static library archive 
+tool to be changed. Thanks to A. Neuwirth.</li> 
+ 
+<li>Correct the handling of the <code>procType</code> argument in 
+the <code>Pythia::next</code> method.</li> 
+ 
+<li>A simpleminded procedure for momentum sharing in a beam remnant, 
+applied when the normal one has failed, reduces the failure rate.</li> 
+ 
+<li>New default behaviour of the <code>Pythia::moreDecays(...)</code> 
+methods, where e.g. an <i>Upsilon</i> now decays directly to hadrons 
+rather than to partons; see further 
+<a href="ProgramFlow.html" target="page">Initialization and Program Flow</a>.</li> 
+ 
+<li>Slightly increased lower mass limit for the <i>f_0(500)</i> 
+meson to avoid failed decays.</li> 
+ 
+<li>A new user hook allows to set an enhancement factor in the 
+impact-parameter-dependent handling of MPIs.</li> 
+ 
+<li>A new switch <code>LowEnergyQCD:inelastic</code> to allow all 
+low-energy QCD processes except elastic.</li> 
+ 
+<li>A new <code>Hist::makeCumulative</code> method iteratively adds the 
+contents of the previous histogram bin to the current one, thereby 
+providing an integrated version of the original histogram.</li> 
+ 
+<li>The check for FORCE= statements in Settings has been made more robust. 
+It is now only performed for modes and parameters. This fixes issues e.g. 
+with file names that contain the word force. Thanks to Wolfgang Waltenberger 
+for reporting this issue.</li> 
+ 
+</ul> 
+ 
+<a name="section1"></a> 
 <h3>8.316: 03 October 2025</h3> 
 <ul> 
  
@@ -60,8 +253,7 @@ a cleaner separation of <a href="FlavourSelection.html" target="page">flavour</a
 <i><a href="PTSelection.html" target="page">pT</a></i> and 
 <i><a href="ZSelection.html" target="page">z</a></i> selection in 
 the <a href="StringFragmentation.html" target="page">Lund string fragmentation</a>, 
-and some more. 
-</li> 
+and some more.</li> 
 <li>Changes to the toy fragmentation variations introduced in 
 [<a href="Bibliography.html#refFis16" target="page">Fis16</a>]. The parameter 
 <code>StringPT:widthPreStrange</code> has been kept while the previous 
@@ -136,7 +328,7 @@ safe.</li>
 <li>New <code>RivetHooks</code> plugin allows for Rivet analyses to be 
 run via the plugin structure with <code>Init:plugins = 
 {libpythia8rivet.so::RivetHooks}</code>, including in parallel. An 
-example is given in <code>main145.cc</code>.</li> 
+example is given in <code>main144.cc</code>.</li> 
  
 <li>The new plugin <code>HepMC3Hooks</code> allows users to write 
 output to HepMC3 by loading. See <code>main225</code> as an 
@@ -236,7 +428,7 @@ photons).  Thanks to Alexander Belyaev.</li>
  
 </ul> 
  
-<a name="section1"></a> 
+<a name="section2"></a> 
 <h3>8.315: 27 May 2025</h3> 
 <ul> 
  
@@ -320,7 +512,7 @@ caused an out-of-access memory read.</li>
  
 </ul> 
  
-<a name="section2"></a> 
+<a name="section3"></a> 
 <h3>8.314: 11 April 2025</h3> 
 <ul> 
  
@@ -445,7 +637,7 @@ incorrect. Thanks to A. Buckley.</li>
  
 </ul> 
  
-<a name="section3"></a> 
+<a name="section4"></a> 
 <h3>8.313: 10 January 2025</h3> 
 <ul> 
  
@@ -718,7 +910,7 @@ Laurent Dufour for alerting us to this bug.
  
 </ul> 
  
-<a name="section4"></a> 
+<a name="section5"></a> 
 <h3>8.312: 23 May 2024</h3> 
 <ul> 
  
@@ -797,7 +989,7 @@ quark mass is set to zero.</li>
  
 </ul> 
  
-<a name="section5"></a> 
+<a name="section6"></a> 
 <h3>8.311: 08 March 2024</h3> 
  
 <ul> 
@@ -1029,7 +1221,7 @@ fixed.</li>
 <code>PhaseSpace::setupSampling123</code>.</li> 
 </ul> 
  
-<a name="section6"></a> 
+<a name="section7"></a> 
 <h3>8.310: 25 July 2023</h3> 
  
 <ul> 
@@ -1164,7 +1356,7 @@ additional settings files to be directly read in.</li>
 <li>Fixed a bug in the bookkeeping the number of hadrons in the string 
 fragmentation.</li> 
  
-<a name="section7"></a> 
+<a name="section8"></a> 
 <h3>8.309: 16 February 2023</h3> 
  
 <ul> 
@@ -1262,7 +1454,7 @@ input.</li>
 with GCC 12.2.</li> 
 </ul> 
  
-<a name="section8"></a> 
+<a name="section9"></a> 
 <h3>8.308: 16 November 2022</h3> 
  
 <ul> 
@@ -1370,7 +1562,7 @@ reference.</li>
 <li>Updating affiliation for Christian Bierlich.</li> 
 </ul> 
  
-<a name="section9"></a> 
+<a name="section10"></a> 
 <h3>8.307: 25 February 2022</h3> 
  
 <ul> 
@@ -1546,7 +1738,7 @@ events. Thanks to Giancarlo Panizzo and Marvin Flores for reporting
 the issue.</li> 
 </ul> 
  
-<a name="section10"></a> 
+<a name="section11"></a> 
 <h3>8.306: 28 June 2021</h3> 
  
 <ul> 
@@ -1578,7 +1770,7 @@ most collinear parent is the first mother.
 <li>Shortened Pythia constructor header.</li> 
 </ul> 
  
-<a name="section11"></a> 
+<a name="section12"></a> 
 <h3>8.305: 03 May 2021</h3> 
  
 <ul> 
@@ -1619,7 +1811,7 @@ small bug reported by Vittorio Zecca.</li>
 <code>main07.cc</code>. Thanks to M. Baker and A. Thamm.</li> 
 </ul> 
  
-<a name="section12"></a> 
+<a name="section13"></a> 
 <h3>8.304: 09 April 2021</h3> 
  
 <ul> 
@@ -1768,7 +1960,7 @@ called twice. Now all available cases are looped over, but easy to
 change back to study only one.</li> 
 </ul> 
  
-<a name="section13"></a> 
+<a name="section14"></a> 
 <h3>8.303: 01 September 2020</h3> 
  
 <ul> 
@@ -2002,7 +2194,7 @@ diffractive systems.</li>
 for diffraction. Thanks to Valentina Zaccolo.</li> 
 </ul> 
  
-<a name="section14"></a> 
+<a name="section15"></a> 
 <h3>8.302: 24 April 2020</h3> 
  
 <ul> 
@@ -2097,7 +2289,7 @@ with Vincia reverting to the same (in-code) way of setting tune
 presets as Dire and Pythia.</li> 
 </ul> 
  
-<a name="section15"></a> 
+<a name="section16"></a> 
 <h3>8.301: 30 October 2019</h3> 
 <ul> 
 <li>Compilation is done with a new <code>-std=c++11</code> flag.</li> 
@@ -2282,4 +2474,4 @@ so desired.</li>
 </body>
 </html>
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

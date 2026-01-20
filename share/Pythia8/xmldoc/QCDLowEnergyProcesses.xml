@@ -84,6 +84,10 @@ one, but is distinguished from elastic scattering by a quite different
 angular decay distribution. Code 159. 
 </flag> 
  
+<flag name="LowEnergyQCD:inelastic" default = "off"> 
+All the processes above, except for elastic scattering. 
+</flag> 
+ 
 <p/> 
 There are also some settings that can be used to modify the behaviour 
 or cross section of the processes above. 
@@ -123,4 +127,4 @@ summing Breit-Wigner forms for each resonance.
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

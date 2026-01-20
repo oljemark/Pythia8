@@ -1,5 +1,5 @@
 // ParticleData.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -704,6 +704,24 @@ void ParticleData::initWidths( vector<ResonanceWidthsPtr> resonancePtrs) {
 
   // Initialize some common data (but preserve history of read statements).
   initCommon();
+
+  // Ensure that leptoquark decay channels are ordered with quark first.
+  for (auto pdtEntry = pdt.begin(); pdtEntry != pdt.end(); ++pdtEntry) {
+    ParticleDataEntryPtr pdtNow = pdtEntry->second;
+    int idNow = pdtNow->id();
+    bool isSquark = (idNow > 1000000 && idNow < 1000009)
+                 || (idNow > 2000000 && idNow < 2000009);
+    if (pdtNow->colType() == 1 && !isSquark)
+    for (int i = 0; i < pdtNow->sizeChannels(); ++i)
+    if (pdtNow->channel(i).multiplicity() == 2) {
+      int prod1 = pdtNow->channel(i).product(0);
+      int prod2 = pdtNow->channel(i).product(1);
+      if (isLepton(prod1) && isQuark(prod2)) {
+        pdtNow->channel(i).product(0, prod2);
+        pdtNow->channel(i).product(1, prod1);
+      }
+    }
+  }
 
   // Pointer to database and Breit-Wigner mass initialization for each
   // particle.

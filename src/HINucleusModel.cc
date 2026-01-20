@@ -1,5 +1,5 @@
 // HINucleusModel.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -91,6 +91,7 @@ void NucleusModel::setParticle(int idIn) {
     ISave = 0;
     ASave = 0;
     ZSave = 0;
+    RSave = 0.0;
   }
   mNSave = mSave/max(ASave, 1);
   if ( A() > 1 ) idNSave = idSave < 0? -2212: 2212;
@@ -228,6 +229,8 @@ void HardCoreModel::initHardCore() {
 // Initialize.
 bool WoodsSaxonModel::init() {
 
+  cacheSize = settingsPtr->mode("HeavyIon:WScacheSize");
+
   // Initialize hard core (even if this is not actually a nucleus).
   initHardCore();
   if (A() == 0) return true;
@@ -289,6 +292,11 @@ Vec4 WoodsSaxonModel::generateNucleon() const {
 // Generate all nucleons in a nucleus.
 
 vector<Nucleon> WoodsSaxonModel::generate() const {
+
+  // If we have filled up the cache, just return a random configuration.
+  if ( cacheSize && cacheSize == nucleonCache[id()].size() )
+    return nucleonCache[id()][int(rndmPtr->flat()*cacheSize)];
+
   int sign = id() > 0? 1: -1;
   int pid = sign*2212;
   int nid = sign*2112;
@@ -328,7 +336,8 @@ vector<Nucleon> WoodsSaxonModel::generate() const {
   int Nn = A() - Z();
   for ( int i = 0, N= positions.size(); i < N; ++i ) {
     Vec4 pos(positions[i].px() - cms.px(),
-                 positions[i].py() - cms.py());
+             positions[i].py() - cms.py(),
+             positions[i].pz() - cms.pz());
     if ( int(rndmPtr->flat()*(Np + Nn)) >= Np ) {
       --Nn;
       nucleons[i] = Nucleon(nid, i, pos);
@@ -337,6 +346,10 @@ vector<Nucleon> WoodsSaxonModel::generate() const {
       nucleons[i] = Nucleon(pid, i, pos);
     }
   }
+
+  if ( cacheSize && cacheSize > nucleonCache[id()].size() )
+    nucleonCache[id()].push_back(nucleons);
+
   return nucleons;
 }
 
@@ -351,6 +364,8 @@ vector<Nucleon> WoodsSaxonModel::generate() const {
 
 bool GLISSANDOModel::init() {
   // Initialize hard core (even if this is not actually a nucleus).
+  cacheSize = settingsPtr->mode("HeavyIon:WScacheSize");
+
   initHardCore();
   if ( A() == 0 ) return true;
 
@@ -510,7 +525,8 @@ vector<Nucleon> HOShellModel::generate() const {
   int Nn = A() - Z();
   for ( int i = 0, N= positions.size(); i < N; ++i ) {
     Vec4 pos(positions[i].px() - cms.px(),
-                 positions[i].py() - cms.py());
+             positions[i].py() - cms.py(),
+             positions[i].pz() - cms.pz());
     if ( int(rndmPtr->flat()*(Np + Nn)) >= Np ) {
       --Nn;
       nucleons[i] = Nucleon(nid, i, pos);
@@ -586,10 +602,14 @@ vector<Nucleon> HulthenModel::generate() const {
 
   // Add them to the vector.
   bool nFirst = (rndmPtr->flat() < 0.5);
-  nucleons[0] = Nucleon((nFirst ? pid : nid), 0, Vec4(posA.px() - cms.px(),
-      posA.py() - cms.py()));
-    nucleons[1] = Nucleon((nFirst ? nid : pid), 0, Vec4(posB.px() - cms.px(),
-      posB.py() - cms.py()));
+  nucleons[0] = Nucleon((nFirst ? pid : nid), 0,
+                        Vec4(posA.px() - cms.px(),
+                             posA.py() - cms.py(),
+                             posA.pz() - cms.pz()));
+  nucleons[1] = Nucleon((nFirst ? nid : pid), 0,
+                        Vec4(posB.px() - cms.px(),
+                             posB.py() - cms.py(),
+                             posB.pz() - cms.pz()));
   return nucleons;
 }
 
@@ -676,7 +696,9 @@ vector<Nucleon> GaussianModel::generate() const {
   int Np = Z();
   int Nn = A() - Z();
   for ( int i = 0, N = positions.size(); i < N; ++i ) {
-    Vec4 pos(positions[i].px() - cms.px(), positions[i].py() - cms.py());
+    Vec4 pos(positions[i].px() - cms.px(),
+             positions[i].py() - cms.py(),
+             positions[i].pz() - cms.pz());
     if ( int(rndmPtr->flat()*(Np + Nn)) >= Np ) {
       --Nn;
       nucleons[i] = Nucleon(nid, i, pos);

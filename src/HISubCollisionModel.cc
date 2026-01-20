@@ -1,5 +1,5 @@
 // HISubCollisionModel.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -33,7 +33,7 @@ void ImpactParameterGenerator::initPtr(Info & infoIn,
 
 //--------------------------------------------------------------------------
 
-// Initialise base class, bay be overridden by subclasses.
+// Initialise base class, may be overridden by subclasses.
 
 bool ImpactParameterGenerator::init() {
   // The width parameter is given in units of femtometer.
@@ -94,7 +94,7 @@ Vec4 ImpactParameterGenerator::generate(double & weight) const {
 
 // The SubCollisionModel base class for modeling the collision between
 // two nucleons to tell which type of collision has occurred. The
-// model may manipulate the corresponing state of the nucleons.
+// model may manipulate the corresponding state of the nucleons.
 
 //--------------------------------------------------------------------------
 
@@ -106,6 +106,7 @@ shared_ptr<SubCollisionModel> SubCollisionModel::create(int model) {
     case 3: return make_shared<BlackSubCollisionModel>();
     case 4: return make_shared<LogNormalSubCollisionModel>();
     case 5: return make_shared<LogNormalSubCollisionModel>(1);
+    case 6: return make_shared<DoubleStrikmanSubCollisionModel>(2);
     default: return nullptr;
   }
 }
@@ -129,6 +130,10 @@ bool SubCollisionModel::init(int idAIn, int idBIn, double eCMIn) {
   sigFuzz = settingsPtr->parm("HeavyIon:SigFitFuzz");
   fitPrint = settingsPtr->flag("HeavyIon:SigFitPrint");
   impactFudge = settingsPtr->parm("Angantyr:impactFudge");
+  elasticMode  = settingsPtr->mode("Angantyr:elasticMode");
+  elasticFudge = settingsPtr->parm("Angantyr:elasticFudge");
+  eCMlow = settingsPtr->parm("HeavyIon:eCMLowEnergy");
+
   doVarECM = settingsPtr->flag("Beams:allowVariableEnergy");
   doVarBeams = settingsPtr->flag("Beams:allowIDASwitch");
   if (doVarBeams) {
@@ -152,9 +157,7 @@ bool SubCollisionModel::init(int idAIn, int idBIn, double eCMIn) {
         "defaulting to " + to_string(idAList[0]));
       idASave = idAList[0];
     }
-  }
-  idAList = doVarBeams ? settingsPtr->mvec("Beams:idAList")
-                       : vector<int>{ idASave };
+  } else idAList = vector<int>{ idASave };
 
   if (doVarECM) {
     eMin = settingsPtr->parm("HeavyIon:varECMMin");
@@ -171,7 +174,7 @@ bool SubCollisionModel::init(int idAIn, int idBIn, double eCMIn) {
     eCMPts = 1;
     eMin = eMax = eCMIn;
   }
-  updateSig();
+  updateSig(idAIn, idBIn, eCMIn);
 
   // If there are parameters, no further initialization is necessary.
   if (nParms() == 0) return true;
@@ -199,7 +202,11 @@ bool SubCollisionModel::init(int idAIn, int idBIn, double eCMIn) {
   setKinematics(eCMIn);
 
   // Set initial avNDb
-  avNDb = getSig().avNDb * impactFudge;
+  if ( settingsPtr->mode("Angantyr:impactMode") < 0.0 || !reuseWorked ) {
+    SigEst se = getSig();
+    avNDb = se.avNDb;
+    avNDolap = se.avNOF;
+  }
 
   // Save parameters to disk, if requested.
   if (reuseInitMode < 0 ||reuseInitMode == 1 ||
@@ -241,13 +248,33 @@ bool SubCollisionModel::genParms() {
     defPar.resize(nParms());
   }
 
+  // Read settings for varECM evolution.
+  int doStepwiseEvolve = settingsPtr->mode("HeavyIon:varECMStepwiseEvolve");
+
+
   setParm(defPar);
+
+  double sigPPrefND = 0.0;
+  if ( doStepwiseEvolve == 2 ) {
+    sigTotPtr->calc(2212, 2212, eMax);
+    updateSig(2212, idBSave, eMax);
+    sigPPrefND = sigTarg[1];
+  }
 
   for (int idANow : idAList) {
 
     sigTotPtr->calc(idANow, 2212, eMax);
-    updateSig();
+    updateSig(idANow, idBSave, eMax);
 
+    // If doing step-wise evolution in eCM we still need to reset when
+    // changing beam type.
+    vector<double> parmsNow = defPar;
+    if ( doStepwiseEvolve ) {
+      // Optionally scale with the non-diffractie cross section.
+      if ( doStepwiseEvolve == 2 )
+        parmsNow[0] *= sigTarg[1]/sigPPrefND;
+      setParm(parmsNow);
+    }
     vector<LogInterpolator> subCollParmsNow;
 
     // If nGen is zero, there is nothing to do, just use the default
@@ -271,7 +298,7 @@ bool SubCollisionModel::genParms() {
       loggerPtr->ERROR_MSG("evolutionary algorithm failed");
       return false;
     }
-    vector<double> parmsNow = getParm();
+    parmsNow = getParm();
 
     // If we don't care about varECM, we are done.
     if (!doVarECM) {
@@ -279,11 +306,11 @@ bool SubCollisionModel::genParms() {
         cout << " *--- End HeavyIon fitting of parameters in "
           << "nucleon collision model ---* "
           << endl << endl;
-        cout << " To avoid refitting, add the following lines to your "
-              "configuration file: " << endl;
-        cout << "  HeavyIon:SigFitNGen = 0" << endl;
-        cout << "  HeavyIon:SigFitDefAvNDb = " << avNDb << endl;
-        cout << "  HeavyIon:SigFitDefPar = ";
+        cout << " Angantyr Info: To avoid refitting,"
+          " add the following lines to your configuration file: " << endl;
+        cout << "                HeavyIon:SigFitNGen = 0" << endl;
+        cout << "                HeavyIon:SigFitDefAvNDb = " << avNDb << endl;
+        cout << "                HeavyIon:SigFitDefPar = ";
         for (int iParm = 0; iParm < nParms(); ++iParm) {
           if (iParm > 0) cout << ",";
           cout << parmsNow[iParm];
@@ -300,9 +327,6 @@ bool SubCollisionModel::genParms() {
       continue;
     }
 
-    // Read settings for varECM evolution.
-    bool doStepwiseEvolve = settingsPtr->flag("HeavyIon:varECMStepwiseEvolve");
-
     // Vector of size nParms, each entry contains the parameter values.
     vector<vector<double>> parmsByECM(nParms() + 1, vector<double>(eCMPts));
 
@@ -314,15 +338,20 @@ bool SubCollisionModel::genParms() {
 
     // Evolve down to eMin.
     vector<double> eCMs = logSpace(eCMPts, eMin, eMax);
+    double eParmScale = pow(eCMs[0]/eCMs[1], 0.12);
     for (int i = eCMPts - 2; i >= 0; --i) {
       // Update to correct eCM.
       double eNow = eCMs[i];
       sigTotPtr->calc(idANow, idBSave, eNow);
-      updateSig();
+      updateSig(idANow, idBSave, eNow);
 
       // Alternatively reset to default parameters (mostly for debug purposes).
       if (!doStepwiseEvolve)
         setParm(defPar);
+      else if (doStepwiseEvolve == 2) {
+        for ( double & p : parmsNow ) p *= eParmScale;
+        setParm(parmsNow);
+      }
 
       // Evolve and get next set of parameters.
       if (fitPrint)
@@ -344,13 +373,14 @@ bool SubCollisionModel::genParms() {
       cout << " *--- End HeavyIon fitting of parameters in "
           << "nucleon collision model ---* "
           << endl << endl;
-      cout << " To avoid refitting, you may use the HeavyIon:SigFitReuseInit"
-              " parameter \n to store the configuration to disk."
-          << endl << endl;
+      cout << " Angantyr Info: To avoid refitting, you may use the "
+              "HeavyIon:SigFitReuseInit parameter "
+              "\n                to store the configuration to disk."
+           << endl << endl;
     }
     // Reset cross section and parameters to their eCM values.
     sigTotPtr->calc(idASave, idBSave, eMax);
-    updateSig();
+    updateSig(idASave, idBSave, eMax);
     setParm(parmsNow);
 
     // Store parameter values as logarithmic interpolators.
@@ -364,10 +394,10 @@ bool SubCollisionModel::genParms() {
   }
 
   // Set default parameters.
-  subCollParms = &subCollParmsMap.at(idASave);
+  subCollParmsPtr = &subCollParmsMap.at(idASave);
   for (int iParm = 0; iParm < nParms(); ++iParm)
-    parmSave[iParm] = subCollParms->at(iParm).data().back();
-  avNDb = subCollParms->at(nParms()).data().back();
+    parmSave[iParm] = subCollParmsPtr->at(iParm).data().back();
+  avNDb = subCollParmsPtr->at(nParms()).data().back();
 
   // Done.
   return true;
@@ -386,7 +416,7 @@ bool SubCollisionModel::saveParms(string fileName) const {
 
   vector<string> setting;
   ostringstream os;
-  os << eCMPts << " " << eMin << " " << eMax;
+  os << eCMPts << " " << eMin << " " << eMax << " " << 1;
   setting.push_back(os.str());
 
   for (int idANow : idAList) {
@@ -462,9 +492,14 @@ bool SubCollisionModel::loadParms(string fileName) {
   double eMinNow, eMaxNow;
   if ( !( is >> eCMPts >> eMinNow >> eMaxNow) )
     return formatError();
-  if (!(eCMPts >= 1) || eMin < eMinNow || eMax > eMaxNow) {
+  if (!(eCMPts >= 1) || eMin < 0.999*eMinNow || eMax > eMaxNow*1.001) {
     loggerPtr->ERROR_MSG("stored file does not cover requested energy range");
     return false;
+  }
+  int fileversion = 0;
+  if ( ! ( is >> fileversion ) ) {
+    fileversion = 0;
+    loggerPtr->WARNING_MSG("reading file with old deprecated format");
   }
 
   eMin = eMinNow;
@@ -481,8 +516,12 @@ bool SubCollisionModel::loadParms(string fileName) {
     for (int iParm = 0; iParm < nParms() + 1; ++iParm) {
       istringstream lineStream(lines[i++]);
       vector<double> parmData(eCMPts);
-      for (int iPt = 0; iPt < eCMPts; ++iPt)
+      for (int iPt = 0; iPt < eCMPts; ++iPt) {
         if (!(lineStream >> parmData[iPt])) return formatError();
+        // ***TODO *** this should be fixed!
+        if ( !fileversion && iParm == nParms() )
+          parmData[iPt] /= settingsPtr->parmDefault("Angantyr:impactFudge");
+      }
 
       subCollParmsNow[iParm] = LogInterpolator(eMin, eMax, parmData);
     }
@@ -499,10 +538,10 @@ bool SubCollisionModel::loadParms(string fileName) {
   }
 
   // Set default parameters.
-  subCollParms = &subCollParmsMap[idASave];
+  subCollParmsPtr = &subCollParmsMap[idASave];
   for (int iParm = 0; iParm < nParms(); ++iParm)
-    parmSave[iParm] = subCollParms->at(iParm).data().back();
-  avNDb = subCollParms->at(nParms()).data().back();
+    parmSave[iParm] = subCollParmsPtr->at(iParm).data().back();
+  avNDb = subCollParmsPtr->at(nParms()).data().back();
 
   // Done.
   return true;
@@ -512,26 +551,29 @@ bool SubCollisionModel::loadParms(string fileName) {
 
 // Update the parameters to the interpolated value at the given eCM.
 
-void SubCollisionModel::setKinematics(double eCMIn) {
+bool SubCollisionModel::setKinematics(double eCMIn) {
+  if ( eCMIn > 1.001*eMax || eCMIn < 0.999*eMin ) return false;
   eSave = eCMIn;
+  eCMIn = max(eMin, min(eCMIn, eMax));
   if (nParms() > 0) {
-    vector<double> parmsNow(subCollParms->size());
+    vector<double> parmsNow(subCollParmsPtr->size());
     for (size_t iParm = 0; iParm < parmsNow.size(); ++iParm)
-      parmsNow[iParm] = subCollParms->at(iParm).at(eCMIn);
-    avNDb = subCollParms->at(nParms()).at(eCMIn);
+      parmsNow[iParm] = subCollParmsPtr->at(iParm).at(eCMIn);
+    avNDb = subCollParmsPtr->at(nParms()).at(eCMIn);
     setParm(parmsNow);
   }
+  return true;
 }
 
 //--------------------------------------------------------------------------
 
-void SubCollisionModel::setIDA(int idA) {
-  if (nParms() == 0)
-    return;
-  updateSig();
-  *subCollParms = subCollParmsMap[idA];
+bool SubCollisionModel::setIDA(int idA) {
+  if (nParms() == 0) return true;
+  updateSig(idA, idBSave, eSave);
+  subCollParmsPtr = &subCollParmsMap[idA];
   idASave = idA;
-  setKinematics(eSave);
+  if ( sigTarg[0] - sigTarg[6] < 0.001 ) return false;
+  return setKinematics(eSave);
 }
 
 //--------------------------------------------------------------------------
@@ -539,18 +581,85 @@ void SubCollisionModel::setIDA(int idA) {
 // Update internally stored cross sections, which in Angantyr should have
 // units of femtometer^2.
 
-void SubCollisionModel::updateSig() {
-  sigTarg[0] = sigTotPtr->sigmaTot()*MB2FMSQ;
-  sigTarg[1] = sigTotPtr->sigmaND()*MB2FMSQ;
-  sigTarg[2] = sigTotPtr->sigmaXX()*MB2FMSQ;
-  sigTarg[3] = sigTotPtr->sigmaAX()*MB2FMSQ + sigTarg[1] + sigTarg[2];
-  sigTarg[4] = sigTotPtr->sigmaXB()*MB2FMSQ + sigTarg[1] + sigTarg[2];
-  sigTarg[5] = sigTotPtr->sigmaAXB()*MB2FMSQ;
-  sigTarg[6] = sigTotPtr->sigmaEl()*MB2FMSQ;
-  sigTarg[7] = sigTotPtr->bSlopeEl();
+void SubCollisionModel::updateSig(int idAIn, int idBIn, double eCMIn) {
+
+  if ( sigCmbPtr && eCMIn < eCMlow ) {
+    lowEnergyCache.set(sigTargNN, idAIn, idBIn, eCMIn);
+    sigTarg = sigTargNN[0];
+  }
+  else if ( sigCmbPtr ) {
+    // Loop over both protons and neutrons.
+    for ( int i = 0; i < 4; ++i ) {
+      int idA = idAIn;
+      int idB = idBIn;
+      if ( i%2 == 1 ) {
+        if ( projPtr->A() < 2 ) continue;
+        idA = ( projPtr->idN() > 0? 2112: -2112 );
+      }
+      if ( i/2 == 1 ) {
+        if ( targPtr->A() < 2 ) continue;
+        idB = ( targPtr->idN() > 0? 2112: -2112 );
+      }
+      double mA = particleDataPtr->m0(idA);
+      double mB = particleDataPtr->m0(idB);
+      // Total.
+      sigTargNN[i][0] =
+        sigCmbPtr->sigmaPartial(idA, idB, eCMIn, mA, mB, 0)*MB2FMSQ;
+      // Non-diffractive.
+      sigTargNN[i][1] =
+        sigCmbPtr->sigmaPartial(idA, idB, eCMIn, mA, mB, 1)*MB2FMSQ;
+      // Doubly diffractive.
+      sigTargNN[i][2] =
+        sigCmbPtr->sigmaPartial(idA, idB, eCMIn, mA, mB, 5)*MB2FMSQ;
+      // Diffractive (and wounded) projectile.
+      sigTargNN[i][3] =
+        sigCmbPtr->sigmaPartial(idA, idB, eCMIn, mA, mB, 4)*MB2FMSQ +
+        sigTargNN[i][1] + sigTargNN[i][2];
+      // Diffractive (and wounded) target.
+      sigTargNN[i][4] =
+        sigCmbPtr->sigmaPartial(idA, idB, eCMIn, mA, mB, 3)*MB2FMSQ +
+        sigTargNN[i][1] + sigTargNN[i][2];
+      // Central diffractive.
+      sigTargNN[i][5] =
+        sigCmbPtr->sigmaPartial(idA, idB, eCMIn, mA, mB, 6)*MB2FMSQ;
+      // Elastic.
+      sigTargNN[i][6] =
+        sigCmbPtr->sigmaPartial(idA, idB, eCMIn, mA, mB, 2)*MB2FMSQ;
+      // b-slope not used for low energy.
+      sigTargNN[i][7] = 0.0;
+      // Low energy excitation.
+      sigTargNN[i][8] =
+        sigCmbPtr->sigmaPartial(idA, idB, eCMIn, mA, mB, 7)*MB2FMSQ;
+      // Low energy annihilation.
+      sigTargNN[i][9] =
+        sigCmbPtr->sigmaPartial(idA, idB, eCMIn, mA, mB, 8)*MB2FMSQ;
+      // Low energy resonance.
+      sigTargNN[i][10] =
+        sigCmbPtr->sigmaPartial(idA, idB, eCMIn, mA, mB, 9)*MB2FMSQ;
+    }
+    sigTarg = sigTargNN[0];
+    sigErr[7] = 0.0;
+
+  }
+  else {
+
+    sigTotPtr->calc(idAIn, idBIn, eCMIn);
+    sigTarg[0] = sigTotPtr->sigmaTot()*MB2FMSQ;
+    sigTarg[1] = sigTotPtr->sigmaND()*MB2FMSQ;
+    sigTarg[2] = sigTotPtr->sigmaXX()*MB2FMSQ;
+    sigTarg[3] = sigTotPtr->sigmaAX()*MB2FMSQ + sigTarg[1] + sigTarg[2];
+    sigTarg[4] = sigTotPtr->sigmaXB()*MB2FMSQ + sigTarg[1] + sigTarg[2];
+    sigTarg[5] = sigTotPtr->sigmaAXB()*MB2FMSQ;
+    sigTarg[6] = sigTotPtr->sigmaEl()*MB2FMSQ;
+    sigTarg[7] = sigTotPtr->bSlopeEl();
+    sigTarg[8] = sigTarg[9] = sigTarg[10] = 0.0;
+  }
+
   // preliminarily set average ND impact parameter as if black disk.
   avNDb = settingsPtr->parm("HeavyIon:SigFitDefAvNDb");
-  if ( avNDb <= 0 ) avNDb = 2.0 * sqrt(sigTarg[1]/M_PI) * impactFudge / 3.0;
+  if ( avNDb <= 0 ) avNDb = 2.0 * sqrt(sigTarg[1]/M_PI) / 3.0;
+  if ( avNDb <= 0 ) avNDb = 2.0 * sqrt(sigTarg[0]/M_PI) / 3.0;
+
 }
 
 //--------------------------------------------------------------------------
@@ -574,11 +683,9 @@ double SubCollisionModel::Chi2(const SigEst & se, int npar) const {
 
 //--------------------------------------------------------------------------
 
-// Anonymous helper function to print out stuff.
+// Helper function to print out stuff.
 
-namespace {
-
-void printFit(string name, double fit, double sig, double sigerr,
+static void printFit(string name, double fit, double sig, double sigerr,
                  string unit = "mb    ") {
   cout << " |" << setw(25) << name << ": " << setw(8);
   if ( fit >= 100000 )
@@ -594,13 +701,15 @@ void printFit(string name, double fit, double sig, double sigerr,
   cout << ") " << unit << "          | " << endl;
 }
 
-}
+
 //--------------------------------------------------------------------------
 
 // A simple genetic algorithm for fitting the parameters in a subclass
 // to reproduce desired cross sections.
 
 bool SubCollisionModel::evolve(int nGenerations, double eCM, int idANow) {
+
+  static int loop = 0;
 
   if (nParms() == 0)
     return true;
@@ -681,10 +790,21 @@ bool SubCollisionModel::evolve(int nGenerations, double eCM, int idANow) {
   // Update resulting parameter set.
   setParm(pop[0]);
   SigEst se = getSig();
+  double chi2 = Chi2(se, dim);
+
+  // If the user has deemed the Chi2 too high, continue fitting.
+  if ( settingsPtr->parm("HeavyIon:SigFitMaxChi2") > 0.0 &&
+       settingsPtr->parm("HeavyIon:SigFitMaxChi2") < chi2 &&
+       loop <  settingsPtr->mode("HeavyIon:SigFitMaxChi2Max") ) {
+    cout << " Chi2 not converging, continuing...           | \n";
+    ++loop;
+    bool ret = evolve(nGenerations, eCM, idANow);
+    --loop;
+    return ret;
+  }
 
   // Output information.
-  double chi2 = Chi2(se, dim);
-  avNDb = se.avNDb*impactFudge;
+  avNDb = se.avNDb;
   if ( fitPrint ) {
     for ( int i = nGenerations; i < 20; ++i ) cout << " ";
     cout << "                                              | \n";
@@ -752,6 +872,7 @@ SubCollisionSet BlackSubCollisionModel::
 getCollisions(Nucleus& proj, Nucleus& targ) {
 
   multiset<SubCollision> ret;
+  double favNDb = avNDb*impactFudge;
 
   // Go through all pairs of nucleons
   for (Nucleon& p : proj)
@@ -759,10 +880,11 @@ getCollisions(Nucleus& proj, Nucleus& targ) {
       double b = (p.bPos() - t.bPos()).pT();
       if ( b > sqrt(sigTot()/M_PI) ) continue;
       if ( b < sqrt((sigTot() - sigEl())/M_PI) ) {
-        ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::ABS));
+        ret.insert(SubCollision(p, t, b, b/favNDb, -1.0, SubCollision::ABS));
       }
       else {
-        ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::ELASTIC));
+        ret.insert(SubCollision(p, t, b, b/favNDb, -1.0,
+            SubCollision::ELASTIC));
       }
     }
 
@@ -783,34 +905,75 @@ SubCollisionSet NaiveSubCollisionModel::
 getCollisions(Nucleus& proj, Nucleus& targ) {
 
   multiset<SubCollision> ret;
+  double favNDb = avNDb*impactFudge;
 
-  // Go through all pairs of nucleons
-  for (Nucleon& p : proj)
+  double S = 1.0;
+
+  int sigid = 0;
+  for (Nucleon& p : proj) {
     for (Nucleon& t : targ) {
+
+      if ( sigid ) swap(sigTarg, sigTargNN[sigid]);
+      sigid = 0;
+      if ( projPtr->A() > 1 && abs(p.id()) == 2112 ) sigid += 1;
+      if ( targPtr->A() > 1 && abs(t.id()) == 2112 ) sigid += 2;
+       if ( sigid ) swap(sigTarg, sigTargNN[sigid]);
+
       double b = (p.bPos() - t.bPos()).pT();
       if ( b > sqrt(sigTot()/M_PI) ) continue;
-      if ( b < sqrt(sigND()/M_PI) ) {
-        ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::ABS));
+
+      S *= 0.5;
+
+      double currXS = sigND();
+      if ( b < sqrt(currXS/M_PI) ) {
+        ret.insert(SubCollision(p, t, b, b/favNDb, -1.0, SubCollision::ABS));
+        continue;
       }
-      else if ( b < sqrt((sigND() + sigDDE())/M_PI) ) {
-        ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::DDE));
+      currXS += sigLAnn();
+      if ( b < sqrt(currXS/M_PI) ) {
+        ret.insert(SubCollision(p, t, b, b/favNDb, -1.0, SubCollision::LANN));
+        continue;
       }
-      else if ( b < sqrt((sigND() + sigSDE() + sigDDE())/M_PI) ) {
-         if ( sigSDEP() > rndmPtr->flat()*sigSDE() ) {
-          ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::SDEP));
+      currXS += sigLRes();
+      if ( b < sqrt(currXS/M_PI) ) {
+        ret.insert(SubCollision(p, t, b, b/favNDb, -1.0, SubCollision::LRES));
+        continue;
+      }
+      currXS += sigDDE();
+      if ( b < sqrt(currXS/M_PI) ) {
+        ret.insert(SubCollision(p, t, b, b/favNDb, -1.0, SubCollision::DDE));
+        continue;
+      }
+      currXS += sigSDE();
+      if ( b < sqrt(currXS/M_PI) ) {
+        if ( sigSDEP() > rndmPtr->flat()*sigSDE() ) {
+          ret.insert(SubCollision(p, t, b, b/favNDb, -1.0,
+              SubCollision::SDEP));
         } else {
-          ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::SDET));
+          ret.insert(SubCollision(p, t, b, b/favNDb, -1.0,
+              SubCollision::SDET));
         }
+        continue;
       }
-      else if ( b < sqrt((sigND() + sigSDE() + sigDDE() + sigCDE())/M_PI) ) {
-        ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::CDE));
+      currXS += sigLExc();
+      if ( b < sqrt(currXS/M_PI) ) {
+        ret.insert(SubCollision(p, t, b, b/favNDb, -1.0, SubCollision::LEXC));
+        continue;
       }
-      else {
-        ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::ELASTIC));
+      currXS += sigCDE();
+      if ( b < sqrt(currXS/M_PI) ) {
+        ret.insert(SubCollision(p, t, b, b/favNDb, -1.0, SubCollision::CDE));
+        continue;
+      }
+      if ( elasticMode ) {
+        ret.insert(SubCollision(p, t, b, b/favNDb, -1.0,
+            SubCollision::ELASTIC));
       }
     }
+  }
+  if ( sigid ) swap(sigTarg, sigTargNN[sigid]);
 
-  return SubCollisionSet(ret, 0.5);
+  return SubCollisionSet(ret, 1.0 - S);
 }
 
 //==========================================================================
@@ -819,7 +982,14 @@ getCollisions(Nucleus& proj, Nucleus& targ) {
 // each Nucleon in a sub-collision resulting in a fluctuating
 // interaction probability. To assess the fluctuation each Nucleon has
 // two random states in each collision, one main state and one helper
-// state to assess the frlutuations.
+// state to assess the fluctuations.
+
+//--------------------------------------------------------------------------
+
+// Virtual init method.
+bool FluctuatingSubCollisionModel::init(int idAIn, int idBIn, double eCMIn) {
+  return SubCollisionModel::init(idAIn, idBIn, eCMIn);
+}
 
 //--------------------------------------------------------------------------
 
@@ -842,19 +1012,21 @@ static void shuffle(double PND1, double PND2, double & PW1, double & PW2) {
 static void shuffle(double & PEL11, double P11,
                     double P12, double P21, double P22) {
   double PEL12 = PEL11, PEL21 = PEL11, PEL22 = PEL11;
-  map<double, double *> ord;
-  ord[P11] = &PEL11;
-  ord[P12] = &PEL12;
-  ord[P21] = &PEL21;
-  ord[P22] = &PEL22;
-  map<double, double *>::iterator next = ord.begin();
-  map<double, double *>::iterator prev = next++;
-  while ( next != ord.end() ) {
-    if ( *prev->second > prev->first ) {
-      *next->second += *prev->second - prev->first;
-      *prev->second = prev->first;
+  std::array<std::pair<double, double *>, 4> arr{
+      {{P11, &PEL11}, {P12, &PEL12}, {P21, &PEL21}, {P22, &PEL22}}};
+
+  // Sorted in place instead
+  std::sort(std::begin(arr), std::end(arr),
+            [](const std::pair<double, double *> &a,
+               const std::pair<double, double *> &b) {
+              return a.first < b.first; // Sort by P values
+            });
+
+  for (int i = 0; i < 3; ++i) {
+    if (*(arr[i].second) > arr[i].first) {
+      *(arr[i + 1].second) += *(arr[i].second) - arr[i].first;
+      *(arr[i].second) = arr[i].first;
     }
-    prev = next++;
   }
 }
 
@@ -869,29 +1041,48 @@ static double el(double s1, double s2, double u1, double u2) {
 
 //--------------------------------------------------------------------------
 
-// Numerically estimate the cross sections corresponding to the
-// current parameter setting.
+// Numerically estimate the NN semi-inclusive cross sections
+// corresponding to the current parameter setting. The radii are
+// sampled each iteration, while the integral over impact parametr is
+// done analytaically
 
 SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
 
   // FPE prevention.
   const double HUGEVAL = 1.0e100;
 
+  // The random sampling of radii is a bit time-consuming. If we
+  // generate a fair amount of them from start and then randomly pick
+  // from them for each iteration, we gain a factor of more than 2 in
+  // speed.
+  int nSample = NInt/4;
+  vector<double> projSample(nSample), targSample(nSample);
+  for ( int i = 0; i < nSample; ++i ) {
+    projSample[i] = pickRadiusProj();
+    targSample[i] = pickRadiusTarg();
+  }
+
   SigEst s;
   for ( int n = 0; n < NInt; ++n ) {
-    double rp1 = pickRadiusProj();
-    double rp2 = pickRadiusProj();
-    double rt1 = pickRadiusTarg();
-    double rt2 = pickRadiusTarg();
+
+    // First we pick 2x2 statistically independent radii combinations.
+    double rp1 = projSample[int(nSample*rndmPtr->flat())];
+    double rp2 = projSample[int(nSample*rndmPtr->flat())];
+    double rt1 = targSample[int(nSample*rndmPtr->flat())];
+    double rt2 = targSample[int(nSample*rndmPtr->flat())];
     double s11 = pow2(rp1 + rt1)*M_PI;
     double s12 = pow2(rp1 + rt2)*M_PI;
     double s21 = pow2(rp2 + rt1)*M_PI;
     double s22 = pow2(rp2 + rt2)*M_PI;
 
+    // Calculate the total cross section.
     double stot = (s11 + s12 + s21 + s22)/4.0;
     s.sig[0] += stot;
     s.dsig2[0] += pow2(stot);
 
+    // Calculate the non-diffractive cross section and collect
+    // information about corresponding overlap and average impact
+    // parameter.
     double u11 = opacity(s11)/2.0;
     double u12 = opacity(s12)/2.0;
     double u21 = opacity(s21)/2.0;
@@ -905,6 +1096,13 @@ SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
                                    s22*sqrt(s22/(2.0*u22))*(1.0 - u22))/12.0;
       s.avNDb += avb;
       s.davNDb2 += pow2(avb);
+
+      double avOF = (0.5*log1mT0(s11)*s11/u11 +
+                     0.5*log1mT0(s12)*s12/u12 +
+                     0.5*log1mT0(s21)*s21/u21 +
+                     0.5*log1mT0(s22)*s22/u22)/4.0;
+      s.avNOF +=avOF;
+      s.davNOF2 +=pow2(avOF);
     }
 
     double snd = (s11 - s11*u11 + s12 - s12*u12 +
@@ -912,10 +1110,12 @@ SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
     s.sig[1] += snd;
     s.dsig2[1] += pow2(snd);
 
+    // Calculate the elstic cross section.
     double sel = (el(s11, s22, u11, u22) + el(s12, s21, u12, u21))/2.0;
     s.sig[6] += sel;
     s.dsig2[6] += pow2(sel);
 
+    // Calculate the cross sections for wounded projectile and target.
     double swt = stot - (el(s11, s12, u11, u12) + el(s21, s22, u21, u22))/2.0;
     double swp = stot - (el(s11, s21, u11, u21) + el(s12, s22, u12, u22))/2.0;
     s.sig[4] += swp;
@@ -923,9 +1123,11 @@ SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
     s.sig[3] += swt;
     s.dsig2[3] += pow2(swt);
 
+    // Calculate the doubly diffracted cross section.
     s.sig[2] += swt + swp - snd  + sel - stot;
     s.dsig2[2] += pow2(swt + swp - snd  + sel - stot);
 
+    // Calculate the elastic b-slope.
     s.sig[5] += s11;
     s.dsig2[5] += pow2(s11);
 
@@ -935,6 +1137,7 @@ SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
 
   }
 
+  // Normalise everything.
   s.sig[0] /= double(NInt);
   s.dsig2[0] = (s.dsig2[0]/double(NInt) - pow2(s.sig[0]))/double(NInt);
 
@@ -960,7 +1163,7 @@ SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
   s.dsig2[7] /= double(NInt);
 
   // Protect from FPEs.
-  if ( s.sig[5] > 0.0 || s.sig[7] < s.sig[5]*HUGEVAL ) {
+  if ( s.sig[5] > 0.0 && s.sig[7] < s.sig[5]*HUGEVAL ) {
     double bS = (s.sig[7]/s.sig[5])/(16.0*M_PI*pow2(0.19732697));
     double b2S = pow2(bS)*(s.dsig2[7]/pow2(s.sig[7]) - 1.0 +
                            s.dsig2[5]/pow2(s.sig[5]) - 1.0)/double(NInt);
@@ -970,6 +1173,7 @@ SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
     s.sig[7] = 0.0;
     s.dsig2[7] = 0.0;
   }
+  // We don't really know how to calculate central diffraction yet.
   s.sig[5] = 0.0;
   s.dsig2[5] = 0.0;
 
@@ -980,9 +1184,15 @@ SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
   if ( s.sig[1] > 0.0 ) {
     s.avNDb   /= s.sig[1];
     s.davNDb2 /= pow2(s.sig[1]);
+    s.avNOF /= double(NInt);
+    s.avNOF /= s.sig[1];
+    s.davNOF2 /= double(NInt);
+    s.davNOF2 /= pow2(s.sig[1]);
   } else {
     s.avNDb   = 0.0;
     s.davNDb2 = 0.0;
+    s.avNOF   = 0.0;
+    s.davNOF2  = 0.0;
   }
   return s;
 
@@ -990,13 +1200,67 @@ SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
 
 //--------------------------------------------------------------------------
 
-// Main function returning the possible sub-collisions.
+// Helper function Given 2x2 statistically equivalent elastic
+// amplitudes, shuffle probabilities between them so that the
+// different probabilities for inelastic scattering are above zero and
+// below unity for all four cases.
+//
+// Return a vector with the probabilities for non-diffractive, double
+// diffractive excitation, single projectile excitation, single target
+// excitation, and elastic, for the main amplitude T11. Also trurn
+// theprobability of inelastic scatterning for the four statistically
+// equivalent amplitudes.
 
-SubCollisionSet FluctuatingSubCollisionModel::
-getCollisions(Nucleus& proj, Nucleus& targ) {
+vector<double> FluctuatingSubCollisionModel::
+getCollTypeProbs(const vector<double> & T) const {
 
-  multiset<SubCollision> ret;
+  if ( T[0] + T[1] + T[2] + T[3] == 0.0 )
+    return {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  vector<double> PND(5), PNND(5), PNIN(5), PTD(5), PDp(5), PDt(5),
+    PDD(5), PEl(5);
 
+  auto op  = [](int j) { return j^2; };
+  auto ot  = [](int j) { return j^1; };
+  auto opt  = [](int j) { return j^3; };
+
+  // First calculate the differenct dSigma/d2b for the different
+  // amplitudes.
+  for ( int i = 0; i < 4; ++i ) {
+    PND[4] += (PND[i] = 1.0 - pow2(1.0 - T[i]));
+    PNND[4] += (PNND[i] = 1.0 - PND[i]);
+    PTD[4] += (PTD[i] = pow2(T[i]) - T[i]*T[opt(i)]);
+    PDp[4] += (PDp[i] = T[i]*T[ot(i)] - T[i]*T[opt(i)]);
+    PDt[4] += (PDt[i] = T[i]*T[op(i)] - T[i]*T[opt(i)]);
+    PEl[4] += (PEl[i] = T[i]*T[opt(i)]);
+    PDD[4] += (PDD[i] = PTD[i] - PDp[i] - PDt[i]);
+  }
+
+  // Then spread out the summed probabilities for diffractive
+  // scatterings in proportion to the available probabilities.
+  for (int i = 0; i < 4; ++i) {
+    PTD[i] = PTD[4]*PNND[i]/PNND[4];
+    PDp[i] = PDp[4]*PNND[i]/PNND[4];
+    PDt[i] = PDt[4]*PNND[i]/PNND[4];
+    PDD[i] = PDD[4]*PNND[i]/PNND[4];
+    PNIN[4] += (PNIN[i] = PNND[i] - PTD[i]);
+  }
+
+  // Finally see if there is room for elastic scatterings.
+  for ( int i = 0; i < 4; ++i )
+    if ( PNIN[4] > 0.0 ) PEl[i] = PEl[4]*PNIN[i]/PNIN[4];
+
+  // Now everything (except the elastic probability) should be fine.
+  return { PND[0], PDD[0], PDp[0], PDt[0], PEl[0],
+    PND[0] + PTD[0], PND[1] + PTD[1], PND[2] + PTD[2], PND[3] + PTD[3] };
+
+}
+
+//--------------------------------------------------------------------------
+
+// Generate radii for all nucleons.
+
+void FluctuatingSubCollisionModel::
+generateNucleonStates(Nucleus& proj, Nucleus& targ) {
   // Assign two states to each nucleon.
   for (Nucleon& p : proj) {
     p.state({ pickRadiusProj() });
@@ -1006,43 +1270,66 @@ getCollisions(Nucleus& proj, Nucleus& targ) {
     t.state({ pickRadiusTarg() });
     t.addAltState({ pickRadiusTarg() });
   }
+}
+
+//--------------------------------------------------------------------------
+
+// Main function returning the possible sub-collisions.
+
+SubCollisionSet FluctuatingSubCollisionModel::
+getCollisions(Nucleus& proj, Nucleus& targ) {
+
+  if ( opacityMode > 1 ) return getCollisionsNew(proj, targ);
+
+  multiset<SubCollision> ret;
+  double favNDb = avNDb*impactFudge;
+
 
   // The factorising S-matrix.
-  double S = 1.0;
-  double Salt12 = 1.0, Salt21 = 1.0, Salt22 = 1.0;
+  double SS11 = 1.0, SS12 = 1.0, SS21 = 1.0, SS22 = 1.0;
 
   // Go through all pairs of nucleons
   for (Nucleon& p : proj)
     for (Nucleon& t : targ) {
       double b = (p.bPos() - t.bPos()).pT();
-
+      double olapp = getOverlap(b, t.state()[0],p.state()[0])/avNDolap;
       double T11 = Tpt(p.state(), t.state(), b);
       double T12 = Tpt(p.state(), t.altState(), b);
       double T21 = Tpt(p.altState(), t.state(), b);
       double T22 = Tpt(p.altState(), t.altState(), b);
+
       double S11 = 1.0 - T11;
       double S12 = 1.0 - T12;
       double S21 = 1.0 - T21;
       double S22 = 1.0 - T22;
-      S *= S11;
-      Salt12 *= S12;
-      Salt21 *= S21;
-      Salt22 *= S22;
+
+      SS11 *= S11;
+      SS12 *= S12;
+      SS21 *= S21;
+      SS22 *= S22;
       double PND11 = 1.0 - pow2(S11);
       // First and most important, check if this is an absorptive
       // scattering.
       if ( PND11 > rndmPtr->flat() ) {
-        ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::ABS));
+        auto abstype = SubCollision::ABS;
+        if ( sigLAnn() + sigLRes() > 0 ) {
+          double totabs = (sigND() + sigLAnn() + sigLRes())*rndmPtr->flat();
+          if ( totabs > sigND() + sigLAnn() )
+            abstype = SubCollision::LRES;
+          else if ( totabs > sigND() )
+            abstype = SubCollision::LANN;
+        }
+        ret.insert(SubCollision(p, t, b, b/favNDb, olapp, abstype));
         continue;
       }
 
       // Now set up calculation for probability of diffractively
       // wounded nucleons.
-      double PND12 = 1.0 - pow2(S12);
       double PND21 = 1.0 - pow2(S21);
       double PWp11 = 1.0 - S11*S21;
       double PWp21 = 1.0 - S11*S21;
       shuffle(PND11, PND21, PWp11, PWp21);
+      double PND12 = 1.0 - pow2(S12);
       double PWt11 = 1.0 - S11*S12;
       double PWt12 = 1.0 - S11*S12;
       shuffle(PND11, PND12, PWt11, PWt12);
@@ -1050,21 +1337,21 @@ getCollisions(Nucleus& proj, Nucleus& targ) {
       bool wt = ( PWt11 - PND11 > (1.0 - PND11)*rndmPtr->flat() );
       bool wp = ( PWp11 - PND11 > (1.0 - PND11)*rndmPtr->flat() );
       if ( wt && wp ) {
-        ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::DDE));
+        ret.insert(SubCollision(p, t, b, b/favNDb, olapp, SubCollision::DDE));
         continue;
       }
       if ( wt ) {
-        ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::SDET));
+        ret.insert(SubCollision(p, t, b, b/favNDb, olapp, SubCollision::SDET));
         continue;
       }
       if ( wp ) {
-        ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::SDEP));
+        ret.insert(SubCollision(p, t, b, b/favNDb, olapp, SubCollision::SDEP));
         continue;
       }
 
       // Finally set up calculation for elastic scattering. This can
       // never be exact, but let's do as well as we can.
-
+      if ( elasticMode < 1 ) continue;
       double PND22 = 1.0 - pow2(S22);
       double PWp12 = 1.0 - S12*S22;
       double PWp22 = 1.0 - S12*S22;
@@ -1082,14 +1369,112 @@ getCollisions(Nucleus& proj, Nucleus& targ) {
       shuffle(PEL, PNW11, PNW12, PNW21, PNW22);
       if ( PEL > PNW11*rndmPtr->flat() ) {
         if ( sigCDE() > rndmPtr->flat()*(sigCDE() + sigEl()) )
-          ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::CDE));
+          ret.insert(SubCollision(p, t, b, b/favNDb, olapp,
+              SubCollision::CDE));
         else
-          ret.insert(SubCollision(p, t, b, b/avNDb, SubCollision::ELASTIC));
+          ret.insert(SubCollision(p, t, b, b/favNDb, olapp,
+              SubCollision::ELASTIC));
       }
     }
 
-  return SubCollisionSet(ret,
-    1.0 - S, 1.0 - Salt12, 1.0 - Salt21, 1.0 - Salt22);
+  double T11 = 1.0 - SS11;
+  double T12 = 1.0 - SS12;
+  double T21 = 1.0 - SS21;
+  double T22 = 1.0 - SS22;
+
+  return SubCollisionSet(ret, T11, T12, T21, T22);
+
+}
+
+//--------------------------------------------------------------------------
+
+// Main function returning the possible sub-collisions (new version
+// for better reproduction of inelastic cross sections).
+
+SubCollisionSet FluctuatingSubCollisionModel::
+getCollisionsNew(Nucleus& proj, Nucleus& targ) {
+
+  multiset<SubCollision> ret;
+  double favNDb = avNDb*impactFudge;
+
+  // The factorising S-matrix.
+  double SS11 = 1.0, SS12 = 1.0, SS21 = 1.0, SS22 = 1.0;
+
+  // Probability of no inelastic scattering.
+  double PNI11 = 1.0, PNI12 = 1.0, PNI21 = 1.0, PNI22 = 1.0;
+
+  // Go through all pairs of nucleons.
+  for (Nucleon& p : proj)
+    for (Nucleon& t : targ) {
+      double b = (p.bPos() - t.bPos()).pT();
+      double olapp = getOverlap(b, t.state()[0],p.state()[0])/avNDolap;
+      double T11 = Tpt(p.state(), t.state(), b);
+      double T12 = Tpt(p.state(), t.altState(), b);
+      double T21 = Tpt(p.altState(), t.state(), b);
+      double T22 = Tpt(p.altState(), t.altState(), b);
+      SS11 *= (1.0 - T11);
+      SS12 *= (1.0 - T12);
+      SS21 *= (1.0 - T21);
+      SS22 *= (1.0 - T22);
+
+      auto P = getCollTypeProbs({T11, T12, T21, T22});
+
+      PNI11 *= 1.0 - P[5];
+      PNI12 *= 1.0 - P[6];
+      PNI21 *= 1.0 - P[7];
+      PNI22 *= 1.0 - P[8];
+      double R = rndmPtr->flat();
+      double acc = 0.0;
+      if ( R < (acc += P[0]) )
+        ret.insert(SubCollision(p, t, b, b/favNDb, olapp,
+            SubCollision::ABS));
+      else if ( R < (acc += P[1]) )
+        ret.insert(SubCollision(p, t, b, b/favNDb, olapp,
+            SubCollision::DDE));
+      else if ( R < (acc += P[2]) )
+        ret.insert(SubCollision(p, t, b, b/favNDb, olapp,
+            SubCollision::SDEP));
+      else if ( R < (acc += P[3]) )
+        ret.insert(SubCollision(p, t, b, b/favNDb, olapp,
+            SubCollision::SDET));
+      else if ( elasticMode > 0 && R < (acc + P[4]) )
+        ret.insert(SubCollision(p, t, b, b/favNDb, olapp,
+            SubCollision::ELASTIC));
+    }
+
+  double T11 = 1.0 - SS11;
+  double T12 = 1.0 - SS12;
+  double T21 = 1.0 - SS21;
+  double T22 = 1.0 - SS22;
+
+  if ( !ret.empty() || elasticMode > 0 || elasticFudge <= 0.0 ||
+       proj.size() + targ.size() == 2)
+    return SubCollisionSet(ret, T11, T12, T21, T22);
+
+  // Option to include the probability that the nuclei were wounded by
+  // elastic NN scatterings.  Calculate the overall probability that
+  // the AA collision was inelastic (summed over the four state
+  // combinations.
+  double PInelSum = 2.0*(T11 + T12 + T21 + T22 - T11*T22 - T12*T21);
+
+  // Now calculate the probability that there were inelastic NN
+  // scatterings, again summed over states.
+  double PInelNN = 4.0 -  PNI11 - PNI12 - PNI21 - PNI22;
+
+  // Shuffle the difference in probabilities (note that it may be
+  // negative, so we need a fudge factor) between states and get the
+  // share of elastic NN causing inelastic AA for our primary state.
+  double PNNel = PNI11*(PInelSum - PInelNN)/(PNI11 + PNI12 + PNI21 + PNI22);
+  if ( PNNel > 0 && PNNel*elasticFudge > PNI11*rndmPtr->flat() ) {
+    int idx = int(proj.size()*targ.size()*rndmPtr->flat());
+    Nucleon& p = *(proj.begin() + idx/targ.size());
+    Nucleon& t = *(targ.begin() + idx%targ.size());
+    double b = (p.bPos() - t.bPos()).pT();
+    double olapp = getOverlap(b, t.state()[0],p.state()[0])/avNDolap;
+    ret.insert(SubCollision(p, t, b, b/favNDb, olapp, SubCollision::ELASTIC));
+  }
+
+  return SubCollisionSet(ret, T11, T12, T21, T22);
 
 }
 

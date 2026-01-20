@@ -1,5 +1,5 @@
 // Settings.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -491,9 +491,11 @@ bool Settings::readString(string line, bool warn, int subrun) {
     return true;
   }
 
-  // Check for FORCE= statements (to ignore min/max values)
+  // For mode and parm check for FORCE= statements (to ignore min/max values).
   bool force = false;
-  if (valueString.find("force") != string::npos) {
+  const bool isModeOrParm = inDataBase == 2 || inDataBase == 3
+    || inDataBase == 6 || inDataBase == 7;
+  if (isModeOrParm && valueString.find("force") != string::npos) {
     force = true;
     // Read value from next word
     splitLine >> valueString;
@@ -1997,8 +1999,9 @@ bool Settings::hasHardProc() {
     "leptoquark", "excitedfermion", "contactinteractions", "hiddenvalley",
     "extradimensions", "dm:" };
   int sizeList = 26;
-  string flagExclude[2] = { "extradimensionsg*:vlvl", "higgssm:nlowidths"};
-  int sizeExclude = 2;
+  string flagExclude[3] = { "extradimensionsg*:vlvl", "higgssm:nlowidths",
+    "topthreshold:pseudoscalar"};
+  int sizeExclude = 3;
 
   // Loop over the flag map (using iterator), and process names.
   for (map<string,Flag>::iterator flagEntry = flags.begin();
@@ -2010,7 +2013,8 @@ bool Settings::hasHardProc() {
     if (doExclude) continue;
     for (int i = 0; i < sizeList; ++i)
       if (flagName.find( flagList[i]) != string::npos
-      && flagEntry->second.valNow == true) return true;
+          && flagEntry->second.valNow == true)
+        return true;
   }
 
   // Done without having found a non-SoftQCD/LowEnergyQCD process on.
@@ -2108,174 +2112,6 @@ void Settings::initTuneVincia(int vinciaTune, int subrun) {
   // Currently only a single tune.
   if (vinciaTune == 0)
     readString("include = tunes/VinciaDefault.cmnd", true, subrun);
-
-}
-
-//--------------------------------------------------------------------------
-
-// Allow several alternative inputs for true/false.
-
-bool Settings::boolString(string tag) {
-
-  string tagLow = toLower(tag);
-  return ( tagLow == "true" || tagLow == "1" || tagLow == "on"
-  || tagLow == "yes" || tagLow == "ok" );
-
-}
-
-//--------------------------------------------------------------------------
-
-// Extract XML value string following XML attribute.
-
-string Settings::attributeValue(string line, string attribute) {
-
-  if (line.find(attribute) == string::npos) return "";
-  int iBegAttri = line.find(attribute);
-  int iBegQuote = line.find("\"", iBegAttri + 1);
-  int iEndQuote = line.find("\"", iBegQuote + 1);
-  return line.substr(iBegQuote + 1, iEndQuote - iBegQuote - 1);
-
-}
-
-//--------------------------------------------------------------------------
-
-// Extract XML bool value following XML attribute.
-
-bool Settings::boolAttributeValue(string line, string attribute) {
-
-  string valString = attributeValue(line, attribute);
-  if (valString == "") return false;
-  return boolString(valString);
-
-}
-
-//--------------------------------------------------------------------------
-
-// Extract XML int value following XML attribute.
-
-int Settings::intAttributeValue(string line, string attribute) {
-  string valString = attributeValue(line, attribute);
-  if (valString == "") return 0;
-  istringstream valStream(valString);
-  int intVal;
-  valStream >> intVal;
-  return intVal;
-
-}
-
-//--------------------------------------------------------------------------
-
-// Extract XML double value following XML attribute.
-
-double Settings::doubleAttributeValue(string line, string attribute) {
-  string valString = attributeValue(line, attribute);
-  if (valString == "") return 0.;
-  istringstream valStream(valString);
-  double doubleVal;
-  valStream >> doubleVal;
-  return doubleVal;
-
-}
-
-//--------------------------------------------------------------------------
-
-// Extract XML bool vector value following XML attribute.
-
-vector<bool> Settings::boolVectorAttributeValue(string line,
-  string attribute) {
-  string valString = attributeValue(line, attribute);
-  size_t openBrace  = valString.find_first_of("{");
-  size_t closeBrace = valString.find_last_of("}");
-  if (openBrace != string::npos)
-    valString = valString.substr(openBrace + 1, closeBrace - openBrace - 1);
-  if (valString == "") return vector<bool>();
-  vector<bool> vectorVal;
-  size_t       stringPos(0);
-  while (stringPos != string::npos) {
-    stringPos = valString.find(",");
-    istringstream  valStream(valString.substr(0, stringPos));
-    valString = valString.substr(stringPos + 1);
-    vectorVal.push_back(boolString(valStream.str()));
-  }
-  return vectorVal;
-
-}
-
-//--------------------------------------------------------------------------
-
-// Extract XML int vector value following XML attribute.
-
-vector<int> Settings::intVectorAttributeValue(string line,
-  string attribute) {
-  string valString = attributeValue(line, attribute);
-  size_t openBrace  = valString.find_first_of("{");
-  size_t closeBrace = valString.find_last_of("}");
-  if (openBrace != string::npos)
-    valString = valString.substr(openBrace + 1, closeBrace - openBrace - 1);
-  if (valString == "") return vector<int>();
-  int         intVal;
-  vector<int> vectorVal;
-  size_t      stringPos(0);
-  while (stringPos != string::npos) {
-    stringPos = valString.find(",");
-    istringstream  valStream(valString.substr(0, stringPos));
-    valString = valString.substr(stringPos + 1);
-    valStream >> intVal;
-    vectorVal.push_back(intVal);
-  }
-  return vectorVal;
-
-}
-
-//--------------------------------------------------------------------------
-
-// Extract XML double vector value following XML attribute.
-
-vector<double> Settings::doubleVectorAttributeValue(string line,
-  string attribute) {
-  string valString = attributeValue(line, attribute);
-  size_t openBrace  = valString.find_first_of("{");
-  size_t closeBrace = valString.find_last_of("}");
-  if (openBrace != string::npos)
-    valString = valString.substr(openBrace + 1, closeBrace - openBrace - 1);
-  if (valString == "") return vector<double>();
-  double         doubleVal;
-  vector<double> vectorVal;
-  size_t         stringPos(0);
-  while (stringPos != string::npos) {
-    stringPos = valString.find(",");
-    istringstream  valStream(valString.substr(0, stringPos));
-    valString = valString.substr(stringPos + 1);
-    valStream >> doubleVal;
-    vectorVal.push_back(doubleVal);
-  }
-  return vectorVal;
-
-}
-
-//--------------------------------------------------------------------------
-
-// Extract XML string vector value following XML attribute.
-
-vector<string> Settings::stringVectorAttributeValue(string line,
-  string attribute) {
-  string valString = attributeValue(line, attribute);
-  size_t openBrace  = valString.find_first_of("{");
-  size_t closeBrace = valString.find_last_of("}");
-  if (openBrace != string::npos)
-    valString = valString.substr(openBrace + 1, closeBrace - openBrace - 1);
-  if (valString == "") return vector<string>();
-  string         stringVal;
-  vector<string> vectorVal;
-  size_t         stringPos(0);
-  while (stringPos != string::npos) {
-    stringPos = valString.find(",");
-    if (stringPos != string::npos) {
-      vectorVal.push_back(valString.substr(0, stringPos));
-      valString = valString.substr(stringPos + 1);
-    } else vectorVal.push_back(valString);
-  }
-  return vectorVal;
 
 }
 

@@ -1,5 +1,5 @@
 // HIInfo.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -136,6 +136,9 @@ void HIInfo::glauberReset() {
     sigErr2DiffPSave = sigErr2DiffTSave = sigErr2DDiffSave =
     slopeErrSave = 0.0;
   NSave = NAccSave = 0;
+  NPrim.clear();
+  sumPrimW.clear();
+  sumPrimW2.clear();
 }
 
 //--------------------------------------------------------------------------
@@ -143,12 +146,24 @@ void HIInfo::glauberReset() {
 // Indicate that the last generated collision system was accepted.
 
 void HIInfo::accept() {
+  static map<int,string> lownames = {{151, "nonDiffractive"},
+                                     {152, "elastic"},
+                                     {153, "single diffractive (XB)"},
+                                     {154, "single diffractive (AX)"},
+                                     {155, "double diffractive"},
+                                     {157, "excitation"},
+                                     {158, "annihilation"},
+                                     {159, "resonant"}};
+
   int pc = primInfo.code();
   ++NAccSave;
   sumPrimW[pc] += weightSave*xSecScaleSave;
   sumPrimW2[pc] += pow2(weightSave*xSecScaleSave);
   ++NPrim[pc];
-  NamePrim[pc] = primInfo.nameProc(pc);
+  if ( pc/10 == 15 )
+    NamePrim[pc] = "Low-energy " + lownames[pc];
+  else
+    NamePrim[pc] = primInfo.nameProc(pc);
 }
 
 //==========================================================================

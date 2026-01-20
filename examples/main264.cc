@@ -1,5 +1,5 @@
 // main264.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -49,7 +49,7 @@ int main() {
   pythia.readString("VariationFrag:List = {flav frag:rho=" + to_string(rho)
     + " frag:xi=" + to_string(xi) + " frag:x=" + to_string(x)
     + " frag:y=" + to_string(y) + "}");
-  pythia.init();
+  if (!pythia.init()) return 1;
 
   // Define the plot title.
   string title = "default: (" +
@@ -101,7 +101,7 @@ int main() {
   // This defines a lambda function that acts as a callback.
   // This function is called for each event generated.
   // The argument is a pointer to the instance that generated the event.
-  pythia.run( nEvent,[&](Pythia* pythiaPtr) {
+  pythia.run(nEvent, [&](Pythia* pythiaPtr) {
 
     Event &event = pythiaPtr->event;
 
@@ -122,10 +122,12 @@ int main() {
 
     // If instead we have saved the breaks to a string, as we did
     // above, we can calculate the weight from the saved string.
-    wgts["posthoc-str"] = vars.weight(parms, vars.read(saved));
+    wgts["posthoc-str"] = vars.weight(parms,
+      intVectorAttributeValue(saved, ""));
 
     // We can also use the in-situ reweighting.
-    wgts["insitu"] = pythiaPtr->info.weightValueByIndex(1);
+    wgts["insitu"] = pythiaPtr->info.weightValueByIndex(
+      pythiaPtr->info.numberOfWeights() - 1);
 
     // Keep track of the weights.
     for (string &name : names) {
@@ -152,8 +154,7 @@ int main() {
   pythia.settings.parm("StringFlav:ProbSQtoQQ",   x);
   pythia.settings.parm("StringFlav:ProbQQ1toQQ0", y);
   pythia.settings.wvec("VariationFrag:List",      {});
-  pythia.init();
-
+  if (!pythia.init()) return 1;
   pythia.run( nEvent, [&](Pythia* pythiaPtr) {
 
     Event &event = pythiaPtr->event;
@@ -197,8 +198,8 @@ int main() {
   }
 
   // Create Python plot.
-  HistPlot hpl("main264plot");
-  hpl.frame("main264plot", title, xlabel, "n(variation)/n(default)");
+  HistPlot hpl("plot264");
+  hpl.frame("fig264", title, xlabel, "n(variation)/n(default)");
   for (string &name : names)
     hpl.add(hists[name]/hists["default"], "e", name);
   hpl.add(hists["rerun"]/hists["default"], "e", "rerun");

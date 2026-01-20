@@ -1,5 +1,5 @@
 # Makefile is a part of the PYTHIA event generator.
-# Copyright (C) 2025 Torbjorn Sjostrand.
+# Copyright (C) 2026 Torbjorn Sjostrand.
 # PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 # Please respect the MCnet Guidelines, see GUIDELINES for details.
 # Author: Philip Ilten, October 2014 - November 2017.
@@ -37,6 +37,10 @@ LOCAL_MKDIRS:=$(shell mkdir -p $(LOCAL_TMP) $(LOCAL_LIB))
 CXX_COMMON:=-I$(LOCAL_INCLUDE) $(CXX_COMMON)
 OBJ_COMMON:=-MD $(CXX_COMMON) $(OBJ_COMMON)
 LIB_COMMON=-pthread -Wl,-rpath,../lib:$(PREFIX_LIB) -ldl $(GZIP_LIB)
+
+# Determine the archiver and archiver flags.
+AR      ?= ar
+ARFLAGS ?= cr
 
 # PYTHIA.
 OBJECTS=$(patsubst $(LOCAL_SRC)/%.cc,$(LOCAL_TMP)/%.o,\
@@ -129,7 +133,7 @@ $(LOCAL_TMP)/Streams.o: $(LOCAL_SRC)/Streams.cc Makefile.inc
 $(LOCAL_TMP)/%.o: $(LOCAL_SRC)/%.cc
 	$(CXX) $< -o $@ -c $(OBJ_COMMON)
 $(LOCAL_LIB)/libpythia8.a: $(OBJECTS)
-	ar cr $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 $(LOCAL_LIB)/libpythia8$(LIB_SUFFIX): $(OBJECTS)
 	$(CXX) $^ -o $@ $(CXX_COMMON) $(CXX_SHARED) $(CXX_SONAME)$(notdir $@)\
 	  $(LIB_COMMON) $(CXX_DTAGS)

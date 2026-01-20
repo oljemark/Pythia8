@@ -104,6 +104,12 @@ Cincinnati, OH 45221, USA<br/>
 e-mail: philten@cern.ch 
  
 <p/> 
+<b>Joni Laulainen</b><br/> 
+Department of Physics, University of Jyv&auml;skyl&auml;, P.O. Box 35, 
+FI-40014 University of Jyv&auml;skyl&auml;, Finland<br/> 
+e-mail: joni.o.laulainen@jyu.fi 
+ 
+<p/> 
 <b>Leif L&ouml;nnblad</b><br/> 
 Department of Physics, Lund University, 
 Box 118, SE-221 00 Lund, Sweden<br/> 
@@ -118,9 +124,9 @@ e-mail: mrenna@fnal.gov
  
 <p/> 
 <b>Christian Preuss</b><br/> 
-Department of Physics, University of Wuppertal, 
-Gaussstrasse 20, 42119 Wuppertal, Germany<br/> 
-e-mail: preuss@uni-wuppertal.de 
+Institute for Theoretical Physics, University of G&ouml;ttingen,, 
+Friedrich-Hund-Platz 1, 37077 G&ouml;ttingen, Germany<br/> 
+e-mail: christian.preuss@uni-goettingen.de 
  
 <p/> 
 <b>Torbj&ouml;rn Sj&ouml;strand</b><br/> 
@@ -223,7 +229,7 @@ the blame for any mistakes has to rest with the regular authors.
  
 If you want to be alerted whenever a new public version is released, 
 you can subscribe on 
-<a href="http://www.hepforge.org/lists/listinfo/pythia8-announce"> 
+<a href="https://lists.hepforge.org/mailman3/lists/pythia8-announce.projects.hepforge.org/"> 
   pythia8-announce</a>. Expect a 
 handful of such messages per year. There is no fixed schedule; new 
 versions can appear either because a sufficient amount of changes have 
@@ -314,8 +320,8 @@ for Event Generator Authors and Users.
  
 <p/> 
 The program and the documentation is 
-Copyright &copy; 2025 Torbj&ouml;rn Sj&ouml;strand 
+Copyright &copy; 2026 Torbj&ouml;rn Sj&ouml;strand 
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

@@ -75,6 +75,19 @@ This degree of freedom is primarily intended for hadron colliders, and
 should not normally be used for <ei>e^+e^-</ei> annihilation processes. 
 </parm> 
  
+<p/> 
+For some processes, the appropriate inclusive NLO K-factor can be 
+calculated dynamically in the event generation and be included in the 
+unweighting process. These events then obtain formal NLO accuracy 
+for the inclusive cross section. If they are showered with a matrix-element 
+matched shower afterwards, the sample also describes inclusive observables 
+at formal NLO accuracy, see 
+<aloc href="MatchingAndMerging">matching and merging</aloc>. 
+<flag name="SigmaProcess:reweightNLO" default="off"> 
+Dynamically reweight Born-level events by the appropriate inclusive NLO 
+K-factor before doing the unweighting. 
+</flag> 
+ 
 <h3>Renormalization scales</h3> 
  
 The <ei>Q^2</ei> renormalization scale can be chosen among a few different 
@@ -305,4 +318,4 @@ above.
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

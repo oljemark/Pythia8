@@ -355,6 +355,19 @@ struct PyCallBack_Pythia8_Sigma2qg2QQbar3PJ1q : public Pythia8::Sigma2qg2QQbar3P
 		}
 		return SigmaProcess::sigmaPDF(a0, a1, a2, a3, a4);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qg2QQbar3PJ1q *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qg2QQbar3PJ1q *>(this), "weightDecayFlav");
@@ -523,6 +536,19 @@ struct PyCallBack_Pythia8_Sigma2qg2QQbar3PJ1q : public Pythia8::Sigma2qg2QQbar3P
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qg2QQbar3PJ1q *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id4Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -1063,6 +1089,19 @@ struct PyCallBack_Pythia8_Sigma2qqbar2QQbar3PJ1g : public Pythia8::Sigma2qqbar2Q
 		}
 		return SigmaProcess::sigmaPDF(a0, a1, a2, a3, a4);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qqbar2QQbar3PJ1g *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qqbar2QQbar3PJ1g *>(this), "weightDecayFlav");
@@ -1231,6 +1270,19 @@ struct PyCallBack_Pythia8_Sigma2qqbar2QQbar3PJ1g : public Pythia8::Sigma2qqbar2Q
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qqbar2QQbar3PJ1g *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id4Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -1771,6 +1823,19 @@ struct PyCallBack_Pythia8_Sigma2gg2QQbar3DJ1g : public Pythia8::Sigma2gg2QQbar3D
 		}
 		return SigmaProcess::sigmaPDF(a0, a1, a2, a3, a4);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2gg2QQbar3DJ1g *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2gg2QQbar3DJ1g *>(this), "weightDecayFlav");
@@ -1939,6 +2004,19 @@ struct PyCallBack_Pythia8_Sigma2gg2QQbar3DJ1g : public Pythia8::Sigma2gg2QQbar3D
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2gg2QQbar3DJ1g *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id4Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -2479,6 +2557,19 @@ struct PyCallBack_Pythia8_Sigma2gg2QQbarX8g : public Pythia8::Sigma2gg2QQbarX8g 
 		}
 		return SigmaProcess::sigmaPDF(a0, a1, a2, a3, a4);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2gg2QQbarX8g *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2gg2QQbarX8g *>(this), "weightDecayFlav");
@@ -2647,6 +2738,19 @@ struct PyCallBack_Pythia8_Sigma2gg2QQbarX8g : public Pythia8::Sigma2gg2QQbarX8g 
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2gg2QQbarX8g *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id4Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -3187,6 +3291,19 @@ struct PyCallBack_Pythia8_Sigma2qg2QQbarX8q : public Pythia8::Sigma2qg2QQbarX8q 
 		}
 		return SigmaProcess::sigmaPDF(a0, a1, a2, a3, a4);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qg2QQbarX8q *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qg2QQbarX8q *>(this), "weightDecayFlav");
@@ -3355,6 +3472,19 @@ struct PyCallBack_Pythia8_Sigma2qg2QQbarX8q : public Pythia8::Sigma2qg2QQbarX8q 
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qg2QQbarX8q *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id4Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -3895,6 +4025,19 @@ struct PyCallBack_Pythia8_Sigma2qqbar2QQbarX8g : public Pythia8::Sigma2qqbar2QQb
 		}
 		return SigmaProcess::sigmaPDF(a0, a1, a2, a3, a4);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qqbar2QQbarX8g *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qqbar2QQbarX8g *>(this), "weightDecayFlav");
@@ -4063,6 +4206,19 @@ struct PyCallBack_Pythia8_Sigma2qqbar2QQbarX8g : public Pythia8::Sigma2qqbar2QQb
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qqbar2QQbarX8g *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id4Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -4590,6 +4746,19 @@ struct PyCallBack_Pythia8_Sigma2gg2QQbar3S11QQbar3S11 : public Pythia8::Sigma2gg
 		}
 		return SigmaProcess::sigmaPDF(a0, a1, a2, a3, a4);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2gg2QQbar3S11QQbar3S11 *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2gg2QQbar3S11QQbar3S11 *>(this), "weightDecayFlav");
@@ -4758,6 +4927,19 @@ struct PyCallBack_Pythia8_Sigma2gg2QQbar3S11QQbar3S11 : public Pythia8::Sigma2gg
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2gg2QQbar3S11QQbar3S11 *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id5Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -5272,6 +5454,19 @@ struct PyCallBack_Pythia8_Sigma2qqbar2QQbar3S11QQbar3S11 : public Pythia8::Sigma
 		}
 		return SigmaProcess::sigmaPDF(a0, a1, a2, a3, a4);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qqbar2QQbar3S11QQbar3S11 *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qqbar2QQbar3S11QQbar3S11 *>(this), "weightDecayFlav");
@@ -5440,6 +5635,19 @@ struct PyCallBack_Pythia8_Sigma2qqbar2QQbar3S11QQbar3S11 : public Pythia8::Sigma
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2qqbar2QQbar3S11QQbar3S11 *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id5Mass() const override { 
 		pybind11::gil_scoped_acquire gil;

@@ -75,7 +75,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
 
-// Pythia8::Sigma0Process file:Pythia8/SigmaProcess.h line:401
+// Pythia8::Sigma0Process file:Pythia8/SigmaProcess.h line:407
 struct PyCallBack_Pythia8_Sigma0Process : public Pythia8::Sigma0Process {
 	using Pythia8::Sigma0Process::Sigma0Process;
 
@@ -274,6 +274,19 @@ struct PyCallBack_Pythia8_Sigma0Process : public Pythia8::Sigma0Process {
 		}
 		return SigmaProcess::final2KinMPI(a0, a1, a2, a3, a4, a5);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma0Process *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma0Process *>(this), "weightDecayFlav");
@@ -468,6 +481,19 @@ struct PyCallBack_Pythia8_Sigma0Process : public Pythia8::Sigma0Process {
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma0Process *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id3Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -731,7 +757,7 @@ struct PyCallBack_Pythia8_Sigma0Process : public Pythia8::Sigma0Process {
 	}
 };
 
-// Pythia8::Sigma1Process file:Pythia8/SigmaProcess.h line:439
+// Pythia8::Sigma1Process file:Pythia8/SigmaProcess.h line:445
 struct PyCallBack_Pythia8_Sigma1Process : public Pythia8::Sigma1Process {
 	using Pythia8::Sigma1Process::Sigma1Process;
 
@@ -929,6 +955,19 @@ struct PyCallBack_Pythia8_Sigma1Process : public Pythia8::Sigma1Process {
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::final2KinMPI(a0, a1, a2, a3, a4, a5);
+	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma1Process *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
 	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
@@ -1137,6 +1176,19 @@ struct PyCallBack_Pythia8_Sigma1Process : public Pythia8::Sigma1Process {
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma1Process *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id3Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -1400,7 +1452,7 @@ struct PyCallBack_Pythia8_Sigma1Process : public Pythia8::Sigma1Process {
 	}
 };
 
-// Pythia8::Sigma2Process file:Pythia8/SigmaProcess.h line:479
+// Pythia8::Sigma2Process file:Pythia8/SigmaProcess.h line:485
 struct PyCallBack_Pythia8_Sigma2Process : public Pythia8::Sigma2Process {
 	using Pythia8::Sigma2Process::Sigma2Process;
 
@@ -1612,6 +1664,19 @@ struct PyCallBack_Pythia8_Sigma2Process : public Pythia8::Sigma2Process {
 		}
 		return SigmaProcess::setIdColAcol();
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2Process *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2Process *>(this), "weightDecayFlav");
@@ -1819,6 +1884,19 @@ struct PyCallBack_Pythia8_Sigma2Process : public Pythia8::Sigma2Process {
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma2Process *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id3Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -2082,7 +2160,7 @@ struct PyCallBack_Pythia8_Sigma2Process : public Pythia8::Sigma2Process {
 	}
 };
 
-// Pythia8::Sigma3Process file:Pythia8/SigmaProcess.h line:545
+// Pythia8::Sigma3Process file:Pythia8/SigmaProcess.h line:551
 struct PyCallBack_Pythia8_Sigma3Process : public Pythia8::Sigma3Process {
 	using Pythia8::Sigma3Process::Sigma3Process;
 
@@ -2280,6 +2358,19 @@ struct PyCallBack_Pythia8_Sigma3Process : public Pythia8::Sigma3Process {
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::final2KinMPI(a0, a1, a2, a3, a4, a5);
+	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma3Process *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
 	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
@@ -2488,6 +2579,19 @@ struct PyCallBack_Pythia8_Sigma3Process : public Pythia8::Sigma3Process {
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Sigma3Process *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id3Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -2751,7 +2855,7 @@ struct PyCallBack_Pythia8_Sigma3Process : public Pythia8::Sigma3Process {
 	}
 };
 
-// Pythia8::SigmaLHAProcess file:Pythia8/SigmaProcess.h line:590
+// Pythia8::SigmaLHAProcess file:Pythia8/SigmaProcess.h line:596
 struct PyCallBack_Pythia8_SigmaLHAProcess : public Pythia8::SigmaLHAProcess {
 	using Pythia8::SigmaLHAProcess::SigmaLHAProcess;
 
@@ -3015,6 +3119,19 @@ struct PyCallBack_Pythia8_SigmaLHAProcess : public Pythia8::SigmaLHAProcess {
 		}
 		return SigmaProcess::final2KinMPI(a0, a1, a2, a3, a4, a5);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaLHAProcess *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaLHAProcess *>(this), "weightDecayFlav");
@@ -3131,6 +3248,19 @@ struct PyCallBack_Pythia8_SigmaLHAProcess : public Pythia8::SigmaLHAProcess {
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::isSUSY();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaLHAProcess *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id3Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -4022,6 +4152,32 @@ struct PyCallBack_Pythia8_UserHooks : public Pythia8::UserHooks {
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooks *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooks *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooks *>(this), "onEndHadronLevel");
@@ -4104,7 +4260,7 @@ struct PyCallBack_Pythia8_UserHooks : public Pythia8::UserHooks {
 
 void bind_Pythia8_SigmaProcess(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Pythia8::Sigma0Process file:Pythia8/SigmaProcess.h line:401
+	{ // Pythia8::Sigma0Process file:Pythia8/SigmaProcess.h line:407
 		pybind11::class_<Pythia8::Sigma0Process, std::shared_ptr<Pythia8::Sigma0Process>, PyCallBack_Pythia8_Sigma0Process, Pythia8::SigmaProcess> cl(M("Pythia8"), "Sigma0Process", "");
 		pybind11::handle cl_type = cl;
 
@@ -4117,7 +4273,7 @@ void bind_Pythia8_SigmaProcess(std::function< pybind11::module &(std::string con
 		cl.def("setIdInDiff", (void (Pythia8::Sigma0Process::*)(int, int)) &Pythia8::Sigma0Process::setIdInDiff, "C++: Pythia8::Sigma0Process::setIdInDiff(int, int) --> void", pybind11::arg("idAin"), pybind11::arg("idBin"));
 		cl.def("assign", (class Pythia8::Sigma0Process & (Pythia8::Sigma0Process::*)(const class Pythia8::Sigma0Process &)) &Pythia8::Sigma0Process::operator=, "C++: Pythia8::Sigma0Process::operator=(const class Pythia8::Sigma0Process &) --> class Pythia8::Sigma0Process &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::Sigma1Process file:Pythia8/SigmaProcess.h line:439
+	{ // Pythia8::Sigma1Process file:Pythia8/SigmaProcess.h line:445
 		pybind11::class_<Pythia8::Sigma1Process, std::shared_ptr<Pythia8::Sigma1Process>, PyCallBack_Pythia8_Sigma1Process, Pythia8::SigmaProcess> cl(M("Pythia8"), "Sigma1Process", "");
 		pybind11::handle cl_type = cl;
 
@@ -4132,7 +4288,7 @@ void bind_Pythia8_SigmaProcess(std::function< pybind11::module &(std::string con
 		cl.def("setupForME", (bool (Pythia8::Sigma1Process::*)()) &Pythia8::Sigma1Process::setupForME, "C++: Pythia8::Sigma1Process::setupForME() --> bool");
 		cl.def("assign", (class Pythia8::Sigma1Process & (Pythia8::Sigma1Process::*)(const class Pythia8::Sigma1Process &)) &Pythia8::Sigma1Process::operator=, "C++: Pythia8::Sigma1Process::operator=(const class Pythia8::Sigma1Process &) --> class Pythia8::Sigma1Process &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::Sigma2Process file:Pythia8/SigmaProcess.h line:479
+	{ // Pythia8::Sigma2Process file:Pythia8/SigmaProcess.h line:485
 		pybind11::class_<Pythia8::Sigma2Process, std::shared_ptr<Pythia8::Sigma2Process>, PyCallBack_Pythia8_Sigma2Process, Pythia8::SigmaProcess> cl(M("Pythia8"), "Sigma2Process", "");
 		pybind11::handle cl_type = cl;
 
@@ -4169,7 +4325,7 @@ void bind_Pythia8_SigmaProcess(std::function< pybind11::module &(std::string con
 		cl.def("setupForME", (bool (Pythia8::Sigma2Process::*)()) &Pythia8::Sigma2Process::setupForME, "C++: Pythia8::Sigma2Process::setupForME() --> bool");
 		cl.def("assign", (class Pythia8::Sigma2Process & (Pythia8::Sigma2Process::*)(const class Pythia8::Sigma2Process &)) &Pythia8::Sigma2Process::operator=, "C++: Pythia8::Sigma2Process::operator=(const class Pythia8::Sigma2Process &) --> class Pythia8::Sigma2Process &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::Sigma3Process file:Pythia8/SigmaProcess.h line:545
+	{ // Pythia8::Sigma3Process file:Pythia8/SigmaProcess.h line:551
 		pybind11::class_<Pythia8::Sigma3Process, std::shared_ptr<Pythia8::Sigma3Process>, PyCallBack_Pythia8_Sigma3Process, Pythia8::SigmaProcess> cl(M("Pythia8"), "Sigma3Process", "");
 		pybind11::handle cl_type = cl;
 
@@ -4193,7 +4349,7 @@ void bind_Pythia8_SigmaProcess(std::function< pybind11::module &(std::string con
 		cl.def("setupForME", (bool (Pythia8::Sigma3Process::*)()) &Pythia8::Sigma3Process::setupForME, "C++: Pythia8::Sigma3Process::setupForME() --> bool");
 		cl.def("assign", (class Pythia8::Sigma3Process & (Pythia8::Sigma3Process::*)(const class Pythia8::Sigma3Process &)) &Pythia8::Sigma3Process::operator=, "C++: Pythia8::Sigma3Process::operator=(const class Pythia8::Sigma3Process &) --> class Pythia8::Sigma3Process &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::SigmaLHAProcess file:Pythia8/SigmaProcess.h line:590
+	{ // Pythia8::SigmaLHAProcess file:Pythia8/SigmaProcess.h line:596
 		pybind11::class_<Pythia8::SigmaLHAProcess, std::shared_ptr<Pythia8::SigmaLHAProcess>, PyCallBack_Pythia8_SigmaLHAProcess, Pythia8::SigmaProcess> cl(M("Pythia8"), "SigmaLHAProcess", "");
 		pybind11::handle cl_type = cl;
 
@@ -4270,6 +4426,8 @@ void bind_Pythia8_SigmaProcess(std::function< pybind11::module &(std::string con
 		cl.def("doVetoAfterHadronization", (bool (Pythia8::UserHooks::*)(const class Pythia8::Event &)) &Pythia8::UserHooks::doVetoAfterHadronization, "C++: Pythia8::UserHooks::doVetoAfterHadronization(const class Pythia8::Event &) --> bool", pybind11::arg(""));
 		cl.def("canSetImpactParameter", (bool (Pythia8::UserHooks::*)() const) &Pythia8::UserHooks::canSetImpactParameter, "C++: Pythia8::UserHooks::canSetImpactParameter() const --> bool");
 		cl.def("doSetImpactParameter", (double (Pythia8::UserHooks::*)()) &Pythia8::UserHooks::doSetImpactParameter, "C++: Pythia8::UserHooks::doSetImpactParameter() --> double");
+		cl.def("canSetEnhanceB", (bool (Pythia8::UserHooks::*)() const) &Pythia8::UserHooks::canSetEnhanceB, "C++: Pythia8::UserHooks::canSetEnhanceB() const --> bool");
+		cl.def("doSetEnhanceB", (double (Pythia8::UserHooks::*)()) &Pythia8::UserHooks::doSetEnhanceB, "C++: Pythia8::UserHooks::doSetEnhanceB() --> double");
 		cl.def("onEndHadronLevel", (bool (Pythia8::UserHooks::*)(class Pythia8::HadronLevel &, class Pythia8::Event &)) &Pythia8::UserHooks::onEndHadronLevel, "C++: Pythia8::UserHooks::onEndHadronLevel(class Pythia8::HadronLevel &, class Pythia8::Event &) --> bool", pybind11::arg(""), pybind11::arg(""));
 		cl.def("onInitInfoPtr", (void (Pythia8::UserHooks::*)()) &Pythia8::UserHooks::onInitInfoPtr, "C++: Pythia8::UserHooks::onInitInfoPtr() --> void");
 		cl.def("omitResonanceDecays", [](Pythia8::UserHooks &o, const class Pythia8::Event & a0) -> void { return o.omitResonanceDecays(a0); }, "", pybind11::arg("process"));

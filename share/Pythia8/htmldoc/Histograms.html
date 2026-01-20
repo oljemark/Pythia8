@@ -205,7 +205,7 @@ included. You can also specify the colour, separated by a comma from
 the line style, to override the normal colour cycle. The most common 
 colours can be given just as a single letter, such as "r", "g", "b", 
 but a more extensive 
-<a href="https://matplotlib.org/examples/color/named_colors.html"> 
+<a href="https://matplotlib.org/stable/gallery/color/named_colors.html"> 
 colour palette</a> allow finetuning to nuances such as "orange", 
 "gold", "darkgreen", "royalblue", "crimson", and so on. 
 A third argument can set the legend of each histogram; by default 
@@ -746,89 +746,108 @@ plots.
    
  
 <a name="anchor65"></a>
+<p/><strong> void Hist::makeCumulative( bool updateStatistics = false, bool withUnderflow = false) &nbsp;</strong> <br/>
+Add the contents of the previous (lower) bin to that of the current 
+one, iteratively, such that the value stored for a bin becomes the 
+sum of all original bin contents up to and including the current one. 
+In the limit of bin width going to zero this cumulative sum would 
+become normal integration. 
+<br/><code>argument</code><strong> updateStatistics </strong> (<code>default = <strong>off</strong></code>) :  
+By default the statistical information, such as mean and width, 
+is kept from the original unintegrated distribution. As an alternative 
+the statistics can be recalculated, but then on the assumption that 
+all previous bin contents are added to the middle of the current bin. 
+   
+<br/><code>argument</code><strong> withUnderflow </strong> (<code>default = <strong>off</strong></code>) :  
+Normally underflow is ignored, but as an option it can be added to the 
+first bin as a first step of the iteration over bins. 
+   
+   
+ 
+<a name="anchor66"></a>
 <p/><strong> Hist&amp; Hist::operator+=(const Hist&amp; h) &nbsp;</strong> <br/>
    
-<a name="anchor66"></a>
+<a name="anchor67"></a>
 <strong> Hist&amp; Hist::operator-=(const Hist&amp; h) &nbsp;</strong> <br/>
 adds or subtracts the current histogram by the contents of the 
 histogram in the argument if <code>sameSize(...)</code> is true, 
 else does nothing. 
    
  
-<a name="anchor67"></a>
+<a name="anchor68"></a>
 <p/><strong> Hist&amp; Hist::operator*=(const Hist&amp; h) &nbsp;</strong> <br/>
    
-<a name="anchor68"></a>
+<a name="anchor69"></a>
 <strong> Hist&amp; Hist::operator/=(const Hist&amp; h) &nbsp;</strong> <br/>
 multiplies or divides the current histogram by the contents of the 
 histogram in the argument if <code>sameSize(...)</code> is true, 
 else does nothing. 
    
  
-<a name="anchor69"></a>
+<a name="anchor70"></a>
 <p/><strong> Hist&amp; Hist::operator+=(double f) &nbsp;</strong> <br/>
    
-<a name="anchor70"></a>
+<a name="anchor71"></a>
 <strong> Hist&amp; Hist::operator-=(double f) &nbsp;</strong> <br/>
 adds or subtracts each bin content by the common offset <i>f</i>. 
    
  
-<a name="anchor71"></a>
+<a name="anchor72"></a>
 <p/><strong> Hist&amp; Hist::operator*=(double f) &nbsp;</strong> <br/>
    
-<a name="anchor72"></a>
+<a name="anchor73"></a>
 <strong> Hist&amp; Hist::operator*=(double f) &nbsp;</strong> <br/>
 multiplies or divides each bin content by the common factor <i>f</i>. 
    
  
-<a name="anchor73"></a>
+<a name="anchor74"></a>
 <p/><strong> friend Hist operator+(double f, const Hist&amp; h1) &nbsp;</strong> <br/>
    
-<a name="anchor74"></a>
+<a name="anchor75"></a>
 <strong> friend Hist operator+(const Hist&amp; h1, double f) &nbsp;</strong> <br/>
    
-<a name="anchor75"></a>
+<a name="anchor76"></a>
 <strong> friend Hist operator+(const Hist&amp; h1, const Hist h2) &nbsp;</strong> <br/>
 add a constant to a histogram or two histograms to each other, bin by bin. 
    
  
-<a name="anchor76"></a>
+<a name="anchor77"></a>
 <p/><strong> friend Hist operator-(double f, const Hist&amp; h1) &nbsp;</strong> <br/>
    
-<a name="anchor77"></a>
+<a name="anchor78"></a>
 <strong> friend Hist operator-(const Hist&amp; h1, double f) &nbsp;</strong> <br/>
    
-<a name="anchor78"></a>
+<a name="anchor79"></a>
 <strong> friend Hist operator-(const Hist&amp; h1, const Hist h2) &nbsp;</strong> <br/>
 subtract a histogram from a constant, a constant from a histogram, 
 or two histograms from each other, bin by bin. 
    
  
-<a name="anchor79"></a>
+<a name="anchor80"></a>
 <p/><strong> friend Hist operator*(double f, const Hist&amp; h1) &nbsp;</strong> <br/>
    
-<a name="anchor80"></a>
+<a name="anchor81"></a>
 <strong> friend Hist operator*(const Hist&amp; h1, double f) &nbsp;</strong> <br/>
    
-<a name="anchor81"></a>
+<a name="anchor82"></a>
 <strong> friend Hist operator*(const Hist&amp; h1, const Hist h2) &nbsp;</strong> <br/>
 multiply a constant by a histogram or two histograms by each other, 
 bin by bin. 
    
  
-<a name="anchor82"></a>
+<a name="anchor83"></a>
 <p/><strong> friend Hist operator/(double f, const Hist&amp; h1) &nbsp;</strong> <br/>
    
-<a name="anchor83"></a>
+<a name="anchor84"></a>
 <strong> friend Hist operator/(const Hist&amp; h1, double f) &nbsp;</strong> <br/>
    
-<a name="anchor84"></a>
+<a name="anchor85"></a>
 <strong> friend Hist operator/(const Hist&amp; h1, const Hist h2) &nbsp;</strong> <br/>
 divide a constant by a histogram, a histogram by a constant, 
 or two histograms by each other, bin by bin. 
    
  
-<a name="anchor85"></a>
+<a name="anchor86"></a>
 <p/><strong> HistPlot::HistPlot(string pythonName, bool useLegacy = true) &nbsp;</strong> <br/>
 create a file to which successively Python commands can be written. 
 <br/><code>argument</code><strong> pythonName </strong>  :  
@@ -843,7 +862,7 @@ for version 3.5 or later, it must be true.
    
    
  
-<a name="anchor86"></a>
+<a name="anchor87"></a>
 <p/><strong> void HistPlot::frame( string frameName, string title = &quot;&quot;, string xLabel = &quot;&quot;, string yLabel = &quot;&quot;, double xSize = 8., double ySize = 6.) &nbsp;</strong> <br/>
 command to open a frame where successive histograms can be added and 
 plotted. 
@@ -873,7 +892,7 @@ interpreted by the Pyplot package. A backslash \ needs to be doubled to \\,
 however, since else it will be intepreted as an escape sequence. 
    
  
-<a name="anchor87"></a>
+<a name="anchor88"></a>
 <p/><strong> void HistPlot::add(const Hist& hist, string style = &quot;h&quot;, string legend = &quot;void&quot;) &nbsp;</strong> <br/>
 add a histogram to the current plot frame, where 
 <br/><code>argument</code><strong> hist </strong>  :  
@@ -897,7 +916,7 @@ above.
    
    
  
-<a name="anchor88"></a>
+<a name="anchor89"></a>
 <p/><strong> void HistPlot::addFile(string file, string style = &quot;o&quot;, string legend = &quot;void&quot;, string xyerr = &quot;&quot;) &nbsp;</strong> <br/>
 add data in an already existing file to the current plot frame, where 
 <br/><code>argument</code><strong> file </strong>  :  
@@ -936,7 +955,7 @@ should contain the row <code>1.0 2.0 0.5 0.2 -0.5</code> and the value of
 <code>xyerr</code> might be <code>"xY"</code>. 
    
  
-<a name="anchor89"></a>
+<a name="anchor90"></a>
 <p/><strong> void HistPlot::plot( bool logY = false, bool logX = false) &nbsp;</strong> <br/>
 write the Pyplot commands for the current frame, as defined by the input 
 from the two methods above, and additionally write the data files needed 
@@ -958,14 +977,14 @@ first presumably being much more commonly used than the second.
    
    
  
-<a name="anchor90"></a>
+<a name="anchor91"></a>
 <p/><strong> void HistPlot::plot( double xMin, double xMax, double yMin, double yMax, bool logY = false, bool logX = false) &nbsp;</strong> <br/>
 a variant of the <code>plot</code> method above, where the <i>x</i> 
 and <i>y</i> ranges of the plot frame can be set by hand instead of 
 calculated from the histogram information. 
    
  
-<a name="anchor91"></a>
+<a name="anchor92"></a>
 <p/><strong> void HistPlot::plotFrame( string frameName, const Hist& hist, string title = &quot;&quot;, string xLabel = &quot;&quot;, string yLabel = &quot;&quot;, string style = &quot;h&quot;, string legend = &quot;void&quot;, bool logY = false) &nbsp;</strong> <br/>
 is an omnibus version combining the three above methods when only a single 
 histogram is to be plotted in a frame. The arguments and their meaning is 
@@ -998,7 +1017,7 @@ the example <code>main114.cc</code>.
 <p/> 
 Use the interface by creating a <code>Pythia8Yoda</code> object using the 
 constructor: 
-<a name="anchor92"></a>
+<a name="anchor93"></a>
 <p/><strong> Pythia8Yoda::Pythia8Yoda(const string& anaNameIn = &quot;/PYTHIA8/&quot;, const string& outputIn = &quot;pythia&quot;) &nbsp;</strong> <br/>
 which takes two optional arguments: one that gives histograms a prefix 
 for easier sorting, and a second providing the output file name, which 
@@ -1007,7 +1026,7 @@ will be postfixed by <code>.yoda</code>.
  
 <p/> 
 The main method for booking new histograms or profiles is the templated: 
-<a name="anchor93"></a>
+<a name="anchor94"></a>
 <p/><strong> shared_ptr&lt;T&gt; Pythia8Yoda::book(Args&&... args) &nbsp;</strong> <br/>
 which will return a shared pointer to any <code>YODA</code> object of 
 type <code>T</code>, given its normal constructor arguments. 
@@ -1017,33 +1036,33 @@ Specializations are given for the most common types, which are also aliased
 as: <code>Histo1DPtr, Histo2DPtr, Histo3DPtr, Profile1DPtr</code>, and 
 <code>Profile2DPtr</code>. They can each, in turn, be booked by the methods: 
  
-<a name="anchor94"></a>
+<a name="anchor95"></a>
 <p/><strong> Histo1DPtr Pythia8Yoda::bookHisto1D(int nBins, double xMin, double xMax, const string& title) &nbsp;</strong> <br/>
 which books a 1D histogram. 
    
  
-<a name="anchor95"></a>
+<a name="anchor96"></a>
 <p/><strong> Histo2DPtr Pythia8Yoda::bookHisto2D(int nBinsX, double xMin, double xMax, int nBinsY, double yMin, double yMax, const std::string& title) &nbsp;</strong> <br/>
 which books a 2D histogram. 
    
  
-<a name="anchor96"></a>
+<a name="anchor97"></a>
 <p/><strong> Histo3DPtr Pythia8Yoda::bookHisto3D(int nBinsX, double xMin, double xMax, int nBinsY, double yMin, double yMax, int nBinsZ, double zMin, double zMax, const std::string& title) &nbsp;</strong> <br/>
 which books a 3D histogram. 
    
  
-<a name="anchor97"></a>
+<a name="anchor98"></a>
 <p/><strong> Profile1DPtr Pythia8Yoda::bookProfile1D(int nBins, double xMin, double xMax, const std::string& title) &nbsp;</strong> <br/>
 which books a 1D profile histogram. 
    
-<a name="anchor98"></a>
+<a name="anchor99"></a>
 <p/><strong> Profile2DPtr Pythia8Yoda::bookProfile2D(int nBinsX, double xMin, double xMax, int nBinsY, double yMin, double yMax, const std::string& title) &nbsp;</strong> <br/>
 which books a 2D profile histogram. 
    
 <p/> 
 At the end of the run (or intermittently), histograms can be written to a file 
 by calling: 
-<a name="anchor99"></a>
+<a name="anchor100"></a>
 <p/><strong> void Pythia8Yoda::write() &nbsp;</strong> <br/>
 which writes to the file name given in the constructor. 
    
@@ -1057,4 +1076,4 @@ documentation</a> for details.
 </body>
 </html>
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

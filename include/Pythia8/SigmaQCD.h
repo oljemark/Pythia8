@@ -1,5 +1,5 @@
 // SigmaQCD.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -406,12 +406,12 @@ public:
 
   // Initialization setup - read in necessary settings.
   void setup( int topModelIn, double mtIn, double gammatIn,
-    double thresholdWidthIn, double singletFracIn,
+    double gammatGreenIn, double thresholdRegionIn, double singletFracIn,
     int alphasOrder, double alphasValue);
 
   // Cross section enhancement factor, combined.
-  double multiplySigmaBy( bool inInit, double mHat, double m3, double m4,
-    double eThr);
+  double multiplySigmaBy( double mHat, double m3, double m4,
+    double m3Orig, double m4Orig, double eThr);
 
   // Imaginary part of Green's function for singlet state.
   double imGreenSin(double eNow, double mtNow);
@@ -419,14 +419,24 @@ public:
   // Imaginary part of Green's function for octet state.
   double imGreenOct(double eNow, double mtNow);
 
+  // Set up information to handle angular distributions in toponium decay.
+  double weightTopDecay( Event& process);
+
+  // Matrix element for decay angles in pseudoscalar toponium-like state.
+  double matrixElementP2bbveevmumu(const Event& work,
+    int ib, int ibb, int ive, int ie, int ivm, int im);
+
 private:
 
   // Commonly available variables.
   int    topModel;
-  double mt, gammat, thrWidth, singletFrac, alps;
+  double mt, gammat, gammatGreen, thrRegion, singletFrac, alps;
 
   // Need alphaStrong with special scale.
   AlphaStrong alphas;
+
+  // Debug.
+  Hist wtRat;
 
 };
 
@@ -440,7 +450,9 @@ public:
 
   // Constructor.
   Sigma2gg2QQbar(int idIn, int codeIn) : idNew(idIn), codeSave(codeIn),
-    sigTS(), sigUS(), sigSum(), sigma(), openFracPair() {}
+     topModel(), topAngles(), topAnglesNow(), nameSave(), sigTS(), sigUS(),
+    sigSum(), sigma(), openFracPair(), ggSingletFrac(), eBegDamp(),
+    eEndDamp() {}
 
   // Initialize process.
   virtual void initProc();
@@ -468,8 +480,10 @@ public:
 
   // Values stored for process type and colour flow selection.
   int    idNew, codeSave, topModel;
+  bool   topAngles, topAnglesNow;
   string nameSave;
-  double sigTS, sigUS, sigSum, sigma, openFracPair, ggSingletFrac;
+  double sigTS, sigUS, sigSum, sigma, openFracPair, ggSingletFrac,
+    eBegDamp, eEndDamp;
 
   // Class for top threshold corrections.
   TopThreshold topThreshold;
@@ -486,7 +500,8 @@ public:
 
   // Constructor.
   Sigma2qqbar2QQbar(int idIn, int codeIn) : idNew(idIn), codeSave(codeIn),
-    sigma(), openFracPair() {}
+    topModel(), topAngles(), topAnglesNow(), nameSave(), sigma(),
+    openFracPair(), qqSingletFrac(), eBegDamp(), eEndDamp() {}
 
   // Initialize process.
   virtual void initProc();
@@ -514,8 +529,9 @@ public:
 
   // Values stored for process type.
   int    idNew, codeSave, topModel;
+  bool   topAngles, topAnglesNow;
   string nameSave;
-  double sigma, openFracPair, qqSingletFrac;
+  double sigma, openFracPair, qqSingletFrac, eBegDamp, eEndDamp;
 
   // Class for top threshold corrections.
   TopThreshold topThreshold;

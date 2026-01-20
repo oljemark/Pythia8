@@ -1,5 +1,5 @@
 // HadronLevel.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -62,13 +62,15 @@ public:
   // Generate the next event.
   bool next(Event& event);
 
-  // Try to decay the specified particle. Returns false if decay failed.
-  bool decay( int iDec, Event& event) { return
+  // Try to decay the specified particle. Returns false if decay
+  // failed. If allowPartons is true the decay products may consist
+  // of partons, which need to be hadronised.
+  bool decay( int iDec, Event& event, bool allowPartons = true) { return
     (event[iDec].isFinal() && event[iDec].canDecay() && event[iDec].mayDecay())
-    ? decays.decay( iDec, event) : true;}
+    ? decays.decay( iDec, event, allowPartons) : true;}
 
   // Special routine to allow more decays if on/off switches changed.
-  bool moreDecays(Event& event);
+  bool moreDecays(Event& event, bool allowPartons = false);
 
   // Perform rescattering. Return true if new strings must be hadronized.
   bool rescatter(Event& event);

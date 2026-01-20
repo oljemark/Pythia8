@@ -188,7 +188,7 @@ included. You can also specify the colour, separated by a comma from
 the line style, to override the normal colour cycle. The most common 
 colours can be given just as a single letter, such as "r", "g", "b", 
 but a more extensive 
-<a href="https://matplotlib.org/examples/color/named_colors.html"> 
+<a href="https://matplotlib.org/stable/gallery/color/named_colors.html"> 
 colour palette</a> allow finetuning to nuances such as "orange", 
 "gold", "darkgreen", "royalblue", "crimson", and so on. 
 A third argument can set the legend of each histogram; by default 
@@ -681,6 +681,25 @@ histogram proper. Bin widths are handled for both linear and log
 plots. 
 </method> 
  
+<method name="void Hist::makeCumulative( bool updateStatistics = false, 
+bool withUnderflow = false)"> 
+Add the contents of the previous (lower) bin to that of the current 
+one, iteratively, such that the value stored for a bin becomes the 
+sum of all original bin contents up to and including the current one. 
+In the limit of bin width going to zero this cumulative sum would 
+become normal integration. 
+<argument name="updateStatistics" default="off"> 
+By default the statistical information, such as mean and width, 
+is kept from the original unintegrated distribution. As an alternative 
+the statistics can be recalculated, but then on the assumption that 
+all previous bin contents are added to the middle of the current bin. 
+</argument> 
+<argument name="withUnderflow" default="off"> 
+Normally underflow is ignored, but as an option it can be added to the 
+first bin as a first step of the iteration over bins. 
+</argument> 
+</method> 
+ 
 <method name="Hist&amp; Hist::operator+=(const Hist&amp; h)"> 
 </method> 
 <methodmore name="Hist&amp; Hist::operator-=(const Hist&amp; h)"> 
@@ -972,4 +991,4 @@ script. We refer to the <a href="https://yoda.hepforge.org/">YODA
 documentation</a> for details. 
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

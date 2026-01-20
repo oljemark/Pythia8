@@ -1,6 +1,7 @@
 <chapter name="Hadronization Variations"> 
  
 <h2>Hadronization Variations</h2> 
+ 
 The hadronization variation framework allows a user to calculate 
 reweighting factors taking a given event from one set of hadronization 
 parameters to another, by changing the probability with which this 
@@ -8,7 +9,10 @@ specific event would occur given the altered parameter set. This
 feature is still experimental and is under active development, so use 
 at your own risk. The method for reweighting the Lund string 
 fragmentation function is documented in <ref>Bie23</ref>, and the 
-flavor reweighting method is currently being written up. 
+flavor reweighting method is documented in <ref>Ass25</ref>. Examples 
+on how to use the hadronization variations can be found in the 
+examples <code>main263</code>, <code>main264</code>, and 
+<code>main265</code>. 
  
 Users familiar with 
 <aloc href="Variations">Parton Shower Variations</aloc> will recognize 
@@ -27,6 +31,28 @@ For the fragmentation flavor variations, it is possible to perform
 post-hoc reweighting without running the in-situ variations below. To 
 enable post-hoc flavor reweighting, switch this flag on. 
 </flag> 
+ 
+<flag name="VariationFrag:z" default="off"> 
+For the fragmentation variations that directly modify the sampling of 
+<code>z</code> (<code>aLund</code>, <code>bLund</code>, 
+<code>rFactC</code>, <code>rFactB</code>), it is possible to perform 
+post-hoc reweighting. However, this increases the memory footprint of 
+each event as information on the string breaks needs to be 
+stored. Enabling this flag, stores this information so post-hoc 
+kinematic reweighting can be performed. 
+</flag> 
+ 
+<flag name="VariationFrag:pT" default="off"> 
+Same as for <ei>z</ei> but now for the sampling of <ei>p_T</ei> which 
+depends on <code>ptSigma</code>. 
+</flag> 
+ 
+<parm name="VariationFrag:zHead" default="1.0" 
+min="0.0" max="100.0"> 
+When sampling variations in <ei>z</ei> the maximum for the sampling 
+function can be increased by this multiplicatve factor. This parameter 
+is intended for cross-checks only. 
+</parm> 
  
 <wvec name="VariationFrag:list" default="{}"> 
 Vector of uncertainty-variation strings defining groups of parameter 
@@ -88,4 +114,4 @@ states.</li>
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

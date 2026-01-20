@@ -1,5 +1,5 @@
 // MathTools.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -567,6 +567,7 @@ double LogInterpolator::at(double xIn) const {
   // Select interpolation bin.
   double t = log(xIn / leftSave) / log(rxSave);
   int j = floor(t);
+  if ( j + 1 == int(ysSave.size()) ) return ysSave.back();
   double s = t - j;
 
   return pow(ysSave[j], 1 - s) * pow(ysSave[j + 1], s);

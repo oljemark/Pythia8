@@ -696,6 +696,32 @@ struct PyCallBack_Pythia8_amcnlo_unitarised_interface : public Pythia8::amcnlo_u
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::amcnlo_unitarised_interface *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::amcnlo_unitarised_interface *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::amcnlo_unitarised_interface *>(this), "onEndHadronLevel");
@@ -1391,6 +1417,32 @@ struct PyCallBack_Pythia8_MBReconUserHooks : public Pythia8::MBReconUserHooks {
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::MBReconUserHooks *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::MBReconUserHooks *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::MBReconUserHooks *>(this), "onEndHadronLevel");
@@ -2085,6 +2137,32 @@ struct PyCallBack_Pythia8_TopReconUserHooks : public Pythia8::TopReconUserHooks 
 			else return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::doSetImpactParameter();
+	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::TopReconUserHooks *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::TopReconUserHooks *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
 	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
@@ -2891,6 +2969,32 @@ struct PyCallBack_Pythia8_AlpgenHooks : public Pythia8::AlpgenHooks {
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::AlpgenHooks *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::AlpgenHooks *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::AlpgenHooks *>(this), "onEndHadronLevel");
@@ -3695,6 +3799,32 @@ struct PyCallBack_Pythia8_JetMatching : public Pythia8::JetMatching {
 			else return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::doSetImpactParameter();
+	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatching *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatching *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
 	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
@@ -4729,6 +4859,32 @@ struct PyCallBack_Pythia8_JetMatchingAlpgen : public Pythia8::JetMatchingAlpgen 
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingAlpgen *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingAlpgen *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingAlpgen *>(this), "onEndHadronLevel");
@@ -5502,6 +5658,32 @@ struct PyCallBack_Pythia8_JetMatchingMadgraph : public Pythia8::JetMatchingMadgr
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingMadgraph *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingMadgraph *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingMadgraph *>(this), "onEndHadronLevel");
@@ -6196,6 +6378,32 @@ struct PyCallBack_Pythia8_JetMatchingAlpgenInputAlpgen : public Pythia8::JetMatc
 			else return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::doSetImpactParameter();
+	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingAlpgenInputAlpgen *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingAlpgenInputAlpgen *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
 	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
@@ -6970,6 +7178,32 @@ struct PyCallBack_Pythia8_JetMatchingMadgraphInputAlpgen : public Pythia8::JetMa
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingMadgraphInputAlpgen *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingMadgraphInputAlpgen *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::JetMatchingMadgraphInputAlpgen *>(this), "onEndHadronLevel");
@@ -7220,7 +7454,6 @@ void bind_Pythia8Plugins_JetMatching(std::function< pybind11::module &(std::stri
 
 		cl.def( pybind11::init<double, double, double, double>(), pybind11::arg("xi"), pybind11::arg("rho"), pybind11::arg("x"), pybind11::arg("y") );
 
-		cl.def("read", (class std::vector<int, class std::allocator<int> > (Pythia8::FlavorVariations::*)(std::string)) &Pythia8::FlavorVariations::read, "C++: Pythia8::FlavorVariations::read(std::string) --> class std::vector<int, class std::allocator<int> >", pybind11::arg("breaks"));
 		cl.def("write", (std::string (Pythia8::FlavorVariations::*)(const class std::vector<int, class std::allocator<int> > &)) &Pythia8::FlavorVariations::write, "C++: Pythia8::FlavorVariations::write(const class std::vector<int, class std::allocator<int> > &) --> std::string", pybind11::arg("breaks"));
 		cl.def("parms", (class std::vector<double, class std::allocator<double> > (Pythia8::FlavorVariations::*)(double, double, double, double)) &Pythia8::FlavorVariations::parms, "C++: Pythia8::FlavorVariations::parms(double, double, double, double) --> class std::vector<double, class std::allocator<double> >", pybind11::arg("xi"), pybind11::arg("rho"), pybind11::arg("x"), pybind11::arg("y"));
 		cl.def("weight", (double (Pythia8::FlavorVariations::*)(const class std::vector<double, class std::allocator<double> > &, const class std::vector<int, class std::allocator<int> > &)) &Pythia8::FlavorVariations::weight, "C++: Pythia8::FlavorVariations::weight(const class std::vector<double, class std::allocator<double> > &, const class std::vector<int, class std::allocator<int> > &) --> double", pybind11::arg("parms"), pybind11::arg("breaks"));
@@ -7253,6 +7486,58 @@ void bind_Pythia8Plugins_JetMatching(std::function< pybind11::module &(std::stri
 		cl.def("require", (bool (Pythia8::InputParser::*)(const std::string &, const std::string &, class std::set<std::string, struct std::less<std::string >, class std::allocator<std::string > >)) &Pythia8::InputParser::require, "C++: Pythia8::InputParser::require(const std::string &, const std::string &, class std::set<std::string, struct std::less<std::string >, class std::allocator<std::string > >) --> bool", pybind11::arg("optName"), pybind11::arg("helpText"), pybind11::arg("aliases"));
 		cl.def("has", (bool (Pythia8::InputParser::*)(const std::string &) const) &Pythia8::InputParser::has, "C++: Pythia8::InputParser::has(const std::string &) const --> bool", pybind11::arg("optName"));
 		cl.def("help", (const std::string (Pythia8::InputParser::*)() const) &Pythia8::InputParser::help, "C++: Pythia8::InputParser::help() const --> const std::string");
+	}
+}
+#include <Pythia8/Logger.h>
+#include <Pythia8/ParticleData.h>
+#include <Pythia8/Settings.h>
+#include <Pythia8Plugins/KinematicVariations.h>
+#include <functional>
+#include <istream>
+#include <iterator>
+#include <map>
+#include <memory>
+#include <ostream>
+#include <sstream>
+#include <sstream> // __str__
+#include <string>
+#include <utility>
+#include <vector>
+
+#include <pybind11/pybind11.h>
+#include <functional>
+#include <string>
+#include <Pythia8/UserHooks.h>
+#include <Pythia8/SplittingsOnia.h>
+#include <Pythia8/HeavyIons.h>
+#include <Pythia8/BeamShape.h>
+#include <pybind11/stl.h>
+#include <pybind11/complex.h>
+#include <pybind11/functional.h>
+
+
+#ifndef BINDER_PYBIND11_TYPE_CASTER
+	#define BINDER_PYBIND11_TYPE_CASTER
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+#endif
+
+void bind_Pythia8Plugins_KinematicVariations(std::function< pybind11::module &(std::string const &namespace_) > &M)
+{
+	{ // Pythia8::KinematicVariations file:Pythia8Plugins/KinematicVariations.h line:20
+		pybind11::class_<Pythia8::KinematicVariations, std::shared_ptr<Pythia8::KinematicVariations>> cl(M("Pythia8"), "KinematicVariations", "");
+		pybind11::handle cl_type = cl;
+
+		cl.def( pybind11::init<class Pythia8::Settings &>(), pybind11::arg("settings") );
+
+		cl.def( pybind11::init<double, double, double, double, double, double>(), pybind11::arg("aLund"), pybind11::arg("bLund"), pybind11::arg("rFactC"), pybind11::arg("rFactB"), pybind11::arg("sigma"), pybind11::arg("zHead") );
+
+		cl.def("write", (std::string (Pythia8::KinematicVariations::*)(const class std::vector<int, class std::allocator<int> > &)) &Pythia8::KinematicVariations::write, "C++: Pythia8::KinematicVariations::write(const class std::vector<int, class std::allocator<int> > &) --> std::string", pybind11::arg("breaks"));
+		cl.def("write", (std::string (Pythia8::KinematicVariations::*)(const class std::vector<double, class std::allocator<double> > &)) &Pythia8::KinematicVariations::write, "C++: Pythia8::KinematicVariations::write(const class std::vector<double, class std::allocator<double> > &) --> std::string", pybind11::arg("breaks"));
+		cl.def("weight", (double (Pythia8::KinematicVariations::*)(double, double, double, double, double, const class std::vector<int, class std::allocator<int> > &, const class std::vector<double, class std::allocator<double> > &, const class std::vector<double, class std::allocator<double> > &)) &Pythia8::KinematicVariations::weight, "C++: Pythia8::KinematicVariations::weight(double, double, double, double, double, const class std::vector<int, class std::allocator<int> > &, const class std::vector<double, class std::allocator<double> > &, const class std::vector<double, class std::allocator<double> > &) --> double", pybind11::arg("aLund"), pybind11::arg("bLund"), pybind11::arg("rFactC"), pybind11::arg("rFactB"), pybind11::arg("sigma"), pybind11::arg("zIntBreaks"), pybind11::arg("zDblBreaks"), pybind11::arg("pTBreaks"));
+		cl.def("weight", (double (Pythia8::KinematicVariations::*)(double, double, double, double, const class std::vector<int, class std::allocator<int> > &, const class std::vector<double, class std::allocator<double> > &)) &Pythia8::KinematicVariations::weight, "C++: Pythia8::KinematicVariations::weight(double, double, double, double, const class std::vector<int, class std::allocator<int> > &, const class std::vector<double, class std::allocator<double> > &) --> double", pybind11::arg("aLund"), pybind11::arg("bLund"), pybind11::arg("rFactC"), pybind11::arg("rFactB"), pybind11::arg("zIntBreaks"), pybind11::arg("zDblBreaks"));
+		cl.def("weight", (double (Pythia8::KinematicVariations::*)(double, const class std::vector<double, class std::allocator<double> > &)) &Pythia8::KinematicVariations::weight, "C++: Pythia8::KinematicVariations::weight(double, const class std::vector<double, class std::allocator<double> > &) --> double", pybind11::arg("sigma"), pybind11::arg("pTBreaks"));
 	}
 }
 #include <Pythia8/Basics.h>
@@ -8285,6 +8570,32 @@ struct PyCallBack_Pythia8_ResonanceDecayFilterHook : public Pythia8::ResonanceDe
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ResonanceDecayFilterHook *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ResonanceDecayFilterHook *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ResonanceDecayFilterHook *>(this), "onEndHadronLevel");
@@ -8980,6 +9291,32 @@ struct PyCallBack_Pythia8_SetLHEDecayProductHook : public Pythia8::SetLHEDecayPr
 		}
 		return UserHooks::doSetImpactParameter();
 	}
+	bool canSetEnhanceB() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SetLHEDecayProductHook *>(this), "canSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return UserHooks::canSetEnhanceB();
+	}
+	double doSetEnhanceB() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SetLHEDecayProductHook *>(this), "doSetEnhanceB");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return UserHooks::doSetEnhanceB();
+	}
 	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SetLHEDecayProductHook *>(this), "onEndHadronLevel");
@@ -9076,18 +9413,19 @@ void bind_Pythia8Plugins_ProgressLog(std::function< pybind11::module &(std::stri
 		cl.def("statusTime", (bool (Pythia8::ProgressLog::*)(long, long) const) &Pythia8::ProgressLog::statusTime, "C++: Pythia8::ProgressLog::statusTime(long, long) const --> bool", pybind11::arg("i"), pybind11::arg("n"));
 		cl.def("init", (void (Pythia8::ProgressLog::*)(long)) &Pythia8::ProgressLog::init, "C++: Pythia8::ProgressLog::init(long) --> void", pybind11::arg("n"));
 	}
-	{ // Pythia8::PythiaCascade file:Pythia8Plugins/PythiaCascade.h line:61
+	{ // Pythia8::PythiaCascade file:Pythia8Plugins/PythiaCascade.h line:78
 		pybind11::class_<Pythia8::PythiaCascade, std::shared_ptr<Pythia8::PythiaCascade>> cl(M("Pythia8"), "PythiaCascade", "");
 		pybind11::handle cl_type = cl;
 
 		cl.def( pybind11::init( [](){ return new Pythia8::PythiaCascade(); } ) );
 		cl.def("init", [](Pythia8::PythiaCascade &o) -> bool { return o.init(); }, "");
-		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0) -> bool { return o.init(a0); }, "", pybind11::arg("eMaxIn"));
-		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0, bool const & a1) -> bool { return o.init(a0, a1); }, "", pybind11::arg("eMaxIn"), pybind11::arg("listFinalIn"));
-		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0, bool const & a1, bool const & a2) -> bool { return o.init(a0, a1, a2); }, "", pybind11::arg("eMaxIn"), pybind11::arg("listFinalIn"), pybind11::arg("rapidDecaysIn"));
-		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0, bool const & a1, bool const & a2, double const & a3) -> bool { return o.init(a0, a1, a2, a3); }, "", pybind11::arg("eMaxIn"), pybind11::arg("listFinalIn"), pybind11::arg("rapidDecaysIn"), pybind11::arg("smallTau0In"));
-		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0, bool const & a1, bool const & a2, double const & a3, int const & a4) -> bool { return o.init(a0, a1, a2, a3, a4); }, "", pybind11::arg("eMaxIn"), pybind11::arg("listFinalIn"), pybind11::arg("rapidDecaysIn"), pybind11::arg("smallTau0In"), pybind11::arg("reuseMPI"));
-		cl.def("init", (bool (Pythia8::PythiaCascade::*)(double, bool, bool, double, int, std::string)) &Pythia8::PythiaCascade::init, "C++: Pythia8::PythiaCascade::init(double, bool, bool, double, int, std::string) --> bool", pybind11::arg("eMaxIn"), pybind11::arg("listFinalIn"), pybind11::arg("rapidDecaysIn"), pybind11::arg("smallTau0In"), pybind11::arg("reuseMPI"), pybind11::arg("initFile"));
+		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0) -> bool { return o.init(a0); }, "", pybind11::arg("eKinMinIn"));
+		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0, double const & a1) -> bool { return o.init(a0, a1); }, "", pybind11::arg("eKinMinIn"), pybind11::arg("enhanceSDtargetIn"));
+		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0, double const & a1, class std::basic_string<char> const & a2) -> bool { return o.init(a0, a1, a2); }, "", pybind11::arg("eKinMinIn"), pybind11::arg("enhanceSDtargetIn"), pybind11::arg("initFile"));
+		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0, double const & a1, class std::basic_string<char> const & a2, bool const & a3) -> bool { return o.init(a0, a1, a2, a3); }, "", pybind11::arg("eKinMinIn"), pybind11::arg("enhanceSDtargetIn"), pybind11::arg("initFile"), pybind11::arg("rapidDecaysIn"));
+		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0, double const & a1, class std::basic_string<char> const & a2, bool const & a3, double const & a4) -> bool { return o.init(a0, a1, a2, a3, a4); }, "", pybind11::arg("eKinMinIn"), pybind11::arg("enhanceSDtargetIn"), pybind11::arg("initFile"), pybind11::arg("rapidDecaysIn"), pybind11::arg("smallTau0In"));
+		cl.def("init", [](Pythia8::PythiaCascade &o, double const & a0, double const & a1, class std::basic_string<char> const & a2, bool const & a3, double const & a4, bool const & a5) -> bool { return o.init(a0, a1, a2, a3, a4, a5); }, "", pybind11::arg("eKinMinIn"), pybind11::arg("enhanceSDtargetIn"), pybind11::arg("initFile"), pybind11::arg("rapidDecaysIn"), pybind11::arg("smallTau0In"), pybind11::arg("slowDecays"));
+		cl.def("init", (bool (Pythia8::PythiaCascade::*)(double, double, std::string, bool, double, bool, bool)) &Pythia8::PythiaCascade::init, "C++: Pythia8::PythiaCascade::init(double, double, std::string, bool, double, bool, bool) --> bool", pybind11::arg("eKinMinIn"), pybind11::arg("enhanceSDtargetIn"), pybind11::arg("initFile"), pybind11::arg("rapidDecaysIn"), pybind11::arg("smallTau0In"), pybind11::arg("slowDecays"), pybind11::arg("listFinalOnlyIn"));
 		cl.def("nCollAvg", (double (Pythia8::PythiaCascade::*)(int)) &Pythia8::PythiaCascade::nCollAvg, "C++: Pythia8::PythiaCascade::nCollAvg(int) --> double", pybind11::arg("A"));
 		cl.def("sigmaSetuphN", (bool (Pythia8::PythiaCascade::*)(int, class Pythia8::Vec4, double)) &Pythia8::PythiaCascade::sigmaSetuphN, "C++: Pythia8::PythiaCascade::sigmaSetuphN(int, class Pythia8::Vec4, double) --> bool", pybind11::arg("idNowIn"), pybind11::arg("pNowIn"), pybind11::arg("mNowIn"));
 		cl.def("sigmahA", (double (Pythia8::PythiaCascade::*)(int)) &Pythia8::PythiaCascade::sigmahA, "C++: Pythia8::PythiaCascade::sigmahA(int) --> double", pybind11::arg("A"));
@@ -9097,6 +9435,9 @@ void bind_Pythia8Plugins_ProgressLog(std::function< pybind11::module &(std::stri
 		cl.def("nextDecay", (class Pythia8::Event & (Pythia8::PythiaCascade::*)(int, class Pythia8::Vec4, double, class Pythia8::Vec4)) &Pythia8::PythiaCascade::nextDecay, "C++: Pythia8::PythiaCascade::nextDecay(int, class Pythia8::Vec4, double, class Pythia8::Vec4) --> class Pythia8::Event &", pybind11::return_value_policy::reference, pybind11::arg("idNowIn"), pybind11::arg("pNowIn"), pybind11::arg("mNowIn"), pybind11::arg("vNow"));
 		cl.def("compress", (void (Pythia8::PythiaCascade::*)()) &Pythia8::PythiaCascade::compress, "C++: Pythia8::PythiaCascade::compress() --> void");
 		cl.def("stat", (void (Pythia8::PythiaCascade::*)()) &Pythia8::PythiaCascade::stat, "C++: Pythia8::PythiaCascade::stat() --> void");
+		cl.def("nCollisions", (int (Pythia8::PythiaCascade::*)()) &Pythia8::PythiaCascade::nCollisions, "C++: Pythia8::PythiaCascade::nCollisions() --> int");
+		cl.def("firstCollisionCode", (int (Pythia8::PythiaCascade::*)()) &Pythia8::PythiaCascade::firstCollisionCode, "C++: Pythia8::PythiaCascade::firstCollisionCode() --> int");
+		cl.def("firstCollisionMPI", (int (Pythia8::PythiaCascade::*)()) &Pythia8::PythiaCascade::firstCollisionMPI, "C++: Pythia8::PythiaCascade::firstCollisionMPI() --> int");
 		cl.def("particleData", (class Pythia8::ParticleData & (Pythia8::PythiaCascade::*)()) &Pythia8::PythiaCascade::particleData, "C++: Pythia8::PythiaCascade::particleData() --> class Pythia8::ParticleData &", pybind11::return_value_policy::reference);
 		cl.def("rndm", (class Pythia8::Rndm & (Pythia8::PythiaCascade::*)()) &Pythia8::PythiaCascade::rndm, "C++: Pythia8::PythiaCascade::rndm() --> class Pythia8::Rndm &", pybind11::return_value_policy::reference);
 	}

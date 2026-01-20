@@ -229,6 +229,19 @@ struct PyCallBack_Pythia8_SigmaProcess : public Pythia8::SigmaProcess {
 		}
 		return SigmaProcess::final2KinMPI(a0, a1, a2, a3, a4, a5);
 	}
+	double weightNLO() override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaProcess *>(this), "weightNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return SigmaProcess::weightNLO();
+	}
 	double weightDecayFlav(class Pythia8::Event & a0) override { 
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaProcess *>(this), "weightDecayFlav");
@@ -449,6 +462,19 @@ struct PyCallBack_Pythia8_SigmaProcess : public Pythia8::SigmaProcess {
 			else return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaProcess::allowNegativeSigma();
+	}
+	bool hasNLO() const override { 
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaProcess *>(this), "hasNLO");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			else return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return SigmaProcess::hasNLO();
 	}
 	int id3Mass() const override { 
 		pybind11::gil_scoped_acquire gil;
@@ -920,6 +946,7 @@ void bind_Pythia8_SusyCouplings(std::function< pybind11::module &(std::string co
 		cl.def("final2KinMPI", [](Pythia8::SigmaProcess &o, int const & a0, int const & a1, class Pythia8::Vec4 const & a2, class Pythia8::Vec4 const & a3) -> bool { return o.final2KinMPI(a0, a1, a2, a3); }, "", pybind11::arg(""), pybind11::arg(""), pybind11::arg(""), pybind11::arg(""));
 		cl.def("final2KinMPI", [](Pythia8::SigmaProcess &o, int const & a0, int const & a1, class Pythia8::Vec4 const & a2, class Pythia8::Vec4 const & a3, double const & a4) -> bool { return o.final2KinMPI(a0, a1, a2, a3, a4); }, "", pybind11::arg(""), pybind11::arg(""), pybind11::arg(""), pybind11::arg(""), pybind11::arg(""));
 		cl.def("final2KinMPI", (bool (Pythia8::SigmaProcess::*)(int, int, class Pythia8::Vec4, class Pythia8::Vec4, double, double)) &Pythia8::SigmaProcess::final2KinMPI, "C++: Pythia8::SigmaProcess::final2KinMPI(int, int, class Pythia8::Vec4, class Pythia8::Vec4, double, double) --> bool", pybind11::arg(""), pybind11::arg(""), pybind11::arg(""), pybind11::arg(""), pybind11::arg(""), pybind11::arg(""));
+		cl.def("weightNLO", (double (Pythia8::SigmaProcess::*)()) &Pythia8::SigmaProcess::weightNLO, "C++: Pythia8::SigmaProcess::weightNLO() --> double");
 		cl.def("weightDecayFlav", (double (Pythia8::SigmaProcess::*)(class Pythia8::Event &)) &Pythia8::SigmaProcess::weightDecayFlav, "C++: Pythia8::SigmaProcess::weightDecayFlav(class Pythia8::Event &) --> double", pybind11::arg(""));
 		cl.def("weightDecay", (double (Pythia8::SigmaProcess::*)(class Pythia8::Event &, int, int)) &Pythia8::SigmaProcess::weightDecay, "C++: Pythia8::SigmaProcess::weightDecay(class Pythia8::Event &, int, int) --> double", pybind11::arg(""), pybind11::arg(""), pybind11::arg(""));
 		cl.def("setScale", (void (Pythia8::SigmaProcess::*)()) &Pythia8::SigmaProcess::setScale, "C++: Pythia8::SigmaProcess::setScale() --> void");
@@ -937,6 +964,7 @@ void bind_Pythia8_SusyCouplings(std::function< pybind11::module &(std::string co
 		cl.def("isDiffC", (bool (Pythia8::SigmaProcess::*)() const) &Pythia8::SigmaProcess::isDiffC, "C++: Pythia8::SigmaProcess::isDiffC() const --> bool");
 		cl.def("isSUSY", (bool (Pythia8::SigmaProcess::*)() const) &Pythia8::SigmaProcess::isSUSY, "C++: Pythia8::SigmaProcess::isSUSY() const --> bool");
 		cl.def("allowNegativeSigma", (bool (Pythia8::SigmaProcess::*)() const) &Pythia8::SigmaProcess::allowNegativeSigma, "C++: Pythia8::SigmaProcess::allowNegativeSigma() const --> bool");
+		cl.def("hasNLO", (bool (Pythia8::SigmaProcess::*)() const) &Pythia8::SigmaProcess::hasNLO, "C++: Pythia8::SigmaProcess::hasNLO() const --> bool");
 		cl.def("id3Mass", (int (Pythia8::SigmaProcess::*)() const) &Pythia8::SigmaProcess::id3Mass, "C++: Pythia8::SigmaProcess::id3Mass() const --> int");
 		cl.def("id4Mass", (int (Pythia8::SigmaProcess::*)() const) &Pythia8::SigmaProcess::id4Mass, "C++: Pythia8::SigmaProcess::id4Mass() const --> int");
 		cl.def("id5Mass", (int (Pythia8::SigmaProcess::*)() const) &Pythia8::SigmaProcess::id5Mass, "C++: Pythia8::SigmaProcess::id5Mass() const --> int");

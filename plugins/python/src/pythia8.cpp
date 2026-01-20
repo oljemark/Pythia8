@@ -76,9 +76,11 @@ void bind_Pythia8_Pythia(std::function< pybind11::module &(std::string const &na
 void bind_Pythia8_PythiaParallel(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_Pythia8_HINucleusModel(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_Pythia8_HISubCollisionModel(std::function< pybind11::module &(std::string const &namespace_) > &M);
+void bind_Pythia8_HISubCollisionModel_1(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_Pythia8_HIInfo(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_Pythia8Plugins_aMCatNLOHooks(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_Pythia8Plugins_JetMatching(std::function< pybind11::module &(std::string const &namespace_) > &M);
+void bind_Pythia8Plugins_KinematicVariations(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_Pythia8Plugins_LHAHelaconia(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_Pythia8Plugins_ProgressLog(std::function< pybind11::module &(std::string const &namespace_) > &M);
 
@@ -170,9 +172,11 @@ PYBIND11_MODULE(pythia8, root_module) {
 	bind_Pythia8_PythiaParallel(M);
 	bind_Pythia8_HINucleusModel(M);
 	bind_Pythia8_HISubCollisionModel(M);
+	bind_Pythia8_HISubCollisionModel_1(M);
 	bind_Pythia8_HIInfo(M);
 	bind_Pythia8Plugins_aMCatNLOHooks(M);
 	bind_Pythia8Plugins_JetMatching(M);
+	bind_Pythia8Plugins_KinematicVariations(M);
 	bind_Pythia8Plugins_LHAHelaconia(M);
 	bind_Pythia8Plugins_ProgressLog(M);
 

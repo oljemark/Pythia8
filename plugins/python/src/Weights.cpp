@@ -40,7 +40,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
 
-// Pythia8::WeightsMerging file:Pythia8/Weights.h line:236
+// Pythia8::WeightsMerging file:Pythia8/Weights.h line:237
 struct PyCallBack_Pythia8_WeightsMerging : public Pythia8::WeightsMerging {
 	using Pythia8::WeightsMerging::WeightsMerging;
 
@@ -163,7 +163,7 @@ struct PyCallBack_Pythia8_WeightsMerging : public Pythia8::WeightsMerging {
 	}
 };
 
-// Pythia8::WeightsLHEF file:Pythia8/Weights.h line:314
+// Pythia8::WeightsLHEF file:Pythia8/Weights.h line:315
 struct PyCallBack_Pythia8_WeightsLHEF : public Pythia8::WeightsLHEF {
 	using Pythia8::WeightsLHEF::WeightsLHEF;
 
@@ -286,7 +286,7 @@ struct PyCallBack_Pythia8_WeightsLHEF : public Pythia8::WeightsLHEF {
 	}
 };
 
-// Pythia8::WeightsFragmentation file:Pythia8/Weights.h line:354
+// Pythia8::WeightsFragmentation file:Pythia8/Weights.h line:355
 struct PyCallBack_Pythia8_WeightsFragmentation : public Pythia8::WeightsFragmentation {
 	using Pythia8::WeightsFragmentation::WeightsFragmentation;
 
@@ -411,7 +411,7 @@ struct PyCallBack_Pythia8_WeightsFragmentation : public Pythia8::WeightsFragment
 
 void bind_Pythia8_Weights(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Pythia8::WeightsMerging file:Pythia8/Weights.h line:236
+	{ // Pythia8::WeightsMerging file:Pythia8/Weights.h line:237
 		pybind11::class_<Pythia8::WeightsMerging, std::shared_ptr<Pythia8::WeightsMerging>, PyCallBack_Pythia8_WeightsMerging, Pythia8::WeightsBase> cl(M("Pythia8"), "WeightsMerging", "");
 		pybind11::handle cl_type = cl;
 
@@ -446,7 +446,7 @@ void bind_Pythia8_Weights(std::function< pybind11::module &(std::string const &n
 		cl.def("collectWeightValues", (void (Pythia8::WeightsMerging::*)(class std::vector<double, class std::allocator<double> > &, double)) &Pythia8::WeightsMerging::collectWeightValues, "C++: Pythia8::WeightsMerging::collectWeightValues(class std::vector<double, class std::allocator<double> > &, double) --> void", pybind11::arg("outputWeights"), pybind11::arg("norm"));
 		cl.def("assign", (class Pythia8::WeightsMerging & (Pythia8::WeightsMerging::*)(const class Pythia8::WeightsMerging &)) &Pythia8::WeightsMerging::operator=, "C++: Pythia8::WeightsMerging::operator=(const class Pythia8::WeightsMerging &) --> class Pythia8::WeightsMerging &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::WeightsLHEF file:Pythia8/Weights.h line:314
+	{ // Pythia8::WeightsLHEF file:Pythia8/Weights.h line:315
 		pybind11::class_<Pythia8::WeightsLHEF, std::shared_ptr<Pythia8::WeightsLHEF>, PyCallBack_Pythia8_WeightsLHEF, Pythia8::WeightsBase> cl(M("Pythia8"), "WeightsLHEF", "");
 		pybind11::handle cl_type = cl;
 
@@ -464,7 +464,7 @@ void bind_Pythia8_Weights(std::function< pybind11::module &(std::string const &n
 		cl.def("identifyVariationsFromLHAinit", (void (Pythia8::WeightsLHEF::*)(class std::map<std::string, struct Pythia8::LHAweight, struct std::less<std::string >, class std::allocator<struct std::pair<const std::string, struct Pythia8::LHAweight> > > *)) &Pythia8::WeightsLHEF::identifyVariationsFromLHAinit, "C++: Pythia8::WeightsLHEF::identifyVariationsFromLHAinit(class std::map<std::string, struct Pythia8::LHAweight, struct std::less<std::string >, class std::allocator<struct std::pair<const std::string, struct Pythia8::LHAweight> > > *) --> void", pybind11::arg("weights"));
 		cl.def("assign", (class Pythia8::WeightsLHEF & (Pythia8::WeightsLHEF::*)(const class Pythia8::WeightsLHEF &)) &Pythia8::WeightsLHEF::operator=, "C++: Pythia8::WeightsLHEF::operator=(const class Pythia8::WeightsLHEF &) --> class Pythia8::WeightsLHEF &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::WeightsFragmentation file:Pythia8/Weights.h line:354
+	{ // Pythia8::WeightsFragmentation file:Pythia8/Weights.h line:355
 		pybind11::class_<Pythia8::WeightsFragmentation, std::shared_ptr<Pythia8::WeightsFragmentation>, PyCallBack_Pythia8_WeightsFragmentation, Pythia8::WeightsBase> cl(M("Pythia8"), "WeightsFragmentation", "");
 		pybind11::handle cl_type = cl;
 
@@ -482,6 +482,9 @@ void bind_Pythia8_Weights(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("externalGroupNames", &Pythia8::WeightsFragmentation::externalGroupNames);
 		cl.def_readwrite("externalMap", &Pythia8::WeightsFragmentation::externalMap);
 		cl.def_readwrite("flavBreaks", &Pythia8::WeightsFragmentation::flavBreaks);
+		cl.def_readwrite("zIntBreaks", &Pythia8::WeightsFragmentation::zIntBreaks);
+		cl.def_readwrite("zDblBreaks", &Pythia8::WeightsFragmentation::zDblBreaks);
+		cl.def_readwrite("pTBreaks", &Pythia8::WeightsFragmentation::pTBreaks);
 		cl.def("init", (void (Pythia8::WeightsFragmentation::*)()) &Pythia8::WeightsFragmentation::init, "C++: Pythia8::WeightsFragmentation::init() --> void");
 		cl.def("clear", (void (Pythia8::WeightsFragmentation::*)()) &Pythia8::WeightsFragmentation::clear, "C++: Pythia8::WeightsFragmentation::clear() --> void");
 		cl.def("nWeightGroups", (int (Pythia8::WeightsFragmentation::*)() const) &Pythia8::WeightsFragmentation::nWeightGroups, "C++: Pythia8::WeightsFragmentation::nWeightGroups() const --> int");
@@ -493,8 +496,10 @@ void bind_Pythia8_Weights(std::function< pybind11::module &(std::string const &n
 		cl.def("flavParms", (class std::vector<double, class std::allocator<double> > (Pythia8::WeightsFragmentation::*)(double, double, double, double)) &Pythia8::WeightsFragmentation::flavParms, "C++: Pythia8::WeightsFragmentation::flavParms(double, double, double, double) --> class std::vector<double, class std::allocator<double> >", pybind11::arg("xi"), pybind11::arg("rho"), pybind11::arg("x"), pybind11::arg("y"));
 		cl.def("flavWeight", (double (Pythia8::WeightsFragmentation::*)(const class std::vector<double, class std::allocator<double> > &)) &Pythia8::WeightsFragmentation::flavWeight, "C++: Pythia8::WeightsFragmentation::flavWeight(const class std::vector<double, class std::allocator<double> > &) --> double", pybind11::arg("parms"));
 		cl.def("flavWeight", (double (Pythia8::WeightsFragmentation::*)(const class std::vector<double, class std::allocator<double> > &, const class std::vector<int, class std::allocator<int> > &)) &Pythia8::WeightsFragmentation::flavWeight, "C++: Pythia8::WeightsFragmentation::flavWeight(const class std::vector<double, class std::allocator<double> > &, const class std::vector<int, class std::allocator<int> > &) --> double", pybind11::arg("parms"), pybind11::arg("breaks"));
+		cl.def("zWeight", (double (Pythia8::WeightsFragmentation::*)(double, double, double, double, int, int, double, double, double)) &Pythia8::WeightsFragmentation::zWeight, "C++: Pythia8::WeightsFragmentation::zWeight(double, double, double, double, int, int, double, double, double) --> double", pybind11::arg("aLund"), pybind11::arg("bLund"), pybind11::arg("rFactC"), pybind11::arg("rFactB"), pybind11::arg("idOld"), pybind11::arg("idNew"), pybind11::arg("mT2"), pybind11::arg("z"), pybind11::arg("fPrel"));
+		cl.def("pTWeight", (double (Pythia8::WeightsFragmentation::*)(double, double, double)) &Pythia8::WeightsFragmentation::pTWeight, "C++: Pythia8::WeightsFragmentation::pTWeight(double, double, double) --> double", pybind11::arg("sigma"), pybind11::arg("pT2"), pybind11::arg("mult"));
 	}
-	{ // Pythia8::WeightContainer file:Pythia8/Weights.h line:433
+	{ // Pythia8::WeightContainer file:Pythia8/Weights.h line:468
 		pybind11::class_<Pythia8::WeightContainer, std::shared_ptr<Pythia8::WeightContainer>> cl(M("Pythia8"), "WeightContainer", "");
 		pybind11::handle cl_type = cl;
 

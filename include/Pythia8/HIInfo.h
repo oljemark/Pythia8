@@ -1,5 +1,5 @@
 // HIInfo.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -42,6 +42,11 @@ public:
 
   // The summed elastic amplitude.
   double T() { return TSave; }
+
+  // The current sampling area in impact parameter (in millibarn).
+  double xSecArea() const {
+    return xSecScaleSave*FMSQ2MB;
+  }
 
   // The average NN non-diffractive impact parameter to be used to
   // communicate to Pythia's MPI machinery.
@@ -212,6 +217,12 @@ public:
                 glauberBSlope();
   }
 
+  // Overestimates of cross sections of with meduim ions in a hadronic
+  // cascade.
+  const vector<double> & mediumXSecs() const {
+    return mediumXSecsSave;
+  }
+
 private:
 
   // Register a tried impact parameter point giving the total elastic
@@ -285,6 +296,10 @@ private:
 
   // Number of failed nucleon excitations.
   int nFailSave = 0;
+
+  // Overestimates of cross sections of with meduim ions in a hadronic
+  // cascade.
+  vector<double> mediumXSecsSave = {};
 
 public:
 

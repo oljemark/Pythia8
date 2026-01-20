@@ -1,5 +1,5 @@
 // ProcessContainer.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -76,6 +76,14 @@ bool ProcessContainer::init(bool isFirst, ResonanceDecays* resDecaysPtrIn,
 
   // Flag for maximum violation handling.
   increaseMaximum = flag("PhaseSpace:increaseMaximum");
+
+  // Store whether we should and can reweight the cross section to NLO.
+  reweightNLO = flag("SigmaProcess:reweightNLO");
+  if (reweightNLO && !sigmaProcessPtr->hasNLO()) {
+    loggerPtr->WARNING_MSG("inclusive NLO correction "
+      "requested but not available", "for " + sigmaProcessPtr->name());
+    reweightNLO = false;
+  }
 
   // Store whether beam particle has a photon and save the mode.
   gammaKinPtr = gammaKinPtrIn;
@@ -362,6 +370,9 @@ bool ProcessContainer::trialProcess() {
     // Possibly fail, else cross section.
     if (!physical) return false;
     double sigmaNow = phaseSpacePtr->sigmaNow();
+
+    // Optionally reweight to inclusive NLO cross section.
+    if (reweightNLO) sigmaNow *= sigmaProcessPtr->weightNLO();
 
     // For photons with external flux correct the cross section but not
     // if event externally generated as then cross section fixed.

@@ -168,8 +168,10 @@ void bind_Pythia8_Pythia(std::function< pybind11::module &(std::string const &na
 		cl.def("forceTimeShower", (int (Pythia8::Pythia::*)(int, int, double, int)) &Pythia8::Pythia::forceTimeShower, "C++: Pythia8::Pythia::forceTimeShower(int, int, double, int) --> int", pybind11::arg("iBeg"), pybind11::arg("iEnd"), pybind11::arg("pTmax"), pybind11::arg("nBranchMax"));
 		cl.def("forceHadronLevel", [](Pythia8::Pythia &o) -> bool { return o.forceHadronLevel(); }, "");
 		cl.def("forceHadronLevel", (bool (Pythia8::Pythia::*)(bool)) &Pythia8::Pythia::forceHadronLevel, "C++: Pythia8::Pythia::forceHadronLevel(bool) --> bool", pybind11::arg("findJunctions"));
-		cl.def("moreDecays", (bool (Pythia8::Pythia::*)()) &Pythia8::Pythia::moreDecays, "C++: Pythia8::Pythia::moreDecays() --> bool");
-		cl.def("moreDecays", (bool (Pythia8::Pythia::*)(int)) &Pythia8::Pythia::moreDecays, "C++: Pythia8::Pythia::moreDecays(int) --> bool", pybind11::arg("index"));
+		cl.def("moreDecays", [](Pythia8::Pythia &o) -> bool { return o.moreDecays(); }, "");
+		cl.def("moreDecays", (bool (Pythia8::Pythia::*)(bool)) &Pythia8::Pythia::moreDecays, "C++: Pythia8::Pythia::moreDecays(bool) --> bool", pybind11::arg("allowPartons"));
+		cl.def("moreDecays", [](Pythia8::Pythia &o, int const & a0) -> bool { return o.moreDecays(a0); }, "", pybind11::arg("index"));
+		cl.def("moreDecays", (bool (Pythia8::Pythia::*)(int, bool)) &Pythia8::Pythia::moreDecays, "C++: Pythia8::Pythia::moreDecays(int, bool) --> bool", pybind11::arg("index"), pybind11::arg("allowPartons"));
 		cl.def("forceRHadronDecays", (bool (Pythia8::Pythia::*)()) &Pythia8::Pythia::forceRHadronDecays, "C++: Pythia8::Pythia::forceRHadronDecays() --> bool");
 		cl.def("doLowEnergyProcess", (bool (Pythia8::Pythia::*)(int, int, int)) &Pythia8::Pythia::doLowEnergyProcess, "C++: Pythia8::Pythia::doLowEnergyProcess(int, int, int) --> bool", pybind11::arg("i1"), pybind11::arg("i2"), pybind11::arg("procTypeIn"));
 		cl.def("getSigmaTotal", (double (Pythia8::Pythia::*)()) &Pythia8::Pythia::getSigmaTotal, "C++: Pythia8::Pythia::getSigmaTotal() --> double");

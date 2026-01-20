@@ -26,15 +26,15 @@ POWHEG:QEDveto              = 2
 ! TimeShower:alphaSvalue    = 0.118
 
 ! Optionally write HepMC events.
-! (Pythia has to be configured with --with-hepmc3).
-Main:HepMC                  = on
-HepMC:output                = main164powheg.hepmc
+! (Pythia has to be configured with --with-hepmc3 or --with-rivet).
+! Init:plugins                = {libpythia8hepmc3.so::HepMC3Hooks}
+! HepMC:filename              = main164powheg.hepmc
 
 ! Optionally include Rivet analyses.
 ! (Pythia has to be configured with --with-rivet).
-Init:plugins                = {libpythia8rivet.so::RivetHooks}
-Rivet:fileName              = main164powheg.yoda
-Rivet:analyses              = {MC_XS,MC_WEIGHTS}
+! Init:plugins                = {libpythia8rivet.so::RivetHooks}
+! Rivet:fileName              = main164powheg.yoda
+! Rivet:analyses              = {MC_XS,MC_WEIGHTS}
 
 ! Subruns for NLO matching with POWHEG-BOX events.
 Main:numberOfSubruns        = 1

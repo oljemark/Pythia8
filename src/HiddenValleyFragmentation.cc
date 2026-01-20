@@ -1,5 +1,5 @@
 // HiddenValleyFragmentation.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -225,9 +225,9 @@ bool HVStringZ::init() {
 double HVStringZ::zFrag( int idOld, int , double mT2) {
 
   // Shape parameters of Lund symmetric fragmentation function.
-  double bShape = bLund * mT2;
+  bShape = bLund * mT2;
   double rFactNow = rFactBowler[ abs(idOld) % 10 ];
-  double cShape = 1. + rFactNow * bLund * pow2(particleDataPtr->m0( idOld));
+  cShape = 1. + rFactNow * bLund * pow2(particleDataPtr->m0( idOld));
   return zLund( aLund, bShape, cShape);
 
 }

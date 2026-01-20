@@ -1,5 +1,5 @@
 // Weights.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -732,6 +732,14 @@ void WeightsMerging::setLHEFvariationMapping() {
 
 //--------------------------------------------------------------------------
 
+// Fragmentation variations destructor.
+
+WeightsFragmentation::~WeightsFragmentation() {
+  if (zSelPtr != nullptr) delete zSelPtr;
+}
+
+//--------------------------------------------------------------------------
+
 // Fragmentation variations initialization.
 
 void WeightsFragmentation::init() {
@@ -753,12 +761,25 @@ void WeightsFragmentation::init() {
   flavSel.initInfoPtr(*infoPtr);
   flavSel.init();
 
+  // Initialize the z selector.
+  if (zSelPtr == nullptr) {
+    zSelPtr = new StringZ();
+    zSelPtr->initInfoPtr(*infoPtr);
+    zSelPtr->init();
+  }
+
+  // Initialize the pT selector.
+  StringPT pTSel;
+  pTSel.initInfoPtr(*infoPtr);
+  pTSel.init();
+  pTBase = {pTSel.sigmaQ};
+
   // Create a map from variation keys to standard keys.
   vector<map<string, string> > keyMap(keyOrder.size());
   for (int iFac = 0; iFac < (int)keyOrder.size(); ++iFac)
     for (auto &key : keyOrder[iFac]) keyMap[iFac][key.first] = key.second;
 
-  // Store the baseline parameters.
+  // Store the baseline flavor parameters.
   Settings *settingsPtr = infoPtr->settingsPtr;
   vector<map<string, double> > baseParms(keyOrder.size());
   flavBase.resize(0);
@@ -916,9 +937,86 @@ double WeightsFragmentation::flavWeight(const vector<double>& parms,
 
 //--------------------------------------------------------------------------
 
-// Count the flavor breaks for variations.
+// Calculate a z weight for a single break, given the derived
+// parameters and break info.
 
-void WeightsFragmentation::flavCount(int idIn, bool early, bool noChoice) {
+double WeightsFragmentation::zWeight(double aLund, double bLund,
+  double rFactC, double rFactB,
+  int idOld, int idNew, double mT2, double z, double fPrel) {
+
+  // Positive mT2 is an accepted break.
+  bool accept = mT2 >= 0;
+  mT2 = abs(mT2);
+
+  // Initialize all the relevant parameters.
+  zSelPtr->initFlav(idOld, idNew);
+  zSelPtr->initShape(mT2);
+  zSelPtr->initFunc(zSelPtr->aShape, zSelPtr->bShape, zSelPtr->cShape,
+    z, zSelPtr->zLundMax(zSelPtr->aShape, zSelPtr->bShape, zSelPtr->cShape),
+    fPrel, zSelPtr->zHead);
+
+  // Skip non-standard c, b, or h.
+  if (aLund < 0 && ((zSelPtr->idFrag == 4 && zSelPtr->useNonStandC)
+      || (zSelPtr->idFrag == 5 && zSelPtr->useNonStandB)
+      || (zSelPtr->idFrag > 5 && zSelPtr->useNonStandH)))
+    return 1.;
+
+  // Determine the varied a, b, and c parameters.
+  double ap = aLund > 0 ? aLund : zSelPtr->aShape ;
+  if (zSelPtr->isOldSQuark)  ap += zSelPtr->aExtraSQuark;
+  if (zSelPtr->isOldDiquark) ap += zSelPtr->aExtraDiquark;
+  double bp = bLund > 0 ? bLund : zSelPtr->bNow;
+  // Determine position of the maximum. Assuming that no
+  // special options are being used, i.e bShape = bLund. This
+  // is because b is scaled by mT2.
+  double bpin = bp / zSelPtr->bNow * zSelPtr->bShape;
+
+  // When b is changed, so is c.
+  double rFactmsq = 0.;
+  if (zSelPtr->idFrag == 4)
+    rFactmsq = (rFactC > 0 ? rFactC : zSelPtr->rFactC)*zSelPtr->mc2;
+  else if (zSelPtr->idFrag == 5)
+    rFactmsq = (rFactB > 0 ? rFactB : zSelPtr->rFactB)*zSelPtr->mb2;
+  double cp = 1 + rFactmsq * bp;
+  if (zSelPtr->isOldSQuark)  cp -= zSelPtr->aExtraSQuark;
+  if (zSelPtr->isNewSQuark)  cp += zSelPtr->aExtraSQuark;
+  if (zSelPtr->isOldDiquark) cp -= zSelPtr->aExtraDiquark;
+  if (zSelPtr->isNewDiquark) cp += zSelPtr->aExtraDiquark;
+
+  // Determine the new position of maximum.
+  double zMax0 = zSelPtr->zLundMax(ap, bpin, cp);
+  // Recalculate the coefficients.
+  double aCoefp = z == 1 ? -numeric_limits<double>::infinity() :
+    log( (1. - z) / (1. - zMax0));
+  double bCoefp = (1. / zMax0 - 1. / z);
+  double cCoefp = log(zMax0 / z);
+  double fVar = bpin * bCoefp + cp * cCoefp;
+  if (ap >= zSelPtr->AFROMZERO) fVar += ap * aCoefp;
+  double fValp = exp(max( -zSelPtr->EXPMAX, min(zSelPtr->EXPMAX, fVar)));
+
+  // Return the weight.
+  double wgt = min(fValp/zSelPtr->fVal, zSelPtr->zHead);
+  return accept ? wgt : (1. - wgt*zSelPtr->fPrb)/(1. - zSelPtr->fPrb);
+
+}
+
+//--------------------------------------------------------------------------
+
+// Calculate a pT weight for a single break, given the derived
+// parameters and break info.
+
+double WeightsFragmentation::pTWeight(double sigma, double pT2, double mult) {
+
+  double ratio =  pow2(mult*pTBase[0] / (sigma * mult/sqrt(2.)));
+  return ratio*exp(-0.5*pT2*(ratio - 1.));
+
+}
+
+//--------------------------------------------------------------------------
+
+// Store the flavor breaks for flavor variations.
+
+void WeightsFragmentation::flavStore(int idIn, bool early, bool noChoice) {
 
   // Determine the break properties and store.
   int idPop = idIn / 1000;
@@ -952,6 +1050,32 @@ void WeightsFragmentation::flavCount(int idIn, bool early, bool noChoice) {
     ++flavBreaks[11];
     if (spin > 1) ++flavBreaks[12];
   }
+
+}
+
+//--------------------------------------------------------------------------
+
+// Store the break information for z variations.
+
+void WeightsFragmentation::zStore(int idOld, int idNew, double mT2,
+  bool accept, double z, double fPrel) {
+
+  zIntBreaks.push_back(idOld);
+  zIntBreaks.push_back(idNew);
+  zDblBreaks.push_back(accept ? mT2 : -mT2);
+  zDblBreaks.push_back(z);
+  zDblBreaks.push_back(fPrel);
+
+}
+
+//--------------------------------------------------------------------------
+
+// Store the break information for pT variations.
+
+void WeightsFragmentation::pTStore(double pT2, double mult) {
+
+  pTBreaks.push_back(pT2);
+  pTBreaks.push_back(mult);
 
 }
 

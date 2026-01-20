@@ -57,8 +57,10 @@
 #include <Pythia8/Weights.h>
 #include <array>
 #include <complex>
+#include <cwchar>
 #include <deque>
 #include <functional>
+#include <ios>
 #include <istream>
 #include <iterator>
 #include <map>
@@ -67,6 +69,7 @@
 #include <set>
 #include <sstream>
 #include <sstream> // __str__
+#include <streambuf>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -95,25 +98,25 @@ void bind_std_stl_vector(std::function< pybind11::module &(std::string const &na
 {
 	// std::vector file:bits/stl_vector.h line:214
 
-	// std::vector file:bits/stl_vector.h line:214
-
-	// std::vector file:bits/stl_vector.h line:214
-
-	// std::vector file:bits/stl_vector.h line:214
-
-	// std::vector file:bits/stl_vector.h line:214
-
-	// std::vector file:bits/stl_vector.h line:214
-
-	// std::vector file:bits/stl_vector.h line:214
-
-	// std::vector file:bits/stl_vector.h line:214
-
-	// std::vector file:bits/stl_vector.h line:214
-
-	// std::vector file:bits/stl_vector.h line:214
-
 	// std::vector file:bits/stl_bvector.h line:541
+
+	// std::vector file:bits/stl_vector.h line:214
+
+	// std::vector file:bits/stl_vector.h line:214
+
+	// std::vector file:bits/stl_vector.h line:214
+
+	// std::vector file:bits/stl_vector.h line:214
+
+	// std::vector file:bits/stl_vector.h line:214
+
+	// std::vector file:bits/stl_vector.h line:214
+
+	// std::vector file:bits/stl_vector.h line:214
+
+	// std::vector file:bits/stl_vector.h line:214
+
+	// std::vector file:bits/stl_vector.h line:214
 
 	// std::vector file:bits/stl_vector.h line:214
 

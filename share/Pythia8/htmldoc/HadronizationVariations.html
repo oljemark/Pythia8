@@ -7,6 +7,7 @@
 <body>
  
 <h2>Hadronization Variations</h2> 
+ 
 The hadronization variation framework allows a user to calculate 
 reweighting factors taking a given event from one set of hadronization 
 parameters to another, by changing the probability with which this 
@@ -14,7 +15,10 @@ specific event would occur given the altered parameter set. This
 feature is still experimental and is under active development, so use 
 at your own risk. The method for reweighting the Lund string 
 fragmentation function is documented in [<a href="Bibliography.html#refBie23" target="page">Bie23</a>], and the 
-flavor reweighting method is currently being written up. 
+flavor reweighting method is documented in [<a href="Bibliography.html#refAss25" target="page">Ass25</a>]. Examples 
+on how to use the hadronization variations can be found in the 
+examples <code>main263</code>, <code>main264</code>, and 
+<code>main265</code>. 
  
 Users familiar with 
 <a href="Variations.html" target="page">Parton Shower Variations</a> will recognize 
@@ -37,6 +41,33 @@ enable post-hoc flavor reweighting, switch this flag on.
    
  
 <a name="anchor2"></a>
+<p/><code>flag&nbsp; </code><strong> VariationFrag:z &nbsp;</strong> 
+ (<code>default = <strong>off</strong></code>)<br/>
+For the fragmentation variations that directly modify the sampling of 
+<code>z</code> (<code>aLund</code>, <code>bLund</code>, 
+<code>rFactC</code>, <code>rFactB</code>), it is possible to perform 
+post-hoc reweighting. However, this increases the memory footprint of 
+each event as information on the string breaks needs to be 
+stored. Enabling this flag, stores this information so post-hoc 
+kinematic reweighting can be performed. 
+   
+ 
+<a name="anchor3"></a>
+<p/><code>flag&nbsp; </code><strong> VariationFrag:pT &nbsp;</strong> 
+ (<code>default = <strong>off</strong></code>)<br/>
+Same as for <i>z</i> but now for the sampling of <i>p_T</i> which 
+depends on <code>ptSigma</code>. 
+   
+ 
+<a name="anchor4"></a>
+<p/><code>parm&nbsp; </code><strong> VariationFrag:zHead &nbsp;</strong> 
+ (<code>default = <strong>1.0</strong></code>; <code>minimum = 0.0</code>; <code>maximum = 100.0</code>)<br/>
+When sampling variations in <i>z</i> the maximum for the sampling 
+function can be increased by this multiplicatve factor. This parameter 
+is intended for cross-checks only. 
+   
+ 
+<a name="anchor5"></a>
 <p/><code>wvec&nbsp; </code><strong> VariationFrag:list &nbsp;</strong> 
  (<code>default = <strong>{}</strong></code>)<br/>
 Vector of uncertainty-variation strings defining groups of parameter 
@@ -100,4 +131,4 @@ states.</li>
 </body>
 </html>
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

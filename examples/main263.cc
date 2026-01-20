@@ -1,5 +1,5 @@
 // main263.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -122,7 +122,7 @@ int main() {
   // This function is called for each event generated.
   // The argument is a pointer to the instance that generated the event.
   // This is neccesary to use PythiaParallel (multi-core).
-  pythia.run( nEvent, [&](Pythia* pythiaPtr) {
+  pythia.run(nEvent, [&](Pythia* pythiaPtr) {
 
     // For the default parameters, the weight is just 1.
     wgts["default"] = 1;

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright (C) 2025 Torbjorn Sjostrand.
+# Copyright (C) 2026 Torbjorn Sjostrand.
 # PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 # Please respect the MCnet Guidelines, see GUIDELINES for details.
 # Author: Philip Ilten, August 2019.
@@ -241,6 +241,11 @@ for SRC in $BINDER_SRC/*.cpp; do
     sed -i.sed "/#include <Pythia8Plugins/d" $SRC
 done
 
+# Remove extraneous system headers.
+for SRC in $BINDER_SRC/*.cpp; do
+    sed -i.sed "/#include <bits\//d" $SRC
+done
+
 # Insert the Awkward batch interface.
 if [ "$NO_BATCH_SET" != true ]; then
     BATCH="		cl.def(\"nextBatch\", \&nextBatch, pybind11::arg(\"nEv"
@@ -305,7 +310,7 @@ sed -i.sed "s/$OLD/$NEW/g" $BINDER_SRC/postypes.cpp
 
 # Include the module documentation.
 cat > $BINDER_DOC << BLOCKTEXT
-Copyright (C) 2025 Torbjorn Sjostrand.
+Copyright (C) 2026 Torbjorn Sjostrand.
 PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 Please respect the MCnet Guidelines, see GUIDELINES for details.
 

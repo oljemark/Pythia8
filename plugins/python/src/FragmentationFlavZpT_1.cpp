@@ -64,7 +64,7 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
 
-// Pythia8::StringPT file:Pythia8/FragmentationFlavZpT.h line:284
+// Pythia8::StringPT file:Pythia8/FragmentationFlavZpT.h line:300
 struct PyCallBack_Pythia8_StringPT : public Pythia8::StringPT {
 	using Pythia8::StringPT::StringPT;
 
@@ -2475,7 +2475,7 @@ struct PyCallBack_Pythia8_CTEQ6pdf : public Pythia8::CTEQ6pdf {
 
 void bind_Pythia8_FragmentationFlavZpT_1(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Pythia8::StringPT file:Pythia8/FragmentationFlavZpT.h line:284
+	{ // Pythia8::StringPT file:Pythia8/FragmentationFlavZpT.h line:300
 		pybind11::class_<Pythia8::StringPT, std::shared_ptr<Pythia8::StringPT>, PyCallBack_Pythia8_StringPT, Pythia8::PhysicsBase> cl(M("Pythia8"), "StringPT", "");
 		pybind11::handle cl_type = cl;
 

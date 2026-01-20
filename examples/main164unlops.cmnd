@@ -32,15 +32,15 @@ Merging:muRenInME           = 91.188
 SpaceShower:rapidityOrder   = off
 
 ! Optionally write HepMC events.
-! (Pythia has to be configured with --with-hepmc3).
-Main:HepMC                  = on
-HepMC:output                = main164unlops.hepmc
+! (Pythia has to be configured with --with-hepmc3 or --with-rivet).
+! Init:plugins                = {libpythia8hepmc3.so::HepMC3Hooks}
+! HepMC:filename              = main164unlops.hepmc
 
 ! Optionally include Rivet analyses.
 ! (Pythia has to be configured with --with-rivet).
-Init:plugins                = {libpythia8rivet.so::RivetHooks}
-Rivet:fileName              = main164unlops.yoda
-Rivet:analyses              = {MC_XS,MC_WEIGHTS}
+! Init:plugins                = {libpythia8rivet.so::RivetHooks}
+! Rivet:fileName              = main164unlops.yoda
+! Rivet:analyses              = {MC_XS,MC_WEIGHTS}
 
 ! Subruns for UNLOPS NLO merging
 Main:numberOfSubruns        = 2

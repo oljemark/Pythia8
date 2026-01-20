@@ -1,5 +1,5 @@
 // SigmaEW.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -370,6 +370,261 @@ double Sigma2ff2fftgmZ::sigmaHat() {
 
   // Answer.
   return sigma;
+
+}
+
+//--------------------------------------------------------------------------
+
+// Real + virtual parts of NLO structure functions.
+
+double Sigma2ff2fftgmZ::factRVDIS( int idLepton, double x, double y,
+  double Q2, BeamParticle* beamHadPtr) {
+
+  // Initialize PDFs and couplings and relevant combinations of these two.
+  const double CF = 4./3.;
+  const double TR = 0.5;
+  double eta      = thetaWRat * tH / (tH - mZS);
+  double xq02gm   = 0;
+  double xq02gmZ  = 0;
+  double xq02Z    = 0;
+  double xq03gm   = 0;
+  double xq03gmZ  = 0;
+  double xq03Z    = 0;
+  vector<double> couplingsF2gm(2*nQuarkIn+1);
+  vector<double> couplingsF2gmZ(2*nQuarkIn+1);
+  vector<double> couplingsF2Z(2*nQuarkIn+1);
+  vector<double> couplingsF3gmZ(2*nQuarkIn+1);
+  vector<double> couplingsF3Z(2*nQuarkIn+1);
+
+  // Fetch PDF(i, x, Q2) and calculate couplings for all channels.
+  for (int i=-nQuarkIn; i<nQuarkIn+1; ++i) {
+
+    // Skip over gluon, only incoming quarks.
+    if (i == 0) continue;
+    int id1Abs = abs(i);
+    double  e1 = coupSMPtr->ef(id1Abs);
+    double  v1 = coupSMPtr->vf(id1Abs);
+    double  a1 = coupSMPtr->af(id1Abs);
+    int id2Abs = abs(idLepton);
+    double  e2 = coupSMPtr->ef(id2Abs);
+    double  v2 = coupSMPtr->vf(id2Abs);
+    double  a2 = coupSMPtr->af(id2Abs);
+    double eps = (i * idLepton > 0) ? 1. : -1.;
+    double xpdf = beamHadPtr->xf(i,x,Q2FacSave);
+
+    // Extract couplings for each flavor.
+    couplingsF2gm[i+nQuarkIn]  = pow2(e1 * e2);
+    couplingsF2gmZ[i+nQuarkIn] = eta * 2. * e1 * e2 * v1 * v2;
+    couplingsF2Z[i+nQuarkIn]   = pow2(eta) * (v1*v1 + a1*a1)*(v2*v2 + a2*a2);
+    couplingsF3gmZ[i+nQuarkIn] = eps * eta * (2. * e1 * e2 * a1 * a2);
+    couplingsF3Z[i+nQuarkIn]   = eps * pow2(eta) * 4. * v1 * a1 * v2 * a2;
+
+    // Combine couplins with PDFs for each relevant contribution.
+    if (gmZmode == 0) {
+      xq02gm  += xpdf * couplingsF2gm[i+nQuarkIn];
+      xq02gmZ += xpdf * couplingsF2gmZ[i+nQuarkIn];
+      xq02Z   += xpdf * couplingsF2Z[i+nQuarkIn];
+      xq03gmZ += xpdf * couplingsF3gmZ[i+nQuarkIn];
+      xq03Z   += xpdf * couplingsF3Z[i+nQuarkIn];
+    } else if (gmZmode == 1) {
+      xq02gm  += xpdf * couplingsF2gm[i+nQuarkIn];
+    } else if (gmZmode == 2) {
+      xq02Z   += xpdf * couplingsF2Z[i+nQuarkIn];
+      xq03Z   += xpdf * couplingsF3Z[i+nQuarkIn];
+    }
+  }
+
+  // Sum contributions.
+  double xq02 = xq02gm + xq02gmZ + xq02Z;
+  double xq03 = xq03gm + xq03gmZ + xq03Z;
+
+  // Integrands for the convolution between PDFs and coefficient functions.
+  // Coefficient function C2q+C2g.
+  function<double(double)> c2z = [=](double z) {
+    double  xqgm = 0;
+    double xqgmZ = 0;
+    double   xqZ = 0;
+    double  xggm = 0;
+    double xggmZ = 0;
+    double   xgZ = 0;
+    double xpdfg = beamHadPtr->xf(0, x/z, Q2FacSave);
+
+    // Loop over channels.
+    for (int i = -nQuarkIn; i < nQuarkIn + 1; ++i) {
+      if (i == 0) continue;
+      double xpdfq = beamHadPtr->xf(i, x/z, Q2FacSave);
+
+      // Calculate according to gmZmode.
+      if (gmZmode == 0) {
+        xqgm  += xpdfq * couplingsF2gm[i+nQuarkIn];
+        xqgmZ += xpdfq * couplingsF2gmZ[i+nQuarkIn];
+        xqZ   += xpdfq * couplingsF2Z[i+nQuarkIn];
+        xggm  += xpdfg * couplingsF2gm[i+nQuarkIn];
+        xggmZ += xpdfg * couplingsF2gmZ[i+nQuarkIn];
+        xgZ   += xpdfg * couplingsF2Z[i+nQuarkIn];
+      } else if (gmZmode == 1) {
+        xqgm  += xpdfq * couplingsF2gm[i+nQuarkIn];
+        xggm  += xpdfg * couplingsF2gm[i+nQuarkIn];
+      } else if (gmZmode == 2) {
+        xqZ   += xpdfq * couplingsF2Z[i+nQuarkIn];
+        xgZ   += xpdfg * couplingsF2Z[i+nQuarkIn];
+      }
+    }
+
+    // Evaluate coefficient with PDF(x/z, Q2) and couplings.
+    double xq = xqgm + xqgmZ + xqZ;
+    double xg = xggm + xggmZ + xgZ;
+    double omz = 1. - z;
+    return CF * ( (xq - xq02) * ( 2. * log(omz) / omz - 1.5 / omz )
+      + xq * ( - (1. + z) * log(omz)
+        - ( 1.0 + pow2(z) ) / omz * log(z) + 3. + 2. * z )
+      + ( xq * ( ( 1. + pow2(z) ) / omz )
+        - xq02 * (2. / omz) ) * log( Q2 / Q2FacSave) )
+      + TR * xg * ( ( pow2(z) + pow2(omz) ) * log(omz / z * (Q2 / Q2FacSave))
+        + 8. * z * omz - 1. );
+  };
+
+  // Coefficient function CLq+CLg.
+  function<double(double)> cLz = [=](double z) {
+    double xqgm  = 0;
+    double xqgmZ = 0;
+    double xqZ   = 0;
+    double xggm  = 0;
+    double xggmZ = 0;
+    double xgZ   = 0;
+    double xpdfg = beamHadPtr->xf(0, x/z, Q2FacSave);
+
+    // Loop over channels.
+    for (int i = -nQuarkIn; i < nQuarkIn + 1; ++i) {
+      if (i == 0) continue;
+      double xpdfq = beamHadPtr->xf(i, x/z, Q2FacSave);
+
+      // Calculate according to gmZmode.
+      if (gmZmode == 0) {
+        xqgm  += xpdfq * couplingsF2gm[i+nQuarkIn];
+        xqgmZ += xpdfq * couplingsF2gmZ[i+nQuarkIn];
+        xqZ   += xpdfq * couplingsF2Z[i+nQuarkIn];
+        xggm  += xpdfg * couplingsF2gm[i+nQuarkIn];
+        xggmZ += xpdfg * couplingsF2gmZ[i+nQuarkIn];
+        xgZ   += xpdfg * couplingsF2Z[i+nQuarkIn];
+      } else if (gmZmode == 1) {
+        xqgm  += xpdfq * couplingsF2gm[i+nQuarkIn];
+        xggm  += xpdfg * couplingsF2gm[i+nQuarkIn];
+      } else if (xpdfg == 2) {
+        xqZ   += xpdfq * couplingsF2Z[i+nQuarkIn];
+        xgZ   += xpdfg * couplingsF2Z[i+nQuarkIn];
+      }
+    }
+
+    // Evaluate coefficient with PDF(x/z, Q2) and couplings.
+    double xq = xqgm + xqgmZ + xqZ;
+    double xg = xggm + xggmZ + xgZ;
+    return CF * xq * 2. * z + TR * xg * 4. * z * (1. - z);
+  };
+
+  // Coefficient function C3q.
+  function<double(double)> c3z = [=](double z) {
+    double xqgm  = 0;
+    double xqgmZ = 0;
+    double xqZ   = 0;
+
+    // Loop over channels.
+    for (int i = -nQuarkIn; i < nQuarkIn + 1; ++i) {
+      if (i == 0) continue;
+      double xpdfq = beamHadPtr->xf(i, x/z, Q2FacSave);
+
+      // Calculate according to gmZmode.
+      if (gmZmode == 0) {
+        xqgmZ += xpdfq * couplingsF3gmZ[i+nQuarkIn];
+        xqZ   += xpdfq * couplingsF3Z[i+nQuarkIn];
+      } else if (gmZmode == 2) {
+        xqZ   += xpdfq * couplingsF3Z[i+nQuarkIn];
+      }
+    }
+
+    // Evaluate coefficient with PDF(x/z, Q2) and couplings.
+    double xq = xqgm + xqgmZ + xqZ;
+    double omz = 1. - z;
+    return CF * ( ( xq - xq03 ) * ( 2. * log(omz) / omz - 1.5 / omz )
+      + xq * ( -( 1. + z ) * log(omz)
+        - ( 1. + pow2(z) ) / omz * log(z) + 3. + 2. * z )
+      + ( xq * ( (1. + pow2(z))/omz )
+        - xq03 * (2. / omz) ) * log(Q2 / Q2FacSave)
+      - xq * ( 1. + z ));
+  };
+
+  // Integrate over z in [x, 1].
+  double F2 = 0.0;
+  double FL = 0.0;
+  double F3 = 0.0;
+  integrateGauss(F2, c2z, x, 1., 1E-3);
+  integrateGauss(FL, cLz, x, 1., 1E-3);
+  integrateGauss(F3, c3z, x, 1., 1E-3);
+
+  // Remainder of plus-distribution including factorization scale dependence.
+  double omx = 1.0 - x;
+  double remainder = CF * ( pow2(log(omx)) - 1.5 * log(omx)
+                   - ( pow2(M_PI) / 3. + 4.5 )
+                   + ( 2. * log(omx) + 1.5 ) * log(Q2 / Q2FacSave) );
+
+  // Add constant parts of C2 and C3.
+  F2 += xq02 * remainder;
+  F3 += xq03 * remainder;
+
+  // Cross section part common for all incoming flavours.
+  double sigma0 = 4. * M_PI * pow2(alpEM) / (-tH * sH * y);
+
+  // Return cross section d(sigma)/d(Q2) in mb.
+  return CONVERT2MB * sigma0
+       * ( (1. - y + pow2(y) / 2.) * F2 - pow2(y) / 2. * FL
+          + ( y - pow2(y) / 2.) * F3 );
+
+}
+
+//--------------------------------------------------------------------------
+
+// Evaluate NLO K-factor with massless kinematics.
+
+double Sigma2ff2fftgmZ::weightNLO() {
+
+  // Implemented only for lepton-hadron case.
+  if (beamAPtr->isHadron() && beamBPtr->isHadron())
+    return 1.;
+
+  // Massless kinematics.
+  double Q2 = -tH;
+  double y  = Q2 / sH;
+  double x  = sH / infoPtr->s();
+  double aS = coupSMPtr->alphaS(Q2RenSave);
+
+  // Born, virtual and real emission contributions, the first known already.
+  double B  = sigmaSumSave;
+  double RV = 0.;
+
+  // Distinguish between incoming beam lepton and parton.
+  if (beamAPtr->isHadron() && beamBPtr->isLepton()) {
+    if (beamBPtr->id() % 2 == 0) {
+      loggerPtr->WARNING_MSG("inclusive NLO correction requested "
+      "but not available for " + particleDataPtr->name(beamBPtr->id()));
+      return 1.;
+    }
+
+    // Evaluate real + virtual contributions.
+    RV = factRVDIS(beamBPtr->id(), x, y, Q2, beamAPtr);
+
+  } else if (beamBPtr->isHadron() && beamAPtr->isLepton()) {
+      if (beamAPtr->id() % 2 == 0) {
+      loggerPtr->WARNING_MSG("inclusive NLO correction requested "
+      "but not available for " + particleDataPtr->name(beamAPtr->id()));
+      return 1.;
+    }
+
+    // Evaluate real + virtual contributions.
+    RV = factRVDIS(beamAPtr->id(), x, y, Q2, beamBPtr);
+  }
+
+  // Return K-factor.
+  return 1. + (aS/(2.*M_PI) * (RV/B));
 
 }
 

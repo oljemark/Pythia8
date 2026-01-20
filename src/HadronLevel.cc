@@ -1,5 +1,5 @@
 // HadronLevel.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -335,9 +335,10 @@ bool HadronLevel::next( Event& event) {
 //--------------------------------------------------------------------------
 
 // Allow more decays if on/off switches changed.
-// Note: does not do sequential hadronization, e.g. for Upsilon.
+// Note: does not do sequential hadronization, e.g. for Upsilon if
+// allowPartons is true.
 
-bool HadronLevel::moreDecays( Event& event) {
+bool HadronLevel::moreDecays( Event& event, bool allowPartons) {
 
   // Colour-octet onia states must be decayed to singlet + gluon.
   if (!decayOctetOnia(event)) return false;
@@ -345,7 +346,7 @@ bool HadronLevel::moreDecays( Event& event) {
   // Loop through all entries to find those that should decay.
   int iDec = 0;
   do {
-    decay(iDec, event);
+    decay(iDec, event, allowPartons);
   } while (++iDec < event.size());
 
   // Done.
@@ -359,17 +360,23 @@ bool HadronLevel::moreDecays( Event& event) {
 
 bool HadronLevel::initLowEnergyProcesses() {
 
-  // Prepare for low-energy QCD processes.
+  // Prepare for low-energy QCD processes, all or inelastic only.
   doNonPertAll     = flag("LowEnergyQCD:all");
+  bool doInel      = flag("LowEnergyQCD:inelastic");
+
   if (!doNonPertAll) {
-    if (flag("LowEnergyQCD:nonDiffractive"))      nonPertProc.push_back(1);
-    if (flag("LowEnergyQCD:elastic"))             nonPertProc.push_back(2);
-    if (flag("LowEnergyQCD:singleDiffractiveXB")) nonPertProc.push_back(3);
-    if (flag("LowEnergyQCD:singleDiffractiveAX")) nonPertProc.push_back(4);
-    if (flag("LowEnergyQCD:doubleDiffractive"))   nonPertProc.push_back(5);
-    if (flag("LowEnergyQCD:excitation"))          nonPertProc.push_back(7);
-    if (flag("LowEnergyQCD:annihilation"))        nonPertProc.push_back(8);
-    if (flag("LowEnergyQCD:resonant"))            nonPertProc.push_back(9);
+    if (flag("LowEnergyQCD:elastic"))                 nonPertProc.push_back(2);
+    if (doInel || flag("LowEnergyQCD:nonDiffractive"))
+      nonPertProc.push_back(1);
+    if (doInel || flag("LowEnergyQCD:singleDiffractiveXB"))
+      nonPertProc.push_back(3);
+    if (doInel || flag("LowEnergyQCD:singleDiffractiveAX"))
+      nonPertProc.push_back(4);
+    if (doInel || flag("LowEnergyQCD:doubleDiffractive"))
+      nonPertProc.push_back(5);
+    if (doInel || flag("LowEnergyQCD:excitation"))    nonPertProc.push_back(7);
+    if (doInel || flag("LowEnergyQCD:annihilation"))  nonPertProc.push_back(8);
+    if (doInel || flag("LowEnergyQCD:resonant"))      nonPertProc.push_back(9);
   }
 
   // Return true if any process is switched on.
@@ -397,7 +404,7 @@ int HadronLevel::pickLowEnergyProcess(int idA, int idB, double eCM,
     }
 
   // Trivial choice if only one process.
-  } else if (nonPertProc.size() ==1) {
+  } else if (nonPertProc.size() == 1) {
     procType = nonPertProc[0];
 
   // If only certain processes are on, calculate those cross sections.
@@ -410,17 +417,13 @@ int HadronLevel::pickLowEnergyProcess(int idA, int idB, double eCM,
       if (sigma > 0.) {
         procs.push_back(proc);
         sigmas.push_back(sigma);
-      } else {
-        loggerPtr->WARNING_MSG(
-          "a process with zero cross section was explicitly turned on",
-          to_string(proc));
       }
     }
 
     // Error if no processes has a positive cross section. Else pick process.
     if (procs.size() == 0) {
-      loggerPtr->ERROR_MSG(
-        "no processes with positive cross sections have been turned on");
+      loggerPtr->WARNING_MSG(
+        "no processes with positive cross sections are turned on");
       return 0;
     }
     procType = procs[rndmPtr->pick(sigmas)];
@@ -730,6 +733,11 @@ void HadronLevel::queueDecResc(Event& event, int iStart,
       // Skip rescattering among decay products or already scattered.
       if ( event[hadA.mother1()].isHadron() && hadB.mother1() == hadA.mother1()
         && hadB.mother2() == hadA.mother2()) continue;
+
+      // Skip rescattering among decay products coming directly from an ion.
+      if ( event[hadA.mother1()].idAbs()/100000000 == 10 &&
+        hadB.mother1() == hadA.mother1() && hadB.mother2() == hadA.mother2())
+        continue;
 
       // Find primary hadron mother, if any.
       if (!scatterNeighbours) {

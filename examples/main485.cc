@@ -1,5 +1,5 @@
 // main485.cc is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -25,11 +25,19 @@ using namespace Pythia8;
 
 int main() {
 
-  // Basic parameter choices. Includes beam, target and decaying particle.
+  // Run choices.
   double eMax      = 1e8;
-  double smallTau0 = 1e-10;
   int    nEvent    = 1000;
   int    nList     = 1;
+
+  // Basic model parameter choices.
+  double eKinMin         = 0.3;
+  double enhanceSDtarget = 0.5;
+  string initFile        = "setups/InitDefaultMPI.cmnd";
+  double smallTau0       = 1e-10;
+  bool slowDecays        = false;
+
+  // Beam, target and decaying particle.
   int    idHad     = 321;
   int    Ztarg     = 18;
   int    Atarg     = 40;
@@ -50,8 +58,8 @@ int main() {
 
     // If any of the underlying Pythia objects fail to initialize,
     // return with error.
-    if (!pythiaCascade.init( eMax, listFinal, rapidDecays, smallTau0))
-      return 1;
+    if (!pythiaCascade.init( eKinMin, enhanceSDtarget, initFile,
+      rapidDecays, smallTau0, slowDecays, listFinal) ) return 1;
 
     // Event loop.
     for (int iEvent = 0; iEvent < nEvent; ++iEvent) {

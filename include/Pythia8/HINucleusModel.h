@@ -1,5 +1,5 @@
 // HINucleusModel.h is a part of the PYTHIA event generator.
-// Copyright (C) 2025 Torbjorn Sjostrand.
+// Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
@@ -55,10 +55,10 @@ public:
   int index() const { return indexSave; }
 
   // The position of this nucleon relative to the nucleus center.
-  const Vec4 & nPos() const { return nPosSave; }
+  const Vec4& nPos() const { return nPosSave; }
 
   // The absolute position in impact parameter space.
-  const Vec4 & bPos() const { return bPosSave; }
+  const Vec4& bPos() const { return bPosSave; }
 
   // Shift the absolute position in impact parameter space.
   void bShift(const Vec4 & bvec) { bPosSave += bvec; }
@@ -70,13 +70,13 @@ public:
   bool done() const { return isDone; }
 
   // The event this nucleon is assigned to.
-  EventInfo * event() const { return eventp; }
+  EventInfo* event() const { return eventp; }
 
   // The physical state of the incoming nucleon.
-  const State & state() const { return stateSave; }
+  const State& state() const { return stateSave; }
 
   // Return an alternative state.
-  const State & altState(int i = 0) {
+  const State& altState(int i = 0) {
     static State nullstate;
     return i < int(altStatesSave.size())? altStatesSave[i]: nullstate;
   }
@@ -87,13 +87,13 @@ public:
   void status(Nucleon::Status s) { statusSave = s; }
 
   // Set the physical state.
-  void state(State s) { stateSave = s; }
+  void state(const State& s) { stateSave = s; }
 
   // Add an alternative state.
-  void addAltState(State s) { altStatesSave.push_back(s); }
+  void addAltState(const State& s) { altStatesSave.push_back(s); }
 
   // Select an event for this nucleon.
-  void select(EventInfo & evp, Nucleon::Status s) {
+  void select(EventInfo& evp, Nucleon::Status s) {
     eventp = &evp;
     isDone = true;
     status(s);
@@ -165,11 +165,22 @@ public:
     }
   }
 
+  // Move the nucleus around in impact parameter space.
+  Nucleus & reposition(const Vec4 & bPosNew) {
+    for (Nucleon& nucleon : *nucleonsSave)
+      nucleon.bShift(bPosNew - bPosSave);
+    bPosSave = bPosNew;
+    return *this;
+  }
+
   // Iterate over nucleons.
   vector<Nucleon>::iterator begin() { return nucleonsSave->begin(); }
   vector<Nucleon>::iterator end() { return nucleonsSave->end(); }
   vector<Nucleon>::const_iterator begin() const {return nucleonsSave->begin();}
   vector<Nucleon>::const_iterator end() const {return nucleonsSave->end();}
+  int size() const {return nucleonsSave->size();}
+
+  const Vec4 & bPos() { return bPosSave; }
 
 private:
 
@@ -188,7 +199,7 @@ class NucleusModel {
 
 public:
 
-  // Default constructor giving the nucleus id and an optional
+  // Default constructor given the nucleus pdg ID and an optional
   // radius (in femtometer).
   NucleusModel() : isProj(true), idSave(0), ISave(0), ASave(0),
      ZSave(0), LSave(0), RSave(0.0), settingsPtr(0),
@@ -207,7 +218,7 @@ public:
   // Set the particle id of the produced nucleus.
   void setParticle(int idIn);
 
-  // Set (new) nucleon momentum.
+  // Set (new) nucleon 4-momentum.
   virtual void setPN(const Vec4 & pNIn) { pNSave = pNIn; }
 
   // Set (new) effective nucleon mass.
@@ -229,7 +240,7 @@ public:
   double R() const { return RSave; }
 
   int idN() const { return idNSave; }
-  const Vec4 & pN() const { return pNSave; }
+  const Vec4& pN() const { return pNSave; }
   double mN() const { return mNSave; }
 
 protected:
@@ -256,6 +267,11 @@ protected:
   double mNSave{};
 
   int idNSave = 2212;
+
+  // Possibility to only generate a fixed number of nuclei and pick
+  // randomly between these.
+  size_t cacheSize = 0;
+  mutable map<int, vector< vector<Nucleon> > > nucleonCache;
 
   // Pointers to useful objects.
   Info* infoPtr;

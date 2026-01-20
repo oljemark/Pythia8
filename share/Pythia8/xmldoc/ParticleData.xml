@@ -11021,7 +11021,7 @@ The meaning of the various properties and the format used are explained
 </particle> 
  
 <particle id="9000221" name="f_0(500)" spinType="1" chargeType="0" colType="0" 
-          m0="0.475" mWidth="0.550" mMin="0.27915" mMax="1.00" 
+          m0="0.475" mWidth="0.550" mMin="0.29" mMax="1.00" 
           varWidth="off"> 
  <channel onMode="1" bRatio="0.33" meMode="3" products="111 111"/> 
  <channel onMode="1" bRatio="0.66" meMode="3" products="211 -211"/> 
@@ -11485,6 +11485,14 @@ The meaning of the various properties and the format used are explained
           spinType="1" chargeType="3" colType="0" m0="1.87561"> 
 </particle> 
  
+<particle id="1000010030" name="3H" antiName="3Hbar" 
+          spinType="2" chargeType="3" colType="0" m0="2.810"> 
+</particle> 
+ 
+<particle id="1000020030" name="3He" antiName="3Hebar" 
+          spinType="2" chargeType="6" colType="0" m0="2.809"> 
+</particle> 
+ 
 <particle id="1000020040" name="4He" antiName="4Hebar" 
           spinType="1" chargeType="6" colType="0" m0="3.7284"> 
 </particle> 
@@ -11493,32 +11501,220 @@ The meaning of the various properties and the format used are explained
           spinType="1" chargeType="9" colType="0" m0="5.6030512"> 
 </particle> 
  
+<particle id="1000030070" name="7Li" antiName="7Libar" 
+          spinType="2" chargeType="9" colType="0" m0="6.535"> 
+</particle> 
+ 
 <particle id="1000040090" name="9Be" antiName="9Bebar" 
           spinType="2" chargeType="12" colType="0" m0="8.394794"> 
+</particle> 
+ 
+<particle id="1000050100" name="10B" antiName="10Bbar" 
+          spinType="1" chargeType="15" colType="0" m0="9.326"> 
+</particle> 
+ 
+<particle id="1000050110" name="11B" antiName="11Bbar" 
+          spinType="2" chargeType="15" colType="0" m0="10.256"> 
 </particle> 
  
 <particle id="1000060120" name="12C" antiName="12Cbar" 
           spinType="1" chargeType="18" colType="0" m0="11.177929"> 
 </particle> 
  
+<particle id="1000060130" name="13C" antiName="13Cbar" 
+          spinType="2" chargeType="18" colType="0" m0="12.111"> 
+</particle> 
+ 
 <particle id="1000070140" name="14N" antiName="14Nbar" 
           spinType="1" chargeType="21" colType="0" m0="13.0475"> 
+</particle> 
+ 
+<particle id="1000070150" name="15N" antiName="15Nbar" 
+          spinType="2" chargeType="21" colType="0" m0="13.972"> 
 </particle> 
  
 <particle id="1000080160" name="16O" antiName="16Obar" 
           spinType="1" chargeType="24" colType="0" m0="14.899168"> 
 </particle> 
  
+<particle id="1000080170" name="17O" antiName="17Obar" 
+          spinType="2" chargeType="24" colType="0" m0="15.835"> 
+</particle> 
+ 
+<particle id="1000080180" name="18O" antiName="18Obar" 
+          spinType="1" chargeType="24" colType="0" m0="16.817"> 
+</particle> 
+ 
+<particle id="1000090190" name="19F" antiName="19Fbar" 
+          spinType="2" chargeType="27" colType="0" m0="17.757"> 
+</particle> 
+ 
+<particle id="1000100200" name="20Ne" antiName="20Nebar" 
+          spinType="1" chargeType="30" colType="0" m0="18.641"> 
+</particle> 
+ 
+<particle id="1000100210" name="21Ne" antiName="21Nebar" 
+          spinType="2" chargeType="30" colType="0" m0="19.573"> 
+</particle> 
+ 
+<particle id="1000100220" name="22Ne" antiName="22Nebar" 
+          spinType="1" chargeType="30" colType="0" m0="20.504"> 
+</particle> 
+ 
+<particle id="1000110230" name="23Na" antiName="23Nabar" 
+          spinType="2" chargeType="33" colType="0" m0="21.469"> 
+</particle> 
+ 
+<particle id="1000120240" name="24Mg" antiName="24Mgbar" 
+          spinType="1" chargeType="36" colType="0" m0="22.391"> 
+</particle> 
+ 
+<particle id="1000120250" name="25Mg" antiName="25Mgbar" 
+          spinType="2" chargeType="36" colType="0" m0="23.325"> 
+</particle> 
+ 
+<particle id="1000120260" name="26Mg" antiName="26Mgbar" 
+          spinType="1" chargeType="36" colType="0" m0="24.258"> 
+</particle> 
+ 
 <particle id="1000130270" name="27Al" antiName="27Albar" 
           spinType="2" chargeType="39" colType="0" m0="25.13314"> 
+</particle> 
+ 
+<particle id="1000140280" name="28Si" antiName="28Sibar" 
+          spinType="1" chargeType="42" colType="0" m0="26.051"> 
+</particle> 
+ 
+<particle id="1000140290" name="29Si" antiName="29Sibar" 
+          spinType="2" chargeType="42" colType="0" m0="26.984"> 
+</particle> 
+ 
+<particle id="1000140300" name="30Si" antiName="30Sibar" 
+          spinType="1" chargeType="42" colType="0" m0="27.916"> 
+</particle> 
+ 
+<particle id="1000150310" name="31P" antiName="31Pbar" 
+          spinType="2" chargeType="45" colType="0" m0="28.800"> 
+</particle> 
+ 
+<particle id="1000160320" name="32S" antiName="32Sbar" 
+          spinType="1" chargeType="48" colType="0" m0="29.791"> 
+</particle> 
+ 
+<particle id="1000160330" name="33S" antiName="33Sbar" 
+          spinType="2" chargeType="48" colType="0" m0="30.720"> 
+</particle> 
+ 
+<particle id="1000160340" name="34S" antiName="34Sbar" 
+          spinType="1" chargeType="48" colType="0" m0="31.695"> 
+</particle> 
+ 
+<particle id="1000170350" name="35Cl" antiName="35Clbar" 
+          spinType="2" chargeType="51" colType="0" m0="32.517"> 
+</particle> 
+ 
+<particle id="1000180360" name="36Ar" antiName="36Arbar" 
+          spinType="1" chargeType="54" colType="0" m0="33.514"> 
+</particle> 
+ 
+<particle id="1000180380" name="38Ar" antiName="38Arbar" 
+          spinType="1" chargeType="54" colType="0" m0="35.462"> 
 </particle> 
  
 <particle id="1000180400" name="40Ar" antiName="40Arbar" 
           spinType="1" chargeType="54" colType="0" m0="37.22474"> 
 </particle> 
  
+<particle id="1000190390" name="39K" antiName="39Kbar" 
+          spinType="2" chargeType="57" colType="0" m0="36.241"> 
+</particle> 
+ 
+<particle id="1000200400" name="40Ca" antiName="40Cabar" 
+          spinType="1" chargeType="60" colType="0" m0="37.243"> 
+</particle> 
+ 
+<particle id="1000200420" name="42Ca" antiName="42Cabar" 
+          spinType="1" chargeType="60" colType="0" m0="39.191"> 
+</particle> 
+ 
+<particle id="1000200430" name="43Ca" antiName="43Cabar" 
+          spinType="2" chargeType="60" colType="0" m0="40.099"> 
+</particle> 
+ 
+<particle id="1000200440" name="44Ca" antiName="44Cabar" 
+          spinType="1" chargeType="60" colType="0" m0="41.038"> 
+</particle> 
+ 
+<particle id="1000200460" name="46Ca" antiName="46Cabar" 
+          spinType="1" chargeType="60" colType="0" m0="42.992"> 
+</particle> 
+ 
+<particle id="1000200480" name="48Ca" antiName="48Cabar" 
+          spinType="1" chargeType="60" colType="0" m0="44.941"> 
+</particle> 
+ 
+<particle id="1000210450" name="45Sc" antiName="45Scbar" 
+          spinType="2" chargeType="63" colType="0" m0="41.857"> 
+</particle> 
+ 
+<particle id="1000220460" name="46Ti" antiName="46Tibar" 
+          spinType="1" chargeType="66" colType="0" m0="42.727"> 
+</particle> 
+ 
+<particle id="1000220470" name="47Ti" antiName="47Tibar" 
+          spinType="2" chargeType="66" colType="0" m0="43.705"> 
+</particle> 
+ 
+<particle id="1000220480" name="48Ti" antiName="48Tibar" 
+          spinType="1" chargeType="66" colType="0" m0="44.682"> 
+</particle> 
+ 
+<particle id="1000220490" name="49Ti" antiName="49Tibar" 
+          spinType="2" chargeType="66" colType="0" m0="45.658"> 
+</particle> 
+ 
+<particle id="1000220500" name="50Ti" antiName="50Tibar" 
+          spinType="1" chargeType="66" colType="0" m0="46.635"> 
+</particle> 
+ 
+<particle id="1000230510" name="51V" antiName="51Vbar" 
+          spinType="2" chargeType="69" colType="0" m0="47.409"> 
+</particle> 
+ 
+<particle id="1000240500" name="50Cr" antiName="50Crbar" 
+          spinType="1" chargeType="72" colType="0" m0="46.446"> 
+</particle> 
+ 
+<particle id="1000240520" name="52Cr" antiName="52Crbar" 
+          spinType="1" chargeType="72" colType="0" m0="48.399"> 
+</particle> 
+ 
+<particle id="1000240530" name="53Cr" antiName="53Crbar" 
+          spinType="2" chargeType="72" colType="0" m0="49.372"> 
+</particle> 
+ 
+<particle id="1000240540" name="54Cr" antiName="54Crbar" 
+          spinType="1" chargeType="72" colType="0" m0="50.345"> 
+</particle> 
+ 
+<particle id="1000250550" name="55Mn" antiName="55Mnbar" 
+          spinType="2" chargeType="75" colType="0" m0="51.127"> 
+</particle> 
+ 
+<particle id="1000260540" name="54Fe" antiName="54Febar" 
+          spinType="1" chargeType="78" colType="0" m0="50.190"> 
+</particle> 
+ 
 <particle id="1000260560" name="56Fe" antiName="56Febar" 
           spinType="1" chargeType="78" colType="0" m0="52.10306"> 
+</particle> 
+ 
+<particle id="1000260570" name="57Fe" antiName="57Febar" 
+          spinType="2" chargeType="78" colType="0" m0="53.131"> 
+</particle> 
+ 
+<particle id="1000260580" name="58Fe" antiName="58Febar" 
+          spinType="1" chargeType="78" colType="0" m0="54.108"> 
 </particle> 
  
 <particle id="1000290630" name="63Cu" antiName="63Cubar" 
@@ -11547,4 +11743,4 @@ The meaning of the various properties and the format used are explained
  
 </chapter> 
  
-<!-- Copyright (C) 2025 Torbjorn Sjostrand --> 
+<!-- Copyright (C) 2026 Torbjorn Sjostrand --> 
