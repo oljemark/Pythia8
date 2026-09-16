@@ -1178,7 +1178,7 @@ PDFPtr BeamSetup::getPDFPtr(int idIn, int sequence, string beam,
     // Use preferred PDF source.
     if (settingsPtr != nullptr) {
       int pMode = settingsPtr->mode("Tune:preferLHAPDF");
-      if (pMode != 0 && pSet > 0 && pSet < 25) {
+      if (pMode != 0 && pSet > 0 && pSet <= 25) {
 
         // Map of internal to LHAPDF5 and LHAPDF6.
         vector<pair<string, string> > pMap {
@@ -1207,7 +1207,8 @@ PDFPtr BeamSetup::getPDFPtr(int idIn, int sequence, string beam,
           make_pair("", "NNPDF31sx_nlonllx_as_0118_LHCb_luxqed"),
           make_pair("", "NNPDF31sx_nnlonllx_as_0118_LHCb_luxqed"),
           make_pair("", ""),
-          make_pair("", "")
+          make_pair("", ""),
+          make_pair("", "PDF4LHC21_mc")
         };
         if      (pMode == 1) pWord = "LHAPDF5:" + pMap[pSet - 1].first;
         else if (pMode == 2) pWord = "LHAPDF6:" + pMap[pSet - 1].second;
@@ -1234,7 +1235,7 @@ PDFPtr BeamSetup::getPDFPtr(int idIn, int sequence, string beam,
     else if (pSet <= 12)
       tempPDFPtr = make_shared<CTEQ6pdf>(idIn, pSet - 6, 1.,
         pdfdataPath, loggerPtr);
-    else if (pSet <= 24)
+    else if (pSet <= 25)
       tempPDFPtr = make_shared<LHAGrid1>
         (idIn, pWord, pdfdataPath, loggerPtr);
     else tempPDFPtr = 0;
@@ -1404,10 +1405,13 @@ PDFPtr BeamSetup::getPDFPtr(int idIn, int sequence, string beam,
     if (nPDFSet == 0)
       tempPDFPtr = make_shared<Isospin>(idIn, tempProtonPDFPtr);
     else if (nPDFSet == 1 || nPDFSet == 2)
-      tempPDFPtr = make_shared<EPS09>(idIn, nPDFSet, 1, pdfdataPath,
+      tempPDFPtr = make_shared<EPS09>(idIn, nPDFSet, 0, pdfdataPath,
         tempProtonPDFPtr, loggerPtr);
     else if (nPDFSet == 3)
-      tempPDFPtr = make_shared<EPPS16>(idIn, 1, pdfdataPath,
+      tempPDFPtr = make_shared<EPPS16>(idIn, 0, pdfdataPath,
+        tempProtonPDFPtr, loggerPtr);
+    else if (nPDFSet == 4)
+      tempPDFPtr = make_shared<EPPS21>(idIn, 0, pdfdataPath,
         tempProtonPDFPtr, loggerPtr);
     else tempPDFPtr = 0;
   }

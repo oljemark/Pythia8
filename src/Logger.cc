@@ -23,29 +23,29 @@ void Logger::init(Settings& settings) {
 
 //--------------------------------------------------------------------------
 
-void Logger::reportMsg(string loc, string m, string extra, bool showAlways) {
-  msg(REPORT, "Report from " + loc + ": " + m, extra, showAlways); }
+bool Logger::reportMsg(string loc, string m, string extra, bool showAlways) {
+  return msg(REPORT, "Report from " + loc + ": " + m, extra, showAlways); }
 
-void Logger::infoMsg(string loc, string m, string extra, bool showAlways) {
-  msg(NORMAL, "Info from " + loc + ": " + m, extra, showAlways); }
+bool Logger::infoMsg(string loc, string m, string extra, bool showAlways) {
+  return msg(NORMAL, "Info from " + loc + ": " + m, extra, showAlways); }
 
-void Logger::warningMsg(string loc, string m, string extra, bool showAlways) {
-  msg(NORMAL, "Warning in " + loc + ": " + m, extra, showAlways); }
+bool Logger::warningMsg(string loc, string m, string extra, bool showAlways) {
+  return msg(NORMAL, "Warning in " + loc + ": " + m, extra, showAlways); }
 
-void Logger::errorMsg(string loc, string m, string extra, bool showAlways) {
-  msg(NORMAL, "Error in " + loc + ": " + m, extra, showAlways); }
+bool Logger::errorMsg(string loc, string m, string extra, bool showAlways) {
+  return msg(NORMAL, "Error in " + loc + ": " + m, extra, showAlways); }
 
-void Logger::abortMsg(string loc, string m, string extra, bool showAlways) {
-  msg(ABORT, "Abort from " + loc + ": " + m, extra, showAlways); }
+bool Logger::abortMsg(string loc, string m, string extra, bool showAlways) {
+ return msg(ABORT, "Abort from " + loc + ": " + m, extra, showAlways); }
 
 //--------------------------------------------------------------------------
 
-void Logger::msg(int verbosityLevel, string message, string extraInfo,
+bool Logger::msg(int verbosityLevel, string message, string extraInfo,
   bool showAlways) {
 
   // Ignore messages that don't satisfy the verbosity level.
   if (verbosity < verbosityLevel)
-    return;
+    return false;
 
   // Only one thread can write messages at the same time
   lock_guard<mutex> lock(writeMutex);
@@ -54,14 +54,16 @@ void Logger::msg(int verbosityLevel, string message, string extraInfo,
   int times = messages[message]++;
 
   // Return if not doing any printout.
-  if (!mayPrintErrors()) return;
+  if (!mayPrintErrors()) return false;
 
   // Print message.
   if ( (times == 0 || showAlways || verbosity >= REPORT) ) {
     string messageNow = " PYTHIA " + message;
     if (extraInfo != "") messageNow += " " + extraInfo;
     errorStream() << messageNow + "\n";
+    return true;
   }
+  return false;
 }
 
 //--------------------------------------------------------------------------

@@ -955,16 +955,18 @@ double WeightsFragmentation::zWeight(double aLund, double bLund,
     z, zSelPtr->zLundMax(zSelPtr->aShape, zSelPtr->bShape, zSelPtr->cShape),
     fPrel, zSelPtr->zHead);
 
-  // Skip non-standard c, b, or h.
-  if (aLund < 0 && ((zSelPtr->idFrag == 4 && zSelPtr->useNonStandC)
-      || (zSelPtr->idFrag == 5 && zSelPtr->useNonStandB)
-      || (zSelPtr->idFrag > 5 && zSelPtr->useNonStandH)))
-    return 1.;
-
   // Determine the varied a, b, and c parameters.
-  double ap = aLund > 0 ? aLund : zSelPtr->aShape ;
-  if (zSelPtr->isOldSQuark)  ap += zSelPtr->aExtraSQuark;
-  if (zSelPtr->isOldDiquark) ap += zSelPtr->aExtraDiquark;
+  double ap = zSelPtr->aShape;
+  if (aLund > 0) {
+    ap = aLund;
+    if (zSelPtr->useOldAExtra) {
+      if (zSelPtr->isOldSQuark)  ap += zSelPtr->aExtraSQuark;
+      if (zSelPtr->isOldDiquark) ap += zSelPtr->aExtraDiquark;
+    } else {
+      if (zSelPtr->isNewSQuark)  ap += zSelPtr->aExtraSQuark;
+      if (zSelPtr->isNewDiquark) ap += zSelPtr->aExtraDiquark;
+    }
+  }
   double bp = bLund > 0 ? bLund : zSelPtr->bNow;
   // Determine position of the maximum. Assuming that no
   // special options are being used, i.e bShape = bLund. This
@@ -974,9 +976,9 @@ double WeightsFragmentation::zWeight(double aLund, double bLund,
   // When b is changed, so is c.
   double rFactmsq = 0.;
   if (zSelPtr->idFrag == 4)
-    rFactmsq = (rFactC > 0 ? rFactC : zSelPtr->rFactC)*zSelPtr->mc2;
+    rFactmsq = (rFactC >= 0 ? rFactC : zSelPtr->rFactC)*zSelPtr->mc2;
   else if (zSelPtr->idFrag == 5)
-    rFactmsq = (rFactB > 0 ? rFactB : zSelPtr->rFactB)*zSelPtr->mb2;
+    rFactmsq = (rFactB >= 0 ? rFactB : zSelPtr->rFactB)*zSelPtr->mb2;
   double cp = 1 + rFactmsq * bp;
   if (zSelPtr->isOldSQuark)  cp -= zSelPtr->aExtraSQuark;
   if (zSelPtr->isNewSQuark)  cp += zSelPtr->aExtraSQuark;
@@ -995,8 +997,9 @@ double WeightsFragmentation::zWeight(double aLund, double bLund,
   double fValp = exp(max( -zSelPtr->EXPMAX, min(zSelPtr->EXPMAX, fVar)));
 
   // Return the weight.
-  double wgt = min(fValp/zSelPtr->fVal, zSelPtr->zHead);
-  return accept ? wgt : (1. - wgt*zSelPtr->fPrb)/(1. - zSelPtr->fPrb);
+  double wgt = fValp/zSelPtr->fVal;
+  return accept ? wgt : (1. - min(wgt*zSelPtr->fPrb, 1.))
+    /(1. - zSelPtr->fPrb);
 
 }
 
@@ -1005,9 +1008,9 @@ double WeightsFragmentation::zWeight(double aLund, double bLund,
 // Calculate a pT weight for a single break, given the derived
 // parameters and break info.
 
-double WeightsFragmentation::pTWeight(double sigma, double pT2, double mult) {
+double WeightsFragmentation::pTWeight(double sigma, double pT2) {
 
-  double ratio =  pow2(mult*pTBase[0] / (sigma * mult/sqrt(2.)));
+  double ratio = 2*pow2(pTBase[0]/sigma);
   return ratio*exp(-0.5*pT2*(ratio - 1.));
 
 }
@@ -1072,10 +1075,9 @@ void WeightsFragmentation::zStore(int idOld, int idNew, double mT2,
 
 // Store the break information for pT variations.
 
-void WeightsFragmentation::pTStore(double pT2, double mult) {
+void WeightsFragmentation::pTStore(double pT2) {
 
   pTBreaks.push_back(pT2);
-  pTBreaks.push_back(mult);
 
 }
 

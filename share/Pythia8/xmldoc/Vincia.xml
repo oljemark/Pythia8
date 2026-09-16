@@ -608,7 +608,7 @@ of dead zones. Switch to control whether to perform antenna
 self-consistency checks or not. 
 </flag> 
  
-<modeopen name="Vincia:nPointsCheck" default="1000" min="0" max="1e6"> 
+<modeopen name="Vincia:nPointsCheck" default="1000" min="0" max="1000000"> 
 Number of random points to check each antenna functions for 
 positivity. 
 </modeopen> 

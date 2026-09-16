@@ -85,13 +85,15 @@ void read(std::vector<std::string> filenames = {"main144.root"}) {
   // (4) Draw the histograms.
   TCanvas* c1 = new TCanvas("c1", "c1", 800, 600);
   hPt->Draw();
+  c1->SaveAs("hPt.pdf");
   TCanvas* c2 = new TCanvas("c2", "c2", 800, 600);
   hEtaPi->Draw();
+  c2->SaveAs("hEtaPi.pdf");
   
 }
 
 // Define the main execution for this ROOT macro.
-void main144Reader() {
+void main144() {
 
   // Read the output of main144, which is produced with the following.
   //     ./main144 -c main144.cmnd -c main144Root.cmnd

@@ -364,6 +364,9 @@ public:
   // Destructor.
   ~WeightsFragmentation();
 
+  // Remove the copy constructor to stop double deletion of zSelPtr.
+  WeightsFragmentation& operator=(const WeightsFragmentation&) = delete;
+
   // Initialize the weights.
   void init() override;
 
@@ -401,7 +404,7 @@ public:
   // Calculate kinematic weights.
   double zWeight(double aLund, double bLund, double rFactC, double rFactB,
     int idOld, int idNew, double mT2, double z, double fPrel);
-  double pTWeight(double sigma, double pT2, double mult);
+  double pTWeight(double sigma, double pT2);
 
   // Vectors for weight group handling.
   vector<map<vector<double>, int> > weightParms{};
@@ -455,7 +458,7 @@ private:
     bool accept, double z, double fPrel);
 
   // Store the break information for pT variations.
-  void pTStore(double pT2, double mult);
+  void pTStore(double pT2);
 
 };
 

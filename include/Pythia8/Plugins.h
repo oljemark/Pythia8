@@ -158,6 +158,18 @@ template <typename T> shared_ptr<T> make_plugin(
 
 //==========================================================================
 
+// Declare empty plugin macros if not needed.
+
+#ifdef NOPLUGIN
+#define PYTHIA8_PLUGIN_CLASS(BASE, CLASS, PYTHIA, SETTINGS, LOGGER)
+#define PYTHIA8_PLUGIN_SETTINGS(METHOD)
+#define PYTHIA8_PLUGIN_XML(INDEX)
+#define PYTHIA8_PLUGIN_PARALLEL(COMPATIBLE)
+#define PYTHIA8_PLUGIN_VERSIONS(...)
+#else
+
+//==========================================================================
+
 // Macro to declare a plugin class.
 
 #define PYTHIA8_PLUGIN_CLASS(BASE, CLASS, PYTHIA, SETTINGS, LOGGER) \
@@ -205,6 +217,8 @@ template <typename T> shared_ptr<T> make_plugin(
       return ver == PYTHIA_VERSION_INTEGER;}}
 
 //==========================================================================
+
+#endif // end NOPLUGIN
 
 } // end namespace Pythia8
 

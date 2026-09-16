@@ -5,8 +5,7 @@
 # Author: Philip Ilten, August 2019.
 
 # This is a script to create a Python interface for Pythia using
-# PyBind11 and the binder tool. The necessary build environment for
-# this is available in the Docker image pythia8/dev:binder.
+# PyBind11 and the binder tool.
 
 ################################################################################
 # VARIABLES: Global variables not defined via command line arguments.
@@ -16,6 +15,8 @@
 #     FUNCTIONS: Functions to include in the partial interface.
 #     PLUGINS:   Plugin classes with dependencies to exclude.
 #     GILS:      Functions where the Python global interpreter lock is needed.
+#     BINDER_*:  Location of Binder source and configuration.
+#     IMAGE:     Docker container location for Binder.
 ################################################################################
 read -d "" USAGE << "BLOCKTEXT"
 Usage: ./generate [OPTION]
@@ -44,7 +45,15 @@ BINDER_SRC="src"
 BINDER_HPP="pythia8.hpp"
 BINDER_CFG="pythia8.cfg"
 BINDER_DOC="pythia8.doc"
-GCC_INCLUDE="/usr/include/c++/6.3.1"
+CLANG_INCLUDE="/usr/lib/clang/19/include/"
+GCC_INCLUDE="/usr/include/c++/16/"
+GCC_LINUX=x86_64-redhat-linux
+IMAGE="gitlab-registry.cern.ch/pythia/pythia83-docker/binder-amd64:d52dd1a5"
+ARCH=$(uname -m)
+if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
+    IMAGE="gitlab-registry.cern.ch/pythia/pythia83-docker/binder-arm64:d52dd1a5"
+    GCC_LINUX=aarch64-redhat-linux
+fi
 
 ################################################################################
 # FUNCTION: Create the bindings.
@@ -52,10 +61,12 @@ GCC_INCLUDE="/usr/include/c++/6.3.1"
 function binder() {
     rm -rf $BINDER_SRC; mkdir $BINDER_SRC
     for SRC in $BINDER_EXTRA/*.cpp; do cp $SRC $BINDER_SRC/; done
-    docker run -i -t -v "$PWD:$PWD" -w $PWD -u $(id -u) --rm pythia8/dev:binder\
-     --config $BINDER_CFG --root-module pythia8 --prefix $BINDER_SRC/\
-     $BINDER_HPP -- -w -std=c++11 -I$BINDER_INCLUDE\
-     -I$GCC_INCLUDE -I$GCC_INCLUDE/x86_64-redhat-linux -I/usr/include/clang
+    docker run -i -t -v "$PWD:$PWD" -w $PWD -u $(id -u)\
+     --rm $IMAGE --config $BINDER_CFG --root-module pythia8\
+     --include-pybind11-stl --prefix $BINDER_SRC/ $BINDER_HPP\
+     -- -w -Wno-invalid-constexpr -DNOPLUGIN -std=c++11\
+     -I$BINDER_INCLUDE -I$CLANG_INCLUDE -I$GCC_INCLUDE\
+     -I$GCC_INCLUDE/$GCC_LINUX
 }
 
 ################################################################################
@@ -63,24 +74,58 @@ function binder() {
 ################################################################################
 function configure_base() {
     cat > $BINDER_CFG << BLOCKTEXT
-+include <Pythia8/UserHooks.h>
+# Needed for shared pointer declarations.
 +include <Pythia8/SplittingsOnia.h>
-+include <Pythia8/HeavyIons.h>
-+include <Pythia8/BeamShape.h>
-+include <pybind11/stl.h>
-+include <pybind11/complex.h>
-+include <pybind11/functional.h>
+# The following methods must be excluded.
 -function Pythia8::isfinite
 -function Pythia8::isinf
 -function Pythia8::isnan
--class Pythia8::Writer
--class Pythia8::Logger
-+binder std::multiset REMOVE
-+binder std::complex REMOVE
-+binder std::vector REMOVE
-+binder std::set REMOVE
-+binder std::map REMOVE
-+binder std::unordered_map REMOVE
+# The following headers are needed for PyBind11 to handle the STL in
+# addition to <pybind11/stl.h> which is automatically included when the
+# --include-pybind11-stl flag is passed to binder.
++include <pybind11/complex.h>
++include <pybind11/functional.h>
+# Remove the timer class.
+-class Pythia8::Timer
+# Remove unnecessary iterator access for Pythia classes.
+-function Pythia8::Event::begin
+-function Pythia8::Event::end
+-function Pythia8::Nucleus::begin
+-function Pythia8::Nucleus::end
+# Exclude STL classes not supported by PyBind11.
+# Used by HISubCollisionModel.
+-class std::multiset
+# Exclude stream classes.
+-class std::ifstream
+-class std::ostream
+-class std::istream
+-class std::istringstream
+-class std::stringstream
+# The following configuration removes platform-specific header generation.
+# Exclude classes generated from bits/stl_function.h.
+-class std::equal_to
+# Exclude functions generated from bits/shared_ptr.h.
+-function std::dynamic_pointer_cast
+-function std::make_shared
+# Exclude functions generated from bits/stl_algo.h.
+-function std::find
+# Exclude functions generated from bits/move.h.
+-function std::forward
+# Exclude functions generated from bits/predefined_ops.h.
+-function std::addressof
+# Exclude functions generated from bits/stl_algobase.h
+-function std::copy
+# Exclude functions generated from bits/stl_uninitialized.h.
+-function std::uninitialized_copy
+# Exclude functions generated from bits/stl_construct.h.
+-function std::destroy_at
+-function std::construct_at
+# Exclude functions generated from type_traits.
+-function std::swap
+-function std::declval
+# Exclude functions generated from bits/ptr_traits.h.
+-function std::to_address
+# Set the return value policy (by reference).
 +default_member_lvalue_reference_return_value_policy pybind11::return_value_policy::reference
 BLOCKTEXT
 }
@@ -180,6 +225,9 @@ for VAR in "$@"; do
     eval $KEY=\"$VAL\"; eval ${KEY}_SET=true
 done
 
+# Change into this script's directory.
+cd "$(dirname "$(readlink -f "$0")")"
+
 # Copy the source and modify the include statements.
 for DIR in Pythia8 Pythia8Plugins; do
     rm -rf $BINDER_INCLUDE/$DIR
@@ -191,7 +239,7 @@ for DIR in Pythia8 Pythia8Plugins; do
     sed -i.sed 's/\(const  *Info\& *info  *=  *infoPrivate;\)/\1  \
   Info infoPython() {return Info(infoPrivate);}/g' $BINDER_INCLUDE/$DIR/*.h
 done
-    
+
 # Create the master header file.
 echo "#include <Pythia8/Pythia.h>" > $BINDER_HPP
 echo "#include <Pythia8/PythiaParallel.h>" > $BINDER_HPP
@@ -228,8 +276,7 @@ fi
 
 # Move the bindings.
 mv $BINDER_SRC/Pythia8/*.cpp $BINDER_SRC
-mv $BINDER_SRC/std/*.cpp $BINDER_SRC
-rmdir $BINDER_SRC/Pythia8 $BINDER_SRC/std
+rmdir $BINDER_SRC/Pythia8
 
 # Combine the plugin bindings as they are header only.
 cat $BINDER_SRC/Pythia8Plugins/*.cpp > $BINDER_SRC/Pythia8Plugins.cpp
@@ -248,12 +295,21 @@ done
 
 # Insert the Awkward batch interface.
 if [ "$NO_BATCH_SET" != true ]; then
+    # Singleton batch interface.
     BATCH="		cl.def(\"nextBatch\", \&nextBatch, pybind11::arg(\"nEv"
     BATCH+="ents\"), pybind11::arg(\"errorMode\") = pybind11::str(\"skip\"));"
     ENTRY="cl.def(\"next\".*In\"));"
     sed -i.sed "s/\($ENTRY\)/\1\n$BATCH/" $BINDER_SRC/Pythia.cpp
     INCLUDE="#include <extra\/PythiaBatch.h>"
     sed -i.sed "s/\(functional.h>\)/\1\n$INCLUDE/" $BINDER_SRC/Pythia.cpp
+    # Parallel batch interface.
+    BATCH="		cl.def(\"nextBatch\", \&nextBatchParallel, pybind11::"
+    BATCH+="arg(\"nEvents\"));"
+    ENTRY="cl.def(\"run\".*>\", pybind11::arg(\"callback\"));"
+    sed -i.sed "s/\($ENTRY\)/\1\n$BATCH/" $BINDER_SRC/PythiaParallel.cpp
+    INCLUDE="#include <extra\/PythiaBatch.h>"
+    sed -i.sed "s/\(functional.h>\)/\1\n$INCLUDE/"\
+        $BINDER_SRC/PythiaParallel.cpp
 else
     rm $BINDER_SRC/PythiaBatch.cpp
 fi
@@ -265,36 +321,12 @@ sed -i.sed "s/\($ENTRY\)/\1\n$LOAD/" $BINDER_SRC/pythia8.cpp
 INCLUDE="#include <extra\/PythiaPython.h>"
 sed -i.sed "s/\(pybind11.h>\)/\1\n$INCLUDE/" $BINDER_SRC/pythia8.cpp
 
-# Remove the stream bindings.
-sed -i.sed "/_tcc/d" $BINDER_SRC/pythia8.cpp
-sed -i.sed '/cl.def_readwrite("osLHEF"/d' $BINDER_SRC/*.cpp
-sed -i.sed '/cl.def("closeFile"/d' $BINDER_SRC/*.cpp
-rm -f $BINDER_SRC/*tcc.cpp $BINDER_SRC/*tcc_*.cpp
-
-# Fix namespace for hashed "std" classes.
-sed -i.sed "s/hash<string>/hash<std::string>/g" $BINDER_SRC/*.cpp
-
-# Remove locale bindings.
-sed -i.sed '/bind_std_locale_classes/d' $BINDER_SRC/*.cpp
-rm -rf $BINDER_SRC/locale_classes*.cpp
-
-# Modify the GCC specific C++11 bindings.
-sed -i.sed 's/__cxx11:://g' $BINDER_SRC/*.cpp
-
-# Remove the GCC specific iterator bindings.
-sed -i.sed '/__gnu_cxx/d' $BINDER_SRC/*.cpp
-sed -i.sed '/REMOVE/d' $BINDER_SRC/*.cpp
-
-# Remove all sub-modules except "std".
+# Keep everything in the top-level namespace.
 sed -i.sed '/{"", "Pythia8"},/d' $BINDER_SRC/pythia8.cpp
+sed -i.sed '/{"Pythia8", "xfModPrepDa"},/d' $BINDER_SRC/pythia8.cpp
 OLD='modules.find(namespace_)'
-NEW='modules.find(namespace_ != "std" ? "" : "std")'
+NEW='modules.find("")'
 sed -i.sed "s/$OLD/$NEW/g" $BINDER_SRC/pythia8.cpp
-
-# Necessary for newer versions of pybind11.
-OLD='overload_caster_t'
-NEW='override_caster_t'
-sed -i.sed "s/$OLD/$NEW/g" $BINDER_SRC/*.cpp
 
 # Allow multi-threading with GIL release.
 for GIL in $GILS; do
@@ -302,11 +334,6 @@ for GIL in $GILS; do
     NEW=$GIL', pybind11::call_guard<pybind11::gil_scoped_release>(), "'
     sed -i.sed "s/$OLD/$NEW/g" $BINDER_SRC/*.cpp
 done
-
-# Fix compilation of postypes.cpp for 32-bit versions of Python.
-OLD='long'
-NEW='std::streamoff'
-sed -i.sed "s/$OLD/$NEW/g" $BINDER_SRC/postypes.cpp
 
 # Include the module documentation.
 cat > $BINDER_DOC << BLOCKTEXT

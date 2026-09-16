@@ -20,7 +20,6 @@ Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 // in a command file, and measures the run time (eg to compare options
 // and/or compare with Pythia).
 
-#include &lt;time.h&gt;
 #include &quot;Pythia8/Pythia.h&quot;
 using namespace Pythia8;
 
@@ -67,10 +66,9 @@ int main() {
   Hist ytt(modelName + &quot; y(tt)&quot;, 20, -5.0, 5.0, false, true);
   Hist mtt(modelName + &quot; m(tt)&quot;, 100, 0.0, 1000.0, false, true);
 
-  // Measure the cpu runtime.
-  clock_t start, stop;
-  double t = 0.0;
-  start = clock();
+  // Measure the CPU runtime.
+  Timer timer(Timer::CPU);
+  timer.start();
 
   // Begin event loop. Generate event. Abort if error.
   for (int iEvent = 0; iEvent &lt; nEvent; ++iEvent) {
@@ -116,9 +114,8 @@ int main() {
 
   }
 
-  // End of event loop. Determine run time.
-  stop = clock(); // Stop timer
-  t = (double) (stop-start)/CLOCKS_PER_SEC;
+  // End of event loop. Determine run time in seconds.
+  timer.stop();
 
   // Statistics. Histograms.
   pythia.stat();
@@ -128,7 +125,7 @@ int main() {
 
   // Print runtime
   cout &lt;&lt; &quot;\n&quot; &lt;&lt; &quot;|----------------------------------------|&quot; &lt;&lt; endl;
-  cout &lt;&lt; &quot;| CPU Runtime = &quot; &lt;&lt; t &lt;&lt; &quot; sec&quot; &lt;&lt; endl;
+  cout &lt;&lt; &quot;| CPU Runtime = &quot; &lt;&lt; timer.elapsed() / 1000. &lt;&lt; &quot; sec&quot; &lt;&lt; endl;
   cout &lt;&lt; &quot;|----------------------------------------|&quot; &lt;&lt; &quot;\n&quot; &lt;&lt; endl;
 
   // Done.

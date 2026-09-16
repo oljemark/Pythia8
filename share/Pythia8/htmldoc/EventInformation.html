@@ -399,6 +399,39 @@ the polar and azimuthal scattering angles in the rest frame of
 a <i>2 &rarr; 2</i> process. 
    
  
+<a name="anchor61"></a>
+<p/><strong> double Info::Q2DIS() &nbsp;</strong> <br/>
+   
+<a name="anchor62"></a>
+<strong> double Info::Q2DIS() &nbsp;</strong> <br/>
+the propagator virtuality in a <i>2 &rarr; 2</i> DIS process. 
+   
+ 
+<a name="anchor63"></a>
+<p/><strong> double Info::xDIS() &nbsp;</strong> <br/>
+   
+<a name="anchor64"></a>
+<strong> double Info::xDIS() &nbsp;</strong> <br/>
+the invariant <i>x</i> in a <i>2 &rarr; 2</i> DIS process. 
+   
+ 
+<a name="anchor65"></a>
+<p/><strong> double Info::yDIS() &nbsp;</strong> <br/>
+   
+<a name="anchor66"></a>
+<strong> double Info::yDIS() &nbsp;</strong> <br/>
+the inelasticity in a <i>2 &rarr; 2</i> DIS process. 
+   
+ 
+<a name="anchor67"></a>
+<p/><strong> double Info::WDIS() &nbsp;</strong> <br/>
+   
+<a name="anchor68"></a>
+<strong> double Info::WDIS() &nbsp;</strong> <br/>
+the invariant mass of the hadronic system in a <i>2 &rarr; 2</i> DIS 
+process. 
+   
+ 
 <a name="section7"></a> 
 <h3>Soft Diffraction</h3> 
  
@@ -456,18 +489,18 @@ and the momentum transfer in the hard diffractive process.
 Note that when side A is diffractively exited, then the Pomeron 
 has been taken from side B and vice versa. 
  
-<a name="anchor61"></a>
+<a name="anchor69"></a>
 <p/><strong> double Info::xPomeronA() &nbsp;</strong> <br/>
    
-<a name="anchor62"></a>
+<a name="anchor70"></a>
 <strong> double Info::xPomeronB() &nbsp;</strong> <br/>
 <i>x</i> fractions of momenta carried by the Pomeron in the hard 
 diffractive process. 
    
-<a name="anchor63"></a>
+<a name="anchor71"></a>
 <p/><strong> double Info::tPomeronA() &nbsp;</strong> <br/>
    
-<a name="anchor64"></a>
+<a name="anchor72"></a>
 <strong> double Info::tPomeronB() &nbsp;</strong> <br/>
 The momentum transfer <i>t</i> in the hard diffractive process. 
    
@@ -477,32 +510,32 @@ The momentum transfer <i>t</i> in the hard diffractive process.
  
 Information about the kinematics of photon-photon collisions from lepton 
 beams. 
-<a name="anchor65"></a>
+<a name="anchor73"></a>
 <p/><strong> double Info::eCMsub() &nbsp;</strong> <br/>
 Collision energy of the <i>gamma-gamma</i> sub-system. 
    
-<a name="anchor66"></a>
+<a name="anchor74"></a>
 <p/><strong> double Info::xGammaA() &nbsp;</strong> <br/>
    
-<a name="anchor67"></a>
+<a name="anchor75"></a>
 <strong> double Info::xGammaB() &nbsp;</strong> <br/>
 <i>x</i> fractions of lepton momenta carried by the photons. 
    
-<a name="anchor68"></a>
+<a name="anchor76"></a>
 <p/><strong> double Info::Q2GammaA() &nbsp;</strong> <br/>
    
-<a name="anchor69"></a>
+<a name="anchor77"></a>
 <strong> double Info::Q2GammaB() &nbsp;</strong> <br/>
 Virtualities of the photons emitted by the leptons. 
    
-<a name="anchor70"></a>
+<a name="anchor78"></a>
 <p/><strong> double Info::thetaScatLepA() &nbsp;</strong> <br/>
    
-<a name="anchor71"></a>
+<a name="anchor79"></a>
 <strong> double Info::thetaScatLepB() &nbsp;</strong> <br/>
 Scattering angles of the leptons wrt. the beam direction. 
    
-<a name="anchor72"></a>
+<a name="anchor80"></a>
 <p/><strong> int Info::photonMode() &nbsp;</strong> <br/>
 Type of photon process, see 
 <a href="Photoproduction.html" target="page">Photoproduction</a> for details. 
@@ -511,33 +544,33 @@ Type of photon process, see
 <a name="section10"></a> 
 <h3>Event activity</h3> 
  
-<a name="anchor73"></a>
+<a name="anchor81"></a>
 <p/><strong> int Info::nISR() &nbsp;</strong> <br/>
    
-<a name="anchor74"></a>
+<a name="anchor82"></a>
 <strong> int Info::nFSRinProc() &nbsp;</strong> <br/>
    
-<a name="anchor75"></a>
+<a name="anchor83"></a>
 <strong> int Info::nFSRinRes() &nbsp;</strong> <br/>
 the number of emissions in the initial-state showering, in the final-state 
 showering excluding resonance decays, and in the final-state showering 
 inside resonance decays, respectively. 
    
  
-<a name="anchor76"></a>
+<a name="anchor84"></a>
 <p/><strong> double Info::pTmaxMPI() &nbsp;</strong> <br/>
    
-<a name="anchor77"></a>
+<a name="anchor85"></a>
 <strong> double Info::pTmaxISR() &nbsp;</strong> <br/>
    
-<a name="anchor78"></a>
+<a name="anchor86"></a>
 <strong> double Info::pTmaxFSR() &nbsp;</strong> <br/>
 Maximum <i>pT</i> scales set for MPI, ISR and FSR, given the 
 process type and scale choice for the hard interactions. The actual 
 evolution will run down from these scales. 
    
  
-<a name="anchor79"></a>
+<a name="anchor87"></a>
 <p/><strong> double Info::pTnow() &nbsp;</strong> <br/>
 The current <i>pT</i> scale in the combined MPI, ISR and FSR evolution. 
 Useful for classification in <a href="UserHooks.html" target="page">user hooks</a>, 
@@ -552,13 +585,13 @@ topologies, and should not be used there. Partly this is physics,
 but mainly it is for technical reasons, e.g. that double diffraction 
 involves two separate systems that would have to be bookkept as such. 
  
-<a name="anchor80"></a>
+<a name="anchor88"></a>
 <p/><strong> double Info::a0MPI() &nbsp;</strong> <br/>
 The value of a0 when an x-dependent matter profile is used, 
 <code>MultipartonInteractions:bProfile = 4</code>. 
    
  
-<a name="anchor81"></a>
+<a name="anchor89"></a>
 <p/><strong> double Info::bMPI() &nbsp;</strong> <br/>
 The impact parameter <i>b</i> assumed for the current collision when 
 multiparton interactions are simulated. Is not expressed in any physical 
@@ -567,7 +600,7 @@ for minimum-bias events (meaning less than that for events with hard
 processes). 
    
  
-<a name="anchor82"></a>
+<a name="anchor90"></a>
 <p/><strong> double Info::enhanceMPI() &nbsp;</strong> <br/>
 The choice of impact parameter implies an enhancement or depletion of 
 the rate of subsequent interactions, as given by this number. Again 
@@ -575,7 +608,7 @@ the average is normalized to be unity for minimum-bias events (meaning
 more than that for events with hard processes). 
    
  
-<a name="anchor83"></a>
+<a name="anchor91"></a>
 <p/><strong> double Info::enhanceMPIavg() &nbsp;</strong> <br/>
 The average enhancement factor expected for hard processes, in those 
 cases where it can be calculated already at initialization, i.e. excluding 
@@ -590,17 +623,17 @@ which instead is normalized to average value unity for nondiffractive events.
 As used internally the two are consistent. 
    
  
-<a name="anchor84"></a>
+<a name="anchor92"></a>
 <p/><strong> int Info::nMPI() &nbsp;</strong> <br/>
 The number of hard interactions in the current event. Is 0 for elastic 
 and diffractive events, and else at least 1, with more possible from 
 multiparton interactions. 
    
  
-<a name="anchor85"></a>
+<a name="anchor93"></a>
 <p/><strong> int Info::codeMPI(int i) &nbsp;</strong> <br/>
    
-<a name="anchor86"></a>
+<a name="anchor94"></a>
 <strong> double Info::pTMPI(int i) &nbsp;</strong> <br/>
 the process code and transverse momentum of the <code>i</code>'th 
 subprocess, with <code>i</code> in the range from 0 to 
@@ -608,10 +641,10 @@ subprocess, with <code>i</code> in the range from 0 to
 information already provided above. 
    
  
-<a name="anchor87"></a>
+<a name="anchor95"></a>
 <p/><strong> int Info::iAMPI(int i) &nbsp;</strong> <br/>
    
-<a name="anchor88"></a>
+<a name="anchor96"></a>
 <strong> int Info::iBMPI(int i) &nbsp;</strong> <br/>
 are normally zero. However, if the <code>i</code>'th subprocess is 
 a rescattering, i.e. either or both incoming partons come from the 
@@ -621,7 +654,7 @@ event record of the outgoing-state parton that rescatters.
 the first or second beam, respectively. 
    
  
-<a name="anchor89"></a>
+<a name="anchor97"></a>
 <p/><strong> double Info::eMPI(int i) &nbsp;</strong> <br/>
 The enhancement or depletion of the rate of the <code>i</code>'th 
 subprocess. Is primarily of interest for the 
@@ -630,13 +663,13 @@ size of the proton depends on the <i>x</i> values of the colliding
 partons. Note that <code>eMPI(0) = enhanceMPI()</code>. 
    
  
-<a name="anchor90"></a>
+<a name="anchor98"></a>
 <p/><strong> double Info::bMPIold() &nbsp;</strong> <br/>
    
-<a name="anchor91"></a>
+<a name="anchor99"></a>
 <strong> double Info::enhanceMPIold() &nbsp;</strong> <br/>
    
-<a name="anchor92"></a>
+<a name="anchor100"></a>
 <strong> double Info::enhanceMPIoldavg() &nbsp;</strong> <br/>
 These methods are only relevant for hard diffraction with the requirement 
 of no MPI in the hadron-hadron collision. Then an impact parameter 
@@ -662,7 +695,7 @@ so that one can keep track of how the event generation is progressing.
 This may be especially useful in the context of the 
 <code><a href="UserHooks.html" target="page">User Hooks</a></code> facility. 
  
-<a name="anchor93"></a>
+<a name="anchor101"></a>
 <p/><strong> int Info::getCounter(int i) &nbsp;</strong> <br/>
 the method that gives you access to the value of the various loop 
 counters. 
@@ -769,7 +802,7 @@ that therefore are free to use, with the help of the two methods below.
    
    
  
-<a name="anchor94"></a>
+<a name="anchor102"></a>
 <p/><strong> void Info::setCounter(int i, int value = 0) &nbsp;</strong> <br/>
 set the above counters to a given value. Only to be used by you 
 for the unassigned counters 40 - 49. 
@@ -780,7 +813,7 @@ normally the default value is what you want.
    
    
  
-<a name="anchor95"></a>
+<a name="anchor103"></a>
 <p/><strong> void Info::addCounter(int i, int value = 0) &nbsp;</strong> <br/>
 increase the above counters by a given amount. Only to be used by you 
 for the unassigned counters 40 - 49. 
@@ -797,27 +830,27 @@ normally the default value is what you want.
 The following methods are mainly intended for internal use, 
 e.g. for matrix-element matching. 
  
-<a name="anchor96"></a>
+<a name="anchor104"></a>
 <p/><strong> void Info::hasHistory(bool hasHistoryIn) &nbsp;</strong> <br/>
    
-<a name="anchor97"></a>
+<a name="anchor105"></a>
 <strong> bool Info::hasHistory() &nbsp;</strong> <br/>
 set/get knowledge whether the likely shower history of an event 
 has been traced. 
    
  
-<a name="anchor98"></a>
+<a name="anchor106"></a>
 <p/><strong> void Info::zNowISR(bool zNowIn) &nbsp;</strong> <br/>
    
-<a name="anchor99"></a>
+<a name="anchor107"></a>
 <strong> double Info::zNowISR() &nbsp;</strong> <br/>
 set/get value of <i>z</i> in latest ISR branching. 
    
  
-<a name="anchor100"></a>
+<a name="anchor108"></a>
 <p/><strong> void Info::pT2NowISR(bool pT2NowIn) &nbsp;</strong> <br/>
    
-<a name="anchor101"></a>
+<a name="anchor109"></a>
 <strong> double Info::pT2NowISR() &nbsp;</strong> <br/>
 set/get value of <i>pT^2</i> in latest ISR branching. 
    

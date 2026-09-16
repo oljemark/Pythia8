@@ -226,6 +226,10 @@ but obviously at the expense of losing some history information.</li>
 an example illustrating the generation of HepMC events using the 
 HDF5 LHA format (LHAHDF5).</li> 
  
+<li><code>main137.cc</code> (new) : 
+similar to <code>main131</code> but allows for filtering of the event 
+record.</li> 
+ 
 </ul> 
  
 <h3>Output to ROOT and/or Rivet</h3> 
@@ -473,7 +477,7 @@ and allows for OpenMP parallelization. More documentation can be
 obtained by executing <code>./main224 --help</code>. The input file 
 <code>main224.cmnd</code> further illustrates the use of DIRE.</li> 
  
-<li><code>main225.cc</code> : 
+<li><code>main225.cc</code> (new) : 
 demonstrates how to use the <code>RivetHooks</code> plugin and run 
 RIVET analyses, both with a single Pythia instance and 
 <code>PythiaParallel</code>.</li> 
@@ -511,6 +515,10 @@ can be input directly for hadronization, without being tied to the full
 process-generation machinery, e.g. to study the hadronization of 
 junction topologies. Can also be used for single-resonance decays, 
 with showers.</li> 
+ 
+<li><code>main235.cc</code> (new) : 
+provides an omnibus program, utilizing the plugin structure, to run 
+Pythia.</li> 
  
 </ul> 
  
@@ -674,6 +682,13 @@ generates batches of events via an interface with Awkward array.</li>
 <li><code>main298.py</code> (new) : 
 further examples on how to work with events via the Awkward array 
 interface.</li> 
+ 
+<li><code>main299.py</code> (new) : 
+equivalent of <code>main137</code> demonstrating the filtered HepMC 
+interface.</li> 
+ 
+<li><code>main300.py</code> (new) : 
+visualizes a Pythia event using the <code>Vistas</code> class.</li> 
  
 </ul> 
  
@@ -866,6 +881,10 @@ in decay channels <ei>t &rarr; b W &rarr; b l nu</ei> (+corresponding for
 <ei>tbar</ei>), with or without the <ei>t-tbar</ei>-correlated 
 decay matrix element.</li> 
  
+<li><code>main373.cc</code> (new) : study the <ei>t-tbar</ei> production 
+cross section at <ei>e^+e^-</ei> colliders as a function of the collider 
+energy, comparing the same set of alternatives as above.</li> 
+ 
 </ul> 
  
 <h3>Standard Model</h3> 
@@ -981,6 +1000,10 @@ extracting various cross sections and Glauber statistics from Angantyr.</li>
  
 <li><code>main427.cc</code> (new) : add a different impact parameter 
 sampler to Angantyr, to output events with unit weights.</li> 
+ 
+<li><code>main428.cc</code> (new) : closure tests for the built-in 
+nuclear geometry models, comparing sampled radial distributions with 
+analytic truth shapes and writing matplotlib plots.</li> 
  
 </ul> 
  

@@ -129,9 +129,9 @@ class HiddenValleyFragmentation : public FragmentationModel {
 public:
 
   // Constructor.
-  HiddenValleyFragmentation() : doHVfrag(false), separateFlav(), nFlav(),
-    hvOldSize(), hvNewSize(), idEnd1(), idEnd2(), mhvMeson(), mhvMin(),
-    mHVvecMin(), mSys(), ihvParton() {}
+  HiddenValleyFragmentation() : doHVfrag(false), separateFlav(), isLoop(),
+    nFlav(), hvOldSize(), hvNewSize(), idEnd1(), idEnd2(), mhvMeson(),
+    mhvMin(), mHVvecMin(), mSys(), ihvParton() {}
 
   // Initialize and save pointers.
   bool init(StringFlav* flavSelPtrIn = nullptr, StringPT* pTSelPtrIn = nullptr,
@@ -154,7 +154,7 @@ protected:
 private:
 
   // Data mambers.
-  bool          doHVfrag, separateFlav;
+  bool          doHVfrag, separateFlav, isLoop;
   int           nFlav, hvOldSize, hvNewSize, idEnd1, idEnd2;
   double        mhvMeson, mhvMin[9], mHVvecMin, mSys;
   vector<int>   ihvParton;

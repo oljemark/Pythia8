@@ -385,7 +385,7 @@ configure_package "ROOT" "$LCG_PATH/ROOT" "6.30.04" "root-config"\
     "--bindir" "--incdir" "--libdir" "rootcint;root-config" "TROOT.h" "Core" ""
 configure_package "GZIP" "" "" "" "" "" "" "" "zlib.h" "z" "" "-DGZIP"
 configure_package "PYTHON" "$LCG_PATH/Python" "3.9.12"\
-    "python-config" "" "--includes" "" "" "Python.h" "" ""
+    "python3-config" "" "--includes" "" "" "Python.h" "" ""
 configure_package "MG5MES" "" "" "" "echo plugins/mg5mes" "" "" "" ""\
     "" ""
 configure_package "OPENMP" "" "" "" "" "" "" "" "" "gomp" ""\

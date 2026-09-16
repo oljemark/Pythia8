@@ -1,4 +1,4 @@
-// main182.cc is a part of the PYTHIA event generator.
+// main482.cc is a part of the PYTHIA event generator.
 // Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
@@ -19,7 +19,6 @@
 // the initialization of and looping over multiple incoming beam types.
 
 #include "Pythia8/Pythia.h"
-#include <time.h>
 
 using namespace Pythia8;
 
@@ -28,7 +27,7 @@ using namespace Pythia8;
 int main() {
 
   // Number of test events per beam configuration (iType).
-  int nEvent = 10000;
+  int nEvent = 1000;
 
   // List of alternating incoming hadrons.
   vector<int> idAtype = { 2212, 213, 323, 2224, 331, 421, -421, 3212,
@@ -50,11 +49,11 @@ int main() {
     nchgreuse[iType].book( "charged multiplicity, reuse  ", 100, -0.5, 399.5);
   }
 
-  // Timing info.
-  clock_t tstart, tstop, tFixedInit, tFixedRun, tSwitchInit, tSwitchRun,
-    tReuseInit, tReuseRun;
-  tFixedInit = tFixedRun = 0;
-  tstart = clock();
+  // Timers (start the fixed timers as paused).
+  Timer tFixedInit(Timer::CPU), tFixedRun(Timer::CPU), tSwitchInit(Timer::CPU),
+    tSwitchRun(Timer::CPU), tReuseInit(Timer::CPU), tReuseRun(Timer::CPU);
+  tFixedInit.start(true);
+  tFixedRun.start(true);
 
   // First case: fixed.  ------------------------------------------------
 
@@ -62,6 +61,7 @@ int main() {
   for (int iType = 0; iType < 10; ++iType) {
 
     // Object with fixed beam hadron. (New for each idA value.)
+    tFixedInit.resume();
     Pythia pythiaFixed;
     // Fixed incoming beam type (and energy).
     pythiaFixed.settings.mode("Beams:idA", idAtype[iType]);
@@ -75,13 +75,10 @@ int main() {
       cout << "pythiaFixed failed to initialize." << endl;
       return -2;
     }
-
-    // Timing.
-    tstop = clock();
-    tFixedInit += tstop - tstart;
-    tstart = tstop;
+    tFixedInit.pause();
 
     // Generate test events.
+    tFixedRun.resume();
     for (int iEvent = 0; iEvent < nEvent; ++iEvent) {
       pythiaFixed.next();
 
@@ -90,17 +87,14 @@ int main() {
       nMPIfixed[iType].fill(  pythiaFixed.info.nMPI() );
       nchgfixed[iType].fill(  pythiaFixed.event.nFinal(true) );
     }
+    tFixedRun.pause();
     pythiaFixed.stat();
-
-    // Timing. End of beam particle loop.
-    tstop = clock();
-    tFixedRun += tstop - tstart;
-    tstart = tstop;
-  }
+  } // End of beam particle loop.
 
   // Second case: switch.  ------------------------------------------------
 
   // Object which allows switching ids, creating a new MPI init file.
+  tSwitchInit.start();
   Pythia pythiaSwitch;
   // Variable incoming beam type (and energy).
   pythiaSwitch.readString("Beams:allowVariableEnergy = on");
@@ -117,13 +111,10 @@ int main() {
     cout << "pythiaSwitch failed to initialize." << endl;
     return -1;
   }
-
-  // Timing.
-  tstop = clock();
-  tSwitchInit = tstop - tstart;
-  tstart = tstop;
+  tSwitchInit.stop();
 
   // Generate events, switching incoming particle, but same energy.
+  tSwitchRun.start();
   for (int iEvent = 0; iEvent < 10 * nEvent; ++iEvent) {
     int iType = iEvent%10;
     pythiaSwitch.setBeamIDs(idAtype[iType]);
@@ -134,16 +125,13 @@ int main() {
     nMPIswitch[iType].fill( pythiaSwitch.info.nMPI() );
     nchgswitch[iType].fill( pythiaSwitch.event.nFinal(true) );
   }
+  tSwitchRun.stop();
   pythiaSwitch.stat();
-
-  // Timing.
-  tstop = clock();
-  tSwitchRun = tstop - tstart;
-  tstart = tstop;
 
   // Third case: reuse.  ------------------------------------------------
 
   // Object which allows switching ids, reading an existing MPI init file.
+  tReuseInit.start();
   Pythia pythiaReuse;
   // Variable incoming beam type (and energy).
   pythiaReuse.readString("Beams:allowVariableEnergy = on");
@@ -160,13 +148,10 @@ int main() {
     cout << "pythiaReuse failed to initialize." << endl;
     return -1;
   }
-
-  // Timing.
-  tstop = clock();
-  tReuseInit = tstop - tstart;
-  tstart = tstop;
+  tReuseInit.stop();
 
   // Generate events, switching incoming particle and energy.
+  tReuseRun.start();
   for (int iEvent = 0; iEvent < 10 * nEvent; ++iEvent) {
     int iType = iEvent%10;
     double eCMnow = 7990 + 10. * pythiaReuse.rndm.flat();
@@ -179,29 +164,25 @@ int main() {
     nMPIreuse[iType].fill( pythiaReuse.info.nMPI() );
     nchgreuse[iType].fill( pythiaReuse.event.nFinal(true) );
   }
+  tReuseRun.stop();
   pythiaReuse.stat();
-
-  // Timing.
-  tstop = clock();
-  tReuseRun = tstop - tstart;
 
   // Output processing. ------------------------------------------------
 
   // Print timing info (in seconds).
-  double conv = 1. / double(CLOCKS_PER_SEC);
   cout << endl << fixed << setprecision(3)
        << " initialization time, fixed  " << setw(8)
-       << conv * tFixedInit  << " s" << endl
+       << tFixedInit.elapsed() / 1000.  << " s" << endl
        << " initialization time, switch " << setw(8)
-       << conv * tSwitchInit << " s" << endl
+       << tSwitchInit.elapsed() / 1000. << " s" << endl
        << " initialization time, reuse  " << setw(8)
-       << conv * tReuseInit  << " s" << endl
+       << tReuseInit.elapsed() / 1000.  << " s" << endl
        << " generation time, fixed      " << setw(8)
-       << conv * tFixedRun   << " s" << endl
+       << tFixedRun.elapsed() / 1000.   << " s" << endl
        << " generation time, switch     " << setw(8)
-       << conv * tSwitchRun  << " s" << endl
+       << tSwitchRun.elapsed() / 1000.  << " s" << endl
        << " generation time, reuse      " << setw(8)
-       << conv * tReuseRun   << " s" << endl;
+       << tReuseRun.elapsed() / 1000.   << " s" << endl;
 
     // Plotting object. Names of incoming beam hadrons.
   HistPlot hpl("plot482");

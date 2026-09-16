@@ -260,8 +260,7 @@ Whenever this mutex is locked, then the subsequent code is not threaded.
 </pre> 
 This can be used within any method of a <code>PhysicsBase</code> derived 
 class. All classes that can be passed to a <code>Pythia</code> instance by 
-external pointer are derived from <code>PhysicsBase</code>. By default, 
-plugins are assumed to not be thread safe unless the macro 
+external pointer are derived from <code>PhysicsBase</code> except <code>PDF</code>, <code>BeamShape</code>, and <code>RndmEngine</code>. By default, plugins are assumed to not be thread safe unless the macro 
 <code>PYTHIA8_PLUGIN_PARALLEL(true)</code> is explicitly set. See 
 <aloc href="Plugins">Plugins</aloc> for more details. 
  

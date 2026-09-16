@@ -163,12 +163,13 @@ MRST/MSTW group that have been implemented.</li>
 CTEQ/CT group that have been implemented.</li> 
 <li><code>NNPDF</code> gives four distributions from the NNPDF 2.3 
 QCD+QED sets that have been implemented.</li> 
-<li><code>nPDF, Isospin, EPS09</code> three classes allowing to introduce 
-nuclear modifications to a specified proton PDF. The first is base class 
-for the other two, where <code>Isospin</code> only provides the 
+<li><code>nPDF, Isospin, EPS09, EPPS16, EPPS21</code> these classes allows 
+to introduce nuclear modifications to a specified proton PDF. The first is 
+base class for the latter ones, where <code>Isospin</code> only provides the 
 appropriate mix of protons and isospin-conjugate neutrons, while 
-<code>EPS09</code> also contains nuclear modification factors 
-<ref>Esk09</ref>.</li> 
+<code>EPS09</code>, <code>EPPS16</code> and <code>EPPS21</code> also contains 
+nuclear modification factors from fits <ref>Esk09</ref>, <ref>Esk16</ref> 
+and <ref>Esk21</ref>.</li> 
 </ul> 
 The current default is NNPDF 2.3. 
  

@@ -112,8 +112,7 @@ public:
     FragmentationModel(), flavRopePtr(), doFlavBeforePT(true),
     closePacking(), setVertices(), constantTau(), smearOn(),
     traceColours(false), hadronVertex(), stopMass(), stopNewFlav(),
-    stopSmear(), pNormJunction(), pMaxJunction(), eJunctionCutoff(),
-    mJunctionCutoff(), eBothLeftJunction(),
+    stopSmear(), pNormJunction(), pMaxJunction(), eBothLeftJunction(),
     eMaxLeftJunction(), eMinLeftJunction(), mJoin(), bLund(),
     closePackingFluxRatio(1.), closePackingPT20(1.), pT20(),
     xySmear(), maxSmear(), maxTau(), kappaVtx(), mc(), mb(),
@@ -160,7 +159,6 @@ private:
          traceColours, hardRemn, doStrangeJunc;
   int    hadronVertex;
   double stopMass, stopNewFlav, stopSmear, pNormJunction, pMaxJunction,
-         eJunctionCutoff, mJunctionCutoff,
          eBothLeftJunction, eMaxLeftJunction, eMinLeftJunction,
          mJoin, bLund, closePackingFluxRatio, closePackingPT20,
          qqSupPar, qqSupAnti, pT20, xySmear, maxSmear, maxTau,
@@ -246,9 +244,9 @@ private:
   // Functions used in JRF iterative procedure.
   bool   collinearPair(Event& event);
   bool   perturbedJRF(Event& event);
-  int    updateLegs(Event& event, Vec4 vJunIn, bool juncCoM = false);
+  int    updateLegs(const Event& event, Vec4 vJunIn, bool juncCoM = false);
   double updateWeights(double pSmall, Vec4 vJunIn);
-  void   nextParton(Event& event, int leg);
+  void   nextParton(const Event& event, int leg);
 
   // Join extra nearby partons when stuck.
   int extraJoin(double facExtra, Event& event);

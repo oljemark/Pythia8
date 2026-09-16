@@ -2028,14 +2028,9 @@ double SigmaMBR::dsigmaCD(double xi1, double xi2, double t1, double t2,
 // Definitions of static variables.
 
 // Parameters of parametrization: total and elastic cross sections.
-const double SigmaABMST::EPSI[]  = {0.106231, 0.0972043, -0.510662, -0.302082};
-const double SigmaABMST::ALPP[]  = { 0.0449029, 0.278037, 0.821595, 0.904556};
-const double SigmaABMST::NORM[]  = { 228.359, 193.811, 518.686, 10.7843};
-const double SigmaABMST::SLOPE[] = { 8.38, 3.78, 1.36};
-const double SigmaABMST::FRACS[] = { 0.26, 0.56, 0.18};
-const double SigmaABMST::TRIG[]  = { 0.3, 5.03};
-const double SigmaABMST::LAM2P   = 0.521223;
-const double SigmaABMST::BAPPR[] = { 8.5, 1.086};
+const double SigmaABMST::SLOPE[3] = { 8.38, 3.78, 1.36};
+const double SigmaABMST::FRACS[3] = { 0.26, 0.56, 0.18};
+const double SigmaABMST::BAPPR[2] = { 8.5, 1.086};
 const double SigmaABMST::LAM2FF  = 0.71;
 
 // Parameters of parametrization: diffractive cross section.
@@ -2052,7 +2047,6 @@ const double SigmaABMST::CPI[6]  = {13.63, 0.0808, 31.79, -0.4525, 0.93, 14.4};
 const double SigmaABMST::CNST[5] = {1., -0.05, -0.25, -1.15, 13.5};
 
 // Parameters for integration over t and xi for SD, DD and CD.
-const int    SigmaABMST::NPOINTSTSD = 200;
 const double SigmaABMST::XIDIVSD    = 0.1;
 const double SigmaABMST::DXIRAWSD   = 0.01;
 const double SigmaABMST::DLNXIRAWSD = 0.1;
@@ -2063,10 +2057,8 @@ const double SigmaABMST::XIDIVDD    = 0.1;
 const double SigmaABMST::DXIRAWDD   = 0.02;
 const double SigmaABMST::DLNXIRAWDD = 0.1;
 const double SigmaABMST::BMCINTDD   = 2.;
-const int    SigmaABMST::NPOINTMCDD = 200000;
 // For CD only Monte Carlo integration.
 const double SigmaABMST::BMCINTCD   = 2.;
-const int    SigmaABMST::NPOINTMCCD = 200000;
 
 //--------------------------------------------------------------------------
 
@@ -2084,9 +2076,20 @@ void SigmaABMST::init(Info* infoPtrIn) {
   m2minp     = pow2(MPROTON + MPION);
   m2minm     = pow2(MPROTON - MPION);
 
-  // Allow Couplomb corrections for elastic scattering.
+  // Allow Coulomb corrections for elastic scattering.
   tryCoulomb = settings.flag("SigmaElastic:Coulomb");
   tAbsMin    = settings.parm("SigmaElastic:tAbsMin");
+
+  // Setup parameters for elastic scattering.
+  // Regge exchanges.
+  normXi = settings.pvec("SigmaElastic:ABMSTnormXi");
+  epsi = settings.pvec("SigmaElastic:ABMSTepsi");
+  alphapi = settings.pvec("SigmaElastic:ABMSTalphapi");
+  // Triple gluon exchange.
+  trig = {settings.parm("SigmaElastic:ABMSTaGluon"),
+          settings.parm("SigmaElastic:ABMSTtzero")};
+  // Double exchange.
+  lam2p = settings.parm("SigmaElastic:ABMSTlambda");
 
   // Setup for single diffraction.
   modeSD     = settings.mode("SigmaDiffractive:ABMSTmodeSD");
@@ -2117,6 +2120,20 @@ void SigmaABMST::init(Info* infoPtrIn) {
   bMinSD     = settings.parm("SigmaDiffractive:ABMSTbMinSD");
   bMinDD     = settings.parm("SigmaDiffractive:ABMSTbMinDD");
   bMinCD     = settings.parm("SigmaDiffractive:ABMSTbMinCD");
+
+  // Technical integration settings.
+  nPointsTSD  = settings.mode("SigmaDiffractive:ABMSTnPointsTSD");
+  nPointsMCDD = settings.mode("SigmaDiffractive:ABMSTnPointsMCDD");
+  nPointsMCCD = settings.mode("SigmaDiffractive:ABMSTnPointsMCCD");
+
+  // Possibility to rescale individual components.
+  doRescale  = settings.flag("SigmaDiffractive:ABMSTrescale");
+  facPPP     = settings.parm("SigmaDiffractive:ABMSTfacPPP");
+  facPPR     = settings.parm("SigmaDiffractive:ABMSTfacPPR");
+  facRRP     = settings.parm("SigmaDiffractive:ABMSTfacRRP");
+  facRRR     = settings.parm("SigmaDiffractive:ABMSTfacRRR");
+  facPi      = settings.parm("SigmaDiffractive:ABMSTfacPi");
+  facRes     = settings.parm("SigmaDiffractive:ABMSTfacRes");
 
 }
 
@@ -2200,32 +2217,32 @@ complex SigmaABMST::amplitude( double t, bool useCoulomb,
 
   // Two Pomeron and even and odd Reggeon exchange.
   for (int i = 0; i < 4; ++i)
-    amp[i] = ((i < 3) ? complex(-NORM[i], 0.) : complex( 0., NORM[i]))
-           * ampt * sModAlp( ALPP[i] * snu, 1. + EPSI[i] + ALPP[i] * t);
+    amp[i] = ((i < 3) ? complex(-normXi[i], 0.) : complex( 0., normXi[i]))
+           * ampt * sModAlp( alphapi[i] * snu, 1. + epsi[i] + alphapi[i] * t);
 
   // Two-pomeron exchange.
   amp[4] = complex(0., 0.);
   for (int i = 0; i < 4; ++i) {
-    l2p[i]  = ALPP[i] * complex( log(ALPP[i] * snu), -0.5 * M_PI);
-    ll2p[i] = (1. + EPSI[i]) * l2p[i] / ALPP[i];
+    l2p[i]  = alphapi[i] * complex( log(alphapi[i] * snu), -0.5 * M_PI);
+    ll2p[i] = (1. + epsi[i]) * l2p[i] / alphapi[i];
     for (int k = 0; k < 3; ++k) d2p[i][k] = SLOPE[k] + l2p[i];
   }
   for (int i = 0; i < 4; ++i)
   for (int j = 0; j < 4; ++j)
   for (int k = 0; k < 3; ++k)
   for (int l = 0; l < 3; ++l) {
-    complex part = NORM[i] * NORM[j] * exp( ll2p[i] + ll2p[j] )
+    complex part = normXi[i] * normXi[j] * exp( ll2p[i] + ll2p[j] )
                  * exp( t * d2p[i][k] * d2p[j][l] / (d2p[i][k] + d2p[j][l]) )
                  * FRACS[k] * FRACS[l] / (d2p[i][k] + d2p[j][l]);
     if (i == 3) part *= complex( 0., 1.);
     if (j == 3) part *= complex( 0., 1.);
     amp[4]      += part;
   }
-  amp[4]        *= LAM2P * complex( 0., 1.) / (16. * M_PI * snu);
+  amp[4]        *= lam2p * complex( 0., 1.) / (16. * M_PI * snu);
 
   // Triple-gluon exchange.
-  amp[5] = sqrt(16. * M_PI / HBARCSQ) * TRIG[0] * ((t < -TRIG[1])
-         ? 1. / pow4(t) :  exp(4. + 4. * t / TRIG[1]) / pow4(TRIG[1]));
+  amp[5] = sqrt(16. * M_PI / HBARCSQ) * trig[0] * ((t < -trig[1])
+         ? 1. / pow4(t) :  exp(4. + 4. * t / trig[1]) / pow4(trig[1]));
 
   // Add up contributions.
   complex ampSum = 0.;
@@ -2396,6 +2413,15 @@ double SigmaABMST::dsigmaSDcore(double xi, double t) {
                   + CPI[2] * pow(m2XNow, CPI[3]);
   double ampPi    = cnstPi * sigPi * pow(xiNow, 1. - 2. * alpt[2]);
 
+  // Optionally rescale components separately.
+  if (doRescale) {
+    ampPPP         *= facPPP;
+    ampPPR         *= facPPR;
+    ampRRP         *= facRRP;
+    ampRRR         *= facRRR;
+    ampPi          *= facPi;
+  }
+
   // Total high-mass contribution. Done if at high masses.
   double ampHM    = scaleFac * (ampPPP + ampPPR + ampRRP + ampRRR + ampPi);
   if (isHighM) return xi * ampHM;
@@ -2419,6 +2445,10 @@ double SigmaABMST::dsigmaSDcore(double xi, double t) {
   ampRes         *= exp( CNST[4] * (t - CNST[1]) ) / xi;
   ampMatch       *= exp( CNST[4] * (t - CNST[1]) ) / xiNow
                   * (xi - xiThr) / (xiNow - xiThr);
+  if (doRescale) {
+    ampRes       *= facRes;
+    ampMatch     *= facRes;
+  }
 
   // Background contribution.
   double dAmpPPP  = ampPPP * (alp0[0] - 2. * alpt[0]) / xiNow;
@@ -2430,6 +2460,7 @@ double SigmaABMST::dsigmaSDcore(double xi, double t) {
   double dAmpPi   = cnstPi * (sigPi * (1. - 2. * alpt[2])
                   * pow(xiNow, -2. * alpt[2])
                   + dSigPi * pow(xiNow, 1. - 2. * alpt[2]) );
+  if (doRescale) dAmpPi *= facPi;
   double dAmpHM   = scaleFac * (dAmpPPP + dAmpPPR + dAmpRRP + dAmpRRR
                   + dAmpPi);
 
@@ -2482,14 +2513,14 @@ double SigmaABMST::dsigmaSDintT(double xi, double tMinIn, double tMaxIn) {
   // Do integration by uniform steps in exp(slope * t).
   double dsig  = 0.;
   double etNow, tNow;
-  for (int i = 0; i < NPOINTSTSD; ++i) {
-    etNow      = etMin + (i + 0.5) * (etMax - etMin) / NPOINTSTSD;
+  for (int i = 0; i < nPointsTSD; ++i) {
+    etNow      = etMin + (i + 0.5) * (etMax - etMin) / nPointsTSD;
     tNow       = log(etNow) / slope;
     dsig      += dsigmaSD( xi, tNow, true, 0) / etNow;
   }
 
   // Normalize and done.
-  dsig        *= (etMax - etMin) / (NPOINTSTSD * slope);
+  dsig        *= (etMax - etMin) / (nPointsTSD * slope);
   return dsig;
 
 }
@@ -2584,7 +2615,7 @@ double SigmaABMST::dsigmaDDintMC() {
   double xi1, xi2, t;
 
   // Integrate flat in dln(xi1) * dln(xi2) * exp(b_min t) dt.
-  for (int iPoint = 0; iPoint < NPOINTMCDD; ++iPoint) {
+  for (int iPoint = 0; iPoint < nPointsMCDD; ++iPoint) {
     xi1   = pow( xiMin, rndmPtr->flat() );
     xi2   = pow( xiMin, rndmPtr->flat() );
     t     = log( rndmPtr->flat() ) / BMCINTDD;
@@ -2598,7 +2629,7 @@ double SigmaABMST::dsigmaDDintMC() {
   }
 
   // Normalize and done.
-  sigSum *= pow2(log(xiMin)) / (BMCINTDD * NPOINTMCDD);
+  sigSum *= pow2(log(xiMin)) / (BMCINTDD * nPointsMCDD);
   return sigSum;
 
 }
@@ -2769,7 +2800,7 @@ double SigmaABMST::dsigmaCDintMC() {
   double xi1, xi2, t1, t2;
 
   // Integrate flat in dln(xi1) * exp(b_min t1) dt1 * (same with xi2, t2).
-  for (int iPoint = 0; iPoint < NPOINTMCCD; ++iPoint) {
+  for (int iPoint = 0; iPoint < nPointsMCCD; ++iPoint) {
     xi1   = pow( xiMin, rndmPtr->flat() );
     xi2   = pow( xiMin, rndmPtr->flat() );
     t1    = log( rndmPtr->flat() ) / BMCINTCD;
@@ -2780,7 +2811,7 @@ double SigmaABMST::dsigmaCDintMC() {
     if (xi1 * xi2 + 2. * xiMin > 1.) continue;
     if (!tInRange( t1, s, SPROTON, SPROTON, SPROTON, SPROTON + xi1 * s))
       continue;
-    if (!tInRange( t1, s, SPROTON, SPROTON, SPROTON, SPROTON + xi2 * s))
+    if (!tInRange( t2, s, SPROTON, SPROTON, SPROTON, SPROTON + xi2 * s))
       continue;
 
     // Calculate and add cross section.
@@ -2788,7 +2819,7 @@ double SigmaABMST::dsigmaCDintMC() {
   }
 
   // Normalize and done.
-  sigSum *= pow2(log(xiMin) / BMCINTCD) / NPOINTMCCD;
+  sigSum *= pow2(log(xiMin) / BMCINTCD) / nPointsMCCD;
   return sigSum;
 
 }

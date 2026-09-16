@@ -11,9 +11,10 @@
   <li><a href="#section0">Cross Sections and Weight Sums</a></li>
   <li><a href="#section1">Event Weight</a></li>
   <li><a href="#section2">CKKW-L and NLO Merging Weights</a></li>
-  <li><a href="#section3">User Hooks Weight</a></li>
-  <li><a href="#section4">Shower Uncertainty-Variation Weights</a></li>
-  <li><a href="#section5">The Weight Container</a></li>
+  <li><a href="#section3">NLO Matching Weights</a></li>
+  <li><a href="#section4">User Hooks Weight</a></li>
+  <li><a href="#section5">Shower Uncertainty-Variation Weights</a></li>
+  <li><a href="#section6">The Weight Container</a></li>
 </ol>
 
  
@@ -166,9 +167,24 @@ merging.
    
  
 <a name="section3"></a> 
-<h3>User Hooks Weight</h3> 
+<h3>NLO Matching Weights</h3> 
  
 <a name="anchor14"></a>
+<p/><strong> double Info::weightNLO() &nbsp;</strong> <br/>
+NLO matching weight assigned to the current event if reweighting by 
+inclusive NLO K-factor is attempted. If the flag 
+<code>SigmaProcess:reweightNLO</code> is on, this weight is included 
+in the unweighting process, the final event weight 
+<code>Info::weight()</code> is unity, and the cross section printed by 
+<code>Info::sigmaGen()</code> includes the effect of inclusive NLO 
+matching.  If no NLO corrections are included, this method returns 
+unity. 
+   
+ 
+<a name="section4"></a> 
+<h3>User Hooks Weight</h3> 
+ 
+<a name="anchor15"></a>
 <p/><strong> virtual double UserHooks::biasedSelectionWeight() &nbsp;</strong> <br/>
 Returns the weight you should assign to the event, to use e.g. when 
 you histogram results. It is the exact inverse of the weight you 
@@ -178,7 +194,7 @@ can return <code>1/selBias</code>. The weight is also returned by the
 <code>Info::weight()</code> method, which may be more convenient to use. 
    
  
-<a name="section4"></a> 
+<a name="section5"></a> 
 <h3>Shower Uncertainty-Variation Weights</h3> 
  
 As discussed in the sections on Parton Showers, the user can 
@@ -191,15 +207,15 @@ documentation.
 <p/> 
 The following methods give access to the groups of uncertainty weights: 
  
-<a name="anchor15"></a>
+<a name="anchor16"></a>
 <p/><strong>  int    Info::nVariationGroups()  &nbsp;</strong> <br/>
   returns the number of groups 
    
-<a name="anchor16"></a>
+<a name="anchor17"></a>
 <p/><strong>  string Info::getGroupName(int iG)  &nbsp;</strong> <br/>
   returns the name of the iG-th group 
    
-<a name="anchor17"></a>
+<a name="anchor18"></a>
 <p/><strong>  double Info::getGroupWeight(int iG)  &nbsp;</strong> <br/>
   returns the weight of the iG-th group 
    
@@ -208,15 +224,15 @@ The following methods give access to the groups of uncertainty weights:
 Correspondingly, the individual parameter-variation weights can also 
 be accessed: 
  
-<a name="anchor18"></a>
+<a name="anchor19"></a>
 <p/><strong> int Info::nWeights() &nbsp;</strong> <br/>
   returns number of individual parameter-variation weights 
    
-<a name="anchor19"></a>
+<a name="anchor20"></a>
 <p/><strong> string Info::weightLabel(int i) &nbsp;</strong> <br/>
 returns label of i-th individual parameter-variation weight 
    
-<a name="anchor20"></a>
+<a name="anchor21"></a>
 <p/><strong> double Info::weight(int i) &nbsp;</strong> <br/>
   returns value of i-th indivudal parameter-variation weight 
    
@@ -230,7 +246,7 @@ weights are thus enumerated starting from <code>1</code> for
 the first up to <code>nWeights()</code> for 
 the last individual parameter variation. 
  
-<a name="section5"></a> 
+<a name="section6"></a> 
 <h3>The Weight Container</h3> 
  
 In the long run, we plan to consolidate all possible weights into 
@@ -251,14 +267,14 @@ appearing in HepMC will use the convention discussed in
 <p/> 
 In this context, the following program methods are relevant: 
  
-<a name="anchor21"></a>
+<a name="anchor22"></a>
 <p/><strong> int Info::numberOfWeights() &nbsp;</strong> <br/>
 The total length of the set of all weights, similar to 
 <code>Info::nWeights</code> above (which returns the length of the set 
 of shower variation weights). 
    
  
-<a name="anchor22"></a>
+<a name="anchor23"></a>
 <p/><strong> string Info::weightNameByIndex(int i) &nbsp;</strong> <br/>
 Returns the name of the i'th weight.  For example, if "i" indexes a 
 shower variation, this would e.g. return <code>fsr:muRfac=0.5</code> 
@@ -269,7 +285,7 @@ in [<a href="Bibliography.html#refBut14" target="page">But14</a>], page 162. The
 the content of the "&lt;weight&gt;" tags in the LHE file header. 
    
  
-<a name="anchor23"></a>
+<a name="anchor24"></a>
 <p/><strong> double Info::weightValueByIndex(int i) &nbsp;</strong> <br/>
 Returns the value of the i'th weight. The normalization of all weights 
 is synchronized. For unweighted event generation (as would be the case 
@@ -280,13 +296,13 @@ include the cross section prefactor. <code>main134.cc</code> gives an
 example for both these cases. 
    
  
-<a name="anchor24"></a>
+<a name="anchor25"></a>
 <p/><strong> vector &lt;string&gt; Info::weightNameVector() const &nbsp;</strong> <br/>
 Returns a vector of all weight names. The ordering of entries in synchronized 
 with the order of <code> Info::weightValueVector()</code>. 
    
  
-<a name="anchor25"></a>
+<a name="anchor26"></a>
 <p/><strong> vector &lt;double&gt; Info::weightValueVector() const &nbsp;</strong> <br/>
 Returns a vector of all weight values. The ordering of entries in synchronized 
 with the order of <code> Info::weightNameVector()</code>. 
@@ -300,7 +316,7 @@ user-defined prefix in the weight name as reported by the methods
 <code>Info::weightNameVector</code>.  This allows the user to further 
 process or combine the weights in a meaningful way. 
  
-<a name="anchor26"></a>
+<a name="anchor27"></a>
 <p/><code>word&nbsp; </code><strong> Weights:prefix &nbsp;</strong> <br/>
 A user-defined prefix to add to the weight name. 
    
@@ -310,7 +326,7 @@ numbers of weights might occur in the output when processing multiple
 LHEF input files.  To avoid this, the following flag allows to 
 suppress the output of auxiliary weights. 
  
-<a name="anchor27"></a>
+<a name="anchor28"></a>
 <p/><code>flag&nbsp; </code><strong> Weights:suppressAUX &nbsp;</strong> 
  (<code>default = <strong>off</strong></code>)<br/>
 If on, the output of auxiliary weights with user-defined prefix 

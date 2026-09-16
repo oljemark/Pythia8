@@ -80,10 +80,9 @@ public:
   // Calculate just the pT weight.
   double weight(double sigma, const vector<double>& pTBreaks) {
     double wgt = 1.;
-    for (int iBrk = 0; iBrk < int(pTBreaks.size()/2); ++iBrk)
+    for (int iBrk = 0; iBrk < int(pTBreaks.size()); ++iBrk)
       wgt *= pythia.info.weightContainerPtr
-        ->weightsFragmentation.pTWeight(
-          sigma, pTBreaks[2*iBrk + 0], pTBreaks[2*iBrk + 1]);
+        ->weightsFragmentation.pTWeight(sigma, pTBreaks[iBrk]);
     return wgt;
   }
 

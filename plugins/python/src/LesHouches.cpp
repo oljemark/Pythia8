@@ -1,19 +1,34 @@
 #include <Pythia8/Basics.h>
 #include <Pythia8/BeamSetup.h>
+#include <Pythia8/BeamShape.h>
+#include <Pythia8/FragmentationModel.h>
+#include <Pythia8/HIInfo.h>
 #include <Pythia8/HadronWidths.h>
+#include <Pythia8/HeavyIons.h>
 #include <Pythia8/Info.h>
 #include <Pythia8/LHEF3.h>
 #include <Pythia8/LesHouches.h>
 #include <Pythia8/Logger.h>
+#include <Pythia8/Merging.h>
+#include <Pythia8/MergingHooks.h>
 #include <Pythia8/ParticleData.h>
+#include <Pythia8/ParticleDecays.h>
+#include <Pythia8/PartonDistributions.h>
 #include <Pythia8/PartonSystems.h>
+#include <Pythia8/PartonVertex.h>
+#include <Pythia8/PhaseSpace.h>
+#include <Pythia8/PhysicsBase.h>
+#include <Pythia8/Pythia.h>
+#include <Pythia8/ResonanceWidths.h>
 #include <Pythia8/Settings.h>
+#include <Pythia8/ShowerModel.h>
 #include <Pythia8/SigmaLowEnergy.h>
+#include <Pythia8/SigmaProcess.h>
 #include <Pythia8/SigmaTotal.h>
 #include <Pythia8/StandardModel.h>
 #include <Pythia8/SusyCouplings.h>
+#include <Pythia8/UserHooks.h>
 #include <Pythia8/Weights.h>
-#include <cwchar>
 #include <fstream>
 #include <functional>
 #include <ios>
@@ -21,36 +36,35 @@
 #include <iterator>
 #include <map>
 #include <memory>
+#include <ostream>
+#include <sstream>
 #include <sstream> // __str__
 #include <streambuf>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::LHAup file:Pythia8/LesHouches.h line:78
 struct PyCallBack_Pythia8_LHAup : public Pythia8::LHAup {
 	using Pythia8::LHAup::LHAup;
 
-	void newEventFile(const char * a0) override { 
+	void newEventFile(const char * a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "newEventFile");
 		if (overload) {
@@ -59,11 +73,11 @@ struct PyCallBack_Pythia8_LHAup : public Pythia8::LHAup {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return LHAup::newEventFile(a0);
 	}
-	bool fileFound() override { 
+	bool fileFound() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "fileFound");
 		if (overload) {
@@ -72,11 +86,11 @@ struct PyCallBack_Pythia8_LHAup : public Pythia8::LHAup {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return LHAup::fileFound();
 	}
-	bool useExternal() override { 
+	bool useExternal() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "useExternal");
 		if (overload) {
@@ -85,11 +99,11 @@ struct PyCallBack_Pythia8_LHAup : public Pythia8::LHAup {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return LHAup::useExternal();
 	}
-	bool setInit() override { 
+	bool setInit() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "setInit");
 		if (overload) {
@@ -98,11 +112,11 @@ struct PyCallBack_Pythia8_LHAup : public Pythia8::LHAup {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		pybind11::pybind11_fail("Tried to call pure virtual function \"LHAup::setInit\"");
 	}
-	bool setEvent(int a0) override { 
+	bool setEvent(int a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "setEvent");
 		if (overload) {
@@ -111,11 +125,11 @@ struct PyCallBack_Pythia8_LHAup : public Pythia8::LHAup {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		pybind11::pybind11_fail("Tried to call pure virtual function \"LHAup::setEvent\"");
 	}
-	bool skipEvent(int a0) override { 
+	bool skipEvent(int a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "skipEvent");
 		if (overload) {
@@ -124,11 +138,11 @@ struct PyCallBack_Pythia8_LHAup : public Pythia8::LHAup {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return LHAup::skipEvent(a0);
 	}
-	bool openLHEF(class std::basic_string<char> a0) override { 
+	bool openLHEF(std::string a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "openLHEF");
 		if (overload) {
@@ -137,11 +151,11 @@ struct PyCallBack_Pythia8_LHAup : public Pythia8::LHAup {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return LHAup::openLHEF(a0);
 	}
-	bool closeLHEF(bool a0) override { 
+	bool closeLHEF(bool a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "closeLHEF");
 		if (overload) {
@@ -150,9 +164,74 @@ struct PyCallBack_Pythia8_LHAup : public Pythia8::LHAup {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return LHAup::closeLHEF(a0);
+	}
+	void onInitInfoPtr() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "onInitInfoPtr");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PhysicsBase::onInitInfoPtr();
+	}
+	void onBeginEvent() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "onBeginEvent");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PhysicsBase::onBeginEvent();
+	}
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "onEndEvent");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PhysicsBase::onEndEvent(a0);
+	}
+	void onStat() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "onStat");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PhysicsBase::onStat();
+	}
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LHAup *>(this), "onStat");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PhysicsBase::onStat(a0, a1);
 	}
 };
 
@@ -160,8 +239,6 @@ void bind_Pythia8_LesHouches(std::function< pybind11::module &(std::string const
 {
 	{ // Pythia8::LHAProcess file:Pythia8/LesHouches.h line:28
 		pybind11::class_<Pythia8::LHAProcess, std::shared_ptr<Pythia8::LHAProcess>> cl(M("Pythia8"), "LHAProcess", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHAProcess(); } ) );
 		cl.def( pybind11::init<int, double, double, double>(), pybind11::arg("idProcIn"), pybind11::arg("xSecIn"), pybind11::arg("xErrIn"), pybind11::arg("xMaxIn") );
 
@@ -170,12 +247,9 @@ void bind_Pythia8_LesHouches(std::function< pybind11::module &(std::string const
 		cl.def_readwrite("xSecProc", &Pythia8::LHAProcess::xSecProc);
 		cl.def_readwrite("xErrProc", &Pythia8::LHAProcess::xErrProc);
 		cl.def_readwrite("xMaxProc", &Pythia8::LHAProcess::xMaxProc);
-		cl.def("assign", (class Pythia8::LHAProcess & (Pythia8::LHAProcess::*)(const class Pythia8::LHAProcess &)) &Pythia8::LHAProcess::operator=, "C++: Pythia8::LHAProcess::operator=(const class Pythia8::LHAProcess &) --> class Pythia8::LHAProcess &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::LHAParticle file:Pythia8/LesHouches.h line:48
 		pybind11::class_<Pythia8::LHAParticle, std::shared_ptr<Pythia8::LHAParticle>> cl(M("Pythia8"), "LHAParticle", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHAParticle(); } ) );
 		cl.def( pybind11::init<int, int, int, int, int, int, double, double, double, double, double, double, double, double>(), pybind11::arg("idIn"), pybind11::arg("statusIn"), pybind11::arg("mother1In"), pybind11::arg("mother2In"), pybind11::arg("col1In"), pybind11::arg("col2In"), pybind11::arg("pxIn"), pybind11::arg("pyIn"), pybind11::arg("pzIn"), pybind11::arg("eIn"), pybind11::arg("mIn"), pybind11::arg("tauIn"), pybind11::arg("spinIn"), pybind11::arg("scaleIn") );
 
@@ -194,12 +268,9 @@ void bind_Pythia8_LesHouches(std::function< pybind11::module &(std::string const
 		cl.def_readwrite("tauPart", &Pythia8::LHAParticle::tauPart);
 		cl.def_readwrite("spinPart", &Pythia8::LHAParticle::spinPart);
 		cl.def_readwrite("scalePart", &Pythia8::LHAParticle::scalePart);
-		cl.def("assign", (class Pythia8::LHAParticle & (Pythia8::LHAParticle::*)(const class Pythia8::LHAParticle &)) &Pythia8::LHAParticle::operator=, "C++: Pythia8::LHAParticle::operator=(const class Pythia8::LHAParticle &) --> class Pythia8::LHAParticle &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::LHAup file:Pythia8/LesHouches.h line:78
-		pybind11::class_<Pythia8::LHAup, std::shared_ptr<Pythia8::LHAup>, PyCallBack_Pythia8_LHAup> cl(M("Pythia8"), "LHAup", "");
-		pybind11::handle cl_type = cl;
-
+		pybind11::class_<Pythia8::LHAup, std::shared_ptr<Pythia8::LHAup>, PyCallBack_Pythia8_LHAup, Pythia8::PhysicsBase> cl(M("Pythia8"), "LHAup", "");
 		cl.def( pybind11::init( [](){ return new PyCallBack_Pythia8_LHAup(); } ), "doc");
 		cl.def( pybind11::init<int>(), pybind11::arg("strategyIn") );
 
@@ -227,6 +298,36 @@ void bind_Pythia8_LesHouches(std::function< pybind11::module &(std::string const
 		cl.def_readwrite("pdf1InSave", &Pythia8::LHAup::pdf1InSave);
 		cl.def_readwrite("pdf2InSave", &Pythia8::LHAup::pdf2InSave);
 		cl.def_readwrite("fileName", &Pythia8::LHAup::fileName);
+		cl.def_readonly("osLHEF", &Pythia8::LHAup::osLHEF);
+		cl.def_readwrite("strategySave", &Pythia8::LHAup::strategySave);
+		cl.def_readwrite("idBeamASave", &Pythia8::LHAup::idBeamASave);
+		cl.def_readwrite("idBeamBSave", &Pythia8::LHAup::idBeamBSave);
+		cl.def_readwrite("eBeamASave", &Pythia8::LHAup::eBeamASave);
+		cl.def_readwrite("eBeamBSave", &Pythia8::LHAup::eBeamBSave);
+		cl.def_readwrite("pdfGroupBeamASave", &Pythia8::LHAup::pdfGroupBeamASave);
+		cl.def_readwrite("pdfGroupBeamBSave", &Pythia8::LHAup::pdfGroupBeamBSave);
+		cl.def_readwrite("pdfSetBeamASave", &Pythia8::LHAup::pdfSetBeamASave);
+		cl.def_readwrite("pdfSetBeamBSave", &Pythia8::LHAup::pdfSetBeamBSave);
+		cl.def_readwrite("processes", &Pythia8::LHAup::processes);
+		cl.def_readwrite("idProc", &Pythia8::LHAup::idProc);
+		cl.def_readwrite("weightProc", &Pythia8::LHAup::weightProc);
+		cl.def_readwrite("scaleProc", &Pythia8::LHAup::scaleProc);
+		cl.def_readwrite("alphaQEDProc", &Pythia8::LHAup::alphaQEDProc);
+		cl.def_readwrite("alphaQCDProc", &Pythia8::LHAup::alphaQCDProc);
+		cl.def_readwrite("particles", &Pythia8::LHAup::particles);
+		cl.def_readwrite("pdfIsSetSave", &Pythia8::LHAup::pdfIsSetSave);
+		cl.def_readwrite("scaleShowersIsSetSave", &Pythia8::LHAup::scaleShowersIsSetSave);
+		cl.def_readwrite("id1Save", &Pythia8::LHAup::id1Save);
+		cl.def_readwrite("id2Save", &Pythia8::LHAup::id2Save);
+		cl.def_readwrite("id1pdfSave", &Pythia8::LHAup::id1pdfSave);
+		cl.def_readwrite("id2pdfSave", &Pythia8::LHAup::id2pdfSave);
+		cl.def_readwrite("x1Save", &Pythia8::LHAup::x1Save);
+		cl.def_readwrite("x2Save", &Pythia8::LHAup::x2Save);
+		cl.def_readwrite("x1pdfSave", &Pythia8::LHAup::x1pdfSave);
+		cl.def_readwrite("x2pdfSave", &Pythia8::LHAup::x2pdfSave);
+		cl.def_readwrite("scalePDFSave", &Pythia8::LHAup::scalePDFSave);
+		cl.def_readwrite("pdf1Save", &Pythia8::LHAup::pdf1Save);
+		cl.def_readwrite("pdf2Save", &Pythia8::LHAup::pdf2Save);
 		cl.def("setPtr", (void (Pythia8::LHAup::*)(class Pythia8::Info *)) &Pythia8::LHAup::setPtr, "C++: Pythia8::LHAup::setPtr(class Pythia8::Info *) --> void", pybind11::arg("infoPtrIn"));
 		cl.def("newEventFile", (void (Pythia8::LHAup::*)(const char *)) &Pythia8::LHAup::newEventFile, "C++: Pythia8::LHAup::newEventFile(const char *) --> void", pybind11::arg(""));
 		cl.def("fileFound", (bool (Pythia8::LHAup::*)()) &Pythia8::LHAup::fileFound, "C++: Pythia8::LHAup::fileFound() --> bool");
@@ -333,11 +434,7 @@ void bind_Pythia8_LesHouches(std::function< pybind11::module &(std::string const
 		cl.def("setPdf", (void (Pythia8::LHAup::*)(int, int, double, double, double, double, double, bool)) &Pythia8::LHAup::setPdf, "C++: Pythia8::LHAup::setPdf(int, int, double, double, double, double, double, bool) --> void", pybind11::arg("id1pdfIn"), pybind11::arg("id2pdfIn"), pybind11::arg("x1pdfIn"), pybind11::arg("x2pdfIn"), pybind11::arg("scalePDFIn"), pybind11::arg("pdf1In"), pybind11::arg("pdf2In"), pybind11::arg("pdfIsSetIn"));
 		cl.def("setScaleShowers", [](Pythia8::LHAup &o, double const & a0) -> void { return o.setScaleShowers(a0); }, "", pybind11::arg("scaleIn1"));
 		cl.def("setScaleShowers", (void (Pythia8::LHAup::*)(double, double)) &Pythia8::LHAup::setScaleShowers, "C++: Pythia8::LHAup::setScaleShowers(double, double) --> void", pybind11::arg("scaleIn1"), pybind11::arg("scaleIn2"));
-		cl.def("setInitLHEF", [](Pythia8::LHAup &o, class std::basic_istream<char> & a0) -> bool { return o.setInitLHEF(a0); }, "", pybind11::arg("is"));
-		cl.def("setInitLHEF", (bool (Pythia8::LHAup::*)(class std::basic_istream<char> &, bool)) &Pythia8::LHAup::setInitLHEF, "C++: Pythia8::LHAup::setInitLHEF(class std::basic_istream<char> &, bool) --> bool", pybind11::arg("is"), pybind11::arg("readHeaders"));
-		cl.def("setNewEventLHEF", (bool (Pythia8::LHAup::*)(class std::basic_istream<char> &)) &Pythia8::LHAup::setNewEventLHEF, "C++: Pythia8::LHAup::setNewEventLHEF(class std::basic_istream<char> &) --> bool", pybind11::arg("is"));
 		cl.def("setOldEventLHEF", (bool (Pythia8::LHAup::*)()) &Pythia8::LHAup::setOldEventLHEF, "C++: Pythia8::LHAup::setOldEventLHEF() --> bool");
-		cl.def("openFile", (class std::basic_istream<char> * (Pythia8::LHAup::*)(const char *, class std::basic_ifstream<char> &)) &Pythia8::LHAup::openFile, "C++: Pythia8::LHAup::openFile(const char *, class std::basic_ifstream<char> &) --> class std::basic_istream<char> *", pybind11::return_value_policy::automatic, pybind11::arg("fn"), pybind11::arg("ifs"));
 		cl.def("setInfoHeader", (void (Pythia8::LHAup::*)(const std::string &, const std::string &)) &Pythia8::LHAup::setInfoHeader, "C++: Pythia8::LHAup::setInfoHeader(const std::string &, const std::string &) --> void", pybind11::arg("key"), pybind11::arg("val"));
 	}
 }

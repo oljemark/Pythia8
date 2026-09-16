@@ -8,11 +8,13 @@
  
 <h2>Python Interface</h2> 
 <ol id="toc">
-  <li><a href="#section0">Batch Generation</a></li>
-  <li><a href="#section1">Simplified Interface</a></li>
-  <li><a href="#section2">Installation</a></li>
-  <li><a href="#section3">Examples</a></li>
-  <li><a href="#section4">Interface Generation</a></li>
+  <li><a href="#section0">HepMC3 Output</a></li>
+  <li><a href="#section1">Batch Generation</a></li>
+  <li><a href="#section2">Event Visualization</a></li>
+  <li><a href="#section3">Simplified Interface</a></li>
+  <li><a href="#section4">Installation</a></li>
+  <li><a href="#section5">Examples</a></li>
+  <li><a href="#section6">Interface Generation</a></li>
 </ol>
 
  
@@ -110,6 +112,65 @@ interface. Additionally, protected members of classes are exposed as
 fully public members in the Python interface. 
  
 <a name="section0"></a> 
+<h3>HepMC3 Output</h3> 
+ 
+The PYTHIA Python interface does not include external dependencies, 
+and the additional helper classes available as headers in 
+<code>include/Pythia8Plugins</code> that have compile-time 
+dependencies are not available. This includes the 
+<a href="PythonInterface.html" target="page">HepMC interfaces</a>. However, since 
+the HepMC3 standard is so widely used to interace between particle 
+physics tools, a pure Python implementation of the 
+<code>Pythia8ToFilteredHepMC3</code> class is available through the 
+Python interface.An example of how to use the tool is given in 
+<code>examples/main299.py</code>. 
+<pre> 
+convert = pythia8.Pythia8ToFilteredHepMC3() 
+event = convert.hepmc3.GenEvent() 
+convert.fill_next_event(event, pythia = pythia) 
+</pre> 
+Here, <code>hepmc3</code> is the Python module providing the HepMC backend. This class uses either the 
+<a href="https://pypi.org/project/pyhepmc/"><code>pyhepmc</code></a> or 
+<a href="https://pypi.org/project/HepMC3/"><code>HepMC3</code></a> 
+Python packages as this HepMC3 backend. The preferred backend can be 
+passed to the converter constructor. 
+<pre> 
+import pyhepmc 
+convert = pythia8.Pythia8ToFilteredHepMC3(pyhepmc) 
+</pre> 
+If no argument is passed to the constructor, an attempt is made to 
+first load the <code>pyhepmc</code> backend, followed by the 
+<code>HepMC3</code> backend. The backend is then available via the 
+<code>hepmc3</code> member of the converter. 
+ 
+The selector function can be set as follows. 
+<pre> 
+# Keep all Pythia hard process particles and all necessary HepMC particles. 
+def selector(pyev, idx): 
+    return (0 &lt; pyev[idx].statusHepMC() &lt; 5) or ( 
+        10 &lt; pyev[idx].statusAbs() &lt; 40) 
+convert = pythia8.Pythia8ToFilteredHepMC3() 
+convert.selector = selector 
+</pre> 
+For full details on the converter, see the 
+<code>Pythia8ToFilteredHepMC3</code> documentation. 
+ 
+There are currently a few limitations of the Python implementation of 
+this interface with respect to its C++ equivalent. 
+<ol> 
+<li>Heavy ion information is not available via the <code>Info</code> 
+class in the PYTHIA Python bindings, and so this information is not 
+included.</li> 
+<li>The <code>weightContainerPtr</code> object is not available from 
+the <code>Info</code> class and so different multi-weight 
+cross-sections are not available.</li> 
+<li>If using the <code>HepMC3</code> package as a backend, the 
+<code>weights</code> container cannot be modified for a 
+<code>GenEvent</code> object, and so weights are stored as an event 
+attribute instead.</li> 
+</ol> 
+ 
+<a name="section1"></a> 
 <h3>Batch Generation</h3> 
  
 Individually generating events and then accessing each particle by the Python 
@@ -119,7 +180,7 @@ event record into Python as each particle is accessed by the user. Similarly,
 using <code>PythiaParallel</code> where a Python function is passed back to 
 the Pythia C++ code to perform an analysis can result in a slow down. Another 
 option is to batch translate events to Python using the 
-<a href="https://awkward-array.org" target="_top">Awkward array 
+<a href="https://awkward-array.org">Awkward array 
 library</a>. In this way, the event translation is all done in a 
 single C++ call for a group of events, rather than on a per particle 
 basis. An example on how to generate events with the Awkward interface 
@@ -186,8 +247,30 @@ vector.register_awkward()
 </pre> 
 This allows for analyses to be performed on the event record with 
 slicing. Some examples can be found in the <a 
-href="https://awkward-array.org/doc/main/getting-started/jagged-ragged-awkward-arrays.html" target="_top"> 
-Awkward array documentation</a>, as well as in <code>main297.py</code>. 
+href="https://awkward-array.org/doc/main/getting-started/jagged-ragged-awkward-arrays.html" 
+target="_top"> Awkward array documentation</a>, as well as in 
+<code>main297.py</code>. 
+ 
+<p/> 
+Limited event-level information is available through the batch interface. 
+The names for this information can be accessed as follows. 
+<pre> 
+events.info.fields 
+</pre> 
+The naming scheme between these fields in the <code>Info</code> class 
+is intended to be one-to-one when possible. The following fields are 
+available: <code>id1</code>, <code>id2</code>, <code>x1</code>, 
+<code>x2</code>, <code>pdf1</code>, <code>pdf2</code>, 
+<code>alphaS</code>, <code>alphaEM</code>, <code>Q2Fac</code>, 
+<code>Q2Ren</code>, <code>mHat</code>, <code>sHat</code>, 
+<code>tHat</code>, <code>uHat</code>, <code>pT2Hat</code>, and 
+<code>weights</code>. The weights are accessed via the 
+<code>Info::numberOfWeights</code> and 
+<code>Info::weightValueByIndex</code> methods. This includes weights 
+from all sources, including atomic weights. The name for each weight 
+can be accessed via the <code>Info::weightNameByIndex</code> method, 
+which should remain the same across all events for a single batch 
+call. 
  
 Some older C++ compiler versions are not compatible with the C++11 
 templating that is required for the Awkward array bindings. However, 
@@ -196,7 +279,25 @@ array bindings by passing the <code>--no-batch</code> flag to the
 <code>generate</code> script. See below for more details on how to 
 generate the Python interface. 
  
-<a name="section1"></a> 
+<a name="section2"></a> 
+<h3>Event Visualization</h3> 
+ 
+The <code>Vistas</code> class of the Python interface provides an interactive 
+tool to visualize Pythia events using the Hep Software Foundation (HSF) 
+<a href="https://hepsoftwarefoundation.org/phoenix/">Phoenix</a> event 
+display viewer. The <code>main300.py</code> example demonstrates how to 
+use this visualization class. Once an event has been generated, 
+the following will then launch a web-browser display of the event. 
+<pre> 
+    viewer = pythia8.Vistas(pythia) 
+    viewer.display() 
+</pre> 
+An interactive Jupyter tutorial on how to explore these visualized events is 
+available through the 
+<a href="https://gitlab.com/mcgen-ct/tutorials/-/blob/main/pythia/vistas.ipynb"> 
+  MCgen repository</a>. 
+ 
+<a name="section3"></a> 
 <h3>Simplified Interface</h3> 
  
 An attempt has been made to provide the everyday functionality of 
@@ -238,8 +339,20 @@ will return all the available classes and methods in the interface.
 <code>cosphi</code>, <code>RRapPhi</code>, <code>REtaPhi</code></li> 
 </ul> 
  
-<a name="section2"></a> 
+<a name="section4"></a> 
 <h3>Installation</h3> 
+ 
+Below, details are given on how to build the Python interface from the 
+Pythia source code. However, pre-built wheels for the package are 
+available through the 
+<a href="https://pypi.org/project/pyhepmc/"><code>pythia8mc</code></a> 
+package on the Python Package Index (PyPi). To install use the 
+following. 
+<pre> 
+    pip install pythia8mc 
+</pre> 
+Note, when using the PyPi package, the module name is 
+<code>pythia8mc</code> and not the normal <code>pythia8</code>. 
  
 To install the Python interface, the Python system header 
 <code>Python.h</code> must be available. By default when configuring 
@@ -290,7 +403,7 @@ the Python module is always compiled as <code>pythia8.so</code>, even
 in OS X. This is because older versions of Python in OS X do not 
 correctly recognize modules ending with the <code>dylib</code> suffix. 
  
-<a name="section3"></a> 
+<a name="section5"></a> 
 <h3>Examples</h3> 
  
 To use the Python interface for PYTHIA, start Python 
@@ -298,7 +411,7 @@ and <code>import pythia8</code>. The provided examples can be run
 by <code>python mainNNN.py</code> where <code>NNN</code> is the number 
 of the example. 
  
-<a name="section4"></a> 
+<a name="section6"></a> 
 <h3>Interface Generation</h3> 
  
 A script for automatically generating the Python interface, 

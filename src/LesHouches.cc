@@ -941,8 +941,14 @@ bool LHAupLHEF::setInitLHEF( istream & isIn, bool readHead ) {
 
 bool LHAupLHEF::setNewEventLHEF() {
 
-  // Done if the reader finished preemptively.
-  if(!reader.readEvent()) return false;
+  // Done if the reader finished preemptively. Distinguish a file that has
+  // simply ended from one that is malformed or truncated; only the latter
+  // is an error, and reading stops either way.
+  if (!reader.readEvent()) {
+    if (reader.readError) loggerPtr->ERROR_MSG("corrupt LHEF event",
+      "stopped reading events");
+    return false;
+  }
 
   // Extract process info and store it.
   nupSave     = reader.hepeup.NUP;

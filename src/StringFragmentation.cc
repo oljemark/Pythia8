@@ -651,8 +651,6 @@ bool StringFragmentation::init(StringFlav* flavSelPtrIn,
   stopSmear         = zSelPtr->stopSmear();
   pNormJunction     = parm("StringFragmentation:pNormJunction");
   pMaxJunction      = 5 * pNormJunction;
-  eJunctionCutoff   = parm("StringFragmentation:eJunctionCutoff");
-  mJunctionCutoff   = parm("StringFragmentation:mJunctionCutoff");
   eBothLeftJunction = parm("StringFragmentation:eBothLeftJunction");
   eMaxLeftJunction  = parm("StringFragmentation:eMaxLeftJunction");
   eMinLeftJunction  = parm("StringFragmentation:eMinLeftJunction");
@@ -758,7 +756,7 @@ bool StringFragmentation::fragment(int iSub, ColConfig& colConfig,
 
   // For junction topology: fragment off two of the string legs.
   // Then iParton overwritten to remaining leg + leftover diquark.
-  pJunctionHadrons = 0.;
+  pJunctionHadrons = {};
   hasJunction = colConfig[iSub].hasJunction;
   if (hasJunction && !fragmentToJunction(event, rapPairs)) return false;
   int junctionHadrons = hadrons.size();
@@ -951,6 +949,7 @@ bool StringFragmentation::fragment(int iSub, ColConfig& colConfig,
   bool saneVertices = (setVertices) ? setHadronVertices( event) : true;
 
   // Done.
+  colConfig[iSub].isHandled = true;
   return saneVertices;
 
 }
@@ -2172,10 +2171,24 @@ bool StringFragmentation::fragmentToJunction(Event& event,
   Vec4 pDiquark;
   for ( int iTryOuter = 0; ; ++iTryOuter) {
 
+    if (iTryOuter > NTRYJNMATCH) {
+      loggerPtr->ERROR_MSG("Too many attempts to fragment junction");
+      return false;
+    }
+
     // Middle fallback loop, when much unused energy in leg remnants.
     double eLeftMin = 0.;
     double eLeftMid = 0.;
     for ( int iTryMiddle = 0; ; ++iTryMiddle) {
+
+      pJunctionHadrons = {};
+      hadrons.clear();
+      legMinVertices.clear();
+      legMidVertices.clear();
+      idMin = idMid = 0;
+
+      // We cannot try forever...
+      if ( iTryMiddle > NTRYJNMATCH ) break;
 
       // Loop over the two lowest-energy legs.
       for (int legLoop = 0; legLoop < 2; ++ legLoop) {
@@ -2204,7 +2217,6 @@ bool StringFragmentation::fragmentToJunction(Event& event,
             if (abs(idPos) > 10)
               loggerPtr->ERROR_MSG("diquark too close to junction");
             else loggerPtr->ERROR_MSG("caught in junction flavour loop");
-            event.popBack( iPartonMin.size() + iPartonMid.size() );
             return false;
           }
 
@@ -2276,15 +2288,11 @@ bool StringFragmentation::fragmentToJunction(Event& event,
             // Negative energy signals failure in construction.
             if (pHad.e() < 0. ) { noNegE = false; break; }
 
-            // Break when sufficiently close to the junction, i.e. the energy
-            // used up surpasses the energy of the leg (+ eJunctionCutoff).
+            // Break when sufficiently close to the junction,
+            // i.e. the energy used up surpasses the energy of the leg.
             // Exceptions: small systems, and/or with diquark end.
             bool delayedBreak = false;
-            Vec4 pCheck = pInJRF[legMin] + pInJRF[legMid]
-              - (pHadSoFar + hadMom + pHad);
-
-            if ((eUsed + pHad.e() + eExtra > eInJRF + eJunctionCutoff) ||
-              (pCheck.mCalc() < mJunctionCutoff)) {
+            if (eUsed + pHad.e() + eExtra > eInJRF) {
 
               // Allow for no breaks on legMin.
               if (nHadrons == 0 && abs(idPos) < 10 && legNow == legMin) break;
@@ -2358,16 +2366,18 @@ bool StringFragmentation::fragmentToJunction(Event& event,
         }
       }
 
+      // Check that nothing has gone wrong.
+      if ( !idMin || !idMid ) continue;
+
       // End of both-leg fragmentation.
       // Middle loopback if too much energy left.
       double eTrial = eBothLeftJunction + rndmPtr->flat() * eMaxLeftJunction;
-      if (iTryMiddle > NTRYJNMATCH
-        || ( min( eLeftMin, eLeftMid) < eBothLeftJunction
-        && max( eLeftMin, eLeftMid) < eTrial ) ) break;
-      hadrons.clear();
-      legMinVertices.clear();
-      legMidVertices.clear();
+      if ( min( eLeftMin, eLeftMid) < eBothLeftJunction &&
+           max( eLeftMin, eLeftMid) < eTrial ) break;
     }
+
+    // Check that nothing has gone wrong.
+    if ( !idMin || !idMid ) continue;
 
     // Boost hadrons away from the JRF to the original frame.
     for (int i = 0; i < hadrons.size(); ++i) {
@@ -2383,12 +2393,8 @@ bool StringFragmentation::fragmentToJunction(Event& event,
     // or too little energy left in third leg.
     pDiquark = pInLeg[legMin] + pInLeg[legMid] - pJunctionHadrons;
     double m2Left = m2( pInLeg[legMax], pDiquark);
-    if (iTryOuter >  NTRYJNMATCH || (pDiquark.mCalc() > MDIQUARKMIN
-      && m2Left > eMinLeftJunction * pInLeg[legMax].e()) ) break;
-    hadrons.clear();
-    legMinVertices.clear();
-    legMidVertices.clear();
-    pJunctionHadrons = 0.;
+    if (pDiquark.mCalc() > MDIQUARKMIN &&
+      m2Left > eMinLeftJunction * pInJRF[legMax].e() ) break;
   }
 
   // Now found solution; no more loopback. Remove temporary parton copies.
@@ -2762,7 +2768,8 @@ double StringFragmentation::updateWeights(double pSmall, Vec4 vJunIn) {
 
 // Update momenta of each junction leg for iterative procedure.
 
-int StringFragmentation::updateLegs(Event& event, Vec4 vJunIn, bool juncCoM) {
+int StringFragmentation::updateLegs(const Event& event, Vec4 vJunIn,
+  bool juncCoM) {
 
   // Boost each momenta and store the size of the momenta in the iterative JRF.
   // For endpoints, use factor of 2 to allow for oscillations on the junction.
@@ -2834,7 +2841,7 @@ int StringFragmentation::updateLegs(Event& event, Vec4 vJunIn, bool juncCoM) {
 
 // Step to the next parton on the given junction leg.
 
-void StringFragmentation::nextParton(Event& event, int leg) {
+void StringFragmentation::nextParton(const Event& event, int leg) {
 
   iLeg[leg] = iLeg[leg] + 1;
   int i = iParton[ iLeg[leg] ];

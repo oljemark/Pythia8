@@ -306,6 +306,31 @@ the polar and azimuthal scattering angles in the rest frame of
 a <ei>2 &rarr; 2</ei> process. 
 </methodmore> 
  
+<method name="double Info::Q2DIS()"> 
+</method> 
+<methodmore name="double Info::Q2DIS()"> 
+the propagator virtuality in a <ei>2 &rarr; 2</ei> DIS process. 
+</methodmore> 
+ 
+<method name="double Info::xDIS()"> 
+</method> 
+<methodmore name="double Info::xDIS()"> 
+the invariant <ei>x</ei> in a <ei>2 &rarr; 2</ei> DIS process. 
+</methodmore> 
+ 
+<method name="double Info::yDIS()"> 
+</method> 
+<methodmore name="double Info::yDIS()"> 
+the inelasticity in a <ei>2 &rarr; 2</ei> DIS process. 
+</methodmore> 
+ 
+<method name="double Info::WDIS()"> 
+</method> 
+<methodmore name="double Info::WDIS()"> 
+the invariant mass of the hadronic system in a <ei>2 &rarr; 2</ei> DIS 
+process. 
+</methodmore> 
+ 
 <h3>Soft Diffraction</h3> 
  
 Information on the primary elastic or 

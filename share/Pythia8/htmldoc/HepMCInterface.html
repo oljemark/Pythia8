@@ -11,7 +11,8 @@
   <li><a href="#section0">Direct output to HepMC via plugin</a></li>
   <li><a href="#section1">Direct output to HepMC</a></li>
   <li><a href="#section2">The HepMC3 public methods</a></li>
-  <li><a href="#section3">The HepMC2 public methods</a></li>
+  <li><a href="#section3">The HepMC3 filtered event public methods</a></li>
+  <li><a href="#section4">The HepMC2 public methods</a></li>
 </ol>
 
  
@@ -285,21 +286,189 @@ like in some Les Houches strategies, this weight is in units of pb.
    
  
 <a name="section3"></a> 
+<h3>The HepMC3 filtered event public methods</h3> 
+ 
+In some cases a filtered version of the event record might be 
+preferred to reduce disk space usage. For example, when passing 
+particles through a GEANT simulation, this might include just the 
+initial beam and final-state particles. The 
+<code>Pythia8ToFilteredHepMC3</code> class provides this utility, 
+where the mother-daughter relationships are maintained as much as 
+possible. This class is also available via the 
+<a href="PythonInterface.html" target="page">Python interface</a> using either the 
+<a href="https://pypi.org/project/pyhepmc/"><code>pyhepmc</code></a> or 
+<a href="https://pypi.org/project/HepMC3/"><code>HepMC3</code></a> 
+Python packages as a HepMC3 backend. 
+ 
+The mother-daughter relationships for this converter depend on how the 
+PYTHIA event is mapped to the graph structure needed by 
+HepMC. Traversing the PYTHIA event record in the "forward" direction 
+by following daughters does not necsssarily produce the same graph 
+structure as traversing in the "backward" direction by following 
+mothers; the mother-daughter relation normally is reciprocal, but not 
+always. An example is hadron beams (indices 1 and 2), where each beam 
+remnant and the initiator of each multiparton interaction has the 
+respective beam as mother, but the beam itself only has the initiator 
+of the hardest interaction as daughter. 
+ 
+Consequently, the <code>Pythia8ToFilteredHepMC3</code> class produces 
+filtered events by parsing the Pythia event in the "backward" 
+direction. When filtering out particles, there is a choice as to how 
+vertices are merged. For production vertices, the lineage of a 
+particle is always traced back through its first mother until a vertex 
+is found that is being included in the graph. This vertex is set as 
+the production vertex for that particle. Similarly, filtering can 
+produce intermediate particles with no end vertices. When this occurs, 
+the end vertex is set as the production vertex from the first 
+recursive daughter that has a production vertex. 
+ 
+The graph structure built this way differs from the graph structure 
+built by <code>Pythia8ToHepMC3</code>, and so HepMC3 events produced 
+by <code>Pythia8ToFilteredHepMC3</code> (without filtering) and 
+<code>Pythia8ToHepMC3</code> will be different. However, the number of 
+particles in the event should be the same, and in most cases, the 
+number of vertices should also be the same. Examples of how to use 
+this filtering class are given in <code>main137.cc</code>. The 
+interface is very similar to <code>Pythia8ToHepMC3</code>, except with 
+the ability to set a filtering function. An example is given below. 
+<pre> 
+    // Keep all Pythia hard process particles and all necessary HepMC 
+    // particles. 
+    bool selector(const Pythia8::Event&amp; pyev, size_t idx) { 
+      int pyStatus = pyev[idx].statusAbs(); 
+      int hmStatus = pyev[idx].statusHepMC(); 
+      return (hmStatus &gt; 0 && hmStatus &lt; 5) || 
+        (pyStatus &gt; 10 && pyStatus &lt; 40); 
+    } 
+ 
+    // Create the filtered event converter. 
+    HepMC3::Pythia8ToFilteredHepMC3 convert; 
+    // Set the particle selector function. 
+    convert.set_selector(selector); 
+</pre> 
+ 
+Here comes a list of the public methods of the 
+<code>Pythia8ToFilteredHepMC3</code> class in the <code>HepMC3</code> 
+(<i>not</i> <code>Pythia8</code>!) namespace that differ from the 
+<code>Pythia8ToHepMC3</code> class. 
+ 
+<a name="anchor19"></a>
+<p/><strong> bool Pythia8ToFilteredHepMC3::fill_next_event( Pythia8::Event& pyev, GenEvent* evt, int ievnum = -1, Pythia8::Info* pyinfo = 0, Pythia8::Settings* pyset = 0) &nbsp;</strong> <br/>
+convert a <code>Pythia</code> event to a <code>HepMC</code> one. 
+Will return true if succeeded. 
+<br/><code>argument</code><strong> pyev </strong>  :  
+the input <code>Pythia</code> event that is to be converted to HepMC 
+format. 
+   
+<br/><code>argument</code><strong> evt </strong>  :  
+the output <code>GenEvt</code> event, in its standard form. 
+   
+<br/><code>argument</code><strong> iev </strong>  :  
+set the event number of the current event. If negative then the 
+internal event number is used, which is incremented by one for 
+each new event. 
+   
+<br/><code>argument</code><strong> pyinfo </strong>  :  
+pointer to the <code>Pythia Info</code> object, which is used to 
+extract PFD values, and process and cross section information. 
+Without such a pointer this information therefore cannot be stored, 
+i.e. it is equivalent to the three <code>set_store</code> methods 
+below being set false. 
+   
+   
+ 
+<p/> 
+The following paired methods can be used to set and get the status of 
+some switches that modify the behaviour of the conversion routine. 
+The <code>set</code> methods have the same default input values as 
+the internal initialization ones, so that a call without an argument 
+(re)stores the default. 
+ 
+<a name="anchor20"></a>
+<p/><strong> void Pythia8ToHepMC3::set_store_color(bool b = true) &nbsp;</strong> <br/>
+   
+<a name="anchor21"></a>
+<strong> bool Pythia8ToHepMC3::store_color() &nbsp;</strong> <br/>
+store the color flow for the event, given as an attribute for each 
+<code>GenParticle</code> object. 
+   
+ 
+<a name="anchor22"></a>
+<p/><strong> void Pythia8ToHepMC3::set_store_pdf(bool b = true) &nbsp;</strong> <br/>
+   
+<a name="anchor23"></a>
+<strong> bool Pythia8ToHepMC3::store_pdf() &nbsp;</strong> <br/>
+for each event store information on the two incoming flavours, their 
+x values and common factorization scale, and the values of the two 
+parton distributions, <i>xf(x,Q)</i>. 
+   
+ 
+<a name="anchor24"></a>
+<p/><strong> void Pythia8ToHepMC3::set_store_proc(bool b = true) &nbsp;</strong> <br/>
+   
+<a name="anchor25"></a>
+<strong> bool Pythia8ToHepMC::store_proc() &nbsp;</strong> <br/>
+for each event store information on the Pythia process code, the 
+renormalization scale, and <i>alpha_em</i> and <i>alpha_s</i> 
+values used for the hard process. 
+   
+ 
+<a name="anchor26"></a>
+<p/><strong> void Pythia8ToHepMC3::set_store_xsec(bool b = true) &nbsp;</strong> <br/>
+   
+<a name="anchor27"></a>
+<strong> bool Pythia8ToHepMC3::store_xsec() &nbsp;</strong> <br/>
+for each event store information on the Pythia cross section and its error, 
+in pb, and the event weight. If events also come with a dimensional weight, 
+like in some Les Houches strategies, this weight is in units of pb. 
+   
+ 
+<a name="anchor28"></a>
+<p/><strong> void Pythia8ToHepMC3::set_store_weights(bool b = true) &nbsp;</strong> <br/>
+   
+<a name="anchor29"></a>
+<strong> bool Pythia8ToHepMC3::store_weights() &nbsp;</strong> <br/>
+for each event store information on the Pythia cross section and its error, 
+in pb, and the event weight. If events also come with a dimensional weight, 
+like in some Les Houches strategies, this weight is in units of pb. 
+   
+ 
+<a name="anchor30"></a>
+<p/><strong> void Pythia8ToHepMC3::set_vertex_status(int i = 0) &nbsp;</strong> <br/>
+   
+<a name="anchor31"></a>
+<strong> int Pythia8ToHepMC3::vertex_status() &nbsp;</strong> <br/>
+set the status for each created <code>HepMC3::GenVertex</code> to this 
+value. 
+   
+ 
+<a name="anchor32"></a>
+<p/><strong> void Pythia8ToHepMC3::set_selector( function&lt;bool(const Pythia8::Event&amp;, size_t)&gt; selector) &nbsp;</strong> <br/>
+   
+<a name="anchor33"></a>
+<strong> function&lt;bool(const Pythia8::Event&amp;, size_t)&gt; Pythia8ToHepMC3::selector() &nbsp;</strong> <br/>
+set the particle selector used for filtering the event. This function 
+should return <code>true</code> when a particle should be kept in the 
+record. The full event is passed, with the particle index, to provide 
+maximal information. 
+   
+ 
+<a name="section4"></a> 
 <h3>The HepMC2 public methods</h3> 
  
 These methods are very similar to the HepMC3 methods but now all 
 public methods of the <code>Pythia8ToHepMC</code> class in the 
 <code>HepMC</code> namespace are given. 
  
-<a name="anchor19"></a>
+<a name="anchor34"></a>
 <p/><strong> Pythia8ToHepMC::Pythia8ToHepMC() &nbsp;</strong> <br/>
    
-<a name="anchor20"></a>
+<a name="anchor35"></a>
 <strong> virtual Pythia8ToHepMC::~Pythia8ToHepMC() &nbsp;</strong> <br/>
 the constructor and destructor take no arguments. 
    
  
-<a name="anchor21"></a>
+<a name="anchor36"></a>
 <p/><strong> bool Pythia8ToHepMC::fill_next_event( Pythia8::Pythia& pythia, GenEvent* evt, int ievnum = -1, bool append = false, GenParticle* rootParticle = 0, int iBarcode = -1) &nbsp;</strong> <br/>
 convert a <code>Pythia</code> event to a <code>HepMC</code> one. 
 Will return true if succeeded. 
@@ -331,7 +500,7 @@ and if 0 then set all bar codes to vanish.
    
    
  
-<a name="anchor22"></a>
+<a name="anchor37"></a>
 <p/><strong> bool Pythia8ToHepMC::fill_next_event( Pythia8::Event& pyev, GenEvent* evt, int ievnum = -1, Pythia8::Info* pyinfo = 0, Pythia8::Settings* pyset = 0, bool append = false, GenParticle* rootParticle = 0, int iBarcode = -1) &nbsp;</strong> <br/>
 convert a <code>Pythia</code> event to a <code>HepMC</code> one. 
 Will return true if succeeded. 
@@ -384,19 +553,19 @@ The <code>set</code> methods have the same default input values as
 the internal initialization ones, so that a call without an argument 
 (re)stores the default. 
  
-<a name="anchor23"></a>
+<a name="anchor38"></a>
 <p/><strong> void Pythia8ToHepMC::set_print_inconsistency(bool b = true) &nbsp;</strong> <br/>
    
-<a name="anchor24"></a>
+<a name="anchor39"></a>
 <strong> bool Pythia8ToHepMC::print_inconsistency() &nbsp;</strong> <br/>
 print a warning line, on <code>cerr</code>, when inconsistent mother 
 and daughter information is encountered. 
    
  
-<a name="anchor25"></a>
+<a name="anchor40"></a>
 <p/><strong> void Pythia8ToHepMC::set_free_parton_exception(bool b = true) &nbsp;</strong> <br/>
    
-<a name="anchor26"></a>
+<a name="anchor41"></a>
 <strong> bool Pythia8ToHepMC::free_parton_exception() &nbsp;</strong> <br/>
 check and throw an exception when unhadronized gluons or quarks are 
 encountered in the event record. Does not apply when Pythia hadronization 
@@ -407,10 +576,10 @@ location (<code>index()</code>) and species (<code>pdg_id()</code>) of a
 bad parton. 
    
  
-<a name="anchor27"></a>
+<a name="anchor42"></a>
 <p/><strong> void Pythia8ToHepMC::set_convert_gluon_to_0(bool b = false) &nbsp;</strong> <br/>
    
-<a name="anchor28"></a>
+<a name="anchor43"></a>
 <strong> bool Pythia8ToHepMC::convert_gluon_to_0() &nbsp;</strong> <br/>
 the normal gluon identity code 21 is used also when parton density 
 information is stored, unless this optional argument is set true to 
@@ -418,30 +587,30 @@ have gluons represented by a 0. This choice does not affect the
 normal event record, where a gluon is always 21. 
    
  
-<a name="anchor29"></a>
+<a name="anchor44"></a>
 <p/><strong> void Pythia8ToHepMC::set_store_pdf(bool b = true) &nbsp;</strong> <br/>
    
-<a name="anchor30"></a>
+<a name="anchor45"></a>
 <strong> bool Pythia8ToHepMC::store_pdf() &nbsp;</strong> <br/>
 for each event store information on the two incoming flavours, their 
 x values and common factorization scale, and the values of the two 
 parton distributions, <i>xf(x,Q)</i>. 
    
  
-<a name="anchor31"></a>
+<a name="anchor46"></a>
 <p/><strong> void Pythia8ToHepMC::set_store_proc(bool b = true) &nbsp;</strong> <br/>
    
-<a name="anchor32"></a>
+<a name="anchor47"></a>
 <strong> bool Pythia8ToHepMC::store_proc() &nbsp;</strong> <br/>
 for each event store information on the Pythia process code, the 
 renormalization scale, and <i>alpha_em</i> and <i>alpha_s</i> 
 values used for the hard process. 
    
  
-<a name="anchor33"></a>
+<a name="anchor48"></a>
 <p/><strong> void Pythia8ToHepMC::set_store_xsec(bool b = true) &nbsp;</strong> <br/>
    
-<a name="anchor34"></a>
+<a name="anchor49"></a>
 <strong> bool Pythia8ToHepMC::store_xsec() &nbsp;</strong> <br/>
 for each event store information on the Pythia cross section and its error, 
 in pb, and the event weight. If events also come with a dimensional weight, 

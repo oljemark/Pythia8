@@ -10,8 +10,8 @@
 #define Pythia8_Pythia_H
 
 // Version number defined for use in macros and for consistency checks.
-#define PYTHIA_VERSION 8.317
-#define PYTHIA_VERSION_INTEGER 8317
+#define PYTHIA_VERSION 8.318
+#define PYTHIA_VERSION_INTEGER 8318
 
 // Header files for the Pythia class and for what else the user may need.
 #include "Pythia8/Analysis.h"
@@ -275,6 +275,11 @@ public:
   // Generate the next event.
   inline bool next() { return next(0); }
   bool next(int procTypeIn);
+
+  // Generate a number of events.
+  vector<long> run(long nEvents, function<void(Pythia*)> callback);
+  vector<long> run(function<void(Pythia*)> callback) {
+    return run(settings.mode("Main:numberOfEvents"), callback); }
 
   // Switch to new beam particle identities; for similar hadrons only.
   bool setBeamIDs( int idAin, int idBin = 0);

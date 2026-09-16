@@ -1,5 +1,4 @@
 #include <Pythia8/Basics.h>
-#include <Pythia8/BeamParticle.h>
 #include <Pythia8/BeamSetup.h>
 #include <Pythia8/HadronWidths.h>
 #include <Pythia8/Info.h>
@@ -15,39 +14,3604 @@
 #include <Pythia8/SusyCouplings.h>
 #include <Pythia8/Weights.h>
 #include <functional>
+#include <ios>
+#include <istream>
 #include <iterator>
 #include <map>
 #include <memory>
 #include <ostream>
+#include <sstream>
 #include <sstream> // __str__
+#include <streambuf>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
-// Pythia8::EPAexternal file:Pythia8/PartonDistributions.h line:989
+// Pythia8::PomHISASD file:Pythia8/PartonDistributions.h line:687
+struct PyCallBack_Pythia8_PomHISASD : public Pythia8::PomHISASD {
+	using Pythia8::PomHISASD::PomHISASD;
+
+	void xPom(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "xPom");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PomHISASD::xPom(a0);
+	}
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "setBeamID");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setBeamID(a0);
+	}
+	void setExtrapolate(bool a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "setExtrapolate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setExtrapolate(a0);
+	}
+	bool insideBounds(double a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "insideBounds");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::insideBounds(a0, a1);
+	}
+	double alphaS(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "alphaS");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::alphaS(a0);
+	}
+	double mQuarkPDF(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "mQuarkPDF");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::mQuarkPDF(a0);
+	}
+	int nMembers() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "nMembers");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::nMembers();
+	}
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "getPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
+				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
+				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+		}
+		return PDF::getPDFEnvelope();
+	}
+	double gammaPDFxDependence(int a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "gammaPDFxDependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFxDependence(a0, a1);
+	}
+	double gammaPDFRefScale(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "gammaPDFRefScale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFRefScale(a0);
+	}
+	int sampleGammaValFlavor(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "sampleGammaValFlavor");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::sampleGammaValFlavor(a0);
+	}
+	double xfIntegratedTotal(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "xfIntegratedTotal");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfIntegratedTotal(a0);
+	}
+	double xGamma() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "xGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xGamma();
+	}
+	double xfFlux(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "xfFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfFlux(a0, a1, a2);
+	}
+	double xfApprox(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "xfApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfApprox(a0, a1, a2);
+	}
+	double xfGamma(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "xfGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfGamma(a0, a1, a2);
+	}
+	double intFluxApprox() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "intFluxApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::intFluxApprox();
+	}
+	bool hasApproxGammaFlux() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "hasApproxGammaFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::hasApproxGammaFlux();
+	}
+	double getXmin() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "getXmin");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXmin();
+	}
+	double getXhadr() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "getXhadr");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXhadr();
+	}
+	double sampleXgamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "sampleXgamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleXgamma(a0);
+	}
+	double sampleQ2gamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "sampleQ2gamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleQ2gamma(a0);
+	}
+	double fluxQ2dependence(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "fluxQ2dependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::fluxQ2dependence(a0);
+	}
+	double xfMax(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "xfMax");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfMax(a0, a1, a2);
+	}
+	double xfSame(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "xfSame");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfSame(a0, a1, a2);
+	}
+	void setVMDscale(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "setVMDscale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setVMDscale(a0);
+	}
+	void xfUpdate(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PomHISASD *>(this), "xfUpdate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		pybind11::pybind11_fail("Tried to call pure virtual function \"PDF::xfUpdate\"");
+	}
+};
+
+// Pythia8::Lepton file:Pythia8/PartonDistributions.h line:734
+struct PyCallBack_Pythia8_Lepton : public Pythia8::Lepton {
+	using Pythia8::Lepton::Lepton;
+
+	double sampleQ2gamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "sampleQ2gamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return Lepton::sampleQ2gamma(a0);
+	}
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "setBeamID");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setBeamID(a0);
+	}
+	void setExtrapolate(bool a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "setExtrapolate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setExtrapolate(a0);
+	}
+	bool insideBounds(double a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "insideBounds");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::insideBounds(a0, a1);
+	}
+	double alphaS(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "alphaS");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::alphaS(a0);
+	}
+	double mQuarkPDF(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "mQuarkPDF");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::mQuarkPDF(a0);
+	}
+	int nMembers() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "nMembers");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::nMembers();
+	}
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "getPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
+				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
+				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+		}
+		return PDF::getPDFEnvelope();
+	}
+	double gammaPDFxDependence(int a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "gammaPDFxDependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFxDependence(a0, a1);
+	}
+	double gammaPDFRefScale(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "gammaPDFRefScale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFRefScale(a0);
+	}
+	int sampleGammaValFlavor(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "sampleGammaValFlavor");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::sampleGammaValFlavor(a0);
+	}
+	double xfIntegratedTotal(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "xfIntegratedTotal");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfIntegratedTotal(a0);
+	}
+	double xGamma() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "xGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xGamma();
+	}
+	void xPom(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "xPom");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::xPom(a0);
+	}
+	double xfFlux(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "xfFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfFlux(a0, a1, a2);
+	}
+	double xfApprox(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "xfApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfApprox(a0, a1, a2);
+	}
+	double xfGamma(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "xfGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfGamma(a0, a1, a2);
+	}
+	double intFluxApprox() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "intFluxApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::intFluxApprox();
+	}
+	bool hasApproxGammaFlux() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "hasApproxGammaFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::hasApproxGammaFlux();
+	}
+	double getXmin() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "getXmin");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXmin();
+	}
+	double getXhadr() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "getXhadr");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXhadr();
+	}
+	double sampleXgamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "sampleXgamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleXgamma(a0);
+	}
+	double fluxQ2dependence(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "fluxQ2dependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::fluxQ2dependence(a0);
+	}
+	double xfMax(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "xfMax");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfMax(a0, a1, a2);
+	}
+	double xfSame(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "xfSame");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfSame(a0, a1, a2);
+	}
+	void setVMDscale(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "setVMDscale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setVMDscale(a0);
+	}
+	void xfUpdate(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton *>(this), "xfUpdate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		pybind11::pybind11_fail("Tried to call pure virtual function \"PDF::xfUpdate\"");
+	}
+};
+
+// Pythia8::LeptonPoint file:Pythia8/PartonDistributions.h line:774
+struct PyCallBack_Pythia8_LeptonPoint : public Pythia8::LeptonPoint {
+	using Pythia8::LeptonPoint::LeptonPoint;
+
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "setBeamID");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setBeamID(a0);
+	}
+	void setExtrapolate(bool a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "setExtrapolate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setExtrapolate(a0);
+	}
+	bool insideBounds(double a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "insideBounds");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::insideBounds(a0, a1);
+	}
+	double alphaS(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "alphaS");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::alphaS(a0);
+	}
+	double mQuarkPDF(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "mQuarkPDF");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::mQuarkPDF(a0);
+	}
+	int nMembers() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "nMembers");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::nMembers();
+	}
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "getPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
+				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
+				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+		}
+		return PDF::getPDFEnvelope();
+	}
+	double gammaPDFxDependence(int a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "gammaPDFxDependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFxDependence(a0, a1);
+	}
+	double gammaPDFRefScale(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "gammaPDFRefScale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFRefScale(a0);
+	}
+	int sampleGammaValFlavor(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "sampleGammaValFlavor");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::sampleGammaValFlavor(a0);
+	}
+	double xfIntegratedTotal(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "xfIntegratedTotal");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfIntegratedTotal(a0);
+	}
+	double xGamma() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "xGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xGamma();
+	}
+	void xPom(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "xPom");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::xPom(a0);
+	}
+	double xfFlux(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "xfFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfFlux(a0, a1, a2);
+	}
+	double xfApprox(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "xfApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfApprox(a0, a1, a2);
+	}
+	double xfGamma(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "xfGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfGamma(a0, a1, a2);
+	}
+	double intFluxApprox() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "intFluxApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::intFluxApprox();
+	}
+	bool hasApproxGammaFlux() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "hasApproxGammaFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::hasApproxGammaFlux();
+	}
+	double getXmin() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "getXmin");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXmin();
+	}
+	double getXhadr() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "getXhadr");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXhadr();
+	}
+	double sampleXgamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "sampleXgamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleXgamma(a0);
+	}
+	double sampleQ2gamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "sampleQ2gamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleQ2gamma(a0);
+	}
+	double fluxQ2dependence(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "fluxQ2dependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::fluxQ2dependence(a0);
+	}
+	double xfMax(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "xfMax");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfMax(a0, a1, a2);
+	}
+	double xfSame(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "xfSame");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfSame(a0, a1, a2);
+	}
+	void setVMDscale(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "setVMDscale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setVMDscale(a0);
+	}
+	void xfUpdate(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LeptonPoint *>(this), "xfUpdate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		pybind11::pybind11_fail("Tried to call pure virtual function \"PDF::xfUpdate\"");
+	}
+};
+
+// Pythia8::NeutrinoPoint file:Pythia8/PartonDistributions.h line:795
+struct PyCallBack_Pythia8_NeutrinoPoint : public Pythia8::NeutrinoPoint {
+	using Pythia8::NeutrinoPoint::NeutrinoPoint;
+
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "setBeamID");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setBeamID(a0);
+	}
+	void setExtrapolate(bool a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "setExtrapolate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setExtrapolate(a0);
+	}
+	bool insideBounds(double a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "insideBounds");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::insideBounds(a0, a1);
+	}
+	double alphaS(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "alphaS");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::alphaS(a0);
+	}
+	double mQuarkPDF(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "mQuarkPDF");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::mQuarkPDF(a0);
+	}
+	int nMembers() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "nMembers");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::nMembers();
+	}
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "getPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
+				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
+				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+		}
+		return PDF::getPDFEnvelope();
+	}
+	double gammaPDFxDependence(int a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "gammaPDFxDependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFxDependence(a0, a1);
+	}
+	double gammaPDFRefScale(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "gammaPDFRefScale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFRefScale(a0);
+	}
+	int sampleGammaValFlavor(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "sampleGammaValFlavor");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::sampleGammaValFlavor(a0);
+	}
+	double xfIntegratedTotal(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "xfIntegratedTotal");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfIntegratedTotal(a0);
+	}
+	double xGamma() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "xGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xGamma();
+	}
+	void xPom(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "xPom");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::xPom(a0);
+	}
+	double xfFlux(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "xfFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfFlux(a0, a1, a2);
+	}
+	double xfApprox(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "xfApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfApprox(a0, a1, a2);
+	}
+	double xfGamma(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "xfGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfGamma(a0, a1, a2);
+	}
+	double intFluxApprox() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "intFluxApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::intFluxApprox();
+	}
+	bool hasApproxGammaFlux() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "hasApproxGammaFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::hasApproxGammaFlux();
+	}
+	double getXmin() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "getXmin");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXmin();
+	}
+	double getXhadr() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "getXhadr");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXhadr();
+	}
+	double sampleXgamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "sampleXgamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleXgamma(a0);
+	}
+	double sampleQ2gamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "sampleQ2gamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleQ2gamma(a0);
+	}
+	double fluxQ2dependence(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "fluxQ2dependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::fluxQ2dependence(a0);
+	}
+	double xfMax(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "xfMax");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfMax(a0, a1, a2);
+	}
+	double xfSame(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "xfSame");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfSame(a0, a1, a2);
+	}
+	void setVMDscale(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "setVMDscale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setVMDscale(a0);
+	}
+	void xfUpdate(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::NeutrinoPoint *>(this), "xfUpdate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		pybind11::pybind11_fail("Tried to call pure virtual function \"PDF::xfUpdate\"");
+	}
+};
+
+// Pythia8::CJKL file:Pythia8/PartonDistributions.h line:815
+struct PyCallBack_Pythia8_CJKL : public Pythia8::CJKL {
+	using Pythia8::CJKL::CJKL;
+
+	double gammaPDFxDependence(int a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "gammaPDFxDependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return CJKL::gammaPDFxDependence(a0, a1);
+	}
+	double gammaPDFRefScale(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "gammaPDFRefScale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return CJKL::gammaPDFRefScale(a0);
+	}
+	int sampleGammaValFlavor(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "sampleGammaValFlavor");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return CJKL::sampleGammaValFlavor(a0);
+	}
+	double xfIntegratedTotal(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "xfIntegratedTotal");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return CJKL::xfIntegratedTotal(a0);
+	}
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "setBeamID");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setBeamID(a0);
+	}
+	void setExtrapolate(bool a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "setExtrapolate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setExtrapolate(a0);
+	}
+	bool insideBounds(double a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "insideBounds");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::insideBounds(a0, a1);
+	}
+	double alphaS(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "alphaS");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::alphaS(a0);
+	}
+	double mQuarkPDF(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "mQuarkPDF");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::mQuarkPDF(a0);
+	}
+	int nMembers() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "nMembers");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::nMembers();
+	}
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "getPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
+				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
+				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+		}
+		return PDF::getPDFEnvelope();
+	}
+	double xGamma() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "xGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xGamma();
+	}
+	void xPom(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "xPom");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::xPom(a0);
+	}
+	double xfFlux(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "xfFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfFlux(a0, a1, a2);
+	}
+	double xfApprox(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "xfApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfApprox(a0, a1, a2);
+	}
+	double xfGamma(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "xfGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfGamma(a0, a1, a2);
+	}
+	double intFluxApprox() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "intFluxApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::intFluxApprox();
+	}
+	bool hasApproxGammaFlux() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "hasApproxGammaFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::hasApproxGammaFlux();
+	}
+	double getXmin() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "getXmin");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXmin();
+	}
+	double getXhadr() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "getXhadr");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXhadr();
+	}
+	double sampleXgamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "sampleXgamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleXgamma(a0);
+	}
+	double sampleQ2gamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "sampleQ2gamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleQ2gamma(a0);
+	}
+	double fluxQ2dependence(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "fluxQ2dependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::fluxQ2dependence(a0);
+	}
+	double xfMax(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "xfMax");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfMax(a0, a1, a2);
+	}
+	double xfSame(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "xfSame");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfSame(a0, a1, a2);
+	}
+	void setVMDscale(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "setVMDscale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setVMDscale(a0);
+	}
+	void xfUpdate(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::CJKL *>(this), "xfUpdate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		pybind11::pybind11_fail("Tried to call pure virtual function \"PDF::xfUpdate\"");
+	}
+};
+
+// Pythia8::Lepton2gamma file:Pythia8/PartonDistributions.h line:869
+struct PyCallBack_Pythia8_Lepton2gamma : public Pythia8::Lepton2gamma {
+	using Pythia8::Lepton2gamma::Lepton2gamma;
+
+	void xfUpdate(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "xfUpdate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return Lepton2gamma::xfUpdate(a0, a1, a2);
+	}
+	double xGamma() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "xGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return Lepton2gamma::xGamma();
+	}
+	double xfMax(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "xfMax");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return Lepton2gamma::xfMax(a0, a1, a2);
+	}
+	double xfSame(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "xfSame");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return Lepton2gamma::xfSame(a0, a1, a2);
+	}
+	double sampleQ2gamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "sampleQ2gamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return Lepton2gamma::sampleQ2gamma(a0);
+	}
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "setBeamID");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setBeamID(a0);
+	}
+	void setExtrapolate(bool a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "setExtrapolate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setExtrapolate(a0);
+	}
+	bool insideBounds(double a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "insideBounds");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::insideBounds(a0, a1);
+	}
+	double alphaS(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "alphaS");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::alphaS(a0);
+	}
+	double mQuarkPDF(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "mQuarkPDF");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::mQuarkPDF(a0);
+	}
+	int nMembers() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "nMembers");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::nMembers();
+	}
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "getPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
+				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
+				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+		}
+		return PDF::getPDFEnvelope();
+	}
+	double gammaPDFxDependence(int a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "gammaPDFxDependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFxDependence(a0, a1);
+	}
+	double gammaPDFRefScale(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "gammaPDFRefScale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFRefScale(a0);
+	}
+	int sampleGammaValFlavor(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "sampleGammaValFlavor");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::sampleGammaValFlavor(a0);
+	}
+	double xfIntegratedTotal(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "xfIntegratedTotal");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfIntegratedTotal(a0);
+	}
+	void xPom(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "xPom");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::xPom(a0);
+	}
+	double xfFlux(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "xfFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfFlux(a0, a1, a2);
+	}
+	double xfApprox(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "xfApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfApprox(a0, a1, a2);
+	}
+	double xfGamma(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "xfGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfGamma(a0, a1, a2);
+	}
+	double intFluxApprox() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "intFluxApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::intFluxApprox();
+	}
+	bool hasApproxGammaFlux() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "hasApproxGammaFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::hasApproxGammaFlux();
+	}
+	double getXmin() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "getXmin");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXmin();
+	}
+	double getXhadr() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "getXhadr");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXhadr();
+	}
+	double sampleXgamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "sampleXgamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleXgamma(a0);
+	}
+	double fluxQ2dependence(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "fluxQ2dependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::fluxQ2dependence(a0);
+	}
+	void setVMDscale(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Lepton2gamma *>(this), "setVMDscale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setVMDscale(a0);
+	}
+};
+
+// Pythia8::GammaPoint file:Pythia8/PartonDistributions.h line:914
+struct PyCallBack_Pythia8_GammaPoint : public Pythia8::GammaPoint {
+	using Pythia8::GammaPoint::GammaPoint;
+
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "setBeamID");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setBeamID(a0);
+	}
+	void setExtrapolate(bool a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "setExtrapolate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setExtrapolate(a0);
+	}
+	bool insideBounds(double a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "insideBounds");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::insideBounds(a0, a1);
+	}
+	double alphaS(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "alphaS");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::alphaS(a0);
+	}
+	double mQuarkPDF(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "mQuarkPDF");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::mQuarkPDF(a0);
+	}
+	int nMembers() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "nMembers");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::nMembers();
+	}
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "getPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
+				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
+				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+		}
+		return PDF::getPDFEnvelope();
+	}
+	double gammaPDFxDependence(int a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "gammaPDFxDependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFxDependence(a0, a1);
+	}
+	double gammaPDFRefScale(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "gammaPDFRefScale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFRefScale(a0);
+	}
+	int sampleGammaValFlavor(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "sampleGammaValFlavor");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::sampleGammaValFlavor(a0);
+	}
+	double xfIntegratedTotal(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "xfIntegratedTotal");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfIntegratedTotal(a0);
+	}
+	double xGamma() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "xGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xGamma();
+	}
+	void xPom(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "xPom");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::xPom(a0);
+	}
+	double xfFlux(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "xfFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfFlux(a0, a1, a2);
+	}
+	double xfApprox(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "xfApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfApprox(a0, a1, a2);
+	}
+	double xfGamma(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "xfGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfGamma(a0, a1, a2);
+	}
+	double intFluxApprox() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "intFluxApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::intFluxApprox();
+	}
+	bool hasApproxGammaFlux() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "hasApproxGammaFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::hasApproxGammaFlux();
+	}
+	double getXmin() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "getXmin");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXmin();
+	}
+	double getXhadr() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "getXhadr");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXhadr();
+	}
+	double sampleXgamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "sampleXgamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleXgamma(a0);
+	}
+	double sampleQ2gamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "sampleQ2gamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleQ2gamma(a0);
+	}
+	double fluxQ2dependence(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "fluxQ2dependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::fluxQ2dependence(a0);
+	}
+	double xfMax(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "xfMax");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfMax(a0, a1, a2);
+	}
+	double xfSame(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "xfSame");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfSame(a0, a1, a2);
+	}
+	void setVMDscale(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "setVMDscale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setVMDscale(a0);
+	}
+	void xfUpdate(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::GammaPoint *>(this), "xfUpdate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		pybind11::pybind11_fail("Tried to call pure virtual function \"PDF::xfUpdate\"");
+	}
+};
+
+// Pythia8::Proton2gammaDZ file:Pythia8/PartonDistributions.h line:934
+struct PyCallBack_Pythia8_Proton2gammaDZ : public Pythia8::Proton2gammaDZ {
+	using Pythia8::Proton2gammaDZ::Proton2gammaDZ;
+
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "setBeamID");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setBeamID(a0);
+	}
+	void setExtrapolate(bool a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "setExtrapolate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setExtrapolate(a0);
+	}
+	bool insideBounds(double a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "insideBounds");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::insideBounds(a0, a1);
+	}
+	double alphaS(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "alphaS");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::alphaS(a0);
+	}
+	double mQuarkPDF(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "mQuarkPDF");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::mQuarkPDF(a0);
+	}
+	int nMembers() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "nMembers");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::nMembers();
+	}
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "getPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
+				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
+				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+		}
+		return PDF::getPDFEnvelope();
+	}
+	double gammaPDFxDependence(int a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "gammaPDFxDependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFxDependence(a0, a1);
+	}
+	double gammaPDFRefScale(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "gammaPDFRefScale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFRefScale(a0);
+	}
+	int sampleGammaValFlavor(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "sampleGammaValFlavor");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::sampleGammaValFlavor(a0);
+	}
+	double xfIntegratedTotal(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "xfIntegratedTotal");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfIntegratedTotal(a0);
+	}
+	double xGamma() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "xGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xGamma();
+	}
+	void xPom(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "xPom");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::xPom(a0);
+	}
+	double xfFlux(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "xfFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfFlux(a0, a1, a2);
+	}
+	double xfApprox(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "xfApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfApprox(a0, a1, a2);
+	}
+	double xfGamma(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "xfGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfGamma(a0, a1, a2);
+	}
+	double intFluxApprox() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "intFluxApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::intFluxApprox();
+	}
+	bool hasApproxGammaFlux() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "hasApproxGammaFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::hasApproxGammaFlux();
+	}
+	double getXmin() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "getXmin");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXmin();
+	}
+	double getXhadr() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "getXhadr");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXhadr();
+	}
+	double sampleXgamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "sampleXgamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleXgamma(a0);
+	}
+	double sampleQ2gamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "sampleQ2gamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleQ2gamma(a0);
+	}
+	double fluxQ2dependence(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "fluxQ2dependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::fluxQ2dependence(a0);
+	}
+	double xfMax(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "xfMax");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfMax(a0, a1, a2);
+	}
+	double xfSame(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "xfSame");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfSame(a0, a1, a2);
+	}
+	void setVMDscale(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "setVMDscale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setVMDscale(a0);
+	}
+	void xfUpdate(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Proton2gammaDZ *>(this), "xfUpdate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		pybind11::pybind11_fail("Tried to call pure virtual function \"PDF::xfUpdate\"");
+	}
+};
+
+// Pythia8::Nucleus2gamma file:Pythia8/PartonDistributions.h line:959
+struct PyCallBack_Pythia8_Nucleus2gamma : public Pythia8::Nucleus2gamma {
+	using Pythia8::Nucleus2gamma::Nucleus2gamma;
+
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "setBeamID");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setBeamID(a0);
+	}
+	void setExtrapolate(bool a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "setExtrapolate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setExtrapolate(a0);
+	}
+	bool insideBounds(double a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "insideBounds");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::insideBounds(a0, a1);
+	}
+	double alphaS(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "alphaS");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::alphaS(a0);
+	}
+	double mQuarkPDF(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "mQuarkPDF");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::mQuarkPDF(a0);
+	}
+	int nMembers() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "nMembers");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::nMembers();
+	}
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "calcPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
+	}
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "getPDFEnvelope");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
+				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
+				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+		}
+		return PDF::getPDFEnvelope();
+	}
+	double gammaPDFxDependence(int a0, double a1) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "gammaPDFxDependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFxDependence(a0, a1);
+	}
+	double gammaPDFRefScale(int a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "gammaPDFRefScale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::gammaPDFRefScale(a0);
+	}
+	int sampleGammaValFlavor(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "sampleGammaValFlavor");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
+				static pybind11::detail::override_caster_t<int> caster;
+				return pybind11::detail::cast_ref<int>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<int>(std::move(o));
+		}
+		return PDF::sampleGammaValFlavor(a0);
+	}
+	double xfIntegratedTotal(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "xfIntegratedTotal");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfIntegratedTotal(a0);
+	}
+	double xGamma() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "xGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xGamma();
+	}
+	void xPom(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "xPom");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::xPom(a0);
+	}
+	double xfFlux(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "xfFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfFlux(a0, a1, a2);
+	}
+	double xfApprox(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "xfApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfApprox(a0, a1, a2);
+	}
+	double xfGamma(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "xfGamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfGamma(a0, a1, a2);
+	}
+	double intFluxApprox() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "intFluxApprox");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::intFluxApprox();
+	}
+	bool hasApproxGammaFlux() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "hasApproxGammaFlux");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::hasApproxGammaFlux();
+	}
+	double getXmin() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "getXmin");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXmin();
+	}
+	double getXhadr() override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "getXhadr");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>();
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::getXhadr();
+	}
+	double sampleXgamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "sampleXgamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleXgamma(a0);
+	}
+	double sampleQ2gamma(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "sampleQ2gamma");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::sampleQ2gamma(a0);
+	}
+	double fluxQ2dependence(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "fluxQ2dependence");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::fluxQ2dependence(a0);
+	}
+	double xfMax(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "xfMax");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfMax(a0, a1, a2);
+	}
+	double xfSame(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "xfSame");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
+				static pybind11::detail::override_caster_t<double> caster;
+				return pybind11::detail::cast_ref<double>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<double>(std::move(o));
+		}
+		return PDF::xfSame(a0, a1, a2);
+	}
+	void setVMDscale(double a0) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "setVMDscale");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		return PDF::setVMDscale(a0);
+	}
+	void xfUpdate(int a0, double a1, double a2) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Nucleus2gamma *>(this), "xfUpdate");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
+			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
+				static pybind11::detail::override_caster_t<void> caster;
+				return pybind11::detail::cast_ref<void>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<void>(std::move(o));
+		}
+		pybind11::pybind11_fail("Tried to call pure virtual function \"PDF::xfUpdate\"");
+	}
+};
+
+// Pythia8::EPAexternal file:Pythia8/PartonDistributions.h line:991
 struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 	using Pythia8::EPAexternal::EPAexternal;
 
-	void xfUpdate(int a0, double a1, double a2) override { 
+	void xfUpdate(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "xfUpdate");
 		if (overload) {
@@ -56,11 +3620,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return EPAexternal::xfUpdate(a0, a1, a2);
 	}
-	double xfFlux(int a0, double a1, double a2) override { 
+	double xfFlux(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "xfFlux");
 		if (overload) {
@@ -69,11 +3633,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return EPAexternal::xfFlux(a0, a1, a2);
 	}
-	double xfGamma(int a0, double a1, double a2) override { 
+	double xfGamma(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "xfGamma");
 		if (overload) {
@@ -82,11 +3646,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return EPAexternal::xfGamma(a0, a1, a2);
 	}
-	double xfApprox(int a0, double a1, double a2) override { 
+	double xfApprox(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "xfApprox");
 		if (overload) {
@@ -95,11 +3659,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return EPAexternal::xfApprox(a0, a1, a2);
 	}
-	double intFluxApprox() override { 
+	double intFluxApprox() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "intFluxApprox");
 		if (overload) {
@@ -108,11 +3672,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return EPAexternal::intFluxApprox();
 	}
-	bool hasApproxGammaFlux() override { 
+	bool hasApproxGammaFlux() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "hasApproxGammaFlux");
 		if (overload) {
@@ -121,11 +3685,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return EPAexternal::hasApproxGammaFlux();
 	}
-	double getXmin() override { 
+	double getXmin() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "getXmin");
 		if (overload) {
@@ -134,11 +3698,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return EPAexternal::getXmin();
 	}
-	double getXhadr() override { 
+	double getXhadr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "getXhadr");
 		if (overload) {
@@ -147,11 +3711,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return EPAexternal::getXhadr();
 	}
-	double sampleXgamma(double a0) override { 
+	double sampleXgamma(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "sampleXgamma");
 		if (overload) {
@@ -160,11 +3724,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return EPAexternal::sampleXgamma(a0);
 	}
-	double sampleQ2gamma(double a0) override { 
+	double sampleQ2gamma(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "sampleQ2gamma");
 		if (overload) {
@@ -173,11 +3737,24 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return EPAexternal::sampleQ2gamma(a0);
 	}
-	void setBeamID(int a0) override { 
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "setBeamID");
 		if (overload) {
@@ -186,11 +3763,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::setBeamID(a0);
 	}
-	void setExtrapolate(bool a0) override { 
+	void setExtrapolate(bool a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "setExtrapolate");
 		if (overload) {
@@ -199,11 +3776,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::setExtrapolate(a0);
 	}
-	bool insideBounds(double a0, double a1) override { 
+	bool insideBounds(double a0, double a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "insideBounds");
 		if (overload) {
@@ -212,11 +3789,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return PDF::insideBounds(a0, a1);
 	}
-	double alphaS(double a0) override { 
+	double alphaS(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "alphaS");
 		if (overload) {
@@ -225,11 +3802,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::alphaS(a0);
 	}
-	double mQuarkPDF(int a0) override { 
+	double mQuarkPDF(int a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "mQuarkPDF");
 		if (overload) {
@@ -238,11 +3815,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::mQuarkPDF(a0);
 	}
-	int nMembers() override { 
+	int nMembers() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "nMembers");
 		if (overload) {
@@ -251,11 +3828,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<int> caster;
 				return pybind11::detail::cast_ref<int>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
+			return pybind11::detail::cast_safe<int>(std::move(o));
 		}
 		return PDF::nMembers();
 	}
-	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override { 
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "calcPDFEnvelope");
 		if (overload) {
@@ -264,11 +3841,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
 	}
-	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override { 
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "calcPDFEnvelope");
 		if (overload) {
@@ -277,11 +3854,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
 	}
-	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override { 
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "getPDFEnvelope");
 		if (overload) {
@@ -290,11 +3867,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
 				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
 		}
 		return PDF::getPDFEnvelope();
 	}
-	double gammaPDFxDependence(int a0, double a1) override { 
+	double gammaPDFxDependence(int a0, double a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "gammaPDFxDependence");
 		if (overload) {
@@ -303,11 +3880,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::gammaPDFxDependence(a0, a1);
 	}
-	double gammaPDFRefScale(int a0) override { 
+	double gammaPDFRefScale(int a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "gammaPDFRefScale");
 		if (overload) {
@@ -316,11 +3893,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::gammaPDFRefScale(a0);
 	}
-	int sampleGammaValFlavor(double a0) override { 
+	int sampleGammaValFlavor(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "sampleGammaValFlavor");
 		if (overload) {
@@ -329,11 +3906,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<int> caster;
 				return pybind11::detail::cast_ref<int>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
+			return pybind11::detail::cast_safe<int>(std::move(o));
 		}
 		return PDF::sampleGammaValFlavor(a0);
 	}
-	double xfIntegratedTotal(double a0) override { 
+	double xfIntegratedTotal(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "xfIntegratedTotal");
 		if (overload) {
@@ -342,11 +3919,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xfIntegratedTotal(a0);
 	}
-	double xGamma() override { 
+	double xGamma() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "xGamma");
 		if (overload) {
@@ -355,11 +3932,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xGamma();
 	}
-	void xPom(double a0) override { 
+	void xPom(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "xPom");
 		if (overload) {
@@ -368,11 +3945,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::xPom(a0);
 	}
-	double fluxQ2dependence(double a0) override { 
+	double fluxQ2dependence(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "fluxQ2dependence");
 		if (overload) {
@@ -381,11 +3958,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::fluxQ2dependence(a0);
 	}
-	double xfMax(int a0, double a1, double a2) override { 
+	double xfMax(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "xfMax");
 		if (overload) {
@@ -394,11 +3971,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xfMax(a0, a1, a2);
 	}
-	double xfSame(int a0, double a1, double a2) override { 
+	double xfSame(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "xfSame");
 		if (overload) {
@@ -407,11 +3984,11 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xfSame(a0, a1, a2);
 	}
-	void setVMDscale(double a0) override { 
+	void setVMDscale(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPAexternal *>(this), "setVMDscale");
 		if (overload) {
@@ -420,17 +3997,17 @@ struct PyCallBack_Pythia8_EPAexternal : public Pythia8::EPAexternal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::setVMDscale(a0);
 	}
 };
 
-// Pythia8::nPDF file:Pythia8/PartonDistributions.h line:1060
+// Pythia8::nPDF file:Pythia8/PartonDistributions.h line:1062
 struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 	using Pythia8::nPDF::nPDF;
 
-	void xfUpdate(int a0, double a1, double a2) override { 
+	void xfUpdate(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "xfUpdate");
 		if (overload) {
@@ -439,11 +4016,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return nPDF::xfUpdate(a0, a1, a2);
 	}
-	void rUpdate(int a0, double a1, double a2) override { 
+	void rUpdate(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "rUpdate");
 		if (overload) {
@@ -452,11 +4029,24 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		pybind11::pybind11_fail("Tried to call pure virtual function \"nPDF::rUpdate\"");
 	}
-	void setBeamID(int a0) override { 
+	bool init(int a0, std::string a1, int a2, class Pythia8::Logger * a3) override {
+		pybind11::gil_scoped_acquire gil;
+		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "init");
+		if (overload) {
+			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
+			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
+				static pybind11::detail::override_caster_t<bool> caster;
+				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
+			}
+			return pybind11::detail::cast_safe<bool>(std::move(o));
+		}
+		return PDF::init(a0, a1, a2, a3);
+	}
+	void setBeamID(int a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "setBeamID");
 		if (overload) {
@@ -465,11 +4055,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::setBeamID(a0);
 	}
-	void setExtrapolate(bool a0) override { 
+	void setExtrapolate(bool a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "setExtrapolate");
 		if (overload) {
@@ -478,11 +4068,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::setExtrapolate(a0);
 	}
-	bool insideBounds(double a0, double a1) override { 
+	bool insideBounds(double a0, double a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "insideBounds");
 		if (overload) {
@@ -491,11 +4081,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return PDF::insideBounds(a0, a1);
 	}
-	double alphaS(double a0) override { 
+	double alphaS(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "alphaS");
 		if (overload) {
@@ -504,11 +4094,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::alphaS(a0);
 	}
-	double mQuarkPDF(int a0) override { 
+	double mQuarkPDF(int a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "mQuarkPDF");
 		if (overload) {
@@ -517,11 +4107,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::mQuarkPDF(a0);
 	}
-	int nMembers() override { 
+	int nMembers() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "nMembers");
 		if (overload) {
@@ -530,11 +4120,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<int> caster;
 				return pybind11::detail::cast_ref<int>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
+			return pybind11::detail::cast_safe<int>(std::move(o));
 		}
 		return PDF::nMembers();
 	}
-	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override { 
+	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "calcPDFEnvelope");
 		if (overload) {
@@ -543,11 +4133,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
 	}
-	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override { 
+	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "calcPDFEnvelope");
 		if (overload) {
@@ -556,11 +4146,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
 	}
-	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override { 
+	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "getPDFEnvelope");
 		if (overload) {
@@ -569,11 +4159,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
 				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
+			return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
 		}
 		return PDF::getPDFEnvelope();
 	}
-	double gammaPDFxDependence(int a0, double a1) override { 
+	double gammaPDFxDependence(int a0, double a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "gammaPDFxDependence");
 		if (overload) {
@@ -582,11 +4172,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::gammaPDFxDependence(a0, a1);
 	}
-	double gammaPDFRefScale(int a0) override { 
+	double gammaPDFRefScale(int a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "gammaPDFRefScale");
 		if (overload) {
@@ -595,11 +4185,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::gammaPDFRefScale(a0);
 	}
-	int sampleGammaValFlavor(double a0) override { 
+	int sampleGammaValFlavor(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "sampleGammaValFlavor");
 		if (overload) {
@@ -608,11 +4198,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<int> caster;
 				return pybind11::detail::cast_ref<int>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
+			return pybind11::detail::cast_safe<int>(std::move(o));
 		}
 		return PDF::sampleGammaValFlavor(a0);
 	}
-	double xfIntegratedTotal(double a0) override { 
+	double xfIntegratedTotal(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "xfIntegratedTotal");
 		if (overload) {
@@ -621,11 +4211,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xfIntegratedTotal(a0);
 	}
-	double xGamma() override { 
+	double xGamma() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "xGamma");
 		if (overload) {
@@ -634,11 +4224,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xGamma();
 	}
-	void xPom(double a0) override { 
+	void xPom(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "xPom");
 		if (overload) {
@@ -647,11 +4237,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::xPom(a0);
 	}
-	double xfFlux(int a0, double a1, double a2) override { 
+	double xfFlux(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "xfFlux");
 		if (overload) {
@@ -660,11 +4250,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xfFlux(a0, a1, a2);
 	}
-	double xfApprox(int a0, double a1, double a2) override { 
+	double xfApprox(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "xfApprox");
 		if (overload) {
@@ -673,11 +4263,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xfApprox(a0, a1, a2);
 	}
-	double xfGamma(int a0, double a1, double a2) override { 
+	double xfGamma(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "xfGamma");
 		if (overload) {
@@ -686,11 +4276,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xfGamma(a0, a1, a2);
 	}
-	double intFluxApprox() override { 
+	double intFluxApprox() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "intFluxApprox");
 		if (overload) {
@@ -699,11 +4289,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::intFluxApprox();
 	}
-	bool hasApproxGammaFlux() override { 
+	bool hasApproxGammaFlux() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "hasApproxGammaFlux");
 		if (overload) {
@@ -712,11 +4302,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return PDF::hasApproxGammaFlux();
 	}
-	double getXmin() override { 
+	double getXmin() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "getXmin");
 		if (overload) {
@@ -725,11 +4315,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::getXmin();
 	}
-	double getXhadr() override { 
+	double getXhadr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "getXhadr");
 		if (overload) {
@@ -738,11 +4328,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::getXhadr();
 	}
-	double sampleXgamma(double a0) override { 
+	double sampleXgamma(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "sampleXgamma");
 		if (overload) {
@@ -751,11 +4341,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::sampleXgamma(a0);
 	}
-	double sampleQ2gamma(double a0) override { 
+	double sampleQ2gamma(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "sampleQ2gamma");
 		if (overload) {
@@ -764,11 +4354,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::sampleQ2gamma(a0);
 	}
-	double fluxQ2dependence(double a0) override { 
+	double fluxQ2dependence(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "fluxQ2dependence");
 		if (overload) {
@@ -777,11 +4367,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::fluxQ2dependence(a0);
 	}
-	double xfMax(int a0, double a1, double a2) override { 
+	double xfMax(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "xfMax");
 		if (overload) {
@@ -790,11 +4380,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xfMax(a0, a1, a2);
 	}
-	double xfSame(int a0, double a1, double a2) override { 
+	double xfSame(int a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "xfSame");
 		if (overload) {
@@ -803,11 +4393,11 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return PDF::xfSame(a0, a1, a2);
 	}
-	void setVMDscale(double a0) override { 
+	void setVMDscale(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::nPDF *>(this), "setVMDscale");
 		if (overload) {
@@ -816,1195 +4406,7 @@ struct PyCallBack_Pythia8_nPDF : public Pythia8::nPDF {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::setVMDscale(a0);
-	}
-};
-
-// Pythia8::Isospin file:Pythia8/PartonDistributions.h line:1110
-struct PyCallBack_Pythia8_Isospin : public Pythia8::Isospin {
-	using Pythia8::Isospin::Isospin;
-
-	void rUpdate(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "rUpdate");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return Isospin::rUpdate(a0, a1, a2);
-	}
-	void xfUpdate(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "xfUpdate");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return nPDF::xfUpdate(a0, a1, a2);
-	}
-	void setBeamID(int a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "setBeamID");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::setBeamID(a0);
-	}
-	void setExtrapolate(bool a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "setExtrapolate");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::setExtrapolate(a0);
-	}
-	bool insideBounds(double a0, double a1) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "insideBounds");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
-			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-				static pybind11::detail::override_caster_t<bool> caster;
-				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
-		}
-		return PDF::insideBounds(a0, a1);
-	}
-	double alphaS(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "alphaS");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::alphaS(a0);
-	}
-	double mQuarkPDF(int a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "mQuarkPDF");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::mQuarkPDF(a0);
-	}
-	int nMembers() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "nMembers");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
-				static pybind11::detail::override_caster_t<int> caster;
-				return pybind11::detail::cast_ref<int>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
-		}
-		return PDF::nMembers();
-	}
-	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "calcPDFEnvelope");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
-	}
-	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "calcPDFEnvelope");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
-	}
-	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "getPDFEnvelope");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
-				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
-				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
-		}
-		return PDF::getPDFEnvelope();
-	}
-	double gammaPDFxDependence(int a0, double a1) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "gammaPDFxDependence");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::gammaPDFxDependence(a0, a1);
-	}
-	double gammaPDFRefScale(int a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "gammaPDFRefScale");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::gammaPDFRefScale(a0);
-	}
-	int sampleGammaValFlavor(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "sampleGammaValFlavor");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
-				static pybind11::detail::override_caster_t<int> caster;
-				return pybind11::detail::cast_ref<int>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
-		}
-		return PDF::sampleGammaValFlavor(a0);
-	}
-	double xfIntegratedTotal(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "xfIntegratedTotal");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfIntegratedTotal(a0);
-	}
-	double xGamma() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "xGamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xGamma();
-	}
-	void xPom(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "xPom");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::xPom(a0);
-	}
-	double xfFlux(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "xfFlux");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfFlux(a0, a1, a2);
-	}
-	double xfApprox(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "xfApprox");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfApprox(a0, a1, a2);
-	}
-	double xfGamma(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "xfGamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfGamma(a0, a1, a2);
-	}
-	double intFluxApprox() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "intFluxApprox");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::intFluxApprox();
-	}
-	bool hasApproxGammaFlux() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "hasApproxGammaFlux");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-				static pybind11::detail::override_caster_t<bool> caster;
-				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
-		}
-		return PDF::hasApproxGammaFlux();
-	}
-	double getXmin() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "getXmin");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::getXmin();
-	}
-	double getXhadr() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "getXhadr");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::getXhadr();
-	}
-	double sampleXgamma(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "sampleXgamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::sampleXgamma(a0);
-	}
-	double sampleQ2gamma(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "sampleQ2gamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::sampleQ2gamma(a0);
-	}
-	double fluxQ2dependence(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "fluxQ2dependence");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::fluxQ2dependence(a0);
-	}
-	double xfMax(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "xfMax");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfMax(a0, a1, a2);
-	}
-	double xfSame(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "xfSame");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfSame(a0, a1, a2);
-	}
-	void setVMDscale(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Isospin *>(this), "setVMDscale");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::setVMDscale(a0);
-	}
-};
-
-// Pythia8::EPS09 file:Pythia8/PartonDistributions.h line:1126
-struct PyCallBack_Pythia8_EPS09 : public Pythia8::EPS09 {
-	using Pythia8::EPS09::EPS09;
-
-	void rUpdate(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "rUpdate");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return EPS09::rUpdate(a0, a1, a2);
-	}
-	void xfUpdate(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "xfUpdate");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return nPDF::xfUpdate(a0, a1, a2);
-	}
-	void setBeamID(int a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "setBeamID");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::setBeamID(a0);
-	}
-	void setExtrapolate(bool a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "setExtrapolate");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::setExtrapolate(a0);
-	}
-	bool insideBounds(double a0, double a1) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "insideBounds");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
-			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-				static pybind11::detail::override_caster_t<bool> caster;
-				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
-		}
-		return PDF::insideBounds(a0, a1);
-	}
-	double alphaS(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "alphaS");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::alphaS(a0);
-	}
-	double mQuarkPDF(int a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "mQuarkPDF");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::mQuarkPDF(a0);
-	}
-	int nMembers() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "nMembers");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
-				static pybind11::detail::override_caster_t<int> caster;
-				return pybind11::detail::cast_ref<int>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
-		}
-		return PDF::nMembers();
-	}
-	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "calcPDFEnvelope");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
-	}
-	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "calcPDFEnvelope");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
-	}
-	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "getPDFEnvelope");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
-				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
-				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
-		}
-		return PDF::getPDFEnvelope();
-	}
-	double gammaPDFxDependence(int a0, double a1) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "gammaPDFxDependence");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::gammaPDFxDependence(a0, a1);
-	}
-	double gammaPDFRefScale(int a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "gammaPDFRefScale");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::gammaPDFRefScale(a0);
-	}
-	int sampleGammaValFlavor(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "sampleGammaValFlavor");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
-				static pybind11::detail::override_caster_t<int> caster;
-				return pybind11::detail::cast_ref<int>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
-		}
-		return PDF::sampleGammaValFlavor(a0);
-	}
-	double xfIntegratedTotal(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "xfIntegratedTotal");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfIntegratedTotal(a0);
-	}
-	double xGamma() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "xGamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xGamma();
-	}
-	void xPom(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "xPom");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::xPom(a0);
-	}
-	double xfFlux(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "xfFlux");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfFlux(a0, a1, a2);
-	}
-	double xfApprox(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "xfApprox");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfApprox(a0, a1, a2);
-	}
-	double xfGamma(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "xfGamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfGamma(a0, a1, a2);
-	}
-	double intFluxApprox() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "intFluxApprox");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::intFluxApprox();
-	}
-	bool hasApproxGammaFlux() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "hasApproxGammaFlux");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-				static pybind11::detail::override_caster_t<bool> caster;
-				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
-		}
-		return PDF::hasApproxGammaFlux();
-	}
-	double getXmin() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "getXmin");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::getXmin();
-	}
-	double getXhadr() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "getXhadr");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::getXhadr();
-	}
-	double sampleXgamma(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "sampleXgamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::sampleXgamma(a0);
-	}
-	double sampleQ2gamma(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "sampleQ2gamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::sampleQ2gamma(a0);
-	}
-	double fluxQ2dependence(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "fluxQ2dependence");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::fluxQ2dependence(a0);
-	}
-	double xfMax(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "xfMax");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfMax(a0, a1, a2);
-	}
-	double xfSame(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "xfSame");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfSame(a0, a1, a2);
-	}
-	void setVMDscale(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPS09 *>(this), "setVMDscale");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::setVMDscale(a0);
-	}
-};
-
-// Pythia8::EPPS16 file:Pythia8/PartonDistributions.h line:1170
-struct PyCallBack_Pythia8_EPPS16 : public Pythia8::EPPS16 {
-	using Pythia8::EPPS16::EPPS16;
-
-	void rUpdate(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "rUpdate");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return EPPS16::rUpdate(a0, a1, a2);
-	}
-	void xfUpdate(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "xfUpdate");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return nPDF::xfUpdate(a0, a1, a2);
-	}
-	void setBeamID(int a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "setBeamID");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::setBeamID(a0);
-	}
-	void setExtrapolate(bool a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "setExtrapolate");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::setExtrapolate(a0);
-	}
-	bool insideBounds(double a0, double a1) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "insideBounds");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
-			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-				static pybind11::detail::override_caster_t<bool> caster;
-				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
-		}
-		return PDF::insideBounds(a0, a1);
-	}
-	double alphaS(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "alphaS");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::alphaS(a0);
-	}
-	double mQuarkPDF(int a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "mQuarkPDF");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::mQuarkPDF(a0);
-	}
-	int nMembers() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "nMembers");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
-				static pybind11::detail::override_caster_t<int> caster;
-				return pybind11::detail::cast_ref<int>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
-		}
-		return PDF::nMembers();
-	}
-	void calcPDFEnvelope(int a0, double a1, double a2, int a3) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "calcPDFEnvelope");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
-	}
-	void calcPDFEnvelope(struct std::pair<int, int> a0, struct std::pair<double, double> a1, double a2, int a3) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "calcPDFEnvelope");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::calcPDFEnvelope(a0, a1, a2, a3);
-	}
-	struct Pythia8::PDF::PDFEnvelope getPDFEnvelope() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "getPDFEnvelope");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<struct Pythia8::PDF::PDFEnvelope>::value) {
-				static pybind11::detail::override_caster_t<struct Pythia8::PDF::PDFEnvelope> caster;
-				return pybind11::detail::cast_ref<struct Pythia8::PDF::PDFEnvelope>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<struct Pythia8::PDF::PDFEnvelope>(std::move(o));
-		}
-		return PDF::getPDFEnvelope();
-	}
-	double gammaPDFxDependence(int a0, double a1) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "gammaPDFxDependence");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::gammaPDFxDependence(a0, a1);
-	}
-	double gammaPDFRefScale(int a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "gammaPDFRefScale");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::gammaPDFRefScale(a0);
-	}
-	int sampleGammaValFlavor(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "sampleGammaValFlavor");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<int>::value) {
-				static pybind11::detail::override_caster_t<int> caster;
-				return pybind11::detail::cast_ref<int>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
-		}
-		return PDF::sampleGammaValFlavor(a0);
-	}
-	double xfIntegratedTotal(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "xfIntegratedTotal");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfIntegratedTotal(a0);
-	}
-	double xGamma() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "xGamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xGamma();
-	}
-	void xPom(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "xPom");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
-		}
-		return PDF::xPom(a0);
-	}
-	double xfFlux(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "xfFlux");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfFlux(a0, a1, a2);
-	}
-	double xfApprox(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "xfApprox");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfApprox(a0, a1, a2);
-	}
-	double xfGamma(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "xfGamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfGamma(a0, a1, a2);
-	}
-	double intFluxApprox() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "intFluxApprox");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::intFluxApprox();
-	}
-	bool hasApproxGammaFlux() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "hasApproxGammaFlux");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-				static pybind11::detail::override_caster_t<bool> caster;
-				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
-		}
-		return PDF::hasApproxGammaFlux();
-	}
-	double getXmin() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "getXmin");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::getXmin();
-	}
-	double getXhadr() override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "getXhadr");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>();
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::getXhadr();
-	}
-	double sampleXgamma(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "sampleXgamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::sampleXgamma(a0);
-	}
-	double sampleQ2gamma(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "sampleQ2gamma");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::sampleQ2gamma(a0);
-	}
-	double fluxQ2dependence(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "fluxQ2dependence");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::fluxQ2dependence(a0);
-	}
-	double xfMax(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "xfMax");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfMax(a0, a1, a2);
-	}
-	double xfSame(int a0, double a1, double a2) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "xfSame");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2);
-			if (pybind11::detail::cast_is_temporary_value_reference<double>::value) {
-				static pybind11::detail::override_caster_t<double> caster;
-				return pybind11::detail::cast_ref<double>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
-		}
-		return PDF::xfSame(a0, a1, a2);
-	}
-	void setVMDscale(double a0) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::EPPS16 *>(this), "setVMDscale");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0);
-			if (pybind11::detail::cast_is_temporary_value_reference<void>::value) {
-				static pybind11::detail::override_caster_t<void> caster;
-				return pybind11::detail::cast_ref<void>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PDF::setVMDscale(a0);
 	}
@@ -2012,10 +4414,107 @@ struct PyCallBack_Pythia8_EPPS16 : public Pythia8::EPPS16 {
 
 void bind_Pythia8_PartonDistributions_1(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Pythia8::EPAexternal file:Pythia8/PartonDistributions.h line:989
-		pybind11::class_<Pythia8::EPAexternal, std::shared_ptr<Pythia8::EPAexternal>, PyCallBack_Pythia8_EPAexternal, Pythia8::PDF> cl(M("Pythia8"), "EPAexternal", "");
-		pybind11::handle cl_type = cl;
+	{ // Pythia8::PomHISASD file:Pythia8/PartonDistributions.h line:687
+		pybind11::class_<Pythia8::PomHISASD, std::shared_ptr<Pythia8::PomHISASD>, PyCallBack_Pythia8_PomHISASD, Pythia8::PDF> cl(M("Pythia8"), "PomHISASD", "");
+		cl.def( pybind11::init( [](int const & a0, class std::shared_ptr<class Pythia8::PDF> const & a1, class Pythia8::Settings & a2){ return new Pythia8::PomHISASD(a0, a1, a2); }, [](int const & a0, class std::shared_ptr<class Pythia8::PDF> const & a1, class Pythia8::Settings & a2){ return new PyCallBack_Pythia8_PomHISASD(a0, a1, a2); } ), "doc");
+		cl.def( pybind11::init<int, class std::shared_ptr<class Pythia8::PDF>, class Pythia8::Settings &, class Pythia8::Logger *>(), pybind11::arg("idBeamIn"), pybind11::arg("ppdf"), pybind11::arg("settings"), pybind11::arg("loggerPtrIn") );
 
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_PomHISASD const &o){ return new PyCallBack_Pythia8_PomHISASD(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::PomHISASD const &o){ return new Pythia8::PomHISASD(o); } ) );
+		cl.def("xPom", [](Pythia8::PomHISASD &o) -> void { return o.xPom(); }, "");
+		cl.def("xPom", (void (Pythia8::PomHISASD::*)(double)) &Pythia8::PomHISASD::xPom, "C++: Pythia8::PomHISASD::xPom(double) --> void", pybind11::arg("xpom"));
+		cl.def("assign", (class Pythia8::PomHISASD & (Pythia8::PomHISASD::*)(const class Pythia8::PomHISASD &)) &Pythia8::PomHISASD::operator=, "C++: Pythia8::PomHISASD::operator=(const class Pythia8::PomHISASD &) --> class Pythia8::PomHISASD &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	}
+	{ // Pythia8::Lepton file:Pythia8/PartonDistributions.h line:734
+		pybind11::class_<Pythia8::Lepton, std::shared_ptr<Pythia8::Lepton>, PyCallBack_Pythia8_Lepton, Pythia8::PDF> cl(M("Pythia8"), "Lepton", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::Lepton(); }, [](){ return new PyCallBack_Pythia8_Lepton(); } ), "doc");
+		cl.def( pybind11::init<int>(), pybind11::arg("idBeamIn") );
+
+		cl.def( pybind11::init<int, double, class Pythia8::Info *>(), pybind11::arg("idBeamIn"), pybind11::arg("Q2maxGammaIn"), pybind11::arg("infoPtrIn") );
+
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_Lepton const &o){ return new PyCallBack_Pythia8_Lepton(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::Lepton const &o){ return new Pythia8::Lepton(o); } ) );
+		cl.def("sampleQ2gamma", (double (Pythia8::Lepton::*)(double)) &Pythia8::Lepton::sampleQ2gamma, "C++: Pythia8::Lepton::sampleQ2gamma(double) --> double", pybind11::arg("Q2min"));
+		cl.def("assign", (class Pythia8::Lepton & (Pythia8::Lepton::*)(const class Pythia8::Lepton &)) &Pythia8::Lepton::operator=, "C++: Pythia8::Lepton::operator=(const class Pythia8::Lepton &) --> class Pythia8::Lepton &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	}
+	{ // Pythia8::LeptonPoint file:Pythia8/PartonDistributions.h line:774
+		pybind11::class_<Pythia8::LeptonPoint, std::shared_ptr<Pythia8::LeptonPoint>, PyCallBack_Pythia8_LeptonPoint, Pythia8::PDF> cl(M("Pythia8"), "LeptonPoint", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::LeptonPoint(); }, [](){ return new PyCallBack_Pythia8_LeptonPoint(); } ), "doc");
+		cl.def( pybind11::init<int>(), pybind11::arg("idBeamIn") );
+
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_LeptonPoint const &o){ return new PyCallBack_Pythia8_LeptonPoint(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::LeptonPoint const &o){ return new Pythia8::LeptonPoint(o); } ) );
+		cl.def("assign", (class Pythia8::LeptonPoint & (Pythia8::LeptonPoint::*)(const class Pythia8::LeptonPoint &)) &Pythia8::LeptonPoint::operator=, "C++: Pythia8::LeptonPoint::operator=(const class Pythia8::LeptonPoint &) --> class Pythia8::LeptonPoint &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	}
+	{ // Pythia8::NeutrinoPoint file:Pythia8/PartonDistributions.h line:795
+		pybind11::class_<Pythia8::NeutrinoPoint, std::shared_ptr<Pythia8::NeutrinoPoint>, PyCallBack_Pythia8_NeutrinoPoint, Pythia8::PDF> cl(M("Pythia8"), "NeutrinoPoint", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::NeutrinoPoint(); }, [](){ return new PyCallBack_Pythia8_NeutrinoPoint(); } ), "doc");
+		cl.def( pybind11::init<int>(), pybind11::arg("idBeamIn") );
+
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_NeutrinoPoint const &o){ return new PyCallBack_Pythia8_NeutrinoPoint(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::NeutrinoPoint const &o){ return new Pythia8::NeutrinoPoint(o); } ) );
+		cl.def("assign", (class Pythia8::NeutrinoPoint & (Pythia8::NeutrinoPoint::*)(const class Pythia8::NeutrinoPoint &)) &Pythia8::NeutrinoPoint::operator=, "C++: Pythia8::NeutrinoPoint::operator=(const class Pythia8::NeutrinoPoint &) --> class Pythia8::NeutrinoPoint &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	}
+	{ // Pythia8::CJKL file:Pythia8/PartonDistributions.h line:815
+		pybind11::class_<Pythia8::CJKL, std::shared_ptr<Pythia8::CJKL>, PyCallBack_Pythia8_CJKL, Pythia8::PDF> cl(M("Pythia8"), "CJKL", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::CJKL(); }, [](){ return new PyCallBack_Pythia8_CJKL(); } ), "doc");
+		cl.def( pybind11::init( [](int const & a0){ return new Pythia8::CJKL(a0); }, [](int const & a0){ return new PyCallBack_Pythia8_CJKL(a0); } ), "doc");
+		cl.def( pybind11::init<int, class Pythia8::Rndm *>(), pybind11::arg("idBeamIn"), pybind11::arg("rndmPtrIn") );
+
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_CJKL const &o){ return new PyCallBack_Pythia8_CJKL(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::CJKL const &o){ return new Pythia8::CJKL(o); } ) );
+		cl.def("gammaPDFxDependence", (double (Pythia8::CJKL::*)(int, double)) &Pythia8::CJKL::gammaPDFxDependence, "C++: Pythia8::CJKL::gammaPDFxDependence(int, double) --> double", pybind11::arg("id"), pybind11::arg(""));
+		cl.def("gammaPDFRefScale", (double (Pythia8::CJKL::*)(int)) &Pythia8::CJKL::gammaPDFRefScale, "C++: Pythia8::CJKL::gammaPDFRefScale(int) --> double", pybind11::arg(""));
+		cl.def("sampleGammaValFlavor", (int (Pythia8::CJKL::*)(double)) &Pythia8::CJKL::sampleGammaValFlavor, "C++: Pythia8::CJKL::sampleGammaValFlavor(double) --> int", pybind11::arg("Q2"));
+		cl.def("xfIntegratedTotal", (double (Pythia8::CJKL::*)(double)) &Pythia8::CJKL::xfIntegratedTotal, "C++: Pythia8::CJKL::xfIntegratedTotal(double) --> double", pybind11::arg("Q2"));
+		cl.def("assign", (class Pythia8::CJKL & (Pythia8::CJKL::*)(const class Pythia8::CJKL &)) &Pythia8::CJKL::operator=, "C++: Pythia8::CJKL::operator=(const class Pythia8::CJKL &) --> class Pythia8::CJKL &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	}
+	{ // Pythia8::Lepton2gamma file:Pythia8/PartonDistributions.h line:869
+		pybind11::class_<Pythia8::Lepton2gamma, std::shared_ptr<Pythia8::Lepton2gamma>, PyCallBack_Pythia8_Lepton2gamma, Pythia8::PDF> cl(M("Pythia8"), "Lepton2gamma", "");
+		cl.def( pybind11::init<int, double, double, class std::shared_ptr<class Pythia8::PDF>, class Pythia8::Info *>(), pybind11::arg("idBeamIn"), pybind11::arg("m2leptonIn"), pybind11::arg("Q2maxGamma"), pybind11::arg("gammaPDFPtrIn"), pybind11::arg("infoPtrIn") );
+
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_Lepton2gamma const &o){ return new PyCallBack_Pythia8_Lepton2gamma(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::Lepton2gamma const &o){ return new Pythia8::Lepton2gamma(o); } ) );
+		cl.def("xfUpdate", (void (Pythia8::Lepton2gamma::*)(int, double, double)) &Pythia8::Lepton2gamma::xfUpdate, "C++: Pythia8::Lepton2gamma::xfUpdate(int, double, double) --> void", pybind11::arg("id"), pybind11::arg("x"), pybind11::arg("Q2"));
+		cl.def("xGamma", (double (Pythia8::Lepton2gamma::*)()) &Pythia8::Lepton2gamma::xGamma, "C++: Pythia8::Lepton2gamma::xGamma() --> double");
+		cl.def("xfMax", (double (Pythia8::Lepton2gamma::*)(int, double, double)) &Pythia8::Lepton2gamma::xfMax, "C++: Pythia8::Lepton2gamma::xfMax(int, double, double) --> double", pybind11::arg("id"), pybind11::arg("x"), pybind11::arg("Q2"));
+		cl.def("xfSame", (double (Pythia8::Lepton2gamma::*)(int, double, double)) &Pythia8::Lepton2gamma::xfSame, "C++: Pythia8::Lepton2gamma::xfSame(int, double, double) --> double", pybind11::arg("id"), pybind11::arg("x"), pybind11::arg("Q2"));
+		cl.def("sampleQ2gamma", (double (Pythia8::Lepton2gamma::*)(double)) &Pythia8::Lepton2gamma::sampleQ2gamma, "C++: Pythia8::Lepton2gamma::sampleQ2gamma(double) --> double", pybind11::arg("Q2min"));
+		cl.def("assign", (class Pythia8::Lepton2gamma & (Pythia8::Lepton2gamma::*)(const class Pythia8::Lepton2gamma &)) &Pythia8::Lepton2gamma::operator=, "C++: Pythia8::Lepton2gamma::operator=(const class Pythia8::Lepton2gamma &) --> class Pythia8::Lepton2gamma &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	}
+	{ // Pythia8::GammaPoint file:Pythia8/PartonDistributions.h line:914
+		pybind11::class_<Pythia8::GammaPoint, std::shared_ptr<Pythia8::GammaPoint>, PyCallBack_Pythia8_GammaPoint, Pythia8::PDF> cl(M("Pythia8"), "GammaPoint", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::GammaPoint(); }, [](){ return new PyCallBack_Pythia8_GammaPoint(); } ), "doc");
+		cl.def( pybind11::init<int>(), pybind11::arg("idBeamIn") );
+
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_GammaPoint const &o){ return new PyCallBack_Pythia8_GammaPoint(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::GammaPoint const &o){ return new Pythia8::GammaPoint(o); } ) );
+		cl.def("assign", (class Pythia8::GammaPoint & (Pythia8::GammaPoint::*)(const class Pythia8::GammaPoint &)) &Pythia8::GammaPoint::operator=, "C++: Pythia8::GammaPoint::operator=(const class Pythia8::GammaPoint &) --> class Pythia8::GammaPoint &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	}
+	{ // Pythia8::Proton2gammaDZ file:Pythia8/PartonDistributions.h line:934
+		pybind11::class_<Pythia8::Proton2gammaDZ, std::shared_ptr<Pythia8::Proton2gammaDZ>, PyCallBack_Pythia8_Proton2gammaDZ, Pythia8::PDF> cl(M("Pythia8"), "Proton2gammaDZ", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::Proton2gammaDZ(); }, [](){ return new PyCallBack_Pythia8_Proton2gammaDZ(); } ), "doc");
+		cl.def( pybind11::init<int>(), pybind11::arg("idBeamIn") );
+
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_Proton2gammaDZ const &o){ return new PyCallBack_Pythia8_Proton2gammaDZ(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::Proton2gammaDZ const &o){ return new Pythia8::Proton2gammaDZ(o); } ) );
+		cl.def("assign", (class Pythia8::Proton2gammaDZ & (Pythia8::Proton2gammaDZ::*)(const class Pythia8::Proton2gammaDZ &)) &Pythia8::Proton2gammaDZ::operator=, "C++: Pythia8::Proton2gammaDZ::operator=(const class Pythia8::Proton2gammaDZ &) --> class Pythia8::Proton2gammaDZ &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	}
+	{ // Pythia8::Nucleus2gamma file:Pythia8/PartonDistributions.h line:959
+		pybind11::class_<Pythia8::Nucleus2gamma, std::shared_ptr<Pythia8::Nucleus2gamma>, PyCallBack_Pythia8_Nucleus2gamma, Pythia8::PDF> cl(M("Pythia8"), "Nucleus2gamma", "");
+		cl.def( pybind11::init<int, double, double>(), pybind11::arg("idBeamIn"), pybind11::arg("bMinIn"), pybind11::arg("mNucleonIn") );
+
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_Nucleus2gamma const &o){ return new PyCallBack_Pythia8_Nucleus2gamma(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::Nucleus2gamma const &o){ return new Pythia8::Nucleus2gamma(o); } ) );
+		cl.def("assign", (class Pythia8::Nucleus2gamma & (Pythia8::Nucleus2gamma::*)(const class Pythia8::Nucleus2gamma &)) &Pythia8::Nucleus2gamma::operator=, "C++: Pythia8::Nucleus2gamma::operator=(const class Pythia8::Nucleus2gamma &) --> class Pythia8::Nucleus2gamma &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	}
+	{ // Pythia8::EPAexternal file:Pythia8/PartonDistributions.h line:991
+		pybind11::class_<Pythia8::EPAexternal, std::shared_ptr<Pythia8::EPAexternal>, PyCallBack_Pythia8_EPAexternal, Pythia8::PDF> cl(M("Pythia8"), "EPAexternal", "");
+		cl.def( pybind11::init( [](int const & a0, double const & a1, class std::shared_ptr<class Pythia8::PDF> const & a2, class std::shared_ptr<class Pythia8::PDF> const & a3, class Pythia8::Info * a4){ return new Pythia8::EPAexternal(a0, a1, a2, a3, a4); }, [](int const & a0, double const & a1, class std::shared_ptr<class Pythia8::PDF> const & a2, class std::shared_ptr<class Pythia8::PDF> const & a3, class Pythia8::Info * a4){ return new PyCallBack_Pythia8_EPAexternal(a0, a1, a2, a3, a4); } ), "doc");
+		cl.def( pybind11::init<int, double, class std::shared_ptr<class Pythia8::PDF>, class std::shared_ptr<class Pythia8::PDF>, class Pythia8::Info *, class Pythia8::Logger *>(), pybind11::arg("idBeamIn"), pybind11::arg("m2In"), pybind11::arg("gammaFluxPtrIn"), pybind11::arg("gammaPDFPtrIn"), pybind11::arg("infoPtrIn"), pybind11::arg("loggerPtrIn") );
+
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_EPAexternal const &o){ return new PyCallBack_Pythia8_EPAexternal(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::EPAexternal const &o){ return new Pythia8::EPAexternal(o); } ) );
 		cl.def("xfUpdate", (void (Pythia8::EPAexternal::*)(int, double, double)) &Pythia8::EPAexternal::xfUpdate, "C++: Pythia8::EPAexternal::xfUpdate(int, double, double) --> void", pybind11::arg(""), pybind11::arg("x"), pybind11::arg("Q2"));
 		cl.def("xfFlux", [](Pythia8::EPAexternal &o, int const & a0, double const & a1) -> double { return o.xfFlux(a0, a1); }, "", pybind11::arg("id"), pybind11::arg("x"));
 		cl.def("xfFlux", (double (Pythia8::EPAexternal::*)(int, double, double)) &Pythia8::EPAexternal::xfFlux, "C++: Pythia8::EPAexternal::xfFlux(int, double, double) --> double", pybind11::arg("id"), pybind11::arg("x"), pybind11::arg("Q2"));
@@ -2029,10 +4528,8 @@ void bind_Pythia8_PartonDistributions_1(std::function< pybind11::module &(std::s
 		cl.def("sampleQ2gamma", (double (Pythia8::EPAexternal::*)(double)) &Pythia8::EPAexternal::sampleQ2gamma, "C++: Pythia8::EPAexternal::sampleQ2gamma(double) --> double", pybind11::arg("Q2minIn"));
 		cl.def("assign", (class Pythia8::EPAexternal & (Pythia8::EPAexternal::*)(const class Pythia8::EPAexternal &)) &Pythia8::EPAexternal::operator=, "C++: Pythia8::EPAexternal::operator=(const class Pythia8::EPAexternal &) --> class Pythia8::EPAexternal &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::nPDF file:Pythia8/PartonDistributions.h line:1060
+	{ // Pythia8::nPDF file:Pythia8/PartonDistributions.h line:1062
 		pybind11::class_<Pythia8::nPDF, std::shared_ptr<Pythia8::nPDF>, PyCallBack_Pythia8_nPDF, Pythia8::PDF> cl(M("Pythia8"), "nPDF", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new PyCallBack_Pythia8_nPDF(); } ), "doc");
 		cl.def( pybind11::init( [](int const & a0){ return new PyCallBack_Pythia8_nPDF(a0); } ), "doc");
 		cl.def( pybind11::init<int, class std::shared_ptr<class Pythia8::PDF>>(), pybind11::arg("idBeamIn"), pybind11::arg("protonPDFPtrIn") );
@@ -2055,88 +4552,5 @@ void bind_Pythia8_PartonDistributions_1(std::function< pybind11::module &(std::s
 		cl.def("setMode", (void (Pythia8::nPDF::*)(double)) &Pythia8::nPDF::setMode, "C++: Pythia8::nPDF::setMode(double) --> void", pybind11::arg("zaIn"));
 		cl.def("resetMode", (void (Pythia8::nPDF::*)()) &Pythia8::nPDF::resetMode, "C++: Pythia8::nPDF::resetMode() --> void");
 		cl.def("assign", (class Pythia8::nPDF & (Pythia8::nPDF::*)(const class Pythia8::nPDF &)) &Pythia8::nPDF::operator=, "C++: Pythia8::nPDF::operator=(const class Pythia8::nPDF &) --> class Pythia8::nPDF &", pybind11::return_value_policy::reference, pybind11::arg(""));
-	}
-	{ // Pythia8::Isospin file:Pythia8/PartonDistributions.h line:1110
-		pybind11::class_<Pythia8::Isospin, std::shared_ptr<Pythia8::Isospin>, PyCallBack_Pythia8_Isospin, Pythia8::nPDF> cl(M("Pythia8"), "Isospin", "");
-		pybind11::handle cl_type = cl;
-
-		cl.def( pybind11::init( [](){ return new Pythia8::Isospin(); }, [](){ return new PyCallBack_Pythia8_Isospin(); } ), "doc");
-		cl.def( pybind11::init( [](int const & a0){ return new Pythia8::Isospin(a0); }, [](int const & a0){ return new PyCallBack_Pythia8_Isospin(a0); } ), "doc");
-		cl.def( pybind11::init<int, class std::shared_ptr<class Pythia8::PDF>>(), pybind11::arg("idBeamIn"), pybind11::arg("protonPDFPtrIn") );
-
-		cl.def("rUpdate", (void (Pythia8::Isospin::*)(int, double, double)) &Pythia8::Isospin::rUpdate, "C++: Pythia8::Isospin::rUpdate(int, double, double) --> void", pybind11::arg(""), pybind11::arg(""), pybind11::arg(""));
-		cl.def("assign", (class Pythia8::Isospin & (Pythia8::Isospin::*)(const class Pythia8::Isospin &)) &Pythia8::Isospin::operator=, "C++: Pythia8::Isospin::operator=(const class Pythia8::Isospin &) --> class Pythia8::Isospin &", pybind11::return_value_policy::reference, pybind11::arg(""));
-	}
-	{ // Pythia8::EPS09 file:Pythia8/PartonDistributions.h line:1126
-		pybind11::class_<Pythia8::EPS09, std::shared_ptr<Pythia8::EPS09>, PyCallBack_Pythia8_EPS09, Pythia8::nPDF> cl(M("Pythia8"), "EPS09", "");
-		pybind11::handle cl_type = cl;
-
-		cl.def("rUpdate", (void (Pythia8::EPS09::*)(int, double, double)) &Pythia8::EPS09::rUpdate, "C++: Pythia8::EPS09::rUpdate(int, double, double) --> void", pybind11::arg("id"), pybind11::arg("x"), pybind11::arg("Q2"));
-		cl.def("setErrorSet", (void (Pythia8::EPS09::*)(int)) &Pythia8::EPS09::setErrorSet, "C++: Pythia8::EPS09::setErrorSet(int) --> void", pybind11::arg("iSetIn"));
-		cl.def("assign", (class Pythia8::EPS09 & (Pythia8::EPS09::*)(const class Pythia8::EPS09 &)) &Pythia8::EPS09::operator=, "C++: Pythia8::EPS09::operator=(const class Pythia8::EPS09 &) --> class Pythia8::EPS09 &", pybind11::return_value_policy::reference, pybind11::arg(""));
-	}
-	{ // Pythia8::EPPS16 file:Pythia8/PartonDistributions.h line:1170
-		pybind11::class_<Pythia8::EPPS16, std::shared_ptr<Pythia8::EPPS16>, PyCallBack_Pythia8_EPPS16, Pythia8::nPDF> cl(M("Pythia8"), "EPPS16", "");
-		pybind11::handle cl_type = cl;
-
-		cl.def("rUpdate", (void (Pythia8::EPPS16::*)(int, double, double)) &Pythia8::EPPS16::rUpdate, "C++: Pythia8::EPPS16::rUpdate(int, double, double) --> void", pybind11::arg("id"), pybind11::arg("x"), pybind11::arg("Q2"));
-		cl.def("setErrorSet", (void (Pythia8::EPPS16::*)(int)) &Pythia8::EPPS16::setErrorSet, "C++: Pythia8::EPPS16::setErrorSet(int) --> void", pybind11::arg("iSetIn"));
-		cl.def("assign", (class Pythia8::EPPS16 & (Pythia8::EPPS16::*)(const class Pythia8::EPPS16 &)) &Pythia8::EPPS16::operator=, "C++: Pythia8::EPPS16::operator=(const class Pythia8::EPPS16 &) --> class Pythia8::EPPS16 &", pybind11::return_value_policy::reference, pybind11::arg(""));
-	}
-	{ // Pythia8::ResolvedParton file:Pythia8/BeamParticle.h line:38
-		pybind11::class_<Pythia8::ResolvedParton, std::shared_ptr<Pythia8::ResolvedParton>> cl(M("Pythia8"), "ResolvedParton", "");
-		pybind11::handle cl_type = cl;
-
-		cl.def( pybind11::init( [](){ return new Pythia8::ResolvedParton(); } ), "doc" );
-		cl.def( pybind11::init( [](int const & a0){ return new Pythia8::ResolvedParton(a0); } ), "doc" , pybind11::arg("iPosIn"));
-		cl.def( pybind11::init( [](int const & a0, int const & a1){ return new Pythia8::ResolvedParton(a0, a1); } ), "doc" , pybind11::arg("iPosIn"), pybind11::arg("idIn"));
-		cl.def( pybind11::init( [](int const & a0, int const & a1, double const & a2){ return new Pythia8::ResolvedParton(a0, a1, a2); } ), "doc" , pybind11::arg("iPosIn"), pybind11::arg("idIn"), pybind11::arg("xIn"));
-		cl.def( pybind11::init<int, int, double, int>(), pybind11::arg("iPosIn"), pybind11::arg("idIn"), pybind11::arg("xIn"), pybind11::arg("companionIn") );
-
-		cl.def( pybind11::init( [](Pythia8::ResolvedParton const &o){ return new Pythia8::ResolvedParton(o); } ) );
-		cl.def("iPos", (void (Pythia8::ResolvedParton::*)(int)) &Pythia8::ResolvedParton::iPos, "C++: Pythia8::ResolvedParton::iPos(int) --> void", pybind11::arg("iPosIn"));
-		cl.def("id", (void (Pythia8::ResolvedParton::*)(int)) &Pythia8::ResolvedParton::id, "C++: Pythia8::ResolvedParton::id(int) --> void", pybind11::arg("idIn"));
-		cl.def("x", (void (Pythia8::ResolvedParton::*)(double)) &Pythia8::ResolvedParton::x, "C++: Pythia8::ResolvedParton::x(double) --> void", pybind11::arg("xIn"));
-		cl.def("update", (void (Pythia8::ResolvedParton::*)(int, int, double)) &Pythia8::ResolvedParton::update, "C++: Pythia8::ResolvedParton::update(int, int, double) --> void", pybind11::arg("iPosIn"), pybind11::arg("idIn"), pybind11::arg("xIn"));
-		cl.def("companion", (void (Pythia8::ResolvedParton::*)(int)) &Pythia8::ResolvedParton::companion, "C++: Pythia8::ResolvedParton::companion(int) --> void", pybind11::arg("companionIn"));
-		cl.def("xqCompanion", (void (Pythia8::ResolvedParton::*)(double)) &Pythia8::ResolvedParton::xqCompanion, "C++: Pythia8::ResolvedParton::xqCompanion(double) --> void", pybind11::arg("xqCompIn"));
-		cl.def("p", (void (Pythia8::ResolvedParton::*)(class Pythia8::Vec4)) &Pythia8::ResolvedParton::p, "C++: Pythia8::ResolvedParton::p(class Pythia8::Vec4) --> void", pybind11::arg("pIn"));
-		cl.def("px", (void (Pythia8::ResolvedParton::*)(double)) &Pythia8::ResolvedParton::px, "C++: Pythia8::ResolvedParton::px(double) --> void", pybind11::arg("pxIn"));
-		cl.def("py", (void (Pythia8::ResolvedParton::*)(double)) &Pythia8::ResolvedParton::py, "C++: Pythia8::ResolvedParton::py(double) --> void", pybind11::arg("pyIn"));
-		cl.def("pz", (void (Pythia8::ResolvedParton::*)(double)) &Pythia8::ResolvedParton::pz, "C++: Pythia8::ResolvedParton::pz(double) --> void", pybind11::arg("pzIn"));
-		cl.def("e", (void (Pythia8::ResolvedParton::*)(double)) &Pythia8::ResolvedParton::e, "C++: Pythia8::ResolvedParton::e(double) --> void", pybind11::arg("eIn"));
-		cl.def("m", (void (Pythia8::ResolvedParton::*)(double)) &Pythia8::ResolvedParton::m, "C++: Pythia8::ResolvedParton::m(double) --> void", pybind11::arg("mIn"));
-		cl.def("col", (void (Pythia8::ResolvedParton::*)(int)) &Pythia8::ResolvedParton::col, "C++: Pythia8::ResolvedParton::col(int) --> void", pybind11::arg("colIn"));
-		cl.def("acol", (void (Pythia8::ResolvedParton::*)(int)) &Pythia8::ResolvedParton::acol, "C++: Pythia8::ResolvedParton::acol(int) --> void", pybind11::arg("acolIn"));
-		cl.def("cols", [](Pythia8::ResolvedParton &o) -> void { return o.cols(); }, "");
-		cl.def("cols", [](Pythia8::ResolvedParton &o, int const & a0) -> void { return o.cols(a0); }, "", pybind11::arg("colIn"));
-		cl.def("cols", (void (Pythia8::ResolvedParton::*)(int, int)) &Pythia8::ResolvedParton::cols, "C++: Pythia8::ResolvedParton::cols(int, int) --> void", pybind11::arg("colIn"), pybind11::arg("acolIn"));
-		cl.def("scalePT", (void (Pythia8::ResolvedParton::*)(double)) &Pythia8::ResolvedParton::scalePT, "C++: Pythia8::ResolvedParton::scalePT(double) --> void", pybind11::arg("factorIn"));
-		cl.def("scaleX", (void (Pythia8::ResolvedParton::*)(double)) &Pythia8::ResolvedParton::scaleX, "C++: Pythia8::ResolvedParton::scaleX(double) --> void", pybind11::arg("factorIn"));
-		cl.def("iPos", (int (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::iPos, "C++: Pythia8::ResolvedParton::iPos() const --> int");
-		cl.def("id", (int (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::id, "C++: Pythia8::ResolvedParton::id() const --> int");
-		cl.def("x", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::x, "C++: Pythia8::ResolvedParton::x() const --> double");
-		cl.def("companion", (int (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::companion, "C++: Pythia8::ResolvedParton::companion() const --> int");
-		cl.def("isValence", (bool (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::isValence, "C++: Pythia8::ResolvedParton::isValence() const --> bool");
-		cl.def("isUnmatched", (bool (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::isUnmatched, "C++: Pythia8::ResolvedParton::isUnmatched() const --> bool");
-		cl.def("isCompanion", (bool (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::isCompanion, "C++: Pythia8::ResolvedParton::isCompanion() const --> bool");
-		cl.def("isFromBeam", (bool (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::isFromBeam, "C++: Pythia8::ResolvedParton::isFromBeam() const --> bool");
-		cl.def("xqCompanion", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::xqCompanion, "C++: Pythia8::ResolvedParton::xqCompanion() const --> double");
-		cl.def("p", (class Pythia8::Vec4 (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::p, "C++: Pythia8::ResolvedParton::p() const --> class Pythia8::Vec4");
-		cl.def("px", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::px, "C++: Pythia8::ResolvedParton::px() const --> double");
-		cl.def("py", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::py, "C++: Pythia8::ResolvedParton::py() const --> double");
-		cl.def("pz", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::pz, "C++: Pythia8::ResolvedParton::pz() const --> double");
-		cl.def("e", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::e, "C++: Pythia8::ResolvedParton::e() const --> double");
-		cl.def("m", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::m, "C++: Pythia8::ResolvedParton::m() const --> double");
-		cl.def("pT", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::pT, "C++: Pythia8::ResolvedParton::pT() const --> double");
-		cl.def("mT2", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::mT2, "C++: Pythia8::ResolvedParton::mT2() const --> double");
-		cl.def("pPos", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::pPos, "C++: Pythia8::ResolvedParton::pPos() const --> double");
-		cl.def("pNeg", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::pNeg, "C++: Pythia8::ResolvedParton::pNeg() const --> double");
-		cl.def("col", (int (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::col, "C++: Pythia8::ResolvedParton::col() const --> int");
-		cl.def("acol", (int (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::acol, "C++: Pythia8::ResolvedParton::acol() const --> int");
-		cl.def("pTfactor", (double (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::pTfactor, "C++: Pythia8::ResolvedParton::pTfactor() const --> double");
-		cl.def("hasCol", (bool (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::hasCol, "C++: Pythia8::ResolvedParton::hasCol() const --> bool");
-		cl.def("hasAcol", (bool (Pythia8::ResolvedParton::*)() const) &Pythia8::ResolvedParton::hasAcol, "C++: Pythia8::ResolvedParton::hasAcol() const --> bool");
-		cl.def("assign", (class Pythia8::ResolvedParton & (Pythia8::ResolvedParton::*)(const class Pythia8::ResolvedParton &)) &Pythia8::ResolvedParton::operator=, "C++: Pythia8::ResolvedParton::operator=(const class Pythia8::ResolvedParton &) --> class Pythia8::ResolvedParton &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 }

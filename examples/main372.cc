@@ -4,7 +4,7 @@
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
 // Authors: Torbjörn Sjöstrand <torbjorn.sjostrand@fysik.lu.se>
-//          Christian T. Preuss <christian.preuss@uni-goettingen.de>
+//          Christian T. Preuss <preuss@physik.rwth-aachen.de>
 
 // Keywords: top; toponium; spin correlations
 
@@ -38,10 +38,10 @@ int main() {
     double eEndDamp        = 20.;
 
     // Example of other possible setup values.
-    int    topModel        = 2;
+    int    topModel        = 3;
     double mt              = 172.5;
     double gammat          = 1.34;
-    double gammatGreen     = 1.34;
+    double gammatGreen     = 0.1;
     double thresholdRegion = 10.;
     int    alphasOrder     = 2;
     double alphasValue     = 0.118;

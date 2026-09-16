@@ -1,4 +1,4 @@
-// main505.cc is a part of the PYTHIA event generator.
+// main504.cc is a part of the PYTHIA event generator.
 // Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
@@ -7,8 +7,6 @@
 
 // Kaluza-Klein gamma*/Z resonances in TeV-sized extra dimensions.
 
-#include <assert.h>
-#include <time.h>
 #include <sstream>
 
 #include "Pythia8/Pythia.h"
@@ -95,14 +93,9 @@ int main() {
 
   vector<int> moms;
 
-  // Measure the cpu runtime.
-  clock_t start, stop;
-  double t = 0.0;
-  // Depending on operating system, either of lines below gives warning.
-  //assert((start = clock()) != -1); // Start timer; clock_t signed.
-  //assert((start = clock()) != -1u); // Start timer; clock_t unsigned.
-  // Simpler option, not using assert.
-  start = clock();
+  // Measure the CPU runtime.
+  Timer timer(Timer::CPU);
+  timer.start();
 
   // Begin event loop. Generate event. Skip if error. List first one.
   for (int iEvent = 0 ; iEvent < 500 ; ++iEvent) {
@@ -139,16 +132,13 @@ int main() {
     if(iEvent%10 == 0) cout << "Event: " << iEvent << endl << std::flush;
   } // end for iEvent<500
 
-  // Done. Print results.
-  stop = clock(); // Stop timer
-  t = (double) (stop-start)/CLOCKS_PER_SEC;
-
+  // Done. Stop the timer and get the CPU runtime in seconds. Print results.
+  timer.stop();
   pythia.stat();
   cout << mHatHisto;
   cout << pTmuHisto;
-
   cout << "\n" << "|----------------------------------------|" << endl;
-  cout << "| CPU Runtime = " << t << " sec" << endl;
+  cout << "| CPU Runtime = " << timer.elapsed() / 1000. << " sec" << endl;
   cout << "|----------------------------------------|" << "\n" << endl;
 
   return 0;

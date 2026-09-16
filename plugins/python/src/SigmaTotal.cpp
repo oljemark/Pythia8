@@ -33,7 +33,6 @@
 #include <Pythia8/UserHooks.h>
 #include <Pythia8/Weights.h>
 #include <complex>
-#include <cwchar>
 #include <functional>
 #include <ios>
 #include <istream>
@@ -49,30 +48,27 @@
 #include <utility>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::SigmaTotAux file:Pythia8/SigmaTotal.h line:33
 struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 	using Pythia8::SigmaTotAux::SigmaTotAux;
 
-	void init(class Pythia8::Info * a0) override { 
+	void init(class Pythia8::Info * a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "init");
 		if (overload) {
@@ -81,11 +77,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		pybind11::pybind11_fail("Tried to call pure virtual function \"SigmaTotAux::init\"");
 	}
-	bool calcTot(int a0, int a1, double a2) override { 
+	bool calcTot(int a0, int a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "calcTot");
 		if (overload) {
@@ -94,11 +90,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotAux::calcTot(a0, a1, a2);
 	}
-	bool calcTotEl(int a0, int a1, double a2, double a3, double a4) override { 
+	bool calcTotEl(int a0, int a1, double a2, double a3, double a4) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "calcTotEl");
 		if (overload) {
@@ -107,11 +103,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotAux::calcTotEl(a0, a1, a2, a3, a4);
 	}
-	double dsigmaEl(double a0, bool a1, bool a2) override { 
+	double dsigmaEl(double a0, bool a1, bool a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "dsigmaEl");
 		if (overload) {
@@ -120,11 +116,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotAux::dsigmaEl(a0, a1, a2);
 	}
-	bool calcDiff(int a0, int a1, double a2, double a3, double a4) override { 
+	bool calcDiff(int a0, int a1, double a2, double a3, double a4) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "calcDiff");
 		if (overload) {
@@ -133,11 +129,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotAux::calcDiff(a0, a1, a2, a3, a4);
 	}
-	double dsigmaSD(double a0, double a1, bool a2, int a3) override { 
+	double dsigmaSD(double a0, double a1, bool a2, int a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "dsigmaSD");
 		if (overload) {
@@ -146,11 +142,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotAux::dsigmaSD(a0, a1, a2, a3);
 	}
-	bool splitDiff() override { 
+	bool splitDiff() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "splitDiff");
 		if (overload) {
@@ -159,11 +155,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotAux::splitDiff();
 	}
-	double dsigmaDD(double a0, double a1, double a2, int a3) override { 
+	double dsigmaDD(double a0, double a1, double a2, int a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "dsigmaDD");
 		if (overload) {
@@ -172,11 +168,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotAux::dsigmaDD(a0, a1, a2, a3);
 	}
-	double dsigmaCD(double a0, double a1, double a2, double a3, int a4) override { 
+	double dsigmaCD(double a0, double a1, double a2, double a3, int a4) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "dsigmaCD");
 		if (overload) {
@@ -185,11 +181,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotAux::dsigmaCD(a0, a1, a2, a3, a4);
 	}
-	double mMinCD() override { 
+	double mMinCD() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "mMinCD");
 		if (overload) {
@@ -198,11 +194,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotAux::mMinCD();
 	}
-	bool initCoulomb(class Pythia8::Settings & a0, class Pythia8::ParticleData * a1) override { 
+	bool initCoulomb(class Pythia8::Settings & a0, class Pythia8::ParticleData * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "initCoulomb");
 		if (overload) {
@@ -211,11 +207,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotAux::initCoulomb(a0, a1);
 	}
-	bool addCoulomb() override { 
+	bool addCoulomb() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "addCoulomb");
 		if (overload) {
@@ -224,11 +220,11 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotAux::addCoulomb();
 	}
-	double dsigmaElCoulomb(double a0) override { 
+	double dsigmaElCoulomb(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotAux *>(this), "dsigmaElCoulomb");
 		if (overload) {
@@ -237,7 +233,7 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotAux::dsigmaElCoulomb(a0);
 	}
@@ -247,7 +243,7 @@ struct PyCallBack_Pythia8_SigmaTotAux : public Pythia8::SigmaTotAux {
 struct PyCallBack_Pythia8_SigmaTotal : public Pythia8::SigmaTotal {
 	using Pythia8::SigmaTotal::SigmaTotal;
 
-	bool splitDiff() override { 
+	bool splitDiff() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotal *>(this), "splitDiff");
 		if (overload) {
@@ -256,11 +252,11 @@ struct PyCallBack_Pythia8_SigmaTotal : public Pythia8::SigmaTotal {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotal::splitDiff();
 	}
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotal *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -269,11 +265,11 @@ struct PyCallBack_Pythia8_SigmaTotal : public Pythia8::SigmaTotal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotal *>(this), "onBeginEvent");
 		if (overload) {
@@ -282,11 +278,11 @@ struct PyCallBack_Pythia8_SigmaTotal : public Pythia8::SigmaTotal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotal *>(this), "onEndEvent");
 		if (overload) {
@@ -295,11 +291,11 @@ struct PyCallBack_Pythia8_SigmaTotal : public Pythia8::SigmaTotal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotal *>(this), "onStat");
 		if (overload) {
@@ -308,11 +304,11 @@ struct PyCallBack_Pythia8_SigmaTotal : public Pythia8::SigmaTotal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotal *>(this), "onStat");
 		if (overload) {
@@ -321,7 +317,7 @@ struct PyCallBack_Pythia8_SigmaTotal : public Pythia8::SigmaTotal {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -331,7 +327,7 @@ struct PyCallBack_Pythia8_SigmaTotal : public Pythia8::SigmaTotal {
 struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 	using Pythia8::SigmaTotOwn::SigmaTotOwn;
 
-	void init(class Pythia8::Info * a0) override { 
+	void init(class Pythia8::Info * a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "init");
 		if (overload) {
@@ -340,11 +336,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return SigmaTotOwn::init(a0);
 	}
-	bool calcTotEl(int a0, int a1, double a2, double a3, double a4) override { 
+	bool calcTotEl(int a0, int a1, double a2, double a3, double a4) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "calcTotEl");
 		if (overload) {
@@ -353,11 +349,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotOwn::calcTotEl(a0, a1, a2, a3, a4);
 	}
-	double dsigmaEl(double a0, bool a1, bool a2) override { 
+	double dsigmaEl(double a0, bool a1, bool a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "dsigmaEl");
 		if (overload) {
@@ -366,11 +362,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotOwn::dsigmaEl(a0, a1, a2);
 	}
-	bool calcDiff(int a0, int a1, double a2, double a3, double a4) override { 
+	bool calcDiff(int a0, int a1, double a2, double a3, double a4) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "calcDiff");
 		if (overload) {
@@ -379,11 +375,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotOwn::calcDiff(a0, a1, a2, a3, a4);
 	}
-	double dsigmaSD(double a0, double a1, bool a2, int a3) override { 
+	double dsigmaSD(double a0, double a1, bool a2, int a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "dsigmaSD");
 		if (overload) {
@@ -392,11 +388,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotOwn::dsigmaSD(a0, a1, a2, a3);
 	}
-	double dsigmaDD(double a0, double a1, double a2, int a3) override { 
+	double dsigmaDD(double a0, double a1, double a2, int a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "dsigmaDD");
 		if (overload) {
@@ -405,11 +401,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotOwn::dsigmaDD(a0, a1, a2, a3);
 	}
-	double dsigmaCD(double a0, double a1, double a2, double a3, int a4) override { 
+	double dsigmaCD(double a0, double a1, double a2, double a3, int a4) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "dsigmaCD");
 		if (overload) {
@@ -418,11 +414,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotOwn::dsigmaCD(a0, a1, a2, a3, a4);
 	}
-	double mMinCD() override { 
+	double mMinCD() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "mMinCD");
 		if (overload) {
@@ -431,11 +427,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotOwn::mMinCD();
 	}
-	bool calcTot(int a0, int a1, double a2) override { 
+	bool calcTot(int a0, int a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "calcTot");
 		if (overload) {
@@ -444,11 +440,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotAux::calcTot(a0, a1, a2);
 	}
-	bool splitDiff() override { 
+	bool splitDiff() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "splitDiff");
 		if (overload) {
@@ -457,11 +453,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotAux::splitDiff();
 	}
-	bool initCoulomb(class Pythia8::Settings & a0, class Pythia8::ParticleData * a1) override { 
+	bool initCoulomb(class Pythia8::Settings & a0, class Pythia8::ParticleData * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "initCoulomb");
 		if (overload) {
@@ -470,11 +466,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotAux::initCoulomb(a0, a1);
 	}
-	bool addCoulomb() override { 
+	bool addCoulomb() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "addCoulomb");
 		if (overload) {
@@ -483,11 +479,11 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SigmaTotAux::addCoulomb();
 	}
-	double dsigmaElCoulomb(double a0) override { 
+	double dsigmaElCoulomb(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaTotOwn *>(this), "dsigmaElCoulomb");
 		if (overload) {
@@ -496,7 +492,7 @@ struct PyCallBack_Pythia8_SigmaTotOwn : public Pythia8::SigmaTotOwn {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SigmaTotAux::dsigmaElCoulomb(a0);
 	}
@@ -506,8 +502,6 @@ void bind_Pythia8_SigmaTotal(std::function< pybind11::module &(std::string const
 {
 	{ // Pythia8::SigmaTotAux file:Pythia8/SigmaTotal.h line:33
 		pybind11::class_<Pythia8::SigmaTotAux, std::shared_ptr<Pythia8::SigmaTotAux>, PyCallBack_Pythia8_SigmaTotAux> cl(M("Pythia8"), "SigmaTotAux", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new PyCallBack_Pythia8_SigmaTotAux(); } ) );
 		cl.def(pybind11::init<PyCallBack_Pythia8_SigmaTotAux const &>());
 		cl.def_readwrite("isExpEl", &Pythia8::SigmaTotAux::isExpEl);
@@ -555,8 +549,6 @@ void bind_Pythia8_SigmaTotal(std::function< pybind11::module &(std::string const
 	}
 	{ // Pythia8::SigmaTotal file:Pythia8/SigmaTotal.h line:141
 		pybind11::class_<Pythia8::SigmaTotal, std::shared_ptr<Pythia8::SigmaTotal>, PyCallBack_Pythia8_SigmaTotal, Pythia8::PhysicsBase> cl(M("Pythia8"), "SigmaTotal", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::SigmaTotal(); }, [](){ return new PyCallBack_Pythia8_SigmaTotal(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Pythia8_SigmaTotal const &o){ return new PyCallBack_Pythia8_SigmaTotal(o); } ) );
 		cl.def( pybind11::init( [](Pythia8::SigmaTotal const &o){ return new Pythia8::SigmaTotal(o); } ) );
@@ -594,9 +586,9 @@ void bind_Pythia8_SigmaTotal(std::function< pybind11::module &(std::string const
 	}
 	{ // Pythia8::SigmaTotOwn file:Pythia8/SigmaTotal.h line:242
 		pybind11::class_<Pythia8::SigmaTotOwn, std::shared_ptr<Pythia8::SigmaTotOwn>, PyCallBack_Pythia8_SigmaTotOwn, Pythia8::SigmaTotAux> cl(M("Pythia8"), "SigmaTotOwn", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::SigmaTotOwn(); }, [](){ return new PyCallBack_Pythia8_SigmaTotOwn(); } ) );
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_SigmaTotOwn const &o){ return new PyCallBack_Pythia8_SigmaTotOwn(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::SigmaTotOwn const &o){ return new Pythia8::SigmaTotOwn(o); } ) );
 		cl.def("init", (void (Pythia8::SigmaTotOwn::*)(class Pythia8::Info *)) &Pythia8::SigmaTotOwn::init, "C++: Pythia8::SigmaTotOwn::init(class Pythia8::Info *) --> void", pybind11::arg("infoPtrIn"));
 		cl.def("calcTotEl", (bool (Pythia8::SigmaTotOwn::*)(int, int, double, double, double)) &Pythia8::SigmaTotOwn::calcTotEl, "C++: Pythia8::SigmaTotOwn::calcTotEl(int, int, double, double, double) --> bool", pybind11::arg("idAin"), pybind11::arg("idBin"), pybind11::arg(""), pybind11::arg(""), pybind11::arg(""));
 		cl.def("dsigmaEl", [](Pythia8::SigmaTotOwn &o, double const & a0) -> double { return o.dsigmaEl(a0); }, "", pybind11::arg("t"));

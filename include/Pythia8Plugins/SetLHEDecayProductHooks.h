@@ -1,4 +1,4 @@
-// SetLHEDecayProductHook.h is part of the PYTHIA event generator.
+// SetLHEDecayProductHooks.h is part of the PYTHIA event generator.
 // Copyright (C) 2026 Stephen Mrenna, Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
@@ -18,24 +18,20 @@
 #include "Pythia8/Pythia.h"
 #include "Pythia8/UserHooks.h"
 #include "Pythia8/Event.h"
+#include "Pythia8/Plugins.h"
 
 namespace Pythia8 {
 
-class SetLHEDecayProductHook : public UserHooks {
+class SetLHEDecayProductHooks : public UserHooks {
 public:
 
   // Constructor.
-  SetLHEDecayProductHook(Settings &settings, const ParticleData* pdtPtrIn);
+  SetLHEDecayProductHooks(Pythia*, Settings*, Logger*) : counter(0) {;}
 
   // Override base class methods.
   bool canVetoProcessLevel() override {return true;}
-  bool doVetoProcessLevel(Event& process) override {
-    return checkVetoProcessLevel(process);}
+  bool doVetoProcessLevel(Event& process) override;
   bool initAfterBeams() override;
-
-  // Class specific.
-  bool checkVetoProcessLevel(Event& process);
-  unsigned long int returnCounter() {return counter;};
 
 private:
 
@@ -47,34 +43,23 @@ private:
     case 4: mReturn=1.5; break;
     case 1: mReturn=0.1; break;
     case 2: mReturn=0.1; break;
-    default: mReturn = pdtPtr->m0(idIn); break;
+    default: mReturn = particleDataPtr->m0(idIn); break;
     }
     return mReturn;
   }
 
   // Data members.
   bool filter;
-  const ParticleData* pdtPtr;
   unsigned long int counter;
 
 };
 
 //--------------------------------------------------------------------------
 
-// Constructor.
-
-SetLHEDecayProductHook::SetLHEDecayProductHook(Settings &settings,
-  const ParticleData* pdtPtrIn) :
-  pdtPtr(pdtPtrIn), counter(0) {
-  settings.addFlag("SetLHEDecayProduct:filter", false);
-}
-
-//--------------------------------------------------------------------------
-
 // Intialize the user hook after the beams.
 
-bool SetLHEDecayProductHook::initAfterBeams() {
-  filter = settingsPtr->flag("SetLHEDecayProduct:filter");
+bool SetLHEDecayProductHooks::initAfterBeams() {
+  filter = flag("SetLHEDecayProduct:filter");
   return true;
 }
 
@@ -82,10 +67,11 @@ bool SetLHEDecayProductHook::initAfterBeams() {
 
 // Return true if the resonance decays are vetoed.
 
-bool SetLHEDecayProductHook::checkVetoProcessLevel(Event& process) {
+bool SetLHEDecayProductHooks::doVetoProcessLevel(Event& process) {
 
   if (!filter) return false;
   counter++;
+  settingsPtr->mode("SetLHEDecayProduct:counter", counter);
   // Determine which W decays hadronically
   int hadronW = ( rndmPtr->flat() < 0.5 ) ? 1 : 2;
   int idQuark = ( rndmPtr->flat() < 0.5 ) ? 1 : 3;
@@ -150,6 +136,23 @@ bool SetLHEDecayProductHook::checkVetoProcessLevel(Event& process) {
   }
   return false;
 }
+
+//--------------------------------------------------------------------------
+
+// Register settings.
+
+void decaySettings(Settings *settingsPtr) {
+  settingsPtr->addFlag("SetLHEDecayProduct:filter", false);
+  settingsPtr->addMode("SetLHEDecayProduct:counter", 0, false, false, 0, 0);
+}
+
+//--------------------------------------------------------------------------
+
+// Declare the plugin.
+
+PYTHIA8_PLUGIN_CLASS(UserHooks, SetLHEDecayProductHooks, false, false, false)
+PYTHIA8_PLUGIN_SETTINGS(decaySettings)
+PYTHIA8_PLUGIN_VERSIONS(PYTHIA_VERSION_INTEGER)
 
 //==========================================================================
 

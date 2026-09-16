@@ -229,25 +229,6 @@ the parameters of the Lund symmetric fragmentation function.
    
  
 <a name="anchor11"></a>
-<p/><code>parm&nbsp; </code><strong> StringFragmentation:eJunctionCutoff &nbsp;</strong> 
- (<code>default = <strong>0.0</strong></code>)<br/>
-Used as a stopping condition for the fragmentation of the first two 
-junction legs. Fragmentation of the given junction leg is stopped if 
-performing another break would leave the remaining energy of the 
-junction leg below <i>eJunctionCutoff</i>. Value should be less than 
-<i>eBothLeftJunction</i>. 
-   
- 
-<a name="anchor12"></a>
-<p/><code>parm&nbsp; </code><strong> StringFragmentation:mJunctionCutoff &nbsp;</strong> 
- (<code>default = <strong>0.0</strong></code>)<br/>
-Used as a stopping condition for the fragmentation of the first two 
-junction legs. Fragmentation of the given junction leg is stopped if 
-performing another break would leave the mass of the junction diquark 
-below <i>mJunctionCutoff</i>. 
-   
- 
-<a name="anchor13"></a>
 <p/><code>parm&nbsp; </code><strong> StringFragmentation:eBothLeftJunction &nbsp;</strong> 
  (<code>default = <strong>1.0</strong></code>; <code>minimum = 0.5</code>)<br/>
 Retry (up to 10 times) when the first two considered strings in to a 
@@ -255,7 +236,7 @@ junction both have a remaining energy (in the junction rest frame)
 above this number. 
    
  
-<a name="anchor14"></a>
+<a name="anchor12"></a>
 <p/><code>parm&nbsp; </code><strong> StringFragmentation:eMaxLeftJunction &nbsp;</strong> 
  (<code>default = <strong>10.0</strong></code>; <code>minimum = 0.</code>)<br/>
 Retry (up to 10 times) when the first two considered strings in to a 
@@ -266,7 +247,7 @@ above a random energy evenly distributed between
 (drawn anew for each test). 
    
  
-<a name="anchor15"></a>
+<a name="anchor13"></a>
 <p/><code>parm&nbsp; </code><strong> StringFragmentation:eMinLeftJunction &nbsp;</strong> 
  (<code>default = <strong>0.2</strong></code>; <code>minimum = 0.</code>)<br/>
 Retry (up to 10 times) when the invariant mass-squared of the final leg 
@@ -275,14 +256,14 @@ and the leftover momentum of the first two treated legs falls below
 junction rest frame). 
    
  
-<a name="anchor16"></a>
+<a name="anchor14"></a>
 <p/><code>flag&nbsp; </code><strong> StringFragmentation:doStrangeJunctions &nbsp;</strong> 
  (<code>default = <strong>off</strong></code>)<br/>
 Switching this parameter on allows strangeness enhancement for string breaks 
 next to a junction. 
    
  
-<a name="anchor17"></a>
+<a name="anchor15"></a>
 <p/><code>parm&nbsp; </code><strong> StringFragmentation:enhanceStrangeJunction &nbsp;</strong> 
  (<code>default = <strong>0.5</strong></code>; <code>minimum = 0.</code>; <code>maximum = 1.0</code>)<br/>
 This parameter, <i>s<sub>J</sub></i>, scales how much strangeness 

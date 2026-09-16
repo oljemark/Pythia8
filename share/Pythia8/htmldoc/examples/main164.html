@@ -12,7 +12,7 @@ Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 //            Stefan Prestel
 //            Christian T Preuss
 
-// Contact: Christian T. Preuss &lt;christian.preuss@uni-goettingen.de&gt;
+// Contact: Christian T. Preuss &lt;preuss@physik.rwth-aachen.de&gt;
 
 // Keywords:
 //            <a href="../ExampleKeywords.html#matching">Matching</a>
@@ -51,6 +51,7 @@ Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 
 #include &quot;Pythia8/Pythia.h&quot;
 #include &quot;Pythia8Plugins/InputParser.h&quot;
+#include &quot;Pythia8Plugins/CombineMatchingInput.h&quot;
 #if defined(HEPMC3)
 #include &quot;Pythia8Plugins/HepMC3.h&quot;
 #elif defined(HEPMC2)
@@ -59,14 +60,6 @@ Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 #ifdef HDF5
 #include &quot;Pythia8Plugins/LHAHDF5v2.h&quot;
 #endif
-
-// Include UserHooks for POWHEG vetos.
-#include &quot;Pythia8Plugins/PowhegHooks.h&quot;
-// Include UserHooks for Jet Matching.
-#include &quot;Pythia8Plugins/CombineMatchingInput.h&quot;
-// Include UserHooks for randomly choosing between integrated and
-// non-integrated treatment for unitarised merging.
-#include &quot;Pythia8Plugins/aMCatNLOHooks.h&quot;
 
 using namespace Pythia8;
 
@@ -146,7 +139,6 @@ int main(int argc, char** argv){
   }
 
   // Set UserHooks for POWHEG vetos.
-  shared_ptr&lt;PowhegHooks&gt; powhegHooks;
   int nVetoISR = 0, nVetoFSR = 0;
   if (doPowhegMatching) {
     // Set showers to start at the kinematical limit.
@@ -163,8 +155,8 @@ int main(int argc, char** argv){
     if (pwhgVetoModeMPI &gt; 0)
       pythia.readString(&quot;MultipartonInteractions:pTmaxMatch = 2&quot;);
     // Load POWHEG hooks.
-    powhegHooks = make_shared&lt;PowhegHooks&gt;();
-    pythia.setUserHooksPtr((UserHooksPtr)powhegHooks);
+    pythia.readString(&quot;Init:plugins += {libpythia8powhegHooks.so&quot;
+      &quot;::PowhegHooks}&quot;);
   }
 
   // Set UserHooks for jet matching.
@@ -172,21 +164,9 @@ int main(int argc, char** argv){
   if (doJetMatching) jetMatchingHook.setHook(pythia);
 
   // Set UserHooks for unitarised merging schemes.
-  shared_ptr&lt;amcnlo_unitarised_interface&gt; mergingHooks;
   if (doMerging) {
-    // Store merging scheme.
-    int scheme = ( pythia.flag(&quot;Merging:doUMEPSTree&quot;)
-                || pythia.flag(&quot;Merging:doUMEPSSubt&quot;)) ?
-                1 :
-                 ( ( pythia.flag(&quot;Merging:doUNLOPSTree&quot;)
-                || pythia.flag(&quot;Merging:doUNLOPSSubt&quot;)
-                || pythia.flag(&quot;Merging:doUNLOPSLoop&quot;)
-                || pythia.flag(&quot;Merging:doUNLOPSSubtNLO&quot;)) ?
-                2 :
-                0 );
-    // Load merging hooks.
-    mergingHooks = make_shared&lt;amcnlo_unitarised_interface&gt;(scheme);
-    pythia.setUserHooksPtr(mergingHooks);
+    pythia.readString(&quot;Init:plugins += {libpythia8amcatnloHooks.so&quot;
+      &quot;::aMCatNLOHooks}&quot;);
   }
 
   // Get number of subruns and information about external events.
@@ -262,8 +242,8 @@ int main(int argc, char** argv){
 
       // For POWHEG matching, count vetos.
       if (doPowhegMatching) {
-        nVetoISR += powhegHooks-&gt;getNISRveto();
-        nVetoFSR += powhegHooks-&gt;getNFSRveto();
+        nVetoISR += pythia.settings.mode(&quot;POWHEG:nISRveto&quot;);
+        nVetoFSR += pythia.settings.mode(&quot;POWHEG:nFSRveto&quot;);
       }
 
       // Get event weight.

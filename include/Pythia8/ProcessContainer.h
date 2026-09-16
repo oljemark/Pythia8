@@ -50,11 +50,11 @@ public:
       idSmearHadrons(), mRecalculate(), mNewM(), isLHA(), isNonDiff(),
       isResolved(), isDiffA(), isDiffB(), isDiffC(), isQCD3body(),
       allowNegSig(), isSameSave(), increaseMaximum(), canVetoResDecay(),
-      lhaStrat(), lhaStratAbs(), processCode(), useStrictLHEFscales(),
-      isAsymLHA(), betazLHA(), newSigmaMx(), nTry(), nSel(), nAcc(),
-      nTryStat(), sigmaMx(), sigmaSgn(), sigmaSum(), sigma2Sum(), sigmaNeg(),
-      sigmaAvg(), sigmaFin(), deltaFin(), weightNow(), wtAccSum(),
-      beamAhasResGamma(), beamBhasResGamma(), beamHasResGamma(),
+      lhaStrat(), lhaStratAbs(), processCode(), nBeamOffset(),
+      useStrictLHEFscales(), isAsymLHA(), betazLHA(), newSigmaMx(), nTry(),
+      nSel(), nAcc(), nTryStat(), sigmaMx(), sigmaSgn(), sigmaSum(),
+      sigma2Sum(), sigmaNeg(), sigmaAvg(), sigmaFin(), deltaFin(), weightNow(),
+      wtAccSum(), beamAhasResGamma(), beamBhasResGamma(), beamHasResGamma(),
       beamHasGamma(), beamAgammaMode(), beamBgammaMode(), gammaModeEvent(),
       approximatedGammaFlux(), reweightNLO(), doMerging(), nTryRequested(),
       nSelRequested(), nAccRequested(), sigmaTemp(), sigma2Temp(),
@@ -188,7 +188,7 @@ private:
   // Info on process.
   bool   isLHA, isNonDiff, isResolved, isDiffA, isDiffB, isDiffC, isQCD3body,
          allowNegSig, isSameSave, increaseMaximum, canVetoResDecay;
-  int    lhaStrat, lhaStratAbs, processCode;
+  int    lhaStrat, lhaStratAbs, processCode, nBeamOffset;
   bool   useStrictLHEFscales;
 
   // Boost Les Houches events to CM frame (when originally asymmetric).

@@ -5,7 +5,7 @@
 
 // Authors: Stefan Prestel
 
-// Contact: Christian T. Preuss <christian.preuss@uni-goettingen.de>
+// Contact: Christian T. Preuss <preuss@physik.rwth-aachen.de>
 
 // Keywords: merging; leading order; jet finding; fastjet; kT
 

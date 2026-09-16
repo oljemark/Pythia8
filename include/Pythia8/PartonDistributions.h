@@ -27,7 +27,9 @@
 // EPAexternal:   approximated photon flux used for sampling of external flux.
 // nPDF:          a nuclear PDF, derived from a proton ditto.
 // Isospin:       isospin modification for nuclear pDF
-// EPS09, EPPS16: nuclear modification factors.
+// EPS09:         nuclear modification factors from EPS09 fit.
+// EPPS16:        nuclear modification factors from EPPS16 fit.
+// EPPS21:        nuclear modification factors from EPPS21 fit.
 
 
 #ifndef Pythia8_PartonDistributions_H
@@ -1121,92 +1123,143 @@ public:
 
 //==========================================================================
 
-// Nuclear modifications from EPS09 fit.
+// Nuclear modifications for the EPS09, EPPS16 and EPPS21 PDFs.
+//
+// EPS09:  K.J. Eskola, H. Paukkunen and C.A. Salgado,
+//         JHEP 0904 (2009) 065 [arXiv:0902.4154]
+// EPPS16: K.J. Eskola, P. Paakkinen, H. Paukkunen and C.A. Salgado,
+//         Eur.Phys.J. C77 (2017) no.3, 163 [arXiv:1612.05741]
+// EPPS21: K.J. Eskola, P. Paakkinen, H. Paukkunen and C.A. Salgado,
+//         Eur.Phys.J. C82 (2022) no.5, 413 [arXiv:2112.12462]
 
-class EPS09 : public nPDF {
+class EPPS : public nPDF {
 
 public:
 
+  // The PDF sets that can be selected.
+  enum Set{EPS09LO = 0, EPS09NLO, EPPS16NLO, EPPS21NLO, NSET};
+
   // Constructor.
-  EPS09(int idBeamIn = 2212, int iOrderIn = 1, int iSetIn = 1,
+  EPPS(int idBeamIn = 2212, Set setIn = EPPS21NLO, int iMemIn = 0,
     string pdfdataPath = "../share/Pythia8/pdfdata/",
     PDFPtr protonPDFPtrIn = 0, Logger* loggerPtrIn = 0)
-    : nPDF(idBeamIn, protonPDFPtrIn), iSet(), iOrder(), grid(),
-    loggerPtr(loggerPtrIn) { init(iOrderIn, iSetIn, pdfdataPath);}
+    : nPDF(idBeamIn, protonPDFPtrIn), cfgPtr(&CFGS[setIn]), iMem(0), grid(),
+    logQ2min(), loglogQ2maxmin(), logXmin(), loggerPtr(loggerPtrIn)
+    {init(iMemIn, pdfdataPath);}
 
-  // Update parton densities.
+  // Update the nuclear modifications.
   void rUpdate(int id, double x, double Q2) override;
 
-  // Use other than central set to study uncertainties.
-  void setErrorSet(int iSetIn) {iSet = iSetIn;}
+  // Set the PDF member.
+  void setMem(int iMemIn);
+
+  // Number of PDF members.
+  int nMem() const {return cfgPtr->nMem;}
 
 private:
-
-  // Parameters related to the fit.
-  static const double Q2MIN, Q2MAX, XMIN, XMAX, XCUT;
-  static const int Q2STEPS, XSTEPS;
-
-  // Set parameters and the grid.
-  int iSet, iOrder;
-  double grid[31][51][51][8];
-
-  // Pointer to logger for possible error messages.
-  Logger* loggerPtr;
 
   // This init does not overwrite PDF init (prevents Clang warnings).
   using PDF::init;
 
-  // Initialize with given inputs.
-  void init(int iOrderIn, int iSetIn, string pdfdataPath);
+  // Initialize the PDF set.
+  void init(int iMemIn, string pdfdataPath);
+
+  // Number of stored Q2 points, and access to the grid of the current set.
+  int nQ2() const {return cfgPtr->nQ2Steps + 1;}
+  double gridVal(int iQ2, int ix, int iFlav) const {
+    return grid[((iMem*nQ2() + iQ2)*cfgPtr->nX + ix)*cfgPtr->nFlav + iFlav];}
+
+  // The x value of a grid point, used for EPS09-style grid.
+  double xVal(int ix) const;
 
   // Interpolation algorithm.
-  double polInt(double* fi, double* xi, int n, double x);
+  static double polInt(double* fi, double* xi, int n, double x);
+
+  // Configuration for a PDF set.
+  struct Cfg {
+    // Name and grid file name without the mass number.
+    string name, file;
+    // Number of members and flavours.
+    int nFlav, nMem;
+    // Number of Q2 intervals, and of x points stored per set.
+    // Q2 points is always nQ2Steps + 1, but nX = nXSteps + 1 only for EPS09.
+    int nQ2Steps, nX, nXSteps;
+    // Number of grid points used for interpolation in each direction.
+    int nIntQ2, nIntX;
+    // Range covered by the grid.
+    double q2Min, q2Max, xMin, xMax;
+    // The x grid is logarithmic below xCut and linear above (EPS09), or
+    // for xCut = 0, uniform in log(x) - xShift * (1 - x).
+    double xCut, xShift;
+    // Highest x index: nX - ixOff (valence + gluon), nX - ixOffSea (sea).
+    int ixOff, ixOffSea;
+    // Tighter on gluon (EPPS16/21).
+    bool clamp;
+    // Q2 indices used at the c and b thresholds, if zero not used.
+    int iQ2C, iQ2B;
+    // Mass of b, if zero not used.
+    double mB;
+    // Clip negative modifications.
+    bool clip;
+  };
+
+  // PDF set configurations, matching Set enum order.
+  static const Cfg CFGS[NSET];
+  // PDF configuration.
+  const Cfg* cfgPtr;
+  // PDF member.
+  int iMem;
+  // PDF grid.
+  vector<double> grid;
+  // Derived quantities for the x and Q2 mappings.
+  double logQ2min, loglogQ2maxmin, logXmin;
+  // Pointer to logger.
+  Logger* loggerPtr;
+
 };
 
 //==========================================================================
 
-// Nuclear modifications from EPPS16 fit.
+// Wrappers to the EPPS PDF sets.
 
-class EPPS16 : public nPDF {
+class EPS09 : public EPPS {
 
 public:
 
-  // Constructor.
-  EPPS16(int idBeamIn = 2212, int iSetIn = 1,
+  EPS09(int idBeamIn = 2212, int iOrderIn = 1, int iMemIn = 0,
     string pdfdataPath = "../share/Pythia8/pdfdata/",
     PDFPtr protonPDFPtrIn = 0, Logger* loggerPtrIn = 0)
-    : nPDF(idBeamIn, protonPDFPtrIn), iSet(), grid(), logQ2min(),
-    loglogQ2maxmin(), logX2min(), loggerPtr(loggerPtrIn)
-    { init(iSetIn, pdfdataPath); }
+    : EPPS(idBeamIn, (iOrderIn == 2) ? EPS09NLO : EPS09LO, iMemIn,
+      pdfdataPath, protonPDFPtrIn, loggerPtrIn) {}
 
-  // Update parton densities.
-  void rUpdate(int id, double x, double Q2) override;
+};
 
-  // Use other than central set to study uncertainties.
-  void setErrorSet(int iSetIn) {iSet = iSetIn;}
+//--------------------------------------------------------------------------
 
-private:
+class EPPS16 : public EPPS {
 
-  // Parameters related to the fit.
-  static const double Q2MIN, Q2MAX, XMIN, XMAX, XCUT;
-  static const int Q2STEPS, XSTEPS, NINTQ2, NINTX, NSETS;
+public:
 
-  // Set parameters and the grid.
-  int iSet;
-  double grid[41][31][80][8];
-  double logQ2min, loglogQ2maxmin, logX2min;
+  EPPS16(int idBeamIn = 2212, int iMemIn = 0,
+    string pdfdataPath = "../share/Pythia8/pdfdata/",
+    PDFPtr protonPDFPtrIn = 0, Logger* loggerPtrIn = 0)
+    : EPPS(idBeamIn, EPPS16NLO, iMemIn, pdfdataPath, protonPDFPtrIn,
+      loggerPtrIn) {}
 
-  // Pointer to logger.
-  Logger* loggerPtr;
+};
 
-  // This init does not overwrite PDF init (prevents Clang warnings).
-  using PDF::init;
+//--------------------------------------------------------------------------
 
-  // Initialize with given inputs.
-  void init(int iSetIn, string pdfdataPath);
+class EPPS21 : public EPPS {
 
-  // Interpolation algorithm.
-  double polInt(double* fi, double* xi, int n, double x);
+public:
+
+  EPPS21(int idBeamIn = 2212, int iMemIn = 0,
+    string pdfdataPath = "../share/Pythia8/pdfdata/",
+    PDFPtr protonPDFPtrIn = 0, Logger* loggerPtrIn = 0)
+    : EPPS(idBeamIn, EPPS21NLO, iMemIn, pdfdataPath, protonPDFPtrIn,
+      loggerPtrIn) {}
+
 };
 
 //==========================================================================

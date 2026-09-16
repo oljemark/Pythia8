@@ -2009,8 +2009,8 @@ vector<double> Hist::getBinContents() const {return res;}
 
 vector<double> Hist::getBinErrors() const {
 
-  vector<double> errors(nBin + 1);
-  for (int ix = 0; ix <= nBin; ++ix) errors[ix] = getBinError(ix + 1);
+  vector<double> errors(nBin);
+  for (int ix = 0; ix < nBin; ++ix) errors[ix] = getBinError(ix + 1);
   return errors;
 
 }
@@ -2027,16 +2027,16 @@ vector<double> Hist::getBinEdges() const {
 
 vector<double> Hist::getBinWidths() const {
 
-  vector<double> widths(nBin + 1);
-  for (int ix = 0; ix <= nBin; ++ix) widths[ix] = getBinWidth(ix + 1);
+  vector<double> widths(nBin);
+  for (int ix = 0; ix < nBin; ++ix) widths[ix] = getBinWidth(ix + 1);
   return widths;
 
 }
 
 vector<double> Hist::getBinCenters() const {
 
-  vector<double> centers(nBin + 1);
-  for (int ix = 0; ix <= nBin; ++ix) centers[ix] = getBinCenter(ix + 1);
+  vector<double> centers(nBin);
+  for (int ix = 0; ix < nBin; ++ix) centers[ix] = getBinCenter(ix + 1);
   return centers;
 
 }

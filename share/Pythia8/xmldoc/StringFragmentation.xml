@@ -192,21 +192,6 @@ gluons between the junction and the endpoint. Should in principle be
 the parameters of the Lund symmetric fragmentation function. 
 </parm> 
  
-<parm name="StringFragmentation:eJunctionCutoff" default="0.0"> 
-Used as a stopping condition for the fragmentation of the first two 
-junction legs. Fragmentation of the given junction leg is stopped if 
-performing another break would leave the remaining energy of the 
-junction leg below <ei>eJunctionCutoff</ei>. Value should be less than 
-<ei>eBothLeftJunction</ei>. 
-</parm> 
- 
-<parm name="StringFragmentation:mJunctionCutoff" default="0.0"> 
-Used as a stopping condition for the fragmentation of the first two 
-junction legs. Fragmentation of the given junction leg is stopped if 
-performing another break would leave the mass of the junction diquark 
-below <ei>mJunctionCutoff</ei>. 
-</parm> 
- 
 <parm name="StringFragmentation:eBothLeftJunction" default="1.0" min="0.5"> 
 Retry (up to 10 times) when the first two considered strings in to a 
 junction both have a remaining energy (in the junction rest frame) 

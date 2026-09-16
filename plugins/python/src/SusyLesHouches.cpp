@@ -1,5 +1,4 @@
 #include <Pythia8/SusyLesHouches.h>
-#include <cwchar>
 #include <ios>
 #include <istream>
 #include <iterator>
@@ -10,64 +9,114 @@
 #include <string>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 void bind_Pythia8_SusyLesHouches(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-	{ // Pythia8::LHgenericBlock file:Pythia8/SusyLesHouches.h line:111
-		pybind11::class_<Pythia8::LHgenericBlock, std::shared_ptr<Pythia8::LHgenericBlock>, Pythia8::LHblock<std::string>> cl(M("Pythia8"), "LHgenericBlock", "");
-		pybind11::handle cl_type = cl;
-
-		cl.def( pybind11::init( [](){ return new Pythia8::LHgenericBlock(); } ) );
-		cl.def( pybind11::init( [](Pythia8::LHgenericBlock const &o){ return new Pythia8::LHgenericBlock(o); } ) );
-		cl.def("set", (int (Pythia8::LHgenericBlock::*)(std::string)) &Pythia8::LHgenericBlock::set, "C++: Pythia8::LHgenericBlock::set(std::string) --> int", pybind11::arg("lineIn"));
-		cl.def("assign", (class Pythia8::LHgenericBlock & (Pythia8::LHgenericBlock::*)(const class Pythia8::LHgenericBlock &)) &Pythia8::LHgenericBlock::operator=, "C++: Pythia8::LHgenericBlock::operator=(const class Pythia8::LHgenericBlock &) --> class Pythia8::LHgenericBlock &", pybind11::return_value_policy::reference, pybind11::arg(""));
+	{ // Pythia8::LHmatrixBlock file:Pythia8/SusyLesHouches.h line:129
+		pybind11::class_<Pythia8::LHmatrixBlock<6>, std::shared_ptr<Pythia8::LHmatrixBlock<6>>> cl(M("Pythia8"), "LHmatrixBlock_6_t", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::LHmatrixBlock<6>(); } ) );
+		cl.def( pybind11::init( [](Pythia8::LHmatrixBlock<6> const &o){ return new Pythia8::LHmatrixBlock<6>(o); } ) );
+		cl.def("assign", (class Pythia8::LHmatrixBlock<6> & (Pythia8::LHmatrixBlock<6>::*)(const class Pythia8::LHmatrixBlock<6> &)) &Pythia8::LHmatrixBlock<6>::operator=, "C++: Pythia8::LHmatrixBlock<6>::operator=(const class Pythia8::LHmatrixBlock<6> &) --> class Pythia8::LHmatrixBlock<6> &", pybind11::return_value_policy::reference, pybind11::arg("m"));
+		cl.def("exists", (bool (Pythia8::LHmatrixBlock<6>::*)()) &Pythia8::LHmatrixBlock<6>::exists, "C++: Pythia8::LHmatrixBlock<6>::exists() --> bool");
+		cl.def("clear", (void (Pythia8::LHmatrixBlock<6>::*)()) &Pythia8::LHmatrixBlock<6>::clear, "C++: Pythia8::LHmatrixBlock<6>::clear() --> void");
+		cl.def("set", (int (Pythia8::LHmatrixBlock<6>::*)(int, int, double)) &Pythia8::LHmatrixBlock<6>::set, "C++: Pythia8::LHmatrixBlock<6>::set(int, int, double) --> int", pybind11::arg("iIn"), pybind11::arg("jIn"), pybind11::arg("valIn"));
+		cl.def("__call__", (double (Pythia8::LHmatrixBlock<6>::*)(int, int) const) &Pythia8::LHmatrixBlock<6>::operator(), "C++: Pythia8::LHmatrixBlock<6>::operator()(int, int) const --> double", pybind11::arg("iIn"), pybind11::arg("jIn"));
+		cl.def("setq", (void (Pythia8::LHmatrixBlock<6>::*)(double)) &Pythia8::LHmatrixBlock<6>::setq, "C++: Pythia8::LHmatrixBlock<6>::setq(double) --> void", pybind11::arg("qIn"));
+		cl.def("q", (double (Pythia8::LHmatrixBlock<6>::*)()) &Pythia8::LHmatrixBlock<6>::q, "C++: Pythia8::LHmatrixBlock<6>::q() --> double");
+		cl.def("list", (void (Pythia8::LHmatrixBlock<6>::*)()) &Pythia8::LHmatrixBlock<6>::list, "C++: Pythia8::LHmatrixBlock<6>::list() --> void");
+	}
+	{ // Pythia8::LHmatrixBlock file:Pythia8/SusyLesHouches.h line:129
+		pybind11::class_<Pythia8::LHmatrixBlock<7>, std::shared_ptr<Pythia8::LHmatrixBlock<7>>> cl(M("Pythia8"), "LHmatrixBlock_7_t", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::LHmatrixBlock<7>(); } ) );
+		cl.def( pybind11::init( [](Pythia8::LHmatrixBlock<7> const &o){ return new Pythia8::LHmatrixBlock<7>(o); } ) );
+		cl.def("assign", (class Pythia8::LHmatrixBlock<7> & (Pythia8::LHmatrixBlock<7>::*)(const class Pythia8::LHmatrixBlock<7> &)) &Pythia8::LHmatrixBlock<7>::operator=, "C++: Pythia8::LHmatrixBlock<7>::operator=(const class Pythia8::LHmatrixBlock<7> &) --> class Pythia8::LHmatrixBlock<7> &", pybind11::return_value_policy::reference, pybind11::arg("m"));
+		cl.def("exists", (bool (Pythia8::LHmatrixBlock<7>::*)()) &Pythia8::LHmatrixBlock<7>::exists, "C++: Pythia8::LHmatrixBlock<7>::exists() --> bool");
+		cl.def("clear", (void (Pythia8::LHmatrixBlock<7>::*)()) &Pythia8::LHmatrixBlock<7>::clear, "C++: Pythia8::LHmatrixBlock<7>::clear() --> void");
+		cl.def("set", (int (Pythia8::LHmatrixBlock<7>::*)(int, int, double)) &Pythia8::LHmatrixBlock<7>::set, "C++: Pythia8::LHmatrixBlock<7>::set(int, int, double) --> int", pybind11::arg("iIn"), pybind11::arg("jIn"), pybind11::arg("valIn"));
+		cl.def("__call__", (double (Pythia8::LHmatrixBlock<7>::*)(int, int) const) &Pythia8::LHmatrixBlock<7>::operator(), "C++: Pythia8::LHmatrixBlock<7>::operator()(int, int) const --> double", pybind11::arg("iIn"), pybind11::arg("jIn"));
+		cl.def("setq", (void (Pythia8::LHmatrixBlock<7>::*)(double)) &Pythia8::LHmatrixBlock<7>::setq, "C++: Pythia8::LHmatrixBlock<7>::setq(double) --> void", pybind11::arg("qIn"));
+		cl.def("q", (double (Pythia8::LHmatrixBlock<7>::*)()) &Pythia8::LHmatrixBlock<7>::q, "C++: Pythia8::LHmatrixBlock<7>::q() --> double");
+		cl.def("list", (void (Pythia8::LHmatrixBlock<7>::*)()) &Pythia8::LHmatrixBlock<7>::list, "C++: Pythia8::LHmatrixBlock<7>::list() --> void");
+	}
+	{ // Pythia8::LHmatrixBlock file:Pythia8/SusyLesHouches.h line:129
+		pybind11::class_<Pythia8::LHmatrixBlock<5>, std::shared_ptr<Pythia8::LHmatrixBlock<5>>> cl(M("Pythia8"), "LHmatrixBlock_5_t", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::LHmatrixBlock<5>(); } ) );
+		cl.def( pybind11::init( [](Pythia8::LHmatrixBlock<5> const &o){ return new Pythia8::LHmatrixBlock<5>(o); } ) );
+		cl.def("assign", (class Pythia8::LHmatrixBlock<5> & (Pythia8::LHmatrixBlock<5>::*)(const class Pythia8::LHmatrixBlock<5> &)) &Pythia8::LHmatrixBlock<5>::operator=, "C++: Pythia8::LHmatrixBlock<5>::operator=(const class Pythia8::LHmatrixBlock<5> &) --> class Pythia8::LHmatrixBlock<5> &", pybind11::return_value_policy::reference, pybind11::arg("m"));
+		cl.def("exists", (bool (Pythia8::LHmatrixBlock<5>::*)()) &Pythia8::LHmatrixBlock<5>::exists, "C++: Pythia8::LHmatrixBlock<5>::exists() --> bool");
+		cl.def("clear", (void (Pythia8::LHmatrixBlock<5>::*)()) &Pythia8::LHmatrixBlock<5>::clear, "C++: Pythia8::LHmatrixBlock<5>::clear() --> void");
+		cl.def("set", (int (Pythia8::LHmatrixBlock<5>::*)(int, int, double)) &Pythia8::LHmatrixBlock<5>::set, "C++: Pythia8::LHmatrixBlock<5>::set(int, int, double) --> int", pybind11::arg("iIn"), pybind11::arg("jIn"), pybind11::arg("valIn"));
+		cl.def("__call__", (double (Pythia8::LHmatrixBlock<5>::*)(int, int) const) &Pythia8::LHmatrixBlock<5>::operator(), "C++: Pythia8::LHmatrixBlock<5>::operator()(int, int) const --> double", pybind11::arg("iIn"), pybind11::arg("jIn"));
+		cl.def("setq", (void (Pythia8::LHmatrixBlock<5>::*)(double)) &Pythia8::LHmatrixBlock<5>::setq, "C++: Pythia8::LHmatrixBlock<5>::setq(double) --> void", pybind11::arg("qIn"));
+		cl.def("q", (double (Pythia8::LHmatrixBlock<5>::*)()) &Pythia8::LHmatrixBlock<5>::q, "C++: Pythia8::LHmatrixBlock<5>::q() --> double");
+		cl.def("list", (void (Pythia8::LHmatrixBlock<5>::*)()) &Pythia8::LHmatrixBlock<5>::list, "C++: Pythia8::LHmatrixBlock<5>::list() --> void");
+	}
+	{ // Pythia8::LHmatrixBlock file:Pythia8/SusyLesHouches.h line:129
+		pybind11::class_<Pythia8::LHmatrixBlock<8>, std::shared_ptr<Pythia8::LHmatrixBlock<8>>> cl(M("Pythia8"), "LHmatrixBlock_8_t", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::LHmatrixBlock<8>(); } ) );
+		cl.def( pybind11::init( [](Pythia8::LHmatrixBlock<8> const &o){ return new Pythia8::LHmatrixBlock<8>(o); } ) );
+		cl.def("assign", (class Pythia8::LHmatrixBlock<8> & (Pythia8::LHmatrixBlock<8>::*)(const class Pythia8::LHmatrixBlock<8> &)) &Pythia8::LHmatrixBlock<8>::operator=, "C++: Pythia8::LHmatrixBlock<8>::operator=(const class Pythia8::LHmatrixBlock<8> &) --> class Pythia8::LHmatrixBlock<8> &", pybind11::return_value_policy::reference, pybind11::arg("m"));
+		cl.def("exists", (bool (Pythia8::LHmatrixBlock<8>::*)()) &Pythia8::LHmatrixBlock<8>::exists, "C++: Pythia8::LHmatrixBlock<8>::exists() --> bool");
+		cl.def("clear", (void (Pythia8::LHmatrixBlock<8>::*)()) &Pythia8::LHmatrixBlock<8>::clear, "C++: Pythia8::LHmatrixBlock<8>::clear() --> void");
+		cl.def("set", (int (Pythia8::LHmatrixBlock<8>::*)(int, int, double)) &Pythia8::LHmatrixBlock<8>::set, "C++: Pythia8::LHmatrixBlock<8>::set(int, int, double) --> int", pybind11::arg("iIn"), pybind11::arg("jIn"), pybind11::arg("valIn"));
+		cl.def("__call__", (double (Pythia8::LHmatrixBlock<8>::*)(int, int) const) &Pythia8::LHmatrixBlock<8>::operator(), "C++: Pythia8::LHmatrixBlock<8>::operator()(int, int) const --> double", pybind11::arg("iIn"), pybind11::arg("jIn"));
+		cl.def("setq", (void (Pythia8::LHmatrixBlock<8>::*)(double)) &Pythia8::LHmatrixBlock<8>::setq, "C++: Pythia8::LHmatrixBlock<8>::setq(double) --> void", pybind11::arg("qIn"));
+		cl.def("q", (double (Pythia8::LHmatrixBlock<8>::*)()) &Pythia8::LHmatrixBlock<8>::q, "C++: Pythia8::LHmatrixBlock<8>::q() --> double");
+		cl.def("list", (void (Pythia8::LHmatrixBlock<8>::*)()) &Pythia8::LHmatrixBlock<8>::list, "C++: Pythia8::LHmatrixBlock<8>::list() --> void");
+	}
+	{ // Pythia8::LHtensor3Block file:Pythia8/SusyLesHouches.h line:208
+		pybind11::class_<Pythia8::LHtensor3Block<3>, std::shared_ptr<Pythia8::LHtensor3Block<3>>> cl(M("Pythia8"), "LHtensor3Block_3_t", "");
+		cl.def( pybind11::init( [](){ return new Pythia8::LHtensor3Block<3>(); } ) );
+		cl.def( pybind11::init( [](Pythia8::LHtensor3Block<3> const &o){ return new Pythia8::LHtensor3Block<3>(o); } ) );
+		cl.def("assign", (class Pythia8::LHtensor3Block<3> & (Pythia8::LHtensor3Block<3>::*)(const class Pythia8::LHtensor3Block<3> &)) &Pythia8::LHtensor3Block<3>::operator=, "C++: Pythia8::LHtensor3Block<3>::operator=(const class Pythia8::LHtensor3Block<3> &) --> class Pythia8::LHtensor3Block<3> &", pybind11::return_value_policy::reference, pybind11::arg("m"));
+		cl.def("exists", (bool (Pythia8::LHtensor3Block<3>::*)()) &Pythia8::LHtensor3Block<3>::exists, "C++: Pythia8::LHtensor3Block<3>::exists() --> bool");
+		cl.def("clear", (void (Pythia8::LHtensor3Block<3>::*)()) &Pythia8::LHtensor3Block<3>::clear, "C++: Pythia8::LHtensor3Block<3>::clear() --> void");
+		cl.def("set", (int (Pythia8::LHtensor3Block<3>::*)(int, int, int, double)) &Pythia8::LHtensor3Block<3>::set, "C++: Pythia8::LHtensor3Block<3>::set(int, int, int, double) --> int", pybind11::arg("iIn"), pybind11::arg("jIn"), pybind11::arg("kIn"), pybind11::arg("valIn"));
+		cl.def("__call__", (double (Pythia8::LHtensor3Block<3>::*)(int, int, int) const) &Pythia8::LHtensor3Block<3>::operator(), "C++: Pythia8::LHtensor3Block<3>::operator()(int, int, int) const --> double", pybind11::arg("iIn"), pybind11::arg("jIn"), pybind11::arg("kIn"));
+		cl.def("setq", (void (Pythia8::LHtensor3Block<3>::*)(double)) &Pythia8::LHtensor3Block<3>::setq, "C++: Pythia8::LHtensor3Block<3>::setq(double) --> void", pybind11::arg("qIn"));
+		cl.def("q", (double (Pythia8::LHtensor3Block<3>::*)()) &Pythia8::LHtensor3Block<3>::q, "C++: Pythia8::LHtensor3Block<3>::q() --> double");
+		cl.def("list", (void (Pythia8::LHtensor3Block<3>::*)()) &Pythia8::LHtensor3Block<3>::list, "C++: Pythia8::LHtensor3Block<3>::list() --> void");
 	}
 	{ // Pythia8::LHdecayChannel file:Pythia8/SusyLesHouches.h line:295
 		pybind11::class_<Pythia8::LHdecayChannel, std::shared_ptr<Pythia8::LHdecayChannel>> cl(M("Pythia8"), "LHdecayChannel", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHdecayChannel(); } ) );
-		cl.def( pybind11::init( [](double const & a0, int const & a1, class std::vector<int, class std::allocator<int> > const & a2){ return new Pythia8::LHdecayChannel(a0, a1, a2); } ), "doc" , pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"));
-		cl.def( pybind11::init<double, int, class std::vector<int, class std::allocator<int> >, std::string>(), pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"), pybind11::arg("cIn") );
+		cl.def( pybind11::init( [](double const & a0, int const & a1, class std::vector<int> const & a2){ return new Pythia8::LHdecayChannel(a0, a1, a2); } ), "doc" , pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"));
+		cl.def( pybind11::init<double, int, class std::vector<int>, std::string>(), pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"), pybind11::arg("cIn") );
 
 		cl.def( pybind11::init( [](Pythia8::LHdecayChannel const &o){ return new Pythia8::LHdecayChannel(o); } ) );
-		cl.def("setChannel", [](Pythia8::LHdecayChannel &o, double const & a0, int const & a1, class std::vector<int, class std::allocator<int> > const & a2) -> void { return o.setChannel(a0, a1, a2); }, "", pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"));
-		cl.def("setChannel", (void (Pythia8::LHdecayChannel::*)(double, int, class std::vector<int, class std::allocator<int> >, std::string)) &Pythia8::LHdecayChannel::setChannel, "C++: Pythia8::LHdecayChannel::setChannel(double, int, class std::vector<int, class std::allocator<int> >, std::string) --> void", pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"), pybind11::arg("cIn"));
+		cl.def("setChannel", [](Pythia8::LHdecayChannel &o, double const & a0, int const & a1, class std::vector<int> const & a2) -> void { return o.setChannel(a0, a1, a2); }, "", pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"));
+		cl.def("setChannel", (void (Pythia8::LHdecayChannel::*)(double, int, class std::vector<int>, std::string)) &Pythia8::LHdecayChannel::setChannel, "C++: Pythia8::LHdecayChannel::setChannel(double, int, class std::vector<int>, std::string) --> void", pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"), pybind11::arg("cIn"));
 		cl.def("setBrat", (void (Pythia8::LHdecayChannel::*)(double)) &Pythia8::LHdecayChannel::setBrat, "C++: Pythia8::LHdecayChannel::setBrat(double) --> void", pybind11::arg("bratIn"));
-		cl.def("setIdDa", (void (Pythia8::LHdecayChannel::*)(class std::vector<int, class std::allocator<int> >)) &Pythia8::LHdecayChannel::setIdDa, "C++: Pythia8::LHdecayChannel::setIdDa(class std::vector<int, class std::allocator<int> >) --> void", pybind11::arg("idDaIn"));
+		cl.def("setIdDa", (void (Pythia8::LHdecayChannel::*)(class std::vector<int>)) &Pythia8::LHdecayChannel::setIdDa, "C++: Pythia8::LHdecayChannel::setIdDa(class std::vector<int>) --> void", pybind11::arg("idDaIn"));
 		cl.def("getBrat", (double (Pythia8::LHdecayChannel::*)()) &Pythia8::LHdecayChannel::getBrat, "C++: Pythia8::LHdecayChannel::getBrat() --> double");
 		cl.def("getNDa", (int (Pythia8::LHdecayChannel::*)()) &Pythia8::LHdecayChannel::getNDa, "C++: Pythia8::LHdecayChannel::getNDa() --> int");
-		cl.def("getIdDa", (class std::vector<int, class std::allocator<int> > (Pythia8::LHdecayChannel::*)()) &Pythia8::LHdecayChannel::getIdDa, "C++: Pythia8::LHdecayChannel::getIdDa() --> class std::vector<int, class std::allocator<int> >");
+		cl.def("getIdDa", (class std::vector<int> (Pythia8::LHdecayChannel::*)()) &Pythia8::LHdecayChannel::getIdDa, "C++: Pythia8::LHdecayChannel::getIdDa() --> class std::vector<int>");
 		cl.def("getComment", (std::string (Pythia8::LHdecayChannel::*)()) &Pythia8::LHdecayChannel::getComment, "C++: Pythia8::LHdecayChannel::getComment() --> std::string");
 		cl.def("assign", (class Pythia8::LHdecayChannel & (Pythia8::LHdecayChannel::*)(const class Pythia8::LHdecayChannel &)) &Pythia8::LHdecayChannel::operator=, "C++: Pythia8::LHdecayChannel::operator=(const class Pythia8::LHdecayChannel &) --> class Pythia8::LHdecayChannel &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::LHdecayTable file:Pythia8/SusyLesHouches.h line:328
 		pybind11::class_<Pythia8::LHdecayTable, std::shared_ptr<Pythia8::LHdecayTable>> cl(M("Pythia8"), "LHdecayTable", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHdecayTable(); } ) );
 		cl.def( pybind11::init<int>(), pybind11::arg("idIn") );
 
 		cl.def( pybind11::init<int, double>(), pybind11::arg("idIn"), pybind11::arg("widthIn") );
 
+		cl.def( pybind11::init( [](Pythia8::LHdecayTable const &o){ return new Pythia8::LHdecayTable(o); } ) );
 		cl.def("getId", (int (Pythia8::LHdecayTable::*)()) &Pythia8::LHdecayTable::getId, "C++: Pythia8::LHdecayTable::getId() --> int");
 		cl.def("getWidth", (double (Pythia8::LHdecayTable::*)()) &Pythia8::LHdecayTable::getWidth, "C++: Pythia8::LHdecayTable::getWidth() --> double");
 		cl.def("setId", (void (Pythia8::LHdecayTable::*)(int)) &Pythia8::LHdecayTable::setId, "C++: Pythia8::LHdecayTable::setId(int) --> void", pybind11::arg("idIn"));
@@ -75,40 +124,20 @@ void bind_Pythia8_SusyLesHouches(std::function< pybind11::module &(std::string c
 		cl.def("reset", [](Pythia8::LHdecayTable &o) -> void { return o.reset(); }, "");
 		cl.def("reset", (void (Pythia8::LHdecayTable::*)(double)) &Pythia8::LHdecayTable::reset, "C++: Pythia8::LHdecayTable::reset(double) --> void", pybind11::arg("widthIn"));
 		cl.def("addChannel", (void (Pythia8::LHdecayTable::*)(class Pythia8::LHdecayChannel)) &Pythia8::LHdecayTable::addChannel, "C++: Pythia8::LHdecayTable::addChannel(class Pythia8::LHdecayChannel) --> void", pybind11::arg("channelIn"));
-		cl.def("addChannel", [](Pythia8::LHdecayTable &o, double const & a0, int const & a1, class std::vector<int, class std::allocator<int> > const & a2) -> void { return o.addChannel(a0, a1, a2); }, "", pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"));
-		cl.def("addChannel", (void (Pythia8::LHdecayTable::*)(double, int, class std::vector<int, class std::allocator<int> >, std::string)) &Pythia8::LHdecayTable::addChannel, "C++: Pythia8::LHdecayTable::addChannel(double, int, class std::vector<int, class std::allocator<int> >, std::string) --> void", pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"), pybind11::arg("cIn"));
+		cl.def("addChannel", [](Pythia8::LHdecayTable &o, double const & a0, int const & a1, class std::vector<int> const & a2) -> void { return o.addChannel(a0, a1, a2); }, "", pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"));
+		cl.def("addChannel", (void (Pythia8::LHdecayTable::*)(double, int, class std::vector<int>, std::string)) &Pythia8::LHdecayTable::addChannel, "C++: Pythia8::LHdecayTable::addChannel(double, int, class std::vector<int>, std::string) --> void", pybind11::arg("bratIn"), pybind11::arg("nDaIn"), pybind11::arg("idDaIn"), pybind11::arg("cIn"));
 		cl.def("size", (int (Pythia8::LHdecayTable::*)()) &Pythia8::LHdecayTable::size, "C++: Pythia8::LHdecayTable::size() --> int");
 		cl.def("getBrat", (double (Pythia8::LHdecayTable::*)(int)) &Pythia8::LHdecayTable::getBrat, "C++: Pythia8::LHdecayTable::getBrat(int) --> double", pybind11::arg("iChannel"));
-		cl.def("getIdDa", (class std::vector<int, class std::allocator<int> > (Pythia8::LHdecayTable::*)(int)) &Pythia8::LHdecayTable::getIdDa, "C++: Pythia8::LHdecayTable::getIdDa(int) --> class std::vector<int, class std::allocator<int> >", pybind11::arg("iChannel"));
+		cl.def("getIdDa", (class std::vector<int> (Pythia8::LHdecayTable::*)(int)) &Pythia8::LHdecayTable::getIdDa, "C++: Pythia8::LHdecayTable::getIdDa(int) --> class std::vector<int>", pybind11::arg("iChannel"));
 		cl.def("getChannel", (class Pythia8::LHdecayChannel (Pythia8::LHdecayTable::*)(int)) &Pythia8::LHdecayTable::getChannel, "C++: Pythia8::LHdecayTable::getChannel(int) --> class Pythia8::LHdecayChannel", pybind11::arg("iChannel"));
+		cl.def("assign", (class Pythia8::LHdecayTable & (Pythia8::LHdecayTable::*)(const class Pythia8::LHdecayTable &)) &Pythia8::LHdecayTable::operator=, "C++: Pythia8::LHdecayTable::operator=(const class Pythia8::LHdecayTable &) --> class Pythia8::LHdecayTable &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::SusyLesHouches file:Pythia8/SusyLesHouches.h line:393
 		pybind11::class_<Pythia8::SusyLesHouches, std::shared_ptr<Pythia8::SusyLesHouches>> cl(M("Pythia8"), "SusyLesHouches", "");
-		pybind11::handle cl_type = cl;
-
-		{ // Pythia8::SusyLesHouches::Entry file:Pythia8/SusyLesHouches.h line:425
-			auto & enclosing_class = cl;
-			pybind11::class_<Pythia8::SusyLesHouches::Entry, std::shared_ptr<Pythia8::SusyLesHouches::Entry>> cl(enclosing_class, "Entry", "");
-			pybind11::handle cl_type = cl;
-
-			cl.def( pybind11::init( [](){ return new Pythia8::SusyLesHouches::Entry(); } ) );
-			cl.def("isInt", (bool (Pythia8::SusyLesHouches::Entry::*)()) &Pythia8::SusyLesHouches::Entry::isInt, "C++: Pythia8::SusyLesHouches::Entry::isInt() --> bool");
-			cl.def("isDouble", (bool (Pythia8::SusyLesHouches::Entry::*)()) &Pythia8::SusyLesHouches::Entry::isDouble, "C++: Pythia8::SusyLesHouches::Entry::isDouble() --> bool");
-			cl.def("isString", (bool (Pythia8::SusyLesHouches::Entry::*)()) &Pythia8::SusyLesHouches::Entry::isString, "C++: Pythia8::SusyLesHouches::Entry::isString() --> bool");
-			cl.def("assign", (class Pythia8::SusyLesHouches::Entry & (Pythia8::SusyLesHouches::Entry::*)(double &)) &Pythia8::SusyLesHouches::Entry::operator=, "C++: Pythia8::SusyLesHouches::Entry::operator=(double &) --> class Pythia8::SusyLesHouches::Entry &", pybind11::return_value_policy::reference, pybind11::arg("val"));
-			cl.def("assign", (class Pythia8::SusyLesHouches::Entry & (Pythia8::SusyLesHouches::Entry::*)(int &)) &Pythia8::SusyLesHouches::Entry::operator=, "C++: Pythia8::SusyLesHouches::Entry::operator=(int &) --> class Pythia8::SusyLesHouches::Entry &", pybind11::return_value_policy::reference, pybind11::arg("val"));
-			cl.def("assign", (class Pythia8::SusyLesHouches::Entry & (Pythia8::SusyLesHouches::Entry::*)(std::string &)) &Pythia8::SusyLesHouches::Entry::operator=, "C++: Pythia8::SusyLesHouches::Entry::operator=(std::string &) --> class Pythia8::SusyLesHouches::Entry &", pybind11::return_value_policy::reference, pybind11::arg("val"));
-			cl.def("setComment", (void (Pythia8::SusyLesHouches::Entry::*)(std::string)) &Pythia8::SusyLesHouches::Entry::setComment, "C++: Pythia8::SusyLesHouches::Entry::setComment(std::string) --> void", pybind11::arg("comment"));
-			cl.def("getComment", (void (Pythia8::SusyLesHouches::Entry::*)(std::string &)) &Pythia8::SusyLesHouches::Entry::getComment, "C++: Pythia8::SusyLesHouches::Entry::getComment(std::string &) --> void", pybind11::arg("comment"));
-			cl.def("get", (bool (Pythia8::SusyLesHouches::Entry::*)(int &)) &Pythia8::SusyLesHouches::Entry::get, "C++: Pythia8::SusyLesHouches::Entry::get(int &) --> bool", pybind11::arg("val"));
-			cl.def("get", (bool (Pythia8::SusyLesHouches::Entry::*)(double &)) &Pythia8::SusyLesHouches::Entry::get, "C++: Pythia8::SusyLesHouches::Entry::get(double &) --> bool", pybind11::arg("val"));
-			cl.def("get", (bool (Pythia8::SusyLesHouches::Entry::*)(std::string &)) &Pythia8::SusyLesHouches::Entry::get, "C++: Pythia8::SusyLesHouches::Entry::get(std::string &) --> bool", pybind11::arg("val"));
-		}
-
 		cl.def( pybind11::init( [](){ return new Pythia8::SusyLesHouches(); } ), "doc" );
 		cl.def( pybind11::init<int>(), pybind11::arg("verboseIn") );
 
-		cl.def( pybind11::init( [](class std::basic_string<char> const & a0){ return new Pythia8::SusyLesHouches(a0); } ), "doc" , pybind11::arg("filename"));
+		cl.def( pybind11::init( [](std::string const & a0){ return new Pythia8::SusyLesHouches(a0); } ), "doc" , pybind11::arg("filename"));
 		cl.def( pybind11::init<std::string, int>(), pybind11::arg("filename"), pybind11::arg("verboseIn") );
 
 		cl.def( pybind11::init( [](Pythia8::SusyLesHouches const &o){ return new Pythia8::SusyLesHouches(o); } ) );
@@ -241,12 +270,9 @@ void bind_Pythia8_SusyLesHouches(std::function< pybind11::module &(std::string c
 		cl.def_readwrite("imnmnmix", &Pythia8::SusyLesHouches::imnmnmix);
 		cl.def_readwrite("genericBlocks", &Pythia8::SusyLesHouches::genericBlocks);
 		cl.def("readFile", [](Pythia8::SusyLesHouches &o) -> int { return o.readFile(); }, "");
-		cl.def("readFile", [](Pythia8::SusyLesHouches &o, class std::basic_string<char> const & a0) -> int { return o.readFile(a0); }, "", pybind11::arg("slhaFileIn"));
-		cl.def("readFile", [](Pythia8::SusyLesHouches &o, class std::basic_string<char> const & a0, int const & a1) -> int { return o.readFile(a0, a1); }, "", pybind11::arg("slhaFileIn"), pybind11::arg("verboseIn"));
+		cl.def("readFile", [](Pythia8::SusyLesHouches &o, std::string const & a0) -> int { return o.readFile(a0); }, "", pybind11::arg("slhaFileIn"));
+		cl.def("readFile", [](Pythia8::SusyLesHouches &o, std::string const & a0, int const & a1) -> int { return o.readFile(a0, a1); }, "", pybind11::arg("slhaFileIn"), pybind11::arg("verboseIn"));
 		cl.def("readFile", (int (Pythia8::SusyLesHouches::*)(std::string, int, bool)) &Pythia8::SusyLesHouches::readFile, "C++: Pythia8::SusyLesHouches::readFile(std::string, int, bool) --> int", pybind11::arg("slhaFileIn"), pybind11::arg("verboseIn"), pybind11::arg("useDecayIn"));
-		cl.def("readFile", [](Pythia8::SusyLesHouches &o, class std::basic_istream<char> & a0) -> int { return o.readFile(a0); }, "", pybind11::arg(""));
-		cl.def("readFile", [](Pythia8::SusyLesHouches &o, class std::basic_istream<char> & a0, int const & a1) -> int { return o.readFile(a0, a1); }, "", pybind11::arg(""), pybind11::arg("verboseIn"));
-		cl.def("readFile", (int (Pythia8::SusyLesHouches::*)(class std::basic_istream<char> &, int, bool)) &Pythia8::SusyLesHouches::readFile, "C++: Pythia8::SusyLesHouches::readFile(class std::basic_istream<char> &, int, bool) --> int", pybind11::arg(""), pybind11::arg("verboseIn"), pybind11::arg("useDecayIn"));
 		cl.def("listHeader", (void (Pythia8::SusyLesHouches::*)()) &Pythia8::SusyLesHouches::listHeader, "C++: Pythia8::SusyLesHouches::listHeader() --> void");
 		cl.def("listFooter", (void (Pythia8::SusyLesHouches::*)()) &Pythia8::SusyLesHouches::listFooter, "C++: Pythia8::SusyLesHouches::listFooter() --> void");
 		cl.def("listSpectrum", [](Pythia8::SusyLesHouches &o) -> void { return o.listSpectrum(); }, "");
@@ -254,7 +280,28 @@ void bind_Pythia8_SusyLesHouches(std::function< pybind11::module &(std::string c
 		cl.def("checkSpectrum", (int (Pythia8::SusyLesHouches::*)()) &Pythia8::SusyLesHouches::checkSpectrum, "C++: Pythia8::SusyLesHouches::checkSpectrum() --> int");
 		cl.def("verbose", (int (Pythia8::SusyLesHouches::*)()) &Pythia8::SusyLesHouches::verbose, "C++: Pythia8::SusyLesHouches::verbose() --> int");
 		cl.def("verbose", (void (Pythia8::SusyLesHouches::*)(int)) &Pythia8::SusyLesHouches::verbose, "C++: Pythia8::SusyLesHouches::verbose(int) --> void", pybind11::arg("verboseIn"));
-		cl.def("message", [](Pythia8::SusyLesHouches &o, int const & a0, class std::basic_string<char> const & a1, class std::basic_string<char> const & a2) -> void { return o.message(a0, a1, a2); }, "", pybind11::arg(""), pybind11::arg(""), pybind11::arg(""));
+		cl.def("message", [](Pythia8::SusyLesHouches &o, int const & a0, std::string const & a1, std::string const & a2) -> void { return o.message(a0, a1, a2); }, "", pybind11::arg(""), pybind11::arg(""), pybind11::arg(""));
 		cl.def("message", (void (Pythia8::SusyLesHouches::*)(int, std::string, std::string, int)) &Pythia8::SusyLesHouches::message, "C++: Pythia8::SusyLesHouches::message(int, std::string, std::string, int) --> void", pybind11::arg(""), pybind11::arg(""), pybind11::arg(""), pybind11::arg("line"));
+		cl.def("assign", (class Pythia8::SusyLesHouches & (Pythia8::SusyLesHouches::*)(const class Pythia8::SusyLesHouches &)) &Pythia8::SusyLesHouches::operator=, "C++: Pythia8::SusyLesHouches::operator=(const class Pythia8::SusyLesHouches &) --> class Pythia8::SusyLesHouches &", pybind11::return_value_policy::reference, pybind11::arg(""));
+
+		{ // Pythia8::SusyLesHouches::Entry file:Pythia8/SusyLesHouches.h line:425
+			auto & enclosing_class = cl;
+			pybind11::class_<Pythia8::SusyLesHouches::Entry, std::shared_ptr<Pythia8::SusyLesHouches::Entry>> cl(enclosing_class, "Entry", "");
+			cl.def( pybind11::init( [](){ return new Pythia8::SusyLesHouches::Entry(); } ) );
+			cl.def( pybind11::init( [](Pythia8::SusyLesHouches::Entry const &o){ return new Pythia8::SusyLesHouches::Entry(o); } ) );
+			cl.def("isInt", (bool (Pythia8::SusyLesHouches::Entry::*)()) &Pythia8::SusyLesHouches::Entry::isInt, "C++: Pythia8::SusyLesHouches::Entry::isInt() --> bool");
+			cl.def("isDouble", (bool (Pythia8::SusyLesHouches::Entry::*)()) &Pythia8::SusyLesHouches::Entry::isDouble, "C++: Pythia8::SusyLesHouches::Entry::isDouble() --> bool");
+			cl.def("isString", (bool (Pythia8::SusyLesHouches::Entry::*)()) &Pythia8::SusyLesHouches::Entry::isString, "C++: Pythia8::SusyLesHouches::Entry::isString() --> bool");
+			cl.def("assign", (class Pythia8::SusyLesHouches::Entry & (Pythia8::SusyLesHouches::Entry::*)(double &)) &Pythia8::SusyLesHouches::Entry::operator=, "C++: Pythia8::SusyLesHouches::Entry::operator=(double &) --> class Pythia8::SusyLesHouches::Entry &", pybind11::return_value_policy::reference, pybind11::arg("val"));
+			cl.def("assign", (class Pythia8::SusyLesHouches::Entry & (Pythia8::SusyLesHouches::Entry::*)(int &)) &Pythia8::SusyLesHouches::Entry::operator=, "C++: Pythia8::SusyLesHouches::Entry::operator=(int &) --> class Pythia8::SusyLesHouches::Entry &", pybind11::return_value_policy::reference, pybind11::arg("val"));
+			cl.def("assign", (class Pythia8::SusyLesHouches::Entry & (Pythia8::SusyLesHouches::Entry::*)(std::string &)) &Pythia8::SusyLesHouches::Entry::operator=, "C++: Pythia8::SusyLesHouches::Entry::operator=(std::string &) --> class Pythia8::SusyLesHouches::Entry &", pybind11::return_value_policy::reference, pybind11::arg("val"));
+			cl.def("setComment", (void (Pythia8::SusyLesHouches::Entry::*)(std::string)) &Pythia8::SusyLesHouches::Entry::setComment, "C++: Pythia8::SusyLesHouches::Entry::setComment(std::string) --> void", pybind11::arg("comment"));
+			cl.def("getComment", (void (Pythia8::SusyLesHouches::Entry::*)(std::string &)) &Pythia8::SusyLesHouches::Entry::getComment, "C++: Pythia8::SusyLesHouches::Entry::getComment(std::string &) --> void", pybind11::arg("comment"));
+			cl.def("get", (bool (Pythia8::SusyLesHouches::Entry::*)(int &)) &Pythia8::SusyLesHouches::Entry::get, "C++: Pythia8::SusyLesHouches::Entry::get(int &) --> bool", pybind11::arg("val"));
+			cl.def("get", (bool (Pythia8::SusyLesHouches::Entry::*)(double &)) &Pythia8::SusyLesHouches::Entry::get, "C++: Pythia8::SusyLesHouches::Entry::get(double &) --> bool", pybind11::arg("val"));
+			cl.def("get", (bool (Pythia8::SusyLesHouches::Entry::*)(std::string &)) &Pythia8::SusyLesHouches::Entry::get, "C++: Pythia8::SusyLesHouches::Entry::get(std::string &) --> bool", pybind11::arg("val"));
+			cl.def("assign", (class Pythia8::SusyLesHouches::Entry & (Pythia8::SusyLesHouches::Entry::*)(const class Pythia8::SusyLesHouches::Entry &)) &Pythia8::SusyLesHouches::Entry::operator=, "C++: Pythia8::SusyLesHouches::Entry::operator=(const class Pythia8::SusyLesHouches::Entry &) --> class Pythia8::SusyLesHouches::Entry &", pybind11::return_value_policy::reference, pybind11::arg(""));
+		}
+
 	}
 }

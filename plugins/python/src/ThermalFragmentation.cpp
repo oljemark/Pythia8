@@ -35,7 +35,6 @@
 #include <Pythia8/UserHooks.h>
 #include <Pythia8/VinciaCommon.h>
 #include <Pythia8/Weights.h>
-#include <cwchar>
 #include <functional>
 #include <ios>
 #include <istream>
@@ -50,30 +49,27 @@
 #include <utility>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::ThermalStringPT file:Pythia8/ThermalFragmentation.h line:105
 struct PyCallBack_Pythia8_ThermalStringPT : public Pythia8::ThermalStringPT {
 	using Pythia8::ThermalStringPT::ThermalStringPT;
 
-	void init() override { 
+	void init() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalStringPT *>(this), "init");
 		if (overload) {
@@ -82,12 +78,12 @@ struct PyCallBack_Pythia8_ThermalStringPT : public Pythia8::ThermalStringPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return ThermalStringPT::init();
 	}
 	using _binder_ret_0 = struct std::pair<double, double>;
-	_binder_ret_0 pxy(int a0, double a1) override { 
+	_binder_ret_0 pxy(int a0, double a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalStringPT *>(this), "pxy");
 		if (overload) {
@@ -96,11 +92,11 @@ struct PyCallBack_Pythia8_ThermalStringPT : public Pythia8::ThermalStringPT {
 				static pybind11::detail::override_caster_t<_binder_ret_0> caster;
 				return pybind11::detail::cast_ref<_binder_ret_0>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<_binder_ret_0>(std::move(o));
+			return pybind11::detail::cast_safe<_binder_ret_0>(std::move(o));
 		}
 		return ThermalStringPT::pxy(a0, a1);
 	}
-	double suppressPT2(double a0) override { 
+	double suppressPT2(double a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalStringPT *>(this), "suppressPT2");
 		if (overload) {
@@ -109,11 +105,11 @@ struct PyCallBack_Pythia8_ThermalStringPT : public Pythia8::ThermalStringPT {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return ThermalStringPT::suppressPT2(a0);
 	}
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalStringPT *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -122,11 +118,11 @@ struct PyCallBack_Pythia8_ThermalStringPT : public Pythia8::ThermalStringPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalStringPT *>(this), "onBeginEvent");
 		if (overload) {
@@ -135,11 +131,11 @@ struct PyCallBack_Pythia8_ThermalStringPT : public Pythia8::ThermalStringPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalStringPT *>(this), "onEndEvent");
 		if (overload) {
@@ -148,11 +144,11 @@ struct PyCallBack_Pythia8_ThermalStringPT : public Pythia8::ThermalStringPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalStringPT *>(this), "onStat");
 		if (overload) {
@@ -161,11 +157,11 @@ struct PyCallBack_Pythia8_ThermalStringPT : public Pythia8::ThermalStringPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalStringPT *>(this), "onStat");
 		if (overload) {
@@ -174,7 +170,7 @@ struct PyCallBack_Pythia8_ThermalStringPT : public Pythia8::ThermalStringPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -184,7 +180,7 @@ struct PyCallBack_Pythia8_ThermalStringPT : public Pythia8::ThermalStringPT {
 struct PyCallBack_Pythia8_ThermalFragmentation : public Pythia8::ThermalFragmentation {
 	using Pythia8::ThermalFragmentation::ThermalFragmentation;
 
-	bool init(class Pythia8::StringFlav * a0, class Pythia8::StringPT * a1, class Pythia8::StringZ * a2, class std::shared_ptr<class Pythia8::FragmentationModifierBase> a3) override { 
+	bool init(class Pythia8::StringFlav * a0, class Pythia8::StringPT * a1, class Pythia8::StringZ * a2, class std::shared_ptr<class Pythia8::FragmentationModifierBase> a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalFragmentation *>(this), "init");
 		if (overload) {
@@ -193,11 +189,11 @@ struct PyCallBack_Pythia8_ThermalFragmentation : public Pythia8::ThermalFragment
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return ThermalFragmentation::init(a0, a1, a2, a3);
 	}
-	bool fragment(int a0, class Pythia8::ColConfig & a1, class Pythia8::Event & a2, bool a3, bool a4) override { 
+	bool fragment(int a0, class Pythia8::ColConfig & a1, class Pythia8::Event & a2, bool a3, bool a4) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalFragmentation *>(this), "fragment");
 		if (overload) {
@@ -206,11 +202,11 @@ struct PyCallBack_Pythia8_ThermalFragmentation : public Pythia8::ThermalFragment
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return ThermalFragmentation::fragment(a0, a1, a2, a3, a4);
 	}
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalFragmentation *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -219,11 +215,11 @@ struct PyCallBack_Pythia8_ThermalFragmentation : public Pythia8::ThermalFragment
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalFragmentation *>(this), "onBeginEvent");
 		if (overload) {
@@ -232,11 +228,11 @@ struct PyCallBack_Pythia8_ThermalFragmentation : public Pythia8::ThermalFragment
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalFragmentation *>(this), "onEndEvent");
 		if (overload) {
@@ -245,11 +241,11 @@ struct PyCallBack_Pythia8_ThermalFragmentation : public Pythia8::ThermalFragment
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalFragmentation *>(this), "onStat");
 		if (overload) {
@@ -258,11 +254,11 @@ struct PyCallBack_Pythia8_ThermalFragmentation : public Pythia8::ThermalFragment
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ThermalFragmentation *>(this), "onStat");
 		if (overload) {
@@ -271,7 +267,7 @@ struct PyCallBack_Pythia8_ThermalFragmentation : public Pythia8::ThermalFragment
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -281,9 +277,9 @@ void bind_Pythia8_ThermalFragmentation(std::function< pybind11::module &(std::st
 {
 	{ // Pythia8::ThermalStringPT file:Pythia8/ThermalFragmentation.h line:105
 		pybind11::class_<Pythia8::ThermalStringPT, std::shared_ptr<Pythia8::ThermalStringPT>, PyCallBack_Pythia8_ThermalStringPT, Pythia8::StringPT> cl(M("Pythia8"), "ThermalStringPT", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::ThermalStringPT(); }, [](){ return new PyCallBack_Pythia8_ThermalStringPT(); } ) );
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_ThermalStringPT const &o){ return new PyCallBack_Pythia8_ThermalStringPT(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::ThermalStringPT const &o){ return new Pythia8::ThermalStringPT(o); } ) );
 		cl.def_readwrite("temperature", &Pythia8::ThermalStringPT::temperature);
 		cl.def_readwrite("tempPreFactor", &Pythia8::ThermalStringPT::tempPreFactor);
 		cl.def_readwrite("fracSmallX", &Pythia8::ThermalStringPT::fracSmallX);
@@ -296,9 +292,9 @@ void bind_Pythia8_ThermalFragmentation(std::function< pybind11::module &(std::st
 	}
 	{ // Pythia8::ThermalFragmentation file:Pythia8/ThermalFragmentation.h line:142
 		pybind11::class_<Pythia8::ThermalFragmentation, std::shared_ptr<Pythia8::ThermalFragmentation>, PyCallBack_Pythia8_ThermalFragmentation, Pythia8::FragmentationModel> cl(M("Pythia8"), "ThermalFragmentation", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::ThermalFragmentation(); }, [](){ return new PyCallBack_Pythia8_ThermalFragmentation(); } ) );
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_ThermalFragmentation const &o){ return new PyCallBack_Pythia8_ThermalFragmentation(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::ThermalFragmentation const &o){ return new Pythia8::ThermalFragmentation(o); } ) );
 		cl.def("init", [](Pythia8::ThermalFragmentation &o) -> bool { return o.init(); }, "");
 		cl.def("init", [](Pythia8::ThermalFragmentation &o, class Pythia8::StringFlav * a0) -> bool { return o.init(a0); }, "", pybind11::arg("flavSelPtrIn"));
 		cl.def("init", [](Pythia8::ThermalFragmentation &o, class Pythia8::StringFlav * a0, class Pythia8::StringPT * a1) -> bool { return o.init(a0, a1); }, "", pybind11::arg("flavSelPtrIn"), pybind11::arg("pTSelPtrIn"));
@@ -311,34 +307,34 @@ void bind_Pythia8_ThermalFragmentation(std::function< pybind11::module &(std::st
 	}
 	// Pythia8::AntFunType file:Pythia8/VinciaCommon.h line:66
 	pybind11::enum_<Pythia8::AntFunType>(M("Pythia8"), "AntFunType", pybind11::arithmetic(), "")
-		.value("NoFun", Pythia8::AntFunType::NoFun)
-		.value("QQEmitFF", Pythia8::AntFunType::QQEmitFF)
-		.value("QGEmitFF", Pythia8::AntFunType::QGEmitFF)
-		.value("GQEmitFF", Pythia8::AntFunType::GQEmitFF)
-		.value("GGEmitFF", Pythia8::AntFunType::GGEmitFF)
-		.value("GXSplitFF", Pythia8::AntFunType::GXSplitFF)
-		.value("QQEmitRF", Pythia8::AntFunType::QQEmitRF)
-		.value("QGEmitRF", Pythia8::AntFunType::QGEmitRF)
-		.value("XGSplitRF", Pythia8::AntFunType::XGSplitRF)
-		.value("QQEmitII", Pythia8::AntFunType::QQEmitII)
-		.value("GQEmitII", Pythia8::AntFunType::GQEmitII)
-		.value("GGEmitII", Pythia8::AntFunType::GGEmitII)
-		.value("QXConvII", Pythia8::AntFunType::QXConvII)
-		.value("GXConvII", Pythia8::AntFunType::GXConvII)
-		.value("QQEmitIF", Pythia8::AntFunType::QQEmitIF)
-		.value("QGEmitIF", Pythia8::AntFunType::QGEmitIF)
-		.value("GQEmitIF", Pythia8::AntFunType::GQEmitIF)
-		.value("GGEmitIF", Pythia8::AntFunType::GGEmitIF)
-		.value("QXConvIF", Pythia8::AntFunType::QXConvIF)
-		.value("GXConvIF", Pythia8::AntFunType::GXConvIF)
-		.value("XGSplitIF", Pythia8::AntFunType::XGSplitIF)
+		.value("NoFun", Pythia8::NoFun)
+		.value("QQEmitFF", Pythia8::QQEmitFF)
+		.value("QGEmitFF", Pythia8::QGEmitFF)
+		.value("GQEmitFF", Pythia8::GQEmitFF)
+		.value("GGEmitFF", Pythia8::GGEmitFF)
+		.value("GXSplitFF", Pythia8::GXSplitFF)
+		.value("QQEmitRF", Pythia8::QQEmitRF)
+		.value("QGEmitRF", Pythia8::QGEmitRF)
+		.value("XGSplitRF", Pythia8::XGSplitRF)
+		.value("QQEmitII", Pythia8::QQEmitII)
+		.value("GQEmitII", Pythia8::GQEmitII)
+		.value("GGEmitII", Pythia8::GGEmitII)
+		.value("QXConvII", Pythia8::QXConvII)
+		.value("GXConvII", Pythia8::GXConvII)
+		.value("QQEmitIF", Pythia8::QQEmitIF)
+		.value("QGEmitIF", Pythia8::QGEmitIF)
+		.value("GQEmitIF", Pythia8::GQEmitIF)
+		.value("GGEmitIF", Pythia8::GGEmitIF)
+		.value("QXConvIF", Pythia8::QXConvIF)
+		.value("GXConvIF", Pythia8::GXConvIF)
+		.value("XGSplitIF", Pythia8::XGSplitIF)
 		.export_values();
 
 ;
 
 	// Pythia8::printOut(std::string, std::string, int, char) file:Pythia8/VinciaCommon.h line:162
-	M("Pythia8").def("printOut", [](class std::basic_string<char> const & a0, class std::basic_string<char> const & a1) -> void { return Pythia8::printOut(a0, a1); }, "", pybind11::arg(""), pybind11::arg(""));
-	M("Pythia8").def("printOut", [](class std::basic_string<char> const & a0, class std::basic_string<char> const & a1, int const & a2) -> void { return Pythia8::printOut(a0, a1, a2); }, "", pybind11::arg(""), pybind11::arg(""), pybind11::arg("nPad"));
+	M("Pythia8").def("printOut", [](std::string const & a0, std::string const & a1) -> void { return Pythia8::printOut(a0, a1); }, "", pybind11::arg(""), pybind11::arg(""));
+	M("Pythia8").def("printOut", [](std::string const & a0, std::string const & a1, int const & a2) -> void { return Pythia8::printOut(a0, a1, a2); }, "", pybind11::arg(""), pybind11::arg(""), pybind11::arg("nPad"));
 	M("Pythia8").def("printOut", (void (*)(std::string, std::string, int, char)) &Pythia8::printOut, "C++: Pythia8::printOut(std::string, std::string, int, char) --> void", pybind11::arg(""), pybind11::arg(""), pybind11::arg("nPad"), pybind11::arg("padChar"));
 
 	// Pythia8::num2str(int, int) file:Pythia8/VinciaCommon.h line:165
@@ -364,22 +360,19 @@ void bind_Pythia8_ThermalFragmentation(std::function< pybind11::module &(std::st
 
 	{ // Pythia8::VinciaColour file:Pythia8/VinciaCommon.h line:211
 		pybind11::class_<Pythia8::VinciaColour, std::shared_ptr<Pythia8::VinciaColour>> cl(M("Pythia8"), "VinciaColour", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::VinciaColour(); } ) );
 		cl.def("initPtr", (void (Pythia8::VinciaColour::*)(class Pythia8::Info *)) &Pythia8::VinciaColour::initPtr, "C++: Pythia8::VinciaColour::initPtr(class Pythia8::Info *) --> void", pybind11::arg("infoPtrIn"));
 		cl.def("init", (bool (Pythia8::VinciaColour::*)()) &Pythia8::VinciaColour::init, "C++: Pythia8::VinciaColour::init() --> bool");
 		cl.def("colourise", (bool (Pythia8::VinciaColour::*)(int, class Pythia8::Event &)) &Pythia8::VinciaColour::colourise, "C++: Pythia8::VinciaColour::colourise(int, class Pythia8::Event &) --> bool", pybind11::arg("iSys"), pybind11::arg("event"));
-		cl.def("makeColourMaps", (void (Pythia8::VinciaColour::*)(const int, const class Pythia8::Event &, class std::map<int, int, struct std::less<int>, class std::allocator<struct std::pair<const int, int> > > &, class std::map<int, int, struct std::less<int>, class std::allocator<struct std::pair<const int, int> > > &, class std::vector<struct std::pair<int, int>, class std::allocator<struct std::pair<int, int> > > &, const bool, const bool)) &Pythia8::VinciaColour::makeColourMaps, "C++: Pythia8::VinciaColour::makeColourMaps(const int, const class Pythia8::Event &, class std::map<int, int, struct std::less<int>, class std::allocator<struct std::pair<const int, int> > > &, class std::map<int, int, struct std::less<int>, class std::allocator<struct std::pair<const int, int> > > &, class std::vector<struct std::pair<int, int>, class std::allocator<struct std::pair<int, int> > > &, const bool, const bool) --> void", pybind11::arg("iSysIn"), pybind11::arg("event"), pybind11::arg("indexOfAcol"), pybind11::arg("indexOfCol"), pybind11::arg("antLC"), pybind11::arg("findFF"), pybind11::arg("findIX"));
+		cl.def("colourSort", (class std::vector<int> (Pythia8::VinciaColour::*)(class std::vector<class Pythia8::Particle *>)) &Pythia8::VinciaColour::colourSort, "C++: Pythia8::VinciaColour::colourSort(class std::vector<class Pythia8::Particle *>) --> class std::vector<int>", pybind11::arg(""));
+		cl.def("makeColourMaps", (void (Pythia8::VinciaColour::*)(const int, const class Pythia8::Event &, class std::map<int, int> &, class std::map<int, int> &, class std::vector<struct std::pair<int, int> > &, const bool, const bool)) &Pythia8::VinciaColour::makeColourMaps, "C++: Pythia8::VinciaColour::makeColourMaps(const int, const class Pythia8::Event &, class std::map<int, int> &, class std::map<int, int> &, class std::vector<struct std::pair<int, int> > &, const bool, const bool) --> void", pybind11::arg("iSysIn"), pybind11::arg("event"), pybind11::arg("indexOfAcol"), pybind11::arg("indexOfCol"), pybind11::arg("antLC"), pybind11::arg("findFF"), pybind11::arg("findIX"));
 		cl.def("inherit01", (bool (Pythia8::VinciaColour::*)(double, double)) &Pythia8::VinciaColour::inherit01, "C++: Pythia8::VinciaColour::inherit01(double, double) --> bool", pybind11::arg("s01"), pybind11::arg("s12"));
 		cl.def("setVerbose", (void (Pythia8::VinciaColour::*)(int)) &Pythia8::VinciaColour::setVerbose, "C++: Pythia8::VinciaColour::setVerbose(int) --> void", pybind11::arg("verboseIn"));
 	}
 	{ // Pythia8::VinciaClustering file:Pythia8/VinciaCommon.h line:278
 		pybind11::class_<Pythia8::VinciaClustering, std::shared_ptr<Pythia8::VinciaClustering>> cl(M("Pythia8"), "VinciaClustering", "");
-		pybind11::handle cl_type = cl;
-
-		cl.def( pybind11::init( [](){ return new Pythia8::VinciaClustering(); } ) );
 		cl.def( pybind11::init( [](Pythia8::VinciaClustering const &o){ return new Pythia8::VinciaClustering(o); } ) );
+		cl.def( pybind11::init( [](){ return new Pythia8::VinciaClustering(); } ) );
 		cl.def_readwrite("dau1", &Pythia8::VinciaClustering::dau1);
 		cl.def_readwrite("dau2", &Pythia8::VinciaClustering::dau2);
 		cl.def_readwrite("dau3", &Pythia8::VinciaClustering::dau3);
@@ -399,12 +392,12 @@ void bind_Pythia8_ThermalFragmentation(std::function< pybind11::module &(std::st
 		cl.def_readwrite("q2evol", &Pythia8::VinciaClustering::q2evol);
 		cl.def_readwrite("kMapType", &Pythia8::VinciaClustering::kMapType);
 		cl.def("setDaughters", (void (Pythia8::VinciaClustering::*)(const class Pythia8::Event &, int, int, int)) &Pythia8::VinciaClustering::setDaughters, "C++: Pythia8::VinciaClustering::setDaughters(const class Pythia8::Event &, int, int, int) --> void", pybind11::arg("state"), pybind11::arg("dau1In"), pybind11::arg("dau2In"), pybind11::arg("dau3In"));
-		cl.def("setDaughters", (void (Pythia8::VinciaClustering::*)(const class std::vector<class Pythia8::Particle, class std::allocator<class Pythia8::Particle> > &, int, int, int)) &Pythia8::VinciaClustering::setDaughters, "C++: Pythia8::VinciaClustering::setDaughters(const class std::vector<class Pythia8::Particle, class std::allocator<class Pythia8::Particle> > &, int, int, int) --> void", pybind11::arg("state"), pybind11::arg("dau1In"), pybind11::arg("dau2In"), pybind11::arg("dau3In"));
+		cl.def("setDaughters", (void (Pythia8::VinciaClustering::*)(const class std::vector<class Pythia8::Particle> &, int, int, int)) &Pythia8::VinciaClustering::setDaughters, "C++: Pythia8::VinciaClustering::setDaughters(const class std::vector<class Pythia8::Particle> &, int, int, int) --> void", pybind11::arg("state"), pybind11::arg("dau1In"), pybind11::arg("dau2In"), pybind11::arg("dau3In"));
 		cl.def("setMothers", (void (Pythia8::VinciaClustering::*)(int, int)) &Pythia8::VinciaClustering::setMothers, "C++: Pythia8::VinciaClustering::setMothers(int, int) --> void", pybind11::arg("idMot1In"), pybind11::arg("idMot2In"));
 		cl.def("setAntenna", (void (Pythia8::VinciaClustering::*)(bool, enum Pythia8::AntFunType)) &Pythia8::VinciaClustering::setAntenna, "C++: Pythia8::VinciaClustering::setAntenna(bool, enum Pythia8::AntFunType) --> void", pybind11::arg("isFSRin"), pybind11::arg("antFunTypeIn"));
 		cl.def("init", (bool (Pythia8::VinciaClustering::*)()) &Pythia8::VinciaClustering::init, "C++: Pythia8::VinciaClustering::init() --> bool");
 		cl.def("setInvariantsAndMasses", (void (Pythia8::VinciaClustering::*)(const class Pythia8::Event &)) &Pythia8::VinciaClustering::setInvariantsAndMasses, "C++: Pythia8::VinciaClustering::setInvariantsAndMasses(const class Pythia8::Event &) --> void", pybind11::arg("state"));
-		cl.def("setInvariantsAndMasses", (void (Pythia8::VinciaClustering::*)(const class std::vector<class Pythia8::Particle, class std::allocator<class Pythia8::Particle> > &)) &Pythia8::VinciaClustering::setInvariantsAndMasses, "C++: Pythia8::VinciaClustering::setInvariantsAndMasses(const class std::vector<class Pythia8::Particle, class std::allocator<class Pythia8::Particle> > &) --> void", pybind11::arg("state"));
+		cl.def("setInvariantsAndMasses", (void (Pythia8::VinciaClustering::*)(const class std::vector<class Pythia8::Particle> &)) &Pythia8::VinciaClustering::setInvariantsAndMasses, "C++: Pythia8::VinciaClustering::setInvariantsAndMasses(const class std::vector<class Pythia8::Particle> &) --> void", pybind11::arg("state"));
 		cl.def("swap13", (void (Pythia8::VinciaClustering::*)()) &Pythia8::VinciaClustering::swap13, "C++: Pythia8::VinciaClustering::swap13() --> void");
 		cl.def("isFF", (bool (Pythia8::VinciaClustering::*)() const) &Pythia8::VinciaClustering::isFF, "C++: Pythia8::VinciaClustering::isFF() const --> bool");
 		cl.def("isRF", (bool (Pythia8::VinciaClustering::*)() const) &Pythia8::VinciaClustering::isRF, "C++: Pythia8::VinciaClustering::isRF() const --> bool");
@@ -412,5 +405,6 @@ void bind_Pythia8_ThermalFragmentation(std::function< pybind11::module &(std::st
 		cl.def("isIF", (bool (Pythia8::VinciaClustering::*)() const) &Pythia8::VinciaClustering::isIF, "C++: Pythia8::VinciaClustering::isIF() const --> bool");
 		cl.def("getAntName", (std::string (Pythia8::VinciaClustering::*)() const) &Pythia8::VinciaClustering::getAntName, "C++: Pythia8::VinciaClustering::getAntName() const --> std::string");
 		cl.def("is2to3", (bool (Pythia8::VinciaClustering::*)() const) &Pythia8::VinciaClustering::is2to3, "C++: Pythia8::VinciaClustering::is2to3() const --> bool");
+		cl.def("assign", (struct Pythia8::VinciaClustering & (Pythia8::VinciaClustering::*)(const struct Pythia8::VinciaClustering &)) &Pythia8::VinciaClustering::operator=, "C++: Pythia8::VinciaClustering::operator=(const struct Pythia8::VinciaClustering &) --> struct Pythia8::VinciaClustering &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 }

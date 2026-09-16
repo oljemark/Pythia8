@@ -17,7 +17,7 @@
 // Includes and namespace
 #include "Pythia8/Pythia.h"
 #include "Pythia8Plugins/GeneratorInput.h"
-#include "Pythia8Plugins/JetMatching.h"
+#include "Pythia8Plugins/JetMatchingHooks.h"
 
 namespace Pythia8 {
 

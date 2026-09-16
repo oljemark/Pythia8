@@ -166,8 +166,8 @@ void Run::fillInfo(InfoBuilder& builder, const Pythia8::Info& info) {
   tHat.append(info.tHat());
   uHat.append(info.uHat());
   pT2Hat.append(info.pT2Hat());
-  for (int iWgt = 0; iWgt < info.nWeightGroups(); ++iWgt)
-    weights.append(info.getGroupWeight(iWgt));
+  for (int iWgt = 0; iWgt < info.numberOfWeights(); ++iWgt)
+    weights.append(info.weightValueByIndex(iWgt));
   builder.content<InfoField::weights>().end_list();
   
 }
@@ -203,7 +203,7 @@ void Run::fillPrt(PrtBuilder &builder, const Pythia8::Event& event) {
   
   // Get the optional production vertex builders.
   auto &vProd = builder.content<PrtField::vProd>();
-  auto &vProdSub = vProd.append_valid();
+  auto &vProdSub = vProd.content();
   vProdSub.set_fields(vecMap);
   vProdSub.set_parameters(vecKey);
   auto &xProd = vProdSub.content<VecField::px>();

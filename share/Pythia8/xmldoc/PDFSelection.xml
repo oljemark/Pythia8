@@ -221,6 +221,9 @@ NNLO rather than NLO.
 <option value="24">SU (2021). This is a simple parameterization based on the 
 same approach as other SU21 sets. It is intended for comparison with those 
 sets, but is too inaccurate to use for practical applications. </option> 
+<option value="25">PDF4LHC21 NNLO combination of CT18, MSHT20 and 
+NNPDF3.1, central member of the Monte Carlo replicas <ref>Bal22</ref>. 
+</option> 
 <option value="LHAPDF5:set/member">Use an external LHAPDF set 
 where <code>set</code> is the name of the set to use 
 and <code>member</code> is the member of the set to use. The value 
@@ -354,7 +357,7 @@ If on, the hard processes are generated with nuclear modifications for
 beam B. 
 </flag> 
  
-<modepick name="PDF:nPDFSetA" default="1" min="0" max="3"> 
+<modepick name="PDF:nPDFSetA" default="1" min="0" max="4"> 
 The nuclear modication to be used for beam A if enabled with the switch above. 
 <option value = "0"> Only Isospin effect.</option> 
 <option value = "1"> EPS09, LO <ref>Esk09</ref>.</option> 
@@ -369,14 +372,20 @@ found from
 <a href="https://research.hip.fi/qcdtheory/nuclear-pdfs/epps16/"> 
 here</a>. 
 </option> 
+<option value = "4"> EPPS21, NLO <ref>Esk21</ref>. The grid files can be 
+found from 
+<a href="https://research.hip.fi/qcdtheory/nuclear-pdfs/epps21/"> 
+here</a>. 
+</option> 
 </modepick> 
  
-<modepick name="PDF:nPDFSetB" default="1" min="0" max="3"> 
+<modepick name="PDF:nPDFSetB" default="1" min="0" max="4"> 
 The nuclear modication to be used for beam B. Same options as above. 
 <option value = "0"> Only Isospin effect.</option> 
 <option value = "1"> EPS09, LO. </option> 
 <option value = "2"> EPS09, NLO.</option> 
 <option value = "3"> EPPS16, NLO.</option> 
+<option value = "4"> EPPS21, NLO.</option> 
 </modepick> 
  
 <modeopen name="PDF:nPDFBeamA" default="100822080"> 

@@ -65,8 +65,9 @@ int main() {
   // Loop over one default run and one with new PDF.
   for (int iRun = 0; iRun < 2; ++iRun) {
 
-    // Get starting time in seconds.
-    clock_t tBegin = clock();
+    // Start measuring the CPU time of this subrun.
+    Timer timer(Timer::CPU);
+    timer.start();
 
     // Generator.
     Pythia pythia;
@@ -160,9 +161,9 @@ int main() {
     pythia.readString("Stat:showPartonLevel = on");
     pythia.stat();
 
-    // Get finishing time in seconds. Print used time.
-    clock_t tEnd = clock();
-    double tUsed = double(tEnd - tBegin) / double(CLOCKS_PER_SEC);
+    // Stop the timer and print used time in seconds.
+    timer.stop();
+    double tUsed = timer.elapsed() / 1000.;
     cout << "\n This subrun took " << tUsed << " seconds \n" << endl;
 
   // End of loop over two runs.

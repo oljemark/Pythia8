@@ -341,7 +341,8 @@ bool HiddenValleyFragmentation::fragment(int iSub, ColConfig&,
   // Minimal meson masses given endpoints.
   double mMinEnd1 = mhvMeson;
   double mMinEnd2 = mhvMeson;
-  if (separateFlav) {
+  isLoop = (hvEvent[hvColConfig[0].iParton.front()].idAbs() == 21);
+  if (separateFlav && !isLoop) {
     idEnd1 = hvEvent[hvColConfig[0].iParton.front()].idAbs() - 4900100;
     idEnd2 = hvEvent[hvColConfig[0].iParton.back()].idAbs() - 4900100;
     mMinEnd1 = mhvMin[idEnd1];
@@ -459,7 +460,7 @@ bool HiddenValleyFragmentation::collapseToMeson() {
   // Lightest mass, given flavour content.
   int idhvLight   = 4900111;
   double mhvLight = mhvMeson;
-  if (separateFlav) {
+  if (separateFlav && !isLoop) {
     idhvLight = 4900001 + 100 * max(idEnd1, idEnd2) + 10 * min(idEnd1, idEnd2);
     mhvLight  = particleDataPtr->m0(idhvLight);
   }

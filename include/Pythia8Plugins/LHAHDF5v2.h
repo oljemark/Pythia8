@@ -27,7 +27,7 @@ class LHAupH5v2 : public Pythia8::LHAup {
 
   LHAupH5v2(HighFive::File* h5fileIn, size_t firstEventIn, size_t readSizeIn,
     bool normalize) :
-    lhefPtr(new LHEH5::LHEFile()), readSizeSav(readSizeIn),
+    lhefPtr(new LHEH5v2::LHEFile()), readSizeSav(readSizeIn),
       nReadSav(0), nTrialsSav(0) {
 
     // Read event-file header and events.
@@ -48,7 +48,7 @@ class LHAupH5v2 : public Pythia8::LHAup {
     vector<double> error(numProcesses);
     vector<double> unitWeight(numProcesses);
     for (int i = 0; i<numProcesses; ++i) {
-      LHEH5::ProcInfo pi(lhefPtr->GetProcInfo(i));
+      LHEH5v2::ProcInfo pi(lhefPtr->GetProcInfo(i));
       procId[i]     = pi.pid;
       xSection[i]   = pi.xsec;
       error[i]      = pi.error;
@@ -72,7 +72,7 @@ class LHAupH5v2 : public Pythia8::LHAup {
 private:
 
   // HDF5 event file.
-  LHEH5::LHEFile *lhefPtr;
+  LHEH5v2::LHEFile *lhefPtr;
 
   // Info for reader.
   size_t readSizeSav, nReadSav, nTrialsSav;
@@ -96,7 +96,7 @@ bool LHAupH5v2::setEvent(int) {
   if (nReadSav >= readSizeSav) return false;
 
   // Read event.
-  LHEH5::Event evt(lhefPtr->GetEvent(nReadSav));
+  LHEH5v2::Event evt(lhefPtr->GetEvent(nReadSav));
   // Skip zero-weight events (empty), but add trials.
   while (evt.size() == 0) {
     ++nReadSav;
@@ -106,7 +106,7 @@ bool LHAupH5v2::setEvent(int) {
   }
   // Events with zero weight are empty.
   if (evt.size()>0 && evt[0].pz<0 && evt[1].pz>0)
-    swap<LHEH5::Particle>(evt[0], evt[1]);
+    swap<LHEH5v2::Particle>(evt[0], evt[1]);
 
   setProcess(evt.pinfo.pid, evt.wgts[0], evt.mur, evt.aqed, evt.aqcd);
   nupSave    = evt.size();
@@ -123,7 +123,7 @@ bool LHAupH5v2::setEvent(int) {
 
   // Set particles.
   for (unsigned int ip=0; ip<evt.size(); ++ip) {
-    const LHEH5::Particle& p = evt[ip];
+    const LHEH5v2::Particle& p = evt[ip];
     if (ip < 2) addParticle(p.id, p.st, 0, 0,
       p.cl1, p.cl2, p.px, p.py, p.pz, p.e, p.m,
       p.lt, p.sp, scalein);

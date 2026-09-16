@@ -102,16 +102,21 @@ int main() {
   Hist tFastCore("FastJet/FJcore time as fn of multiplicity",
     100, -0.5, 999.5);
 
+  // Timers for event generation and the three jet finders (in ms).
+  Timer timerGen(Timer::CPU), timerSlow(Timer::CPU), timerCore(Timer::CPU),
+    timerFast(Timer::CPU);
+
   // Begin event loop. Generate event. Skip if error.
   for (int iEvent = 0; iEvent < nEvent; ++iEvent) {
-    clock_t befGen = clock();
-    if (!pythia.next()) continue;
-    clock_t aftGen = clock();
+    timerGen.start();
+    bool isGood = pythia.next();
+    timerGen.stop();
+    if (!isGood) continue;
 
     // Begin SlowJet analysis of jet properties. List first few.
-    clock_t befSlow = clock();
+    timerSlow.start();
     slowJet.analyze( pythia.event );
-    clock_t aftSlow = clock();
+    timerSlow.stop();
     if (iEvent < nListJets) slowJet.list();
 
     // Fill inclusive SlowJet jet distributions.
@@ -138,9 +143,9 @@ int main() {
       pTdiff.fill( slowJet.pT(i-1)- slowJet.pT(i) );
 
     // Begin FJcore analysis of jet properties. List first few.
-    clock_t befCore = clock();
+    timerCore.start();
     fjCore.analyze( pythia.event );
-    clock_t aftCore = clock();
+    timerCore.stop();
     if (iEvent < nListJets) fjCore.list();
 
     // Fill distribution of fjCore jets relative to SlowJet ones.
@@ -156,7 +161,7 @@ int main() {
     }
 
     // Begin FastJet analysis: extract particles from event record.
-    clock_t befFast = clock();
+    timerFast.start();
     fjInputs.resize(0);
     Vec4   pTemp;
     double mTemp;
@@ -193,7 +198,7 @@ int main() {
     fastjet::ClusterSequence clustSeq(fjInputs, jetDef);
     inclusiveJets = clustSeq.inclusive_jets(pTMin);
     sortedJets    = sorted_by_pt(inclusiveJets);
-    clock_t aftFast = clock();
+    timerFast.stop();
 
     // List first few FastJet jets and some info about them.
     // Note: the final few columns are illustrative of what information
@@ -239,12 +244,12 @@ int main() {
       }
     }
 
-    // Comparison of time consumption by analyzed multiplicity.
+    // Comparison of time consumption (in ms) by analyzed multiplicity.
     nAna.fill( nAnalyze);
-    tGen.fill( nAnalyze, aftGen - befGen);
-    tSlow.fill( nAnalyze, aftSlow - befSlow);
-    tCore.fill( nAnalyze, aftCore - befCore);
-    tFast.fill( nAnalyze, aftFast - befFast);
+    tGen.fill( nAnalyze, timerGen.elapsed());
+    tSlow.fill( nAnalyze, timerSlow.elapsed());
+    tCore.fill( nAnalyze, timerCore.elapsed());
+    tFast.fill( nAnalyze, timerFast.elapsed());
 
   // End of event loop.
   }
@@ -264,11 +269,7 @@ int main() {
        << nAna << tGen << tSlow << tCore << tFast << tSlowGen << tCoreGen
        << tFastGen << tFastCore;
 
-  // Write Python code to generate a plot comparing time usage in seconds.
-  tGen     *= 1000. / CLOCKS_PER_SEC;
-  tSlow    *= 1000. / CLOCKS_PER_SEC;
-  tCore    *= 1000. / CLOCKS_PER_SEC;
-  tFast    *= 1000. / CLOCKS_PER_SEC;
+  // Write Python code to generate a plot comparing time usage in ms.
   HistPlot hpl("plot213");
   hpl.frame("fig213", "Time usage for jet finding",
     "$n_{\\mathrm{analyzed}}$", "$\\langle t \\rangle$ (ms)");

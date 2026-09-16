@@ -48,6 +48,9 @@ int main() {
   //pythia.readString(&quot;WeakBosonExchange:ff2ff(t:W) = on&quot;);
   // Phase-space cut: minimal Q2 of process.
   pythia.settings.parm(&quot;PhaseSpace:Q2Min&quot;, Q2min);
+  // Set the factorization and renormalization scales to Q2.
+  pythia.readString(&quot;SigmaProcess:factorScale2 = 6&quot;);
+  pythia.readString(&quot;SigmaProcess:renormScale2 = 6&quot;);
 
   // Set dipole recoil on. Necessary for DIS + shower.
   pythia.readString(&quot;SpaceShower:dipoleRecoil = on&quot;);

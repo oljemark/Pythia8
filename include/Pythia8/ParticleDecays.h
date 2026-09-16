@@ -28,7 +28,7 @@ namespace Pythia8 {
 // DecayHandler is base class for the external handling of decays.
 // There is only one pure virtual method, that should do the decay.
 
-class DecayHandler {
+class DecayHandler : public PhysicsBase {
 
 public:
 
@@ -86,7 +86,9 @@ public:
 protected:
 
   virtual void onInitInfoPtr() override {
-    registerSubObject(tauDecayer); }
+    registerSubObject(tauDecayer);
+    if (decayHandlePtr) registerSubObject(*decayHandlePtr);
+  }
 
 private:
 

@@ -32,16 +32,19 @@ int main() {
   double eCM = 13000.;
 
   // Example of possible setup values.
-  // topModelSetup = 0 is Born, = 1 is simple Coulomb, = 2 is Green's,
-  // = 3 is reduced top quark width, = 4 reduced width in cross section.
-  int    topModelSetup   = 3;
+  // topModelSetup = 0 is Born, = 1 is simple Coulomb,
+  // = 2 is broad top quark and broad Green's function, giving doublecounting,
+  // = 3 is reduced top quark width, = 4 reduced Green's function width.
+  int    topModelSetup   = 4;
 
   // Suitable values for given topModelSetup.
-  int    topModel        = min( topModelSetup, 2);
+  int    topModel        = min( topModelSetup, 3);
   double mt              = 172.5;
-  double gammat          = (topModelSetup != 3) ? 1.34 : 0.1;
+  double gammat          = 1.34;
   // Warning:  a small gammatGreen may lead to event weights above unity.
-  double gammatGreen     = (topModelSetup != 4) ? 1.34 : 0.2;
+  double gammatGreen     = 1.34;
+  if (topModelSetup == 3) gammatGreen = 1.24;
+  if (topModelSetup == 4) gammatGreen = 0.1;
   double thresholdRegion = 10.;
   int    alphasOrder     = 2;
   double alphasValue     = 0.118;

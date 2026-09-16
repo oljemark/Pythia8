@@ -255,7 +255,8 @@ bool HadronLevel::next( Event& event) {
 
         // String fragmentation of each colour singlet (sub)system.
         for (auto &ptr: *fragPtrs)
-          if (!ptr->fragment(iSub, colConfig, event, isDiff)) return false;
+          if (!colConfig[iSub].isHandled &&
+              !ptr->fragment(iSub, colConfig, event, isDiff)) return false;
 
         // Displace hadron vertices transversely from parton MPI + shower.
         if (doPartonVertex) partonVertexPtr->vertexHadrons( nBefFrag, event);

@@ -665,6 +665,7 @@ bool Angantyr::init() {
 
   // Create Pythia subobjects.
   for ( int i = MBIAS; i < ALL; ++i ) {
+    if ( pythia[i] ) delete pythia[i];
     pythia[i] = new Pythia(*settingsPtr, *particleDataPtr, false);
     pythia[i]->settings.mode("HeavyIon:mode", 1);
     pythia[i]->settings.flag("Beams:allowVertexSpread", false);

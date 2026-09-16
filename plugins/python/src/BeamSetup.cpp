@@ -31,7 +31,6 @@
 #include <Pythia8/SusyCouplings.h>
 #include <Pythia8/UserHooks.h>
 #include <Pythia8/Weights.h>
-#include <cwchar>
 #include <functional>
 #include <ios>
 #include <istream>
@@ -46,30 +45,27 @@
 #include <utility>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::BeamSetup file:Pythia8/BeamSetup.h line:33
 struct PyCallBack_Pythia8_BeamSetup : public Pythia8::BeamSetup {
 	using Pythia8::BeamSetup::BeamSetup;
 
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::BeamSetup *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -78,11 +74,11 @@ struct PyCallBack_Pythia8_BeamSetup : public Pythia8::BeamSetup {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return BeamSetup::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::BeamSetup *>(this), "onBeginEvent");
 		if (overload) {
@@ -91,11 +87,11 @@ struct PyCallBack_Pythia8_BeamSetup : public Pythia8::BeamSetup {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::BeamSetup *>(this), "onEndEvent");
 		if (overload) {
@@ -104,11 +100,11 @@ struct PyCallBack_Pythia8_BeamSetup : public Pythia8::BeamSetup {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::BeamSetup *>(this), "onStat");
 		if (overload) {
@@ -117,11 +113,11 @@ struct PyCallBack_Pythia8_BeamSetup : public Pythia8::BeamSetup {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::BeamSetup *>(this), "onStat");
 		if (overload) {
@@ -130,7 +126,7 @@ struct PyCallBack_Pythia8_BeamSetup : public Pythia8::BeamSetup {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -140,8 +136,6 @@ void bind_Pythia8_BeamSetup(std::function< pybind11::module &(std::string const 
 {
 	{ // Pythia8::BeamSetup file:Pythia8/BeamSetup.h line:33
 		pybind11::class_<Pythia8::BeamSetup, std::shared_ptr<Pythia8::BeamSetup>, PyCallBack_Pythia8_BeamSetup, Pythia8::PhysicsBase> cl(M("Pythia8"), "BeamSetup", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::BeamSetup(); }, [](){ return new PyCallBack_Pythia8_BeamSetup(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Pythia8_BeamSetup const &o){ return new PyCallBack_Pythia8_BeamSetup(o); } ) );
 		cl.def( pybind11::init( [](Pythia8::BeamSetup const &o){ return new Pythia8::BeamSetup(o); } ) );
@@ -224,8 +218,9 @@ void bind_Pythia8_BeamSetup(std::function< pybind11::module &(std::string const 
 		cl.def("getBeamShapePtr", (class std::shared_ptr<class Pythia8::BeamShape> (Pythia8::BeamSetup::*)()) &Pythia8::BeamSetup::getBeamShapePtr, "C++: Pythia8::BeamSetup::getBeamShapePtr() --> class std::shared_ptr<class Pythia8::BeamShape>");
 		cl.def("getPDFPtr", [](Pythia8::BeamSetup &o, int const & a0) -> std::shared_ptr<class Pythia8::PDF> { return o.getPDFPtr(a0); }, "", pybind11::arg("idIn"));
 		cl.def("getPDFPtr", [](Pythia8::BeamSetup &o, int const & a0, int const & a1) -> std::shared_ptr<class Pythia8::PDF> { return o.getPDFPtr(a0, a1); }, "", pybind11::arg("idIn"), pybind11::arg("sequence"));
-		cl.def("getPDFPtr", [](Pythia8::BeamSetup &o, int const & a0, int const & a1, class std::basic_string<char> const & a2) -> std::shared_ptr<class Pythia8::PDF> { return o.getPDFPtr(a0, a1, a2); }, "", pybind11::arg("idIn"), pybind11::arg("sequence"), pybind11::arg("beam"));
+		cl.def("getPDFPtr", [](Pythia8::BeamSetup &o, int const & a0, int const & a1, std::string const & a2) -> std::shared_ptr<class Pythia8::PDF> { return o.getPDFPtr(a0, a1, a2); }, "", pybind11::arg("idIn"), pybind11::arg("sequence"), pybind11::arg("beam"));
 		cl.def("getPDFPtr", (class std::shared_ptr<class Pythia8::PDF> (Pythia8::BeamSetup::*)(int, int, std::string, bool)) &Pythia8::BeamSetup::getPDFPtr, "C++: Pythia8::BeamSetup::getPDFPtr(int, int, std::string, bool) --> class std::shared_ptr<class Pythia8::PDF>", pybind11::arg("idIn"), pybind11::arg("sequence"), pybind11::arg("beam"), pybind11::arg("resolved"));
+		cl.def("getPDFPtr", (class std::map<std::string, class std::shared_ptr<class Pythia8::PDF> > (Pythia8::BeamSetup::*)()) &Pythia8::BeamSetup::getPDFPtr, "C++: Pythia8::BeamSetup::getPDFPtr() --> class std::map<std::string, class std::shared_ptr<class Pythia8::PDF> >");
 		cl.def("initFrame", (bool (Pythia8::BeamSetup::*)()) &Pythia8::BeamSetup::initFrame, "C++: Pythia8::BeamSetup::initFrame() --> bool");
 		cl.def("initBeams", (bool (Pythia8::BeamSetup::*)(bool, class Pythia8::StringFlav *)) &Pythia8::BeamSetup::initBeams, "C++: Pythia8::BeamSetup::initBeams(bool, class Pythia8::StringFlav *) --> bool", pybind11::arg("doNonPertIn"), pybind11::arg("flavSelPtr"));
 		cl.def("getVMDsideA", (bool (Pythia8::BeamSetup::*)()) &Pythia8::BeamSetup::getVMDsideA, "C++: Pythia8::BeamSetup::getVMDsideA() --> bool");

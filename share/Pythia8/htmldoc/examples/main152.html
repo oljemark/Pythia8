@@ -8,6 +8,8 @@ Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
+// Contact: Christian T. Preuss &lt;preuss@physik.rwth-aachen.de&gt;
+
 // Keywords:
 //            <a href="../ExampleKeywords.html#matching">Matching</a>
 //            <a href="../ExampleKeywords.html#merging">Merging</a>
@@ -17,7 +19,6 @@ Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 // based on the code found in include/Pythia8Plugins/PowhegHooks.h.
 
 #include &quot;Pythia8/Pythia.h&quot;
-#include &quot;Pythia8Plugins/PowhegHooks.h&quot;
 using namespace Pythia8;
 
 //==========================================================================
@@ -41,7 +42,6 @@ int main() {
   int showerModel = pythia.settings.mode(&quot;PartonShowers:model&quot;);
 
   // Add in user hooks for shower vetoing.
-  shared_ptr&lt;PowhegHooks&gt; powhegHooks;
   if (loadHooks) {
 
     // For POWHEG:veto &gt;= 1, setup to do vetoed power showers.
@@ -75,9 +75,8 @@ int main() {
     if (powhegMPIveto &gt; 0) {
       pythia.readString(&quot;MultipartonInteractions:pTmaxMatch = 2&quot;);
     }
-
-    powhegHooks = make_shared&lt;PowhegHooks&gt;();
-    pythia.setUserHooksPtr((UserHooksPtr)powhegHooks);
+    pythia.readString(&quot;Init:plugins = {libpythia8powhegHooks.so&quot;
+      &quot;::PowhegHooks}&quot;);
   }
 
   // Initialise and list settings
@@ -114,8 +113,8 @@ int main() {
 
     // Update ISR/FSR veto counters
     if (loadHooks) {
-      nISRveto += powhegHooks-&gt;getNISRveto();
-      nFSRveto += powhegHooks-&gt;getNFSRveto();
+      nISRveto += pythia.settings.mode(&quot;POWHEG:nISRveto&quot;);
+      nFSRveto += pythia.settings.mode(&quot;POWHEG:nFSRveto&quot;);
     }
 
     // If nEvent is set, check and exit loop if necessary

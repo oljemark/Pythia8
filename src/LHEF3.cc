@@ -711,6 +711,8 @@ bool Reader::readEvent(HEPEUP * peup) {
   weights_detailed_vec.clear();
   weightnames_detailed_vec.clear();
 
+  readError = false;
+
   // Check if the initialization was successful. Otherwise we will
   // not read any events.
   if ( heprup.NPRUP < 0 ) return false;
@@ -724,33 +726,39 @@ bool Reader::readEvent(HEPEUP * peup) {
   while ( getLine() && currentLine.find("<event") == string::npos )
     outsideBlock += currentLine + "\n";
 
+  // Whether an event tag was found above. If it was not, the file has
+  // simply ended, which is not an error. If it was, everything that
+  // follows has to be a well-formed event, or the file is corrupted.
+  bool foundEvent = (currentLine != "");
+
   // Get event attributes.
-  if (currentLine != "") {
+  if (foundEvent) {
     string eventLine(currentLine);
     eventLine += "</event>";
-    vector<XMLTag*> evtags = XMLTag::findXMLTags(eventLine);
-    XMLTag & evtag = *evtags[0];
+    vector<XMLTag*> evtags = XMLTag::findXMLTags(eventLine, 0, &readError);
+    XMLTag& evtag = *evtags[0];
     for ( map<string,string>::const_iterator it = evtag.attr.begin();
           it != evtag.attr.end(); ++it ) {
       eup.attributes.insert(make_pair(it->first,it->second));
     }
     for ( int i = 0, N = evtags.size(); i < N; ++i )
       if (evtags[i]) delete evtags[i];
+    if ( readError ) return false;
   }
 
-  if ( !getLine()  ) return false;
+  if ( !getLine()  ) { readError = foundEvent; return false; }
 
   // We found an event. The first line determines how many
   // subsequent particle lines we have.
   istringstream iss(currentLine);
   if ( !( iss >> eup.NUP >> eup.IDPRUP >> eup.XWGTUP
               >> eup.SCALUP >> eup.AQEDUP >> eup.AQCDUP ) )
-    return false;
+    { readError = true; return false; }
   eup.resize();
 
   // Read all particle lines.
   for ( int i = 0; i < eup.NUP; ++i ) {
-    if ( !getLine() ) return false;
+    if ( !getLine() ) { readError = true; return false; }
     istringstream isss(currentLine);
     if ( !( isss >> eup.IDUP[i] >> eup.ISTUP[i]
                 >> eup.MOTHUP[i].first >> eup.MOTHUP[i].second
@@ -758,20 +766,26 @@ bool Reader::readEvent(HEPEUP * peup) {
                 >> eup.PUP[i][0] >> eup.PUP[i][1] >> eup.PUP[i][2]
                 >> eup.PUP[i][3] >> eup.PUP[i][4]
                 >> eup.VTIMUP[i] >> eup.SPINUP[i] ) )
-      return false;
+      { readError = true; return false; }
   }
 
   // Now read any additional comments.
   while ( getLine() && currentLine.find("</event>") == string::npos )
     eventComments += currentLine + "\n";
 
-  if ( file == nullptr ) return false;
+  if ( file == nullptr ) { readError = true; return false; }
 
   eup.scalesSave = LHAscales(eup.SCALUP);
 
   // Scan the init block for XML tags
   string leftovers;
-  vector<XMLTag*> tags = XMLTag::findXMLTags(eventComments, &leftovers);
+  vector<XMLTag*> tags = XMLTag::findXMLTags(eventComments, &leftovers,
+    &readError);
+  if ( readError ) {
+    for ( int i = 0, N = tags.size(); i < N; ++i )
+      if (tags[i]) delete tags[i];
+    return false;
+  }
   if ( leftovers.find_first_not_of(" \t\n") == string::npos )
     leftovers="";
 

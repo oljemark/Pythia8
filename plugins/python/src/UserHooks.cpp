@@ -41,7 +41,6 @@
 #include <Pythia8/TimeShower.h>
 #include <Pythia8/UserHooks.h>
 #include <Pythia8/Weights.h>
-#include <cwchar>
 #include <functional>
 #include <ios>
 #include <istream>
@@ -57,30 +56,27 @@
 #include <utility>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::SuppressSmallPT file:Pythia8/UserHooks.h line:285
 struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 	using Pythia8::SuppressSmallPT::SuppressSmallPT;
 
-	bool canModifySigma() override { 
+	bool canModifySigma() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canModifySigma");
 		if (overload) {
@@ -89,11 +85,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SuppressSmallPT::canModifySigma();
 	}
-	double multiplySigmaBy(const class Pythia8::SigmaProcess * a0, const class Pythia8::PhaseSpace * a1, bool a2) override { 
+	double multiplySigmaBy(const class Pythia8::SigmaProcess * a0, const class Pythia8::PhaseSpace * a1, bool a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "multiplySigmaBy");
 		if (overload) {
@@ -102,11 +98,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return SuppressSmallPT::multiplySigmaBy(a0, a1, a2);
 	}
-	bool initAfterBeams() override { 
+	bool initAfterBeams() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "initAfterBeams");
 		if (overload) {
@@ -115,11 +111,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::initAfterBeams();
 	}
-	bool canBiasSelection() override { 
+	bool canBiasSelection() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canBiasSelection");
 		if (overload) {
@@ -128,11 +124,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canBiasSelection();
 	}
-	double biasSelectionBy(const class Pythia8::SigmaProcess * a0, const class Pythia8::PhaseSpace * a1, bool a2) override { 
+	double biasSelectionBy(const class Pythia8::SigmaProcess * a0, const class Pythia8::PhaseSpace * a1, bool a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "biasSelectionBy");
 		if (overload) {
@@ -141,11 +137,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::biasSelectionBy(a0, a1, a2);
 	}
-	double biasedSelectionWeight() override { 
+	double biasedSelectionWeight() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "biasedSelectionWeight");
 		if (overload) {
@@ -154,11 +150,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::biasedSelectionWeight();
 	}
-	bool canVetoProcessLevel() override { 
+	bool canVetoProcessLevel() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoProcessLevel");
 		if (overload) {
@@ -167,11 +163,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoProcessLevel();
 	}
-	bool doVetoProcessLevel(class Pythia8::Event & a0) override { 
+	bool doVetoProcessLevel(class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoProcessLevel");
 		if (overload) {
@@ -180,11 +176,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoProcessLevel(a0);
 	}
-	bool canSetLowEnergySigma(int a0, int a1) const override { 
+	bool canSetLowEnergySigma(int a0, int a1) const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canSetLowEnergySigma");
 		if (overload) {
@@ -193,11 +189,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canSetLowEnergySigma(a0, a1);
 	}
-	double doSetLowEnergySigma(int a0, int a1, double a2, double a3, double a4) const override { 
+	double doSetLowEnergySigma(int a0, int a1, double a2, double a3, double a4) const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doSetLowEnergySigma");
 		if (overload) {
@@ -206,11 +202,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::doSetLowEnergySigma(a0, a1, a2, a3, a4);
 	}
-	bool canVetoResonanceDecays() override { 
+	bool canVetoResonanceDecays() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoResonanceDecays");
 		if (overload) {
@@ -219,11 +215,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoResonanceDecays();
 	}
-	bool doVetoResonanceDecays(class Pythia8::Event & a0) override { 
+	bool doVetoResonanceDecays(class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoResonanceDecays");
 		if (overload) {
@@ -232,11 +228,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoResonanceDecays(a0);
 	}
-	bool canVetoPT() override { 
+	bool canVetoPT() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoPT");
 		if (overload) {
@@ -245,11 +241,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoPT();
 	}
-	double scaleVetoPT() override { 
+	double scaleVetoPT() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "scaleVetoPT");
 		if (overload) {
@@ -258,11 +254,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::scaleVetoPT();
 	}
-	bool doVetoPT(int a0, const class Pythia8::Event & a1) override { 
+	bool doVetoPT(int a0, const class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoPT");
 		if (overload) {
@@ -271,11 +267,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoPT(a0, a1);
 	}
-	bool canVetoStep() override { 
+	bool canVetoStep() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoStep");
 		if (overload) {
@@ -284,11 +280,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoStep();
 	}
-	int numberVetoStep() override { 
+	int numberVetoStep() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "numberVetoStep");
 		if (overload) {
@@ -297,11 +293,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<int> caster;
 				return pybind11::detail::cast_ref<int>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
+			return pybind11::detail::cast_safe<int>(std::move(o));
 		}
 		return UserHooks::numberVetoStep();
 	}
-	bool doVetoStep(int a0, int a1, int a2, const class Pythia8::Event & a3) override { 
+	bool doVetoStep(int a0, int a1, int a2, const class Pythia8::Event & a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoStep");
 		if (overload) {
@@ -310,11 +306,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoStep(a0, a1, a2, a3);
 	}
-	bool canVetoMPIStep() override { 
+	bool canVetoMPIStep() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoMPIStep");
 		if (overload) {
@@ -323,11 +319,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoMPIStep();
 	}
-	int numberVetoMPIStep() override { 
+	int numberVetoMPIStep() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "numberVetoMPIStep");
 		if (overload) {
@@ -336,11 +332,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<int> caster;
 				return pybind11::detail::cast_ref<int>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
+			return pybind11::detail::cast_safe<int>(std::move(o));
 		}
 		return UserHooks::numberVetoMPIStep();
 	}
-	bool doVetoMPIStep(int a0, const class Pythia8::Event & a1) override { 
+	bool doVetoMPIStep(int a0, const class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoMPIStep");
 		if (overload) {
@@ -349,11 +345,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoMPIStep(a0, a1);
 	}
-	bool canVetoPartonLevelEarly() override { 
+	bool canVetoPartonLevelEarly() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoPartonLevelEarly");
 		if (overload) {
@@ -362,11 +358,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoPartonLevelEarly();
 	}
-	bool doVetoPartonLevelEarly(const class Pythia8::Event & a0) override { 
+	bool doVetoPartonLevelEarly(const class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoPartonLevelEarly");
 		if (overload) {
@@ -375,11 +371,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoPartonLevelEarly(a0);
 	}
-	bool retryPartonLevel() override { 
+	bool retryPartonLevel() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "retryPartonLevel");
 		if (overload) {
@@ -388,11 +384,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::retryPartonLevel();
 	}
-	bool canVetoPartonLevel() override { 
+	bool canVetoPartonLevel() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoPartonLevel");
 		if (overload) {
@@ -401,11 +397,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoPartonLevel();
 	}
-	bool doVetoPartonLevel(const class Pythia8::Event & a0) override { 
+	bool doVetoPartonLevel(const class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoPartonLevel");
 		if (overload) {
@@ -414,11 +410,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoPartonLevel(a0);
 	}
-	bool canSetResonanceScale() override { 
+	bool canSetResonanceScale() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canSetResonanceScale");
 		if (overload) {
@@ -427,11 +423,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canSetResonanceScale();
 	}
-	double scaleResonance(int a0, const class Pythia8::Event & a1) override { 
+	double scaleResonance(int a0, const class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "scaleResonance");
 		if (overload) {
@@ -440,11 +436,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::scaleResonance(a0, a1);
 	}
-	bool canVetoISREmission() override { 
+	bool canVetoISREmission() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoISREmission");
 		if (overload) {
@@ -453,11 +449,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoISREmission();
 	}
-	bool doVetoISREmission(int a0, const class Pythia8::Event & a1, int a2) override { 
+	bool doVetoISREmission(int a0, const class Pythia8::Event & a1, int a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoISREmission");
 		if (overload) {
@@ -466,11 +462,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoISREmission(a0, a1, a2);
 	}
-	bool canVetoFSREmission() override { 
+	bool canVetoFSREmission() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoFSREmission");
 		if (overload) {
@@ -479,11 +475,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoFSREmission();
 	}
-	bool doVetoFSREmission(int a0, const class Pythia8::Event & a1, int a2, bool a3) override { 
+	bool doVetoFSREmission(int a0, const class Pythia8::Event & a1, int a2, bool a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoFSREmission");
 		if (overload) {
@@ -492,11 +488,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoFSREmission(a0, a1, a2, a3);
 	}
-	bool canVetoMPIEmission() override { 
+	bool canVetoMPIEmission() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoMPIEmission");
 		if (overload) {
@@ -505,11 +501,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoMPIEmission();
 	}
-	bool doVetoMPIEmission(int a0, const class Pythia8::Event & a1) override { 
+	bool doVetoMPIEmission(int a0, const class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoMPIEmission");
 		if (overload) {
@@ -518,11 +514,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoMPIEmission(a0, a1);
 	}
-	bool canReconnectResonanceSystems() override { 
+	bool canReconnectResonanceSystems() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canReconnectResonanceSystems");
 		if (overload) {
@@ -531,11 +527,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canReconnectResonanceSystems();
 	}
-	bool doReconnectResonanceSystems(int a0, class Pythia8::Event & a1) override { 
+	bool doReconnectResonanceSystems(int a0, class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doReconnectResonanceSystems");
 		if (overload) {
@@ -544,11 +540,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doReconnectResonanceSystems(a0, a1);
 	}
-	bool canChangeFragPar() override { 
+	bool canChangeFragPar() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canChangeFragPar");
 		if (overload) {
@@ -557,11 +553,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canChangeFragPar();
 	}
-	void setStringEnds(const class Pythia8::StringEnd * a0, const class Pythia8::StringEnd * a1, class std::vector<int, class std::allocator<int> > a2) override { 
+	void setStringEnds(const class Pythia8::StringEnd * a0, const class Pythia8::StringEnd * a1, class std::vector<int> a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "setStringEnds");
 		if (overload) {
@@ -570,11 +566,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return UserHooks::setStringEnds(a0, a1, a2);
 	}
-	bool doChangeFragPar(class Pythia8::StringFlav * a0, class Pythia8::StringZ * a1, class Pythia8::StringPT * a2, int a3, double a4, class std::vector<int, class std::allocator<int> > a5, const class Pythia8::StringEnd * a6) override { 
+	bool doChangeFragPar(class Pythia8::StringFlav * a0, class Pythia8::StringZ * a1, class Pythia8::StringPT * a2, int a3, double a4, class std::vector<int> a5, const class Pythia8::StringEnd * a6) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doChangeFragPar");
 		if (overload) {
@@ -583,11 +579,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doChangeFragPar(a0, a1, a2, a3, a4, a5, a6);
 	}
-	bool canVetoFragmentation() override { 
+	bool canVetoFragmentation() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoFragmentation");
 		if (overload) {
@@ -596,11 +592,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoFragmentation();
 	}
-	bool doVetoFragmentation(class Pythia8::Particle a0, const class Pythia8::StringEnd * a1) override { 
+	bool doVetoFragmentation(class Pythia8::Particle a0, const class Pythia8::StringEnd * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoFragmentation");
 		if (overload) {
@@ -609,11 +605,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoFragmentation(a0, a1);
 	}
-	bool doVetoFragmentation(class Pythia8::Particle a0, class Pythia8::Particle a1, const class Pythia8::StringEnd * a2, const class Pythia8::StringEnd * a3) override { 
+	bool doVetoFragmentation(class Pythia8::Particle a0, class Pythia8::Particle a1, const class Pythia8::StringEnd * a2, const class Pythia8::StringEnd * a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoFragmentation");
 		if (overload) {
@@ -622,11 +618,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoFragmentation(a0, a1, a2, a3);
 	}
-	bool doVetoFinalTwo(class Pythia8::Particle a0, class Pythia8::Particle a1, const class Pythia8::StringEnd * a2, const class Pythia8::StringEnd * a3) override { 
+	bool doVetoFinalTwo(class Pythia8::Particle a0, class Pythia8::Particle a1, const class Pythia8::StringEnd * a2, const class Pythia8::StringEnd * a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoFinalTwo");
 		if (overload) {
@@ -635,11 +631,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoFinalTwo(a0, a1, a2, a3);
 	}
-	bool canVetoAfterHadronization() override { 
+	bool canVetoAfterHadronization() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canVetoAfterHadronization");
 		if (overload) {
@@ -648,11 +644,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canVetoAfterHadronization();
 	}
-	bool doVetoAfterHadronization(const class Pythia8::Event & a0) override { 
+	bool doVetoAfterHadronization(const class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doVetoAfterHadronization");
 		if (overload) {
@@ -661,11 +657,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::doVetoAfterHadronization(a0);
 	}
-	bool canSetImpactParameter() const override { 
+	bool canSetImpactParameter() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canSetImpactParameter");
 		if (overload) {
@@ -674,11 +670,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canSetImpactParameter();
 	}
-	double doSetImpactParameter() override { 
+	double doSetImpactParameter() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doSetImpactParameter");
 		if (overload) {
@@ -687,11 +683,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::doSetImpactParameter();
 	}
-	bool canSetEnhanceB() const override { 
+	bool canSetEnhanceB() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "canSetEnhanceB");
 		if (overload) {
@@ -700,11 +696,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canSetEnhanceB();
 	}
-	double doSetEnhanceB() override { 
+	double doSetEnhanceB() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "doSetEnhanceB");
 		if (overload) {
@@ -713,11 +709,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::doSetEnhanceB();
 	}
-	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
+	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "onEndHadronLevel");
 		if (overload) {
@@ -726,11 +722,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::onEndHadronLevel(a0, a1);
 	}
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -739,11 +735,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return UserHooks::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "onBeginEvent");
 		if (overload) {
@@ -752,11 +748,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "onEndEvent");
 		if (overload) {
@@ -765,11 +761,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "onStat");
 		if (overload) {
@@ -778,11 +774,11 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SuppressSmallPT *>(this), "onStat");
 		if (overload) {
@@ -791,7 +787,7 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -801,7 +797,7 @@ struct PyCallBack_Pythia8_SuppressSmallPT : public Pythia8::SuppressSmallPT {
 struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 	using Pythia8::UserHooksVector::UserHooksVector;
 
-	bool initAfterBeams() override { 
+	bool initAfterBeams() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "initAfterBeams");
 		if (overload) {
@@ -810,11 +806,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::initAfterBeams();
 	}
-	bool canModifySigma() override { 
+	bool canModifySigma() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canModifySigma");
 		if (overload) {
@@ -823,11 +819,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canModifySigma();
 	}
-	double multiplySigmaBy(const class Pythia8::SigmaProcess * a0, const class Pythia8::PhaseSpace * a1, bool a2) override { 
+	double multiplySigmaBy(const class Pythia8::SigmaProcess * a0, const class Pythia8::PhaseSpace * a1, bool a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "multiplySigmaBy");
 		if (overload) {
@@ -836,11 +832,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooksVector::multiplySigmaBy(a0, a1, a2);
 	}
-	bool canBiasSelection() override { 
+	bool canBiasSelection() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canBiasSelection");
 		if (overload) {
@@ -849,11 +845,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canBiasSelection();
 	}
-	double biasSelectionBy(const class Pythia8::SigmaProcess * a0, const class Pythia8::PhaseSpace * a1, bool a2) override { 
+	double biasSelectionBy(const class Pythia8::SigmaProcess * a0, const class Pythia8::PhaseSpace * a1, bool a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "biasSelectionBy");
 		if (overload) {
@@ -862,11 +858,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooksVector::biasSelectionBy(a0, a1, a2);
 	}
-	double biasedSelectionWeight() override { 
+	double biasedSelectionWeight() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "biasedSelectionWeight");
 		if (overload) {
@@ -875,11 +871,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooksVector::biasedSelectionWeight();
 	}
-	bool canVetoProcessLevel() override { 
+	bool canVetoProcessLevel() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoProcessLevel");
 		if (overload) {
@@ -888,11 +884,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoProcessLevel();
 	}
-	bool doVetoProcessLevel(class Pythia8::Event & a0) override { 
+	bool doVetoProcessLevel(class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoProcessLevel");
 		if (overload) {
@@ -901,11 +897,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoProcessLevel(a0);
 	}
-	bool canVetoResonanceDecays() override { 
+	bool canVetoResonanceDecays() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoResonanceDecays");
 		if (overload) {
@@ -914,11 +910,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoResonanceDecays();
 	}
-	bool doVetoResonanceDecays(class Pythia8::Event & a0) override { 
+	bool doVetoResonanceDecays(class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoResonanceDecays");
 		if (overload) {
@@ -927,11 +923,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoResonanceDecays(a0);
 	}
-	bool canVetoPT() override { 
+	bool canVetoPT() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoPT");
 		if (overload) {
@@ -940,11 +936,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoPT();
 	}
-	double scaleVetoPT() override { 
+	double scaleVetoPT() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "scaleVetoPT");
 		if (overload) {
@@ -953,11 +949,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooksVector::scaleVetoPT();
 	}
-	bool doVetoPT(int a0, const class Pythia8::Event & a1) override { 
+	bool doVetoPT(int a0, const class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoPT");
 		if (overload) {
@@ -966,11 +962,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoPT(a0, a1);
 	}
-	bool canVetoStep() override { 
+	bool canVetoStep() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoStep");
 		if (overload) {
@@ -979,11 +975,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoStep();
 	}
-	int numberVetoStep() override { 
+	int numberVetoStep() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "numberVetoStep");
 		if (overload) {
@@ -992,11 +988,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<int> caster;
 				return pybind11::detail::cast_ref<int>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
+			return pybind11::detail::cast_safe<int>(std::move(o));
 		}
 		return UserHooksVector::numberVetoStep();
 	}
-	bool doVetoStep(int a0, int a1, int a2, const class Pythia8::Event & a3) override { 
+	bool doVetoStep(int a0, int a1, int a2, const class Pythia8::Event & a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoStep");
 		if (overload) {
@@ -1005,11 +1001,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoStep(a0, a1, a2, a3);
 	}
-	bool canVetoMPIStep() override { 
+	bool canVetoMPIStep() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoMPIStep");
 		if (overload) {
@@ -1018,11 +1014,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoMPIStep();
 	}
-	int numberVetoMPIStep() override { 
+	int numberVetoMPIStep() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "numberVetoMPIStep");
 		if (overload) {
@@ -1031,11 +1027,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<int> caster;
 				return pybind11::detail::cast_ref<int>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
+			return pybind11::detail::cast_safe<int>(std::move(o));
 		}
 		return UserHooksVector::numberVetoMPIStep();
 	}
-	bool doVetoMPIStep(int a0, const class Pythia8::Event & a1) override { 
+	bool doVetoMPIStep(int a0, const class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoMPIStep");
 		if (overload) {
@@ -1044,11 +1040,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoMPIStep(a0, a1);
 	}
-	bool canVetoPartonLevelEarly() override { 
+	bool canVetoPartonLevelEarly() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoPartonLevelEarly");
 		if (overload) {
@@ -1057,11 +1053,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoPartonLevelEarly();
 	}
-	bool doVetoPartonLevelEarly(const class Pythia8::Event & a0) override { 
+	bool doVetoPartonLevelEarly(const class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoPartonLevelEarly");
 		if (overload) {
@@ -1070,11 +1066,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoPartonLevelEarly(a0);
 	}
-	bool retryPartonLevel() override { 
+	bool retryPartonLevel() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "retryPartonLevel");
 		if (overload) {
@@ -1083,11 +1079,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::retryPartonLevel();
 	}
-	bool canVetoPartonLevel() override { 
+	bool canVetoPartonLevel() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoPartonLevel");
 		if (overload) {
@@ -1096,11 +1092,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoPartonLevel();
 	}
-	bool doVetoPartonLevel(const class Pythia8::Event & a0) override { 
+	bool doVetoPartonLevel(const class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoPartonLevel");
 		if (overload) {
@@ -1109,11 +1105,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoPartonLevel(a0);
 	}
-	bool canSetResonanceScale() override { 
+	bool canSetResonanceScale() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canSetResonanceScale");
 		if (overload) {
@@ -1122,11 +1118,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canSetResonanceScale();
 	}
-	double scaleResonance(int a0, const class Pythia8::Event & a1) override { 
+	double scaleResonance(int a0, const class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "scaleResonance");
 		if (overload) {
@@ -1135,11 +1131,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooksVector::scaleResonance(a0, a1);
 	}
-	bool canVetoISREmission() override { 
+	bool canVetoISREmission() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoISREmission");
 		if (overload) {
@@ -1148,11 +1144,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoISREmission();
 	}
-	bool doVetoISREmission(int a0, const class Pythia8::Event & a1, int a2) override { 
+	bool doVetoISREmission(int a0, const class Pythia8::Event & a1, int a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoISREmission");
 		if (overload) {
@@ -1161,11 +1157,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoISREmission(a0, a1, a2);
 	}
-	bool canVetoFSREmission() override { 
+	bool canVetoFSREmission() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoFSREmission");
 		if (overload) {
@@ -1174,11 +1170,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoFSREmission();
 	}
-	bool doVetoFSREmission(int a0, const class Pythia8::Event & a1, int a2, bool a3) override { 
+	bool doVetoFSREmission(int a0, const class Pythia8::Event & a1, int a2, bool a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoFSREmission");
 		if (overload) {
@@ -1187,11 +1183,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoFSREmission(a0, a1, a2, a3);
 	}
-	bool canVetoMPIEmission() override { 
+	bool canVetoMPIEmission() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoMPIEmission");
 		if (overload) {
@@ -1200,11 +1196,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoMPIEmission();
 	}
-	bool doVetoMPIEmission(int a0, const class Pythia8::Event & a1) override { 
+	bool doVetoMPIEmission(int a0, const class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoMPIEmission");
 		if (overload) {
@@ -1213,11 +1209,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoMPIEmission(a0, a1);
 	}
-	bool canReconnectResonanceSystems() override { 
+	bool canReconnectResonanceSystems() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canReconnectResonanceSystems");
 		if (overload) {
@@ -1226,11 +1222,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canReconnectResonanceSystems();
 	}
-	bool doReconnectResonanceSystems(int a0, class Pythia8::Event & a1) override { 
+	bool doReconnectResonanceSystems(int a0, class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doReconnectResonanceSystems");
 		if (overload) {
@@ -1239,11 +1235,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doReconnectResonanceSystems(a0, a1);
 	}
-	bool canChangeFragPar() override { 
+	bool canChangeFragPar() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canChangeFragPar");
 		if (overload) {
@@ -1252,11 +1248,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canChangeFragPar();
 	}
-	void setStringEnds(const class Pythia8::StringEnd * a0, const class Pythia8::StringEnd * a1, class std::vector<int, class std::allocator<int> > a2) override { 
+	void setStringEnds(const class Pythia8::StringEnd * a0, const class Pythia8::StringEnd * a1, class std::vector<int> a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "setStringEnds");
 		if (overload) {
@@ -1265,11 +1261,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return UserHooksVector::setStringEnds(a0, a1, a2);
 	}
-	bool doChangeFragPar(class Pythia8::StringFlav * a0, class Pythia8::StringZ * a1, class Pythia8::StringPT * a2, int a3, double a4, class std::vector<int, class std::allocator<int> > a5, const class Pythia8::StringEnd * a6) override { 
+	bool doChangeFragPar(class Pythia8::StringFlav * a0, class Pythia8::StringZ * a1, class Pythia8::StringPT * a2, int a3, double a4, class std::vector<int> a5, const class Pythia8::StringEnd * a6) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doChangeFragPar");
 		if (overload) {
@@ -1278,11 +1274,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doChangeFragPar(a0, a1, a2, a3, a4, a5, a6);
 	}
-	bool canVetoFragmentation() override { 
+	bool canVetoFragmentation() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoFragmentation");
 		if (overload) {
@@ -1291,11 +1287,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoFragmentation();
 	}
-	bool doVetoFragmentation(class Pythia8::Particle a0, const class Pythia8::StringEnd * a1) override { 
+	bool doVetoFragmentation(class Pythia8::Particle a0, const class Pythia8::StringEnd * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoFragmentation");
 		if (overload) {
@@ -1304,11 +1300,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoFragmentation(a0, a1);
 	}
-	bool doVetoFragmentation(class Pythia8::Particle a0, class Pythia8::Particle a1, const class Pythia8::StringEnd * a2, const class Pythia8::StringEnd * a3) override { 
+	bool doVetoFragmentation(class Pythia8::Particle a0, class Pythia8::Particle a1, const class Pythia8::StringEnd * a2, const class Pythia8::StringEnd * a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoFragmentation");
 		if (overload) {
@@ -1317,11 +1313,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoFragmentation(a0, a1, a2, a3);
 	}
-	bool doVetoFinalTwo(class Pythia8::Particle a0, class Pythia8::Particle a1, const class Pythia8::StringEnd * a2, const class Pythia8::StringEnd * a3) override { 
+	bool doVetoFinalTwo(class Pythia8::Particle a0, class Pythia8::Particle a1, const class Pythia8::StringEnd * a2, const class Pythia8::StringEnd * a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoFinalTwo");
 		if (overload) {
@@ -1330,11 +1326,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoFinalTwo(a0, a1, a2, a3);
 	}
-	bool canVetoAfterHadronization() override { 
+	bool canVetoAfterHadronization() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canVetoAfterHadronization");
 		if (overload) {
@@ -1343,11 +1339,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canVetoAfterHadronization();
 	}
-	bool doVetoAfterHadronization(const class Pythia8::Event & a0) override { 
+	bool doVetoAfterHadronization(const class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doVetoAfterHadronization");
 		if (overload) {
@@ -1356,11 +1352,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::doVetoAfterHadronization(a0);
 	}
-	bool canSetImpactParameter() const override { 
+	bool canSetImpactParameter() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canSetImpactParameter");
 		if (overload) {
@@ -1369,11 +1365,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canSetImpactParameter();
 	}
-	double doSetImpactParameter() override { 
+	double doSetImpactParameter() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doSetImpactParameter");
 		if (overload) {
@@ -1382,11 +1378,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooksVector::doSetImpactParameter();
 	}
-	bool canSetEnhanceB() const override { 
+	bool canSetEnhanceB() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canSetEnhanceB");
 		if (overload) {
@@ -1395,11 +1391,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooksVector::canSetEnhanceB();
 	}
-	double doSetEnhanceB() override { 
+	double doSetEnhanceB() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doSetEnhanceB");
 		if (overload) {
@@ -1408,11 +1404,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooksVector::doSetEnhanceB();
 	}
-	bool canSetLowEnergySigma(int a0, int a1) const override { 
+	bool canSetLowEnergySigma(int a0, int a1) const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "canSetLowEnergySigma");
 		if (overload) {
@@ -1421,11 +1417,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::canSetLowEnergySigma(a0, a1);
 	}
-	double doSetLowEnergySigma(int a0, int a1, double a2, double a3, double a4) const override { 
+	double doSetLowEnergySigma(int a0, int a1, double a2, double a3, double a4) const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "doSetLowEnergySigma");
 		if (overload) {
@@ -1434,11 +1430,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<double> caster;
 				return pybind11::detail::cast_ref<double>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<double>(std::move(o));
+			return pybind11::detail::cast_safe<double>(std::move(o));
 		}
 		return UserHooks::doSetLowEnergySigma(a0, a1, a2, a3, a4);
 	}
-	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override { 
+	bool onEndHadronLevel(class Pythia8::HadronLevel & a0, class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "onEndHadronLevel");
 		if (overload) {
@@ -1447,11 +1443,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return UserHooks::onEndHadronLevel(a0, a1);
 	}
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -1460,11 +1456,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return UserHooks::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "onBeginEvent");
 		if (overload) {
@@ -1473,11 +1469,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "onEndEvent");
 		if (overload) {
@@ -1486,11 +1482,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "onStat");
 		if (overload) {
@@ -1499,11 +1495,11 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::UserHooksVector *>(this), "onStat");
 		if (overload) {
@@ -1512,7 +1508,7 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -1522,7 +1518,7 @@ struct PyCallBack_Pythia8_UserHooksVector : public Pythia8::UserHooksVector {
 struct PyCallBack_Pythia8_HardProcess : public Pythia8::HardProcess {
 	using Pythia8::HardProcess::HardProcess;
 
-	void initOnProcess(class std::basic_string<char> a0, class Pythia8::ParticleData * a1) override { 
+	void initOnProcess(std::string a0, class Pythia8::ParticleData * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HardProcess *>(this), "initOnProcess");
 		if (overload) {
@@ -1531,11 +1527,11 @@ struct PyCallBack_Pythia8_HardProcess : public Pythia8::HardProcess {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return HardProcess::initOnProcess(a0, a1);
 	}
-	void translateProcessString(class std::basic_string<char> a0) override { 
+	void translateProcessString(std::string a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HardProcess *>(this), "translateProcessString");
 		if (overload) {
@@ -1544,11 +1540,11 @@ struct PyCallBack_Pythia8_HardProcess : public Pythia8::HardProcess {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return HardProcess::translateProcessString(a0);
 	}
-	bool allowCandidates(int a0, class std::vector<int, class std::allocator<int> > a1, class std::vector<int, class std::allocator<int> > a2, const class Pythia8::Event & a3) override { 
+	bool allowCandidates(int a0, class std::vector<int> a1, class std::vector<int> a2, const class Pythia8::Event & a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HardProcess *>(this), "allowCandidates");
 		if (overload) {
@@ -1557,11 +1553,11 @@ struct PyCallBack_Pythia8_HardProcess : public Pythia8::HardProcess {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return HardProcess::allowCandidates(a0, a1, a2, a3);
 	}
-	void storeCandidates(const class Pythia8::Event & a0, class std::basic_string<char> a1) override { 
+	void storeCandidates(const class Pythia8::Event & a0, std::string a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HardProcess *>(this), "storeCandidates");
 		if (overload) {
@@ -1570,11 +1566,11 @@ struct PyCallBack_Pythia8_HardProcess : public Pythia8::HardProcess {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return HardProcess::storeCandidates(a0, a1);
 	}
-	bool matchesAnyOutgoing(int a0, const class Pythia8::Event & a1) override { 
+	bool matchesAnyOutgoing(int a0, const class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HardProcess *>(this), "matchesAnyOutgoing");
 		if (overload) {
@@ -1583,11 +1579,11 @@ struct PyCallBack_Pythia8_HardProcess : public Pythia8::HardProcess {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return HardProcess::matchesAnyOutgoing(a0, a1);
 	}
-	bool findOtherCandidates(int a0, const class Pythia8::Event & a1, bool a2) override { 
+	bool findOtherCandidates(int a0, const class Pythia8::Event & a1, bool a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HardProcess *>(this), "findOtherCandidates");
 		if (overload) {
@@ -1596,22 +1592,9 @@ struct PyCallBack_Pythia8_HardProcess : public Pythia8::HardProcess {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return HardProcess::findOtherCandidates(a0, a1, a2);
-	}
-	bool exchangeCandidates(class std::vector<int, class std::allocator<int> > a0, class std::vector<int, class std::allocator<int> > a1, class std::unordered_map<int, int, struct std::hash<int>, struct std::equal_to<int>, class std::allocator<struct std::pair<const int, int> > > a2, class std::unordered_map<int, int, struct std::hash<int>, struct std::equal_to<int>, class std::allocator<struct std::pair<const int, int> > > a3) override { 
-		pybind11::gil_scoped_acquire gil;
-		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::HardProcess *>(this), "exchangeCandidates");
-		if (overload) {
-			auto o = overload.operator()<pybind11::return_value_policy::reference>(a0, a1, a2, a3);
-			if (pybind11::detail::cast_is_temporary_value_reference<bool>::value) {
-				static pybind11::detail::override_caster_t<bool> caster;
-				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
-			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
-		}
-		return HardProcess::exchangeCandidates(a0, a1, a2, a3);
 	}
 };
 
@@ -1619,21 +1602,19 @@ void bind_Pythia8_UserHooks(std::function< pybind11::module &(std::string const 
 {
 	{ // Pythia8::SuppressSmallPT file:Pythia8/UserHooks.h line:285
 		pybind11::class_<Pythia8::SuppressSmallPT, std::shared_ptr<Pythia8::SuppressSmallPT>, PyCallBack_Pythia8_SuppressSmallPT, Pythia8::UserHooks> cl(M("Pythia8"), "SuppressSmallPT", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::SuppressSmallPT(); }, [](){ return new PyCallBack_Pythia8_SuppressSmallPT(); } ), "doc");
 		cl.def( pybind11::init( [](double const & a0){ return new Pythia8::SuppressSmallPT(a0); }, [](double const & a0){ return new PyCallBack_Pythia8_SuppressSmallPT(a0); } ), "doc");
 		cl.def( pybind11::init( [](double const & a0, int const & a1){ return new Pythia8::SuppressSmallPT(a0, a1); }, [](double const & a0, int const & a1){ return new PyCallBack_Pythia8_SuppressSmallPT(a0, a1); } ), "doc");
 		cl.def( pybind11::init<double, int, bool>(), pybind11::arg("pT0timesMPIIn"), pybind11::arg("numberAlphaSIn"), pybind11::arg("useSameAlphaSasMPIIn") );
 
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_SuppressSmallPT const &o){ return new PyCallBack_Pythia8_SuppressSmallPT(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::SuppressSmallPT const &o){ return new Pythia8::SuppressSmallPT(o); } ) );
 		cl.def("canModifySigma", (bool (Pythia8::SuppressSmallPT::*)()) &Pythia8::SuppressSmallPT::canModifySigma, "C++: Pythia8::SuppressSmallPT::canModifySigma() --> bool");
 		cl.def("multiplySigmaBy", (double (Pythia8::SuppressSmallPT::*)(const class Pythia8::SigmaProcess *, const class Pythia8::PhaseSpace *, bool)) &Pythia8::SuppressSmallPT::multiplySigmaBy, "C++: Pythia8::SuppressSmallPT::multiplySigmaBy(const class Pythia8::SigmaProcess *, const class Pythia8::PhaseSpace *, bool) --> double", pybind11::arg("sigmaProcessPtr"), pybind11::arg("phaseSpacePtr"), pybind11::arg(""));
 		cl.def("assign", (class Pythia8::SuppressSmallPT & (Pythia8::SuppressSmallPT::*)(const class Pythia8::SuppressSmallPT &)) &Pythia8::SuppressSmallPT::operator=, "C++: Pythia8::SuppressSmallPT::operator=(const class Pythia8::SuppressSmallPT &) --> class Pythia8::SuppressSmallPT &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::UserHooksVector file:Pythia8/UserHooks.h line:319
 		pybind11::class_<Pythia8::UserHooksVector, std::shared_ptr<Pythia8::UserHooksVector>, PyCallBack_Pythia8_UserHooksVector, Pythia8::UserHooks> cl(M("Pythia8"), "UserHooksVector", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::UserHooksVector(); }, [](){ return new PyCallBack_Pythia8_UserHooksVector(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Pythia8_UserHooksVector const &o){ return new PyCallBack_Pythia8_UserHooksVector(o); } ) );
 		cl.def( pybind11::init( [](Pythia8::UserHooksVector const &o){ return new Pythia8::UserHooksVector(o); } ) );
@@ -1674,8 +1655,8 @@ void bind_Pythia8_UserHooks(std::function< pybind11::module &(std::string const 
 		cl.def("canReconnectResonanceSystems", (bool (Pythia8::UserHooksVector::*)()) &Pythia8::UserHooksVector::canReconnectResonanceSystems, "C++: Pythia8::UserHooksVector::canReconnectResonanceSystems() --> bool");
 		cl.def("doReconnectResonanceSystems", (bool (Pythia8::UserHooksVector::*)(int, class Pythia8::Event &)) &Pythia8::UserHooksVector::doReconnectResonanceSystems, "C++: Pythia8::UserHooksVector::doReconnectResonanceSystems(int, class Pythia8::Event &) --> bool", pybind11::arg("j"), pybind11::arg("e"));
 		cl.def("canChangeFragPar", (bool (Pythia8::UserHooksVector::*)()) &Pythia8::UserHooksVector::canChangeFragPar, "C++: Pythia8::UserHooksVector::canChangeFragPar() --> bool");
-		cl.def("setStringEnds", (void (Pythia8::UserHooksVector::*)(const class Pythia8::StringEnd *, const class Pythia8::StringEnd *, class std::vector<int, class std::allocator<int> >)) &Pythia8::UserHooksVector::setStringEnds, "C++: Pythia8::UserHooksVector::setStringEnds(const class Pythia8::StringEnd *, const class Pythia8::StringEnd *, class std::vector<int, class std::allocator<int> >) --> void", pybind11::arg("pos"), pybind11::arg("neg"), pybind11::arg("iPart"));
-		cl.def("doChangeFragPar", (bool (Pythia8::UserHooksVector::*)(class Pythia8::StringFlav *, class Pythia8::StringZ *, class Pythia8::StringPT *, int, double, class std::vector<int, class std::allocator<int> >, const class Pythia8::StringEnd *)) &Pythia8::UserHooksVector::doChangeFragPar, "C++: Pythia8::UserHooksVector::doChangeFragPar(class Pythia8::StringFlav *, class Pythia8::StringZ *, class Pythia8::StringPT *, int, double, class std::vector<int, class std::allocator<int> >, const class Pythia8::StringEnd *) --> bool", pybind11::arg("sfIn"), pybind11::arg("zIn"), pybind11::arg("ptIn"), pybind11::arg("idIn"), pybind11::arg("mIn"), pybind11::arg("parIn"), pybind11::arg("endIn"));
+		cl.def("setStringEnds", (void (Pythia8::UserHooksVector::*)(const class Pythia8::StringEnd *, const class Pythia8::StringEnd *, class std::vector<int>)) &Pythia8::UserHooksVector::setStringEnds, "C++: Pythia8::UserHooksVector::setStringEnds(const class Pythia8::StringEnd *, const class Pythia8::StringEnd *, class std::vector<int>) --> void", pybind11::arg("pos"), pybind11::arg("neg"), pybind11::arg("iPart"));
+		cl.def("doChangeFragPar", (bool (Pythia8::UserHooksVector::*)(class Pythia8::StringFlav *, class Pythia8::StringZ *, class Pythia8::StringPT *, int, double, class std::vector<int>, const class Pythia8::StringEnd *)) &Pythia8::UserHooksVector::doChangeFragPar, "C++: Pythia8::UserHooksVector::doChangeFragPar(class Pythia8::StringFlav *, class Pythia8::StringZ *, class Pythia8::StringPT *, int, double, class std::vector<int>, const class Pythia8::StringEnd *) --> bool", pybind11::arg("sfIn"), pybind11::arg("zIn"), pybind11::arg("ptIn"), pybind11::arg("idIn"), pybind11::arg("mIn"), pybind11::arg("parIn"), pybind11::arg("endIn"));
 		cl.def("canVetoFragmentation", (bool (Pythia8::UserHooksVector::*)()) &Pythia8::UserHooksVector::canVetoFragmentation, "C++: Pythia8::UserHooksVector::canVetoFragmentation() --> bool");
 		cl.def("doVetoFragmentation", (bool (Pythia8::UserHooksVector::*)(class Pythia8::Particle, const class Pythia8::StringEnd *)) &Pythia8::UserHooksVector::doVetoFragmentation, "C++: Pythia8::UserHooksVector::doVetoFragmentation(class Pythia8::Particle, const class Pythia8::StringEnd *) --> bool", pybind11::arg("p"), pybind11::arg("nowEnd"));
 		cl.def("doVetoFragmentation", (bool (Pythia8::UserHooksVector::*)(class Pythia8::Particle, class Pythia8::Particle, const class Pythia8::StringEnd *, const class Pythia8::StringEnd *)) &Pythia8::UserHooksVector::doVetoFragmentation, "C++: Pythia8::UserHooksVector::doVetoFragmentation(class Pythia8::Particle, class Pythia8::Particle, const class Pythia8::StringEnd *, const class Pythia8::StringEnd *) --> bool", pybind11::arg("p1"), pybind11::arg("p2"), pybind11::arg("e1"), pybind11::arg("e2"));
@@ -1690,8 +1671,6 @@ void bind_Pythia8_UserHooks(std::function< pybind11::module &(std::string const 
 	}
 	{ // Pythia8::HardProcess file:Pythia8/MergingHooks.h line:38
 		pybind11::class_<Pythia8::HardProcess, std::shared_ptr<Pythia8::HardProcess>, PyCallBack_Pythia8_HardProcess> cl(M("Pythia8"), "HardProcess", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::HardProcess(); }, [](){ return new PyCallBack_Pythia8_HardProcess(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Pythia8_HardProcess const &o){ return new PyCallBack_Pythia8_HardProcess(o); } ) );
 		cl.def( pybind11::init( [](Pythia8::HardProcess const &o){ return new Pythia8::HardProcess(o); } ) );
@@ -1712,11 +1691,10 @@ void bind_Pythia8_UserHooks(std::function< pybind11::module &(std::string const 
 		cl.def("translateLHEFString", (void (Pythia8::HardProcess::*)(std::string)) &Pythia8::HardProcess::translateLHEFString, "C++: Pythia8::HardProcess::translateLHEFString(std::string) --> void", pybind11::arg("LHEpath"));
 		cl.def("translateProcessString", (void (Pythia8::HardProcess::*)(std::string)) &Pythia8::HardProcess::translateProcessString, "C++: Pythia8::HardProcess::translateProcessString(std::string) --> void", pybind11::arg("process"));
 		cl.def("clear", (void (Pythia8::HardProcess::*)()) &Pythia8::HardProcess::clear, "C++: Pythia8::HardProcess::clear() --> void");
-		cl.def("allowCandidates", (bool (Pythia8::HardProcess::*)(int, class std::vector<int, class std::allocator<int> >, class std::vector<int, class std::allocator<int> >, const class Pythia8::Event &)) &Pythia8::HardProcess::allowCandidates, "C++: Pythia8::HardProcess::allowCandidates(int, class std::vector<int, class std::allocator<int> >, class std::vector<int, class std::allocator<int> >, const class Pythia8::Event &) --> bool", pybind11::arg("iPos"), pybind11::arg("Pos1"), pybind11::arg("Pos2"), pybind11::arg("event"));
+		cl.def("allowCandidates", (bool (Pythia8::HardProcess::*)(int, class std::vector<int>, class std::vector<int>, const class Pythia8::Event &)) &Pythia8::HardProcess::allowCandidates, "C++: Pythia8::HardProcess::allowCandidates(int, class std::vector<int>, class std::vector<int>, const class Pythia8::Event &) --> bool", pybind11::arg("iPos"), pybind11::arg("Pos1"), pybind11::arg("Pos2"), pybind11::arg("event"));
 		cl.def("storeCandidates", (void (Pythia8::HardProcess::*)(const class Pythia8::Event &, std::string)) &Pythia8::HardProcess::storeCandidates, "C++: Pythia8::HardProcess::storeCandidates(const class Pythia8::Event &, std::string) --> void", pybind11::arg("event"), pybind11::arg("process"));
 		cl.def("matchesAnyOutgoing", (bool (Pythia8::HardProcess::*)(int, const class Pythia8::Event &)) &Pythia8::HardProcess::matchesAnyOutgoing, "C++: Pythia8::HardProcess::matchesAnyOutgoing(int, const class Pythia8::Event &) --> bool", pybind11::arg("iPos"), pybind11::arg("event"));
 		cl.def("findOtherCandidates", (bool (Pythia8::HardProcess::*)(int, const class Pythia8::Event &, bool)) &Pythia8::HardProcess::findOtherCandidates, "C++: Pythia8::HardProcess::findOtherCandidates(int, const class Pythia8::Event &, bool) --> bool", pybind11::arg("iPos"), pybind11::arg("event"), pybind11::arg("doReplace"));
-		cl.def("exchangeCandidates", (bool (Pythia8::HardProcess::*)(class std::vector<int, class std::allocator<int> >, class std::vector<int, class std::allocator<int> >, class std::unordered_map<int, int, struct std::hash<int>, struct std::equal_to<int>, class std::allocator<struct std::pair<const int, int> > >, class std::unordered_map<int, int, struct std::hash<int>, struct std::equal_to<int>, class std::allocator<struct std::pair<const int, int> > >)) &Pythia8::HardProcess::exchangeCandidates, "C++: Pythia8::HardProcess::exchangeCandidates(class std::vector<int, class std::allocator<int> >, class std::vector<int, class std::allocator<int> >, class std::unordered_map<int, int, struct std::hash<int>, struct std::equal_to<int>, class std::allocator<struct std::pair<const int, int> > >, class std::unordered_map<int, int, struct std::hash<int>, struct std::equal_to<int>, class std::allocator<struct std::pair<const int, int> > >) --> bool", pybind11::arg("candidates1"), pybind11::arg("candidates2"), pybind11::arg("further1"), pybind11::arg("further2"));
 		cl.def("nQuarksOut", (int (Pythia8::HardProcess::*)()) &Pythia8::HardProcess::nQuarksOut, "C++: Pythia8::HardProcess::nQuarksOut() --> int");
 		cl.def("nLeptonOut", (int (Pythia8::HardProcess::*)()) &Pythia8::HardProcess::nLeptonOut, "C++: Pythia8::HardProcess::nLeptonOut() --> int");
 		cl.def("nBosonsOut", (int (Pythia8::HardProcess::*)()) &Pythia8::HardProcess::nBosonsOut, "C++: Pythia8::HardProcess::nBosonsOut() --> int");

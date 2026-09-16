@@ -42,6 +42,10 @@
 #include <fstream>
 #include <sstream>
 
+// Stdlib header files for timing.
+#include <chrono>
+#include <ctime>
+
 // Thread header files.
 #include <mutex>
 #include <atomic>

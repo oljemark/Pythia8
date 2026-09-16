@@ -861,6 +861,109 @@ private:
 
 //==========================================================================
 
+// Timer class.
+// Used to time code. If a pointer to a counter is passed to the
+// constructor, the counter is incremented by the elapsed time every
+// time stop is called.
+
+class Timer {
+
+ public:
+
+  // Classes needed from the chrono library.
+  using Clock = std::chrono::steady_clock;
+  using Duration = Clock::duration;
+
+  // Type of time measured.
+  enum TimeType {WALL, CPU, THREAD};
+
+  // Constructor.
+  // typeIn: type of time: WALL (real elapsed time), CPU (processor
+  // time for all threads), THREAD (single thread processor time).
+  // counterPtrIn: optional counter to increment.
+  // mutexPtrIn: optional mutex to lock the counter.
+  Timer(TimeType typeIn = CPU, double* counterPtrIn = nullptr,
+    mutex* mutexPtrIn = nullptr)
+    : type(typeIn), counterPtr(counterPtrIn), mutexPtr(mutexPtrIn) {}
+
+  // Destructor.
+  ~Timer() {stop();}
+
+  // Resets and starts the timer, optionally in a paused state.
+  void start(bool pausedIn = false) {
+    tSum = Duration::zero(); active = true; paused = pausedIn; tStart = now();}
+
+  // Pause timing without clearing the total time.
+  void pause() {if (!active || paused) return;
+    tSum += now() - tStart; paused = true;}
+
+  // Resume timing after being paused.
+  void resume() {if (!active || !paused) return;
+    tStart = now(); paused = false;}
+
+  // Stops the timer and adds the elapsed time to the counter if valid.
+  // Locks the mutex, if provided.
+  void stop() {
+    if (!active) return;
+    if (!paused) tSum += now() - tStart;
+    active = false; paused = false;
+    if (counterPtr == nullptr) return;
+    double delta = elapsed();
+    if (mutexPtr != nullptr) {
+      lock_guard<mutex> lock(*mutexPtr); *counterPtr += delta;
+    } else *counterPtr += delta;}
+
+  // Returns elapsed time in milliseconds.
+  double elapsed() const {
+    return elapsed<std::chrono::duration<double, std::milli>>();}
+
+  // Returns the elapsed time.
+  template <typename T> double elapsed() const {
+    Duration total = tSum;
+    if (active && !paused) total += now() - tStart;
+    return std::chrono::duration_cast<T>(total).count();}
+
+  // Returns if the timer is active.
+  bool isActive() const {return active && !paused;}
+  // Returns if the timer is paused.
+  bool isPaused() const {return paused;}
+  // Returns the type of time measured.
+  TimeType timeType() const {return type;}
+
+ private:
+
+  // Current relative time.
+  Duration now() const {
+    // CPU time.
+    if (type == CPU) return std::chrono::duration_cast<Duration>(
+      std::chrono::duration<double>(double(std::clock()) / CLOCKS_PER_SEC));
+    // THREAD time.
+    if (type == THREAD) {
+      timespec ts;
+      clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
+      return std::chrono::duration_cast<Duration>(std::chrono::seconds(
+        ts.tv_sec) + std::chrono::nanoseconds(ts.tv_nsec));}
+    // WALL time.
+    else return Clock::now().time_since_epoch();
+  }
+
+  // Internal members for timing.
+  Duration tStart{Duration::zero()};
+  Duration tSum{Duration::zero()};
+  bool active{false}, paused{false};
+
+  // Type of time measured.
+  TimeType type{WALL};
+
+  // Optional attached counter.
+  double* counterPtr{nullptr};
+  // Optional attached mutex for the counter.
+  mutex* mutexPtr{nullptr};
+
+};
+
+//==========================================================================
+
 // Methods used for debugging random number sequences.
 
 #ifdef RNGDEBUG

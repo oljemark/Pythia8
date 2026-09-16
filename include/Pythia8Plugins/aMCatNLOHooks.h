@@ -16,6 +16,7 @@
 #define Pythia8_aMCatNLOHooks_H
 
 #include "Pythia8/Pythia.h"
+#include "Pythia8/Plugins.h"
 
 namespace Pythia8 {
 
@@ -25,22 +26,31 @@ namespace Pythia8 {
 // needed when running CKKW-L or UMEPS on a single input file that contains
 // all parton multiplicities.
 
-class amcnlo_unitarised_interface : public UserHooks {
+class aMCatNLOHooks : public UserHooks {
 
 public:
 
-  // Constructor and destructor.
-  amcnlo_unitarised_interface() : mergingScheme(0), normFactor(1.) {}
-  amcnlo_unitarised_interface(int mergingSchemeIn)
+  // Constructors and destructors.
+  aMCatNLOHooks() : mergingScheme(0), normFactor(1.) {}
+  aMCatNLOHooks(int mergingSchemeIn)
     : mergingScheme(mergingSchemeIn), normFactor(1.) {}
- ~amcnlo_unitarised_interface() {}
+  aMCatNLOHooks(Pythia*, Settings* settingsPtrIn, Logger*) {
+    settingsPtr = settingsPtrIn;
+    mergingScheme = ( settingsPtr->flag("Merging:doUMEPSTree")
+      || settingsPtr->flag("Merging:doUMEPSSubt")) ? 1
+      : ( ( settingsPtr->flag("Merging:doUNLOPSTree")
+          || settingsPtr->flag("Merging:doUNLOPSSubt")
+          || settingsPtr->flag("Merging:doUNLOPSLoop")
+          || settingsPtr->flag("Merging:doUNLOPSSubtNLO")) ? 2 : 0 );
+  }
+  ~aMCatNLOHooks() {}
 
-  double getNormFactor(){return normFactor;}
+  double getNormFactor() {return normFactor;}
 
   // Allow to set the number of partons.
-  bool canVetoProcessLevel() { return true;}
+  bool canVetoProcessLevel() override {return true;}
   // Set the number of partons.
-  bool doVetoProcessLevel( Event& process) {
+  bool doVetoProcessLevel( Event& process) override {
 
     int nPartons = 0;
     normFactor = 1.;
@@ -232,7 +242,7 @@ public:
       }
     }
     // Reset the event weight to incorporate corrective factor.
-    if ( updateWgt) {
+    if (updateWgt) {
       infoPtr->weightContainerPtr->weightNominal *= normFactor;
       normFactor = 1.;
     }
@@ -246,6 +256,13 @@ private:
   int mergingScheme;
   double normFactor;
 };
+
+//--------------------------------------------------------------------------
+
+// Declare the plugin.
+
+PYTHIA8_PLUGIN_CLASS(UserHooks, aMCatNLOHooks, false, true, false)
+PYTHIA8_PLUGIN_VERSIONS(PYTHIA_VERSION_INTEGER)
 
 //==========================================================================
 

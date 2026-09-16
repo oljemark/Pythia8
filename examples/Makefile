@@ -40,7 +40,7 @@ ifeq ($(ROOT_USE),true)
   ROOT_OPTS=$(ROOT_LIB) $(shell $(ROOT_CONFIG) --cflags --glibs) -DPY8ROOT
 endif
 YODA_OPTS=$(YODA_INCLUDE) $(YODA_LIB)
-YODA_OPTS+= $(shell $(YODA_BIN)/$(YODA_CONFIG) --libs)
+YODA_OPTS += $(shell $(YODA_CONFIG) --cflags --libs)
 
 ################################################################################
 # RULES: Definition of the rules used to build the PYTHIA examples.
@@ -87,6 +87,14 @@ else
 	$(error Error: $@ requires YODA)
 endif
 
+# HEPMC3 only.
+main137: $(PYTHIA) $$@.cc
+ifeq ($(HEPMC3_USE),true)
+	$(CXX) $@.cc -o $@ $(CXX_COMMON) $(HEPMC3_OPTS)
+else
+	$(error Error: $@ requires HEPMC3)
+endif
+
 # HEPMC2 or HEPMC3 (use HEPMC3 if both).
 main131 main132 main133 main134 main135: $(PYTHIA) $$@.cc
 ifeq ($(HEPMC3_USE),true)
@@ -105,6 +113,14 @@ else ifeq ($(HDF5_USE)$(HIGHFIVE_USE)$(HEPMC2_USE),truetruetrue)
 	$(CXX) $@.cc -o $@ -w $(CXX_COMMON) $(HEPMC2_OPTS) $(HDF5_OPTS)
 else
 	$(error Error: $@ requires HDF5, HIGHFIVE, and HEPMC2 or HEPMC3)
+endif
+
+# Optionally HDF5 and HIGHFIVE.
+main235: $(PYTHIA) $$@.cc
+ifeq ($(HDF5_USE)$(HIGHFIVE_USE),truetrue)
+	$(CXX) $@.cc -o $@ -w $(CXX_COMMON) $(HDF5_OPTS)
+else
+	$(CXX) $@.cc -o $@ $(CXX_COMMON)
 endif
 
 # General ROOT examples without other external dependencies. 

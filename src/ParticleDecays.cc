@@ -58,9 +58,9 @@ void ParticleDecays::init(TimeShowerPtr timesDecPtrIn,
   decayHandlePtr  = decayHandlePtrIn;
 
   // Set which particles should be handled externally.
-  if (decayHandlePtr != 0)
-  for (int i = 0; i < int(handledParticles.size()); ++i)
-    particleDataPtr->doExternalDecay(handledParticles[i], true);
+  if (decayHandlePtr)
+    for (int i = 0; i < int(handledParticles.size()); ++i)
+      particleDataPtr->doExternalDecay(handledParticles[i], true);
 
   // Safety margin in mass to avoid troubles.
   mSafety       = parm("ParticleDecays:mSafety");

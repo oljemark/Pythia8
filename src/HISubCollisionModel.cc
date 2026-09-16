@@ -148,7 +148,8 @@ bool SubCollisionModel::init(int idAIn, int idBIn, double eCMIn) {
         "Beams:idAList contains only a single entry");
     }
     bool idAIsGood = false;
-    for (int idA : idAList) if (idA == idAIn) {
+    for (int idA : idAList)
+      if (idA == infoPtr->beamSetupPtr->represent(idAIn)) {
       idAIsGood = true;
       break;
     }
@@ -1061,6 +1062,7 @@ SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
     projSample[i] = pickRadiusProj();
     targSample[i] = pickRadiusTarg();
   }
+  const double avbPrefac = sqrt(2.0/M_PI);
 
   SigEst s;
   for ( int n = 0; n < NInt; ++n ) {
@@ -1083,24 +1085,28 @@ SubCollisionModel::SigEst FluctuatingSubCollisionModel::getSig() const {
     // Calculate the non-diffractive cross section and collect
     // information about corresponding overlap and average impact
     // parameter.
-    double u11 = opacity(s11)/2.0;
-    double u12 = opacity(s12)/2.0;
-    double u21 = opacity(s21)/2.0;
-    double u22 = opacity(s22)/2.0;
+    double T011 = opacity(s11);
+    double T012 = opacity(s12);
+    double T021 = opacity(s21);
+    double T022 = opacity(s22);
+    double u11 = 0.5 * T011;
+    double u12 = 0.5 * T012;
+    double u21 = 0.5 * T021;
+    double u22 = 0.5 * T022;
 
     if ( s11 < u11*HUGEVAL && s12 < u12*HUGEVAL &&
          s21 < u21*HUGEVAL && s22 < u22*HUGEVAL ) {
-      double avb = sqrt(2.0/M_PI)*(s11*sqrt(s11/(2.0*u11))*(1.0 - u11) +
-                                   s12*sqrt(s12/(2.0*u12))*(1.0 - u12) +
-                                   s21*sqrt(s21/(2.0*u21))*(1.0 - u21) +
-                                   s22*sqrt(s22/(2.0*u22))*(1.0 - u22))/12.0;
+      double avb = avbPrefac*(s11*sqrt(s11/(2.0*u11))*(1.0 - u11) +
+                              s12*sqrt(s12/(2.0*u12))*(1.0 - u12) +
+                              s21*sqrt(s21/(2.0*u21))*(1.0 - u21) +
+                              s22*sqrt(s22/(2.0*u22))*(1.0 - u22))/12.0;
       s.avNDb += avb;
       s.davNDb2 += pow2(avb);
 
-      double avOF = (0.5*log1mT0(s11)*s11/u11 +
-                     0.5*log1mT0(s12)*s12/u12 +
-                     0.5*log1mT0(s21)*s21/u21 +
-                     0.5*log1mT0(s22)*s22/u22)/4.0;
+      double avOF = (0.5*log1mT0(s11, T011)*s11/u11 +
+                     0.5*log1mT0(s12, T012)*s12/u12 +
+                     0.5*log1mT0(s21, T021)*s21/u21 +
+                     0.5*log1mT0(s22, T022)*s22/u22)/4.0;
       s.avNOF +=avOF;
       s.davNOF2 +=pow2(avOF);
     }

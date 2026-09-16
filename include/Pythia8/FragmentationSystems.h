@@ -34,13 +34,14 @@ public:
 
   // Constructors.
   ColSinglet() : pSum(0., 0., 0., 0.), mass(0.), massExcess(0.),
-    hasJunction(false), isClosed(false), isCollected(false) {}
+    hasJunction(false), isClosed(false), isCollected(false),
+    isHandled(false) {}
   ColSinglet(vector<int>& iPartonIn, Vec4 pSumIn, double massIn,
     double massExcessIn, bool hasJunctionIn = false,
     bool isClosedIn = false, bool isCollectedIn = false)
     : iParton(iPartonIn), pSum(pSumIn), mass(massIn),
     massExcess(massExcessIn), hasJunction(hasJunctionIn),
-    isClosed(isClosedIn), isCollected(isCollectedIn) {}
+    isClosed(isClosedIn), isCollected(isCollectedIn), isHandled(false) {}
 
   // Size of iParton array.
   int size() const { return iParton.size();}
@@ -49,7 +50,7 @@ public:
   vector<int> iParton;
   Vec4   pSum;
   double mass, massExcess;
-  bool   hasJunction, isClosed, isCollected;
+  bool   hasJunction, isClosed, isCollected, isHandled;
 
 };
 

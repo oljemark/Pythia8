@@ -18,7 +18,6 @@
 #include "Pythia8/Pythia.h"
 #include "Pythia8/HeavyIons.h"
 #include "Pythia8Plugins/InputParser.h"
-#include <chrono>
 #ifdef HEPMC3
 #include "Pythia8Plugins/HepMC3.h"
 #endif
@@ -238,9 +237,9 @@ int main(int argc, char* argv[]) {
   if (!pythia.init()) return 1;
 
   // Loop over events.
-  auto startAllEvents = std::chrono::high_resolution_clock::now();
+  Timer timer;
+  timer.start();
   for ( int iEvent = 0; iEvent < nEvent; ++iEvent ) {
-    auto startThisEvent = std::chrono::high_resolution_clock::now();
 
     // Exit if too many failures.
     if (!pythia.next()) {
@@ -253,12 +252,6 @@ int main(int argc, char* argv[]) {
       }
       continue;
     }
-
-    // Calculate the event time.
-    auto stopThisEvent = std::chrono::high_resolution_clock::now();
-    auto eventTime = std::chrono::duration_cast<std::chrono::milliseconds>
-      (stopThisEvent - startThisEvent);
-    double tt = eventTime.count();
 
     // Write to HEPMC file output.
 #ifdef HEPMC3
@@ -296,14 +289,12 @@ int main(int argc, char* argv[]) {
 #endif
 
   // Print timing.
-  auto stopAllEvents = std::chrono::high_resolution_clock::now();
-  auto durationAll = std::chrono::duration_cast<std::chrono::milliseconds>
-    (stopAllEvents - startAllEvents);
+  timer.stop();
   if (writeTime) {
     cout << " \n *-------  Generation time  -----------------------*\n"
          << " | Event generation, analysis and writing to files  |\n"
-         << " | took: " << double(durationAll.count()) << " ms or "
-         << double(durationAll.count())/double(nEvent)
+         << " | took: " << double(timer.elapsed()) << " ms or "
+         << double(timer.elapsed())/double(nEvent)
          << " ms per event     |\n"
          << " *-------------------------------------------------*\n";
   }

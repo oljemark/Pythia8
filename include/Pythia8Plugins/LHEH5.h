@@ -536,10 +536,11 @@ Events2 readEvents2(Group& g_particle, Group& g_event, size_t first_event,
   } else {
     // The weights are stored as a single floating point value.
     std::vector<double> _vweight;
-    _weight  .select(offset_e, readsize_e).read(_vweight);
-    _vweightvec.resize(1);
-    _vweightvec[0] = _vweight;
+    _weight.select(offset_e, readsize_e).read(_vweight);
+    for (size_t i = 0; i < _vweight.size(); ++i)
+      _vweightvec[i][0] = _vweight[i];
   }
+
   _trials    .select(offset_e, readsize_e).read(_vtrials);
   _scale     .select(offset_e, readsize_e).read(_vscale );
   _rscale    .select(offset_e, readsize_e).read(_vrscale);

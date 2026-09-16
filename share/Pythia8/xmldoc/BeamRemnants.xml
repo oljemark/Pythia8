@@ -356,9 +356,9 @@ extremes. Has no influence on diquarks not coming from a beam remnant.
  
 <flag name="BeamRemnants:hardRemnantBaryon" default="off"> 
 Allows a remnant diquark to hadronize to a harder-than-normal baryon, 
-assuming that <code>forbidPopcorn</code> is switched on. Then the next 
-two parameters override the normal <ei>a</ei> and <ei>b</ei> of the 
-Lund symmetric fragmentation function. 
+for a fraction <code>1 - dampPopcorn</code> of these diquarks. Then 
+the next two parameters override the normal <ei>a</ei> and <ei>b</ei> 
+of the Lund symmetric fragmentation function. 
 </flag> 
  
 <parm name="BeamRemnants:aRemnantBaryon" default="0." min="0." max="2."> 

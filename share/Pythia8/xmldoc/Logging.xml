@@ -100,6 +100,115 @@ flag is turned on, error messages will instead be written
 to <code>cerr</code>. 
 </flag> 
  
+<h3>Timing</h3> 
+ 
+The <code>Timer</code> class provides a simple stopwatch that can be 
+used to time code. The timer can be started, stopped, paused, and 
+resumed. At construction, an optional counter can be passed which the 
+timer class will add its elapsed time to, in milliseconds, when stopped. 
+ 
+The following gives a small example. Not illustrated here is that 
+whenever a timer goes out of scope, it is stopped, and if a valid 
+counter is available, that counter is incremented. In this way, a 
+timer does not need to be explicitly stopped in complicated return 
+structures. 
+ 
+<pre> 
+  // Accumulate the event generation time with tEvt, in milliseconds. 
+  double tEvt = 0.; 
+  // Timer per event and for everything, including initialization. 
+  Timer evtTimer(Timer::WALL, &amp;tEvt), totTimer; 
+  // Start the total timer. 
+  totTimer.start(); 
+  Pythia pythia; 
+  pythia.readString("SoftQCD:all = on"); 
+  pythia.init(); 
+  // Generate events. 
+  for (int iEvent = 0; iEvent &lt; nEvent; ++iEvent) { 
+    // Start the event timer. 
+    evtTimer.start(); 
+    // Generate the event. 
+    bool good = pythia.next(); 
+    // Stop the event timer. 
+    evtTimer.stop(); 
+    if (!good) continue; 
+    // Analysis code here is not included in evtTimer but is in totTimer. 
+  } 
+  totTimer.stop(); 
+</pre> 
+ 
+<method name="Timer::Timer(Timer::TimeType typeIn = Timer::CPU, 
+double* counterPtrIn = nullptr, mutex* mutexPtrIn = nullptr)"> 
+Constructor; timing does not begin until <code>start()</code> is called. 
+<argument name="typeIn" default="Timer::CPU"> 
+type of time to measure. <code>WALL</code> is the real elapsed time, 
+<code>CPU</code> is the processor time for all threads, and 
+<code>THREAD</code> is the processor time for a single thread. When 
+using <code>THREAD</code> the timer should only be called by that 
+thread. 
+</argument> 
+<argument name="counterPtrIn" default="nullptr"> 
+optional pointer to a counter. If provided, the elapsed time in 
+milliseconds is added to <code>*counterPtrIn</code> every time 
+<code>stop()</code> is called. 
+</argument> 
+<argument name="mutexPtrIn" default="nullptr"> 
+if using a shared counter across threads, a single <code>mutex</code> 
+pointer should be passed to all timers using the same counter to 
+prevent race conditions. 
+</argument> 
+</method> 
+ 
+<method name="Timer::~Timer()"> 
+Destructor which calls <code>stop()</code> so the optional counter is 
+incremented if the timer is still running. 
+</method> 
+ 
+<method name="void Timer::start(bool pausedIn = false)"> 
+Resets and starts the timer. 
+<argument name="pausedIn" default="off"> 
+optionally start the timer as paused if set as true. 
+</argument> 
+</method> 
+ 
+<method name="void Timer::pause()"> 
+Pauses the timer without clearing the accumulated time. 
+</method> 
+ 
+<method name="void Timer::resume()"> 
+Resumes the timer after <code>pause()</code> is called. 
+</method> 
+ 
+<method name="void Timer::stop()"> 
+Stops the timer. The elapsed time is added to the optional counter if valid. 
+</method> 
+ 
+<method name="double Timer::elapsed() const"> 
+Returns the total accumulated time in milliseconds. If the timer is 
+running, the accumulated time up to the call is included. 
+</method> 
+ 
+<method name="template &lt;typename T&gt; double Timer::elapsed() const"> 
+Same as above but with the result in units of <code>T</code>. 
+<argument name="T"> 
+the time units of type <code>std::chrono::duration</code>. 
+</argument> 
+</method> 
+ 
+<method name="bool Timer::isActive() const"> 
+Returns true if the timer is currently running. A paused timer is not 
+active. 
+</method> 
+ 
+<method name="bool Timer::isPaused() const"> 
+Returns true if the timer is paused. 
+</method> 
+ 
+<method name="Timer::TimeType Timer::timeType() const"> 
+Returns the type of time measured, <code>Timer::WALL</code>, 
+<code>Timer::CPU</code>, or <code>Timer::THREAD</code>. 
+</method> 
+ 
 </chapter> 
  
 <!-- Copyright (C) 2026 Torbjorn Sjostrand --> 

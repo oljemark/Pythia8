@@ -2088,7 +2088,7 @@ void Settings::initTunePP(int ppTune, int subrun) {
 
   // Map the tune files to integer values.
   vector<string> tunes = {
-    "Rest-pp", "", "OldIsrMpi", "Skands2009", "Tune2C", "Tune2M", "Tune4C",
+    "Reset-pp", "", "OldIsrMpi", "Skands2009", "Tune2C", "Tune2M", "Tune4C",
     "Tune4Cx", "ATLAS-MB-A2-CTEQ6L1", "ATLAS-MB-A2-MSTW2008LO",
     "ATLAS-UE-AU2-CTEQ6L1", "ATLAS-UE-AU2-MSTW2008LO", "ATLAS-UE-AU2-CT10",
     "ATLAS-UE-AU2-MRST2007LOx", "ATLAS-UE-AU2-MRST2007LOxx", "Monash2013",

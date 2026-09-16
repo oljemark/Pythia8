@@ -97,6 +97,59 @@ has been made to stretch header and footer to match.
 </argument> 
 </method> 
  
+<modepick name="Event:listHighlight" default="0"> 
+Turns on colour highlighting for both the <code>Pythia::event</code> 
+and <code>Pythia::process</code> event records, whenever printed with 
+the <code>Event::list</code> method. Each row of the record is colour 
+highlighted according to its status code group, for example the hard 
+process (21 - 29) or initial state radiation (41 - 49). The following 
+colour highlighting options are available: 
+<option value="0"> no colour; </option> 
+<option value="1"> use a custom palette set by 
+<code>Event:highlights</code>; </option> 
+<option value="2"> high contrast between groups; </option> 
+<option value="3"> and rainbow palette. </option> 
+<note>Note 1:</note> After initialization this setting has no effect. 
+<note>Note 2:</note> This highlighting uses ANSI terminal escape 
+sequences and so will only work in an ANSI-compliant terminal. When 
+reading from a logfile, use <code>ls -R</code> to correctly display 
+the colour. For text editors loading logfiles, these colours will 
+typically not be displayed, and instead the escape sequence will be 
+shown. For <code>emacs</code>, the following added to your 
+<code>.emacs</code> file will allow for colour highlighting after 
+calling <code>M-x display-ansi-colors</code>. 
+<code> 
+(require 'ansi-color) 
+(defun display-ansi-colors () 
+  "Render ANSI color escape codes in the current buffer." 
+  (interactive) 
+  (let ((inhibit-read-only t)) 
+    (ansi-color-apply-on-region (point-min) (point-max)))) 
+</code> 
+</modepick> 
+ 
+<mvec name="Event:highlights" 
+default="{57, 118, 2, 13, 9, 32, 11, 14, 208, 180, 8}"> 
+Colour map for highlighting the event record with 
+<code>Event:listHighlight = 1</code>. The list must be 11 integers 
+with values between 0 and 255. The integers correspond to the RGB 
+256-colour ANSI terminal escape sequences and map to each status code 
+group of 10 values. Any status code below 11 or above 200 maps to the 
+11th colour entry, while any status code between 100 and 200 maps to 
+the 10th colour entry. 
+</mvec> 
+ 
+<method name="void Event::setHighlights(vector&lt;int&gt highlightsIn = {}"> 
+Dynamically turn on coloured highlighting for this specific event 
+record, with colours specified by the passed mapping. This can be used 
+in the middle of a run, and can be used to apply different colour 
+highlighting schemes to the <code>Pythia::event</code> and 
+<code>Pythia::process</code> records. An empty argument turns off the 
+colour highlighting. 
+<argument name="highlightsIn" default="{}"> the colour highlight mapping. 
+</argument> 
+</method> 
+ 
 <h3>Further output methods</h3> 
  
 Many event properties are accessible via the <code>Info</code> class, 

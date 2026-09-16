@@ -1,4 +1,4 @@
-// JetMatching.h is a part of the PYTHIA event generator.
+// JetMatchingHooks.h is a part of the PYTHIA event generator.
 // Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
@@ -9,17 +9,18 @@
 // in Madgraph for Alpgen or Madgraph 5 input.)
 // and Simon de Visscher, Stefan Prestel (implementation of shower-kT
 // MLM-style matching and flavour treatment for Madgraph input)
-// and Stefan Prestel (FxFx NLO jet matching with aMC@NLO.)
+// and Stefan Prestel (FxFx NLO jet matching with aMC@NLO).
 // This file provides the classes to perform MLM matching of
 // Alpgen or MadGraph 5 input.
 // Example usage is shown in main32.cc, and further details
 // can be found in the 'Jet Matching Style' manual page.
 
-#ifndef Pythia8_JetMatching_H
-#define Pythia8_JetMatching_H
+#ifndef Pythia8_JetMatchingHooks_H
+#define Pythia8_JetMatchingHooks_H
 
 // Includes
 #include "Pythia8/Pythia.h"
+#include "Pythia8/Plugins.h"
 #include "Pythia8Plugins/GeneratorInput.h"
 
 namespace Pythia8 {
@@ -78,18 +79,24 @@ void HJSlowJet::findNext() {
 
 //==========================================================================
 
-// Declaration of main JetMatching class to perform MLM matching.
+// Declaration of main JetMatchingHooks class to perform MLM matching.
 // Note that it is defined with virtual inheritance, so that it can
 // be combined with other UserHooks classes, see e.g. main33.cc.
 
-class JetMatching : virtual public UserHooks {
+class JetMatchingHooks : virtual public UserHooks {
 
 public:
 
-  // Constructor and destructor
- JetMatching() : cellJet(nullptr), slowJet(nullptr), slowJetHard(nullptr),
-    hjSlowJet(nullptr) {}
- ~JetMatching() {
+  // Constructor and destructor.
+  JetMatchingHooks() :
+    cellJet(nullptr), slowJet(nullptr), slowJetHard(nullptr),
+      hjSlowJet(nullptr) {}
+  JetMatchingHooks(Pythia*, Settings* settingsPtrIn, Logger*)
+    : cellJet(nullptr), slowJet(nullptr), slowJetHard(nullptr),
+        hjSlowJet(nullptr) {
+    settingsPtr = settingsPtrIn;
+  }
+  ~JetMatchingHooks() {
     if (cellJet) delete cellJet;
     if (slowJet) delete slowJet;
     if (slowJetHard) delete slowJetHard;
@@ -97,7 +104,7 @@ public:
     // Print error statistics before exiting. Printing code
     // basically copied from Info class.
     // Header.
-    cout << "\n *-------  JetMatching Error and Warning Messages Statistics"
+    cout << "\n *------  JetMatchingHooks Error/Warning Messages Statistics"
          << "  -----------------------------------------------------* \n"
          << " |                                                       "
          << "                                                          | \n"
@@ -124,7 +131,7 @@ public:
     // Done.
     cout << " |                                                       "
          << "                                                          | \n"
-         << " *-------  End JetMatching Error and Warning Messages "
+         << " *-------  End JetMatchingHooks Error and Warning Messages "
          << "Statistics  -------------------------------------------------* "
          << endl;
   }
@@ -238,12 +245,15 @@ protected:
 
 // Declaration of main UserHooks class to perform Alpgen matching.
 
-class JetMatchingAlpgen : virtual public JetMatching {
+class JetMatchingAlpgen : virtual public JetMatchingHooks {
 
 public:
 
   // Constructor and destructor
   JetMatchingAlpgen() { }
+  JetMatchingAlpgen(Pythia*, Settings* settingsPtrIn, Logger*){
+    settingsPtr = settingsPtrIn;
+  }
   ~JetMatchingAlpgen() { }
 
   // Initialisation
@@ -271,12 +281,16 @@ private:
 
 // Declaration of main UserHooks class to perform Madgraph matching.
 
-class JetMatchingMadgraph : virtual public JetMatching {
+class JetMatchingMadgraph : virtual public JetMatchingHooks {
 
 public:
 
   // Constructor and destructor
   JetMatchingMadgraph() : slowJetDJR(nullptr) { }
+  JetMatchingMadgraph(Pythia*, Settings* settingsPtrIn, Logger*)
+    : slowJetDJR(nullptr) {
+    settingsPtr = settingsPtrIn;
+  }
   ~JetMatchingMadgraph() { if (slowJetDJR) delete slowJetDJR; }
 
   // Initialisation
@@ -367,21 +381,21 @@ private:
 
 //==========================================================================
 
-// Main implementation of JetMatching class.
+// Main implementation of JetMatchingHooks class.
 // This may be split out to a separate C++ file if desired,
 // but currently included here for ease of use.
 
 //--------------------------------------------------------------------------
 
 // Constants to be changed for debug printout or extra checks.
-const bool JetMatching::MATCHINGDEBUG = false;
-const bool JetMatching::MATCHINGCHECK = false;
+const bool JetMatchingHooks::MATCHINGDEBUG = false;
+const bool JetMatchingHooks::MATCHINGCHECK = false;
 
 //--------------------------------------------------------------------------
 
 // Early parton level veto (before beam remnants and resonance showers)
 
-inline bool JetMatching::doVetoPartonLevelEarly(const Event& event) {
+inline bool JetMatchingHooks::doVetoPartonLevelEarly(const Event& event) {
 
   // 1) Sort the original incoming process. After this step is performed,
   //    the following assignments have been made:
@@ -2016,8 +2030,16 @@ inline int JetMatchingMadgraph::matchPartonsToJetsOther() {
   return NONE;
 }
 
+//--------------------------------------------------------------------------
+
+// Declare the plugins.
+
+PYTHIA8_PLUGIN_CLASS(UserHooks, JetMatchingAlpgen, false, true, false)
+PYTHIA8_PLUGIN_CLASS(UserHooks, JetMatchingMadgraph, false, true, false)
+PYTHIA8_PLUGIN_VERSIONS(PYTHIA_VERSION_INTEGER)
+
 //==========================================================================
 
 } // end namespace Pythia8
 
-#endif // end Pythia8_JetMatching_H
+#endif // end Pythia8_JetMatchingHooks_H

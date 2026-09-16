@@ -23,13 +23,25 @@ fragmentationPtr)</aloc></code>, <code><aloc href="ProgramFlow">
 pythia.addFragmentationPtr( fragmentationPtr)</aloc></code>, and 
 <code><aloc href="ProgramFlow"> pythia.insertFragmentationPtr(index, 
 fragmentationPtr)</aloc></code> methods allow the fragmentation model 
-sequence to be completely replaced, appended, or modified with an 
-inserted model, respectively. If the default Pythia string 
-fragmentation models is removed from the fragmentation model sequence, 
-this model will not be used for the standard fragmentation. However, 
-an independent version of this model will still be used elsewhere in 
-Pythia, e.g. for low energy processes. At no point will any of the 
-user provided hadronization models replace this internal model. Each 
+sequence to be replaced, appended, or modified with an inserted model, 
+respectively. During the first initialization call of Pythia, three default 
+models are always appended to the fragmentation model sequence in the 
+following order: the hidden valley fragmentation 
+(<code>HiddenValleyFragmentation</code>), the R-hadrons model 
+(<code>RHadrons</code>), and the main fragmentation model, either 
+standard string fragmentation (<code>LundFragmentation</code>) if 
+<code>Fragmentation:model = 0</code> or thermal fragmentation 
+(<code>ThermalFragmentation</code>) if <code>Fragmentation:model = 
+1</code>. Note, it is possible for the user fragmentation model to bypass 
+these appended models by always setting <code>isHandled</code> for each 
+colour subsystem passed to the model via the user implemented 
+<code>fragment</code> method to <code>true</code>, see below for more 
+details. If the default Pythia string fragmentation model is ever 
+removed from the fragmentation model sequence, this model will not be 
+used for the standard fragmentation. However, an independent version 
+of this model will still be used elsewhere in Pythia, e.g. for low 
+energy processes. At no point will any of the user provided 
+hadronization models replace this internal model. Each 
 <code>FragmentationModel</code> in the sequence is initialized by 
 Pythia during the main Pythia initialization call. Consequently, every 
 time the fragmentation pointer sequence is modified, Pythia must be 
@@ -65,7 +77,11 @@ diffractive, which is specified by the <code>isDiff</code>
 flag. Additionally, for the case of mini-string-like fragmentation, it 
 may be necessary to recoil against a single hadron, rather than the 
 entire system. This is specified by the <code>systemRecoil</code> 
-flag. 
+flag. If a colour subsystem is succesfully fragmented by the model, 
+then <code>ColSinglet::isHandled</code> should set to 
+<code>true</code>. This will prevent any remaining models in the 
+fragmentation sequence from attempting to fragment this colour 
+subsystem. 
 </method> 
  
 </chapter> 

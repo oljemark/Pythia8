@@ -56,7 +56,7 @@ int main() {
     pythia.settings.mode("Beams:idA", idA);
     pythia.settings.mode("Beams:idB", idB);
     pythia.settings.mode("SigmaTotal:mode", modeSig);
-    pythia.settings.mode("SigmaDiffractive:mode", modeSig);
+    if (modeSig < 4) pythia.settings.mode("SigmaDiffractive:mode", modeSig);
 
     // Switch off most of event generation and initialize.
     pythia.readString("SoftQCD:elastic = on");

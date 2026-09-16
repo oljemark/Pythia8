@@ -434,10 +434,12 @@ class SigmaABMST : public SigmaTotAux {
 public:
 
   // Constructor.
-  SigmaABMST() : ispp(), dampenGap(), useBMin(), modeSD(), modeDD(), modeCD(),
-    s(), facEl(), m2minp(), m2minm(), alp0(), alpt(), s0(), c0(), ygap(),
-    ypow(), expPygap(), multSD(), powSD(), multDD(), powDD(), multCD(),
-    powCD(), mMinCDnow(), bMinSD(), bMinDD(), bMinCD() {};
+  SigmaABMST() : ispp(), dampenGap(), useBMin(), doRescale(), modeSD(),
+    modeDD(), modeCD(), s(), facEl(), m2minp(), m2minm(), alp0(), alpt(),
+    s0(), c0(), ygap(), ypow(), expPygap(), multSD(), powSD(), multDD(),
+    powDD(), multCD(), powCD(), mMinCDnow(), bMinSD(), bMinDD(), bMinCD(),
+    facPPP(), facPPR(), facRRP(), facRRR(), facPi(), facRes(), normXi(),
+    epsi(), alphapi(), trig(), lam2p() {};
 
   // Initialize data members.
   virtual void init(Info* infoPtrIn);
@@ -470,19 +472,33 @@ private:
 
   // Constants: could only be changed in the code itself.
   static const bool   MCINTDD;
-  static const int    NPOINTSTSD, NPOINTSTDD, NPOINTMCDD, NPOINTMCCD;
-  static const double EPSI[], ALPP[], NORM[], SLOPE[], FRACS[], TRIG[],
-                      LAM2P, BAPPR[], LAM2FF, MRES[4], WRES[4], CRES[4],
+  static const int    NPOINTSTDD;
+  static const double SLOPE[3], FRACS[3],
+                      BAPPR[2], LAM2FF, MRES[4], WRES[4], CRES[4],
                       AFAC[4], BFAC[4], CFAC[4], PPP[4], EPS[2], APR[2],
                       CPI[6], CNST[5], XIDIVSD, DXIRAWSD, DLNXIRAWSD,
                       XIDIVDD, DXIRAWDD, DLNXIRAWDD, BMCINTDD, BMCINTCD;
 
   // Initialization data, normally only set once.
-  bool   ispp, dampenGap, useBMin;
-  int    modeSD, modeDD, modeCD;
+  bool   ispp, dampenGap, useBMin, doRescale;
+  int    modeSD, modeDD, modeCD, nPointsTSD, nPointsMCDD, nPointsMCCD;
   double s, facEl, m2minp, m2minm, alp0[2], alpt[3], s0, c0,
          ygap, ypow, expPygap, multSD, powSD, multDD, powDD,
-         multCD, powCD, mMinCDnow, bMinSD, bMinDD, bMinCD;
+         multCD, powCD, mMinCDnow, bMinSD, bMinDD, bMinCD,
+         facPPP, facPPR, facRRP, facRRR, facPi, facRes;
+
+  // Parameters for elastic parametrization, following the convention
+  // from Appleby et al., table 3.
+  // Normalization constants for Regge terms X0, ..., X3.
+  vector<double> normXi;
+  // Regge term intercepts (1 + epsilon0, ..., epsilon3).
+  vector<double> epsi;
+  // Regge term slopes alpha'0, ..., alpha'3.
+  vector<double> alphapi;
+  // a and t0 from the triple-gluon term are trig[0] and trig[1]
+  vector<double> trig;
+  // Double scattering scaling factor lambda
+  double lam2p;
 
   // The scattering amplitude, from which cross sections are derived.
   complex amplitude( double t, bool useCoulomb = false,

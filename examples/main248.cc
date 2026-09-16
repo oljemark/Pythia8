@@ -14,8 +14,8 @@
 // If no command-file is provided, a default is used.
 
 #include "Pythia8/Pythia.h"
+#include "Pythia8/Plugins.h"
 #include "Pythia8Plugins/InputParser.h"
-#include "Pythia8Plugins/ResonanceDecayFilterHook.h"
 
 using namespace Pythia8;
 
@@ -37,8 +37,6 @@ int main(int argc, char* argv[]) {
   Pythia pythia;
 
   // Set user hook. Hook properties set in the .cmnd file.
-  auto myUserHooks = make_shared<ResonanceDecayFilterHook>(pythia.settings);
-  pythia.setUserHooksPtr( myUserHooks);
   pythia.readFile(ip.get<string>("c"));
 
   // Extract settings to be used in the main program.
@@ -64,7 +62,7 @@ int main(int argc, char* argv[]) {
   // Final statistics.
   pythia.stat();
   double filterEfficiency = (double) pythia.info.getCounter(4)
-    / (double) myUserHooks->returnCounter();
+    / (double) pythia.settings.mode("ResonanceDecayFilter:counter");
 
   // Expected filter rate.
   ParticleDataEntryPtr particlePtr =
@@ -76,9 +74,8 @@ int main(int argc, char* argv[]) {
   double exactFilter = 2.0*br_lepton*(1.0-br_lepton);
 
   // Compare filter rates.
-  cout << "\n ResonanceDecayFilterHook efficiency = " << filterEfficiency
-       << endl;
-  cout << " on-shell theoretical efficiency     = " << exactFilter << endl;
+  cout << "\n ResonanceDecayFilterHooks efficiency = " << filterEfficiency
+       << "\n on-shell theoretical efficiency      = " << exactFilter << "\n";
 
   // Done.
   return 0;

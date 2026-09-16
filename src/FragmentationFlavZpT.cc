@@ -851,7 +851,6 @@ bool StringZ::init() {
     weightsFragmentation.weightParms[WeightsFragmentation::Z].empty())
     wgtsPtr = &infoPtr->weightContainerPtr->weightsFragmentation;
 
-
   // All is well.
   return true;
 
@@ -1232,6 +1231,11 @@ double StringZ::zLund(double a, double b, double c, double head) {
   // Subdivide z range if distribution very peaked near either endpoint.
   bool peakedNearZero = (zMax < 0.1);
   bool peakedNearUnity = (zMax > 0.85 && b > 1.);
+  // Use only flat sampling if reweighting.
+  if (wgtsPtr != nullptr) {
+    peakedNearZero = false;
+    peakedNearUnity = false;
+  }
 
   // Find integral of trial function everywhere bigger than f.
   // (Dummy start values.)
@@ -1406,7 +1410,7 @@ void StringPT::init() {
 
 // Generate Gaussian pT such that <p_x^2> = <p_x^2> = sigma^2 = width^2/2,
 // but with small fraction multiplied up to a broader spectrum.
-// The missing first arguent is idIn, if a flavour depedence is desired.
+// The missing first argument is idIn, if a flavour depedence is desired.
 
 pair<double, double> StringPT::pxy(int idIn, double kappaModifier) {
 
@@ -1439,10 +1443,10 @@ pair<double, double> StringPT::pxy(int idIn, double kappaModifier) {
   double pT2 = pow2(gauss2.first) + pow2(gauss2.second);
   if (wgtsPtr != nullptr) {
     if (posthoc)
-      wgtsPtr->pTStore(pT2, mult);
+      wgtsPtr->pTStore(pT2);
     for (auto &parms : wgtsPtr->weightParms[WeightsFragmentation::PT]) {
       wgtsPtr->reweightValueByIndex(parms.second,
-        wgtsPtr->pTWeight(parms.first[0], pT2, mult));
+        wgtsPtr->pTWeight(parms.first[0], pT2));
     }
   }
 

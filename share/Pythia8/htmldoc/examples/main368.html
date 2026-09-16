@@ -233,7 +233,7 @@ int main() {
   double width  = 4.8;
   double height = 4.8;
 
-  // Singet and octet contribution in -10 &lt; E &lt; 30.
+  // Singlet and octet contribution in -10 &lt; E &lt; 30.
   hpl.frame(splitFigs ? &quot;fig368narrow&quot; : &quot;fig368&quot;, &quot;&quot;, &quot;$E$ (GeV)&quot;,
     &quot;rate (arbitrary units)&quot;, width, height);
   hpl.add( betaval, &quot;-,black&quot;, &quot;pure beta threshold&quot;);
@@ -245,9 +245,9 @@ int main() {
     hpl.add( greensinMod, &quot;-.,red&quot;, &quot;modified singlet Green&apos;s function&quot;);
     hpl.add( greenoctMod, &quot;-.,magenta&quot;, &quot;modified octet Green&apos;s function&quot;);
   }
-  hpl.plot();
+  hpl.plot(-10.,30.,0.,1.05);
 
-  // Singet and octet contribution in -20 &lt; E &lt; 100.
+  // Singlet and octet contribution in -20 &lt; E &lt; 100.
   hpl.frame(splitFigs ? &quot;fig368wide&quot; : &quot;&quot;, &quot;&quot;, &quot;$E$ (GeV)&quot;,
     &quot;rate (arbitrary units)&quot;, width, height);
   hpl.add( betaval2, &quot;-,black&quot;, &quot;pure beta threshold&quot;);
@@ -259,7 +259,7 @@ int main() {
     hpl.add( greensin2Mod, &quot;-.,red&quot;, &quot;modified singlet Green&apos;s function&quot;);
     hpl.add( greenoct2Mod, &quot;-.,magenta&quot;, &quot;modified octet Green&apos;s function&quot;);
   }
-  hpl.plot();
+  hpl.plot(-20.,100.,0.,1.05);
 
   // Singlet contribution only, for direct comparison with FKS figure.
   hpl.frame(splitFigs ? &quot;fig368singlet&quot; : &quot;&quot;, &quot;&quot;,  &quot;$E$ (GeV)&quot;,

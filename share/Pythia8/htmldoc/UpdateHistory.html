@@ -8,23 +8,24 @@
  
 <h2>Update History</h2> 
 <ol id="toc">
-  <li><a href="#section0">8.317: 20 January 2026</a></li>
-  <li><a href="#section1">8.316: 03 October 2025</a></li>
-  <li><a href="#section2">8.315: 27 May 2025</a></li>
-  <li><a href="#section3">8.314: 11 April 2025</a></li>
-  <li><a href="#section4">8.313: 10 January 2025</a></li>
-  <li><a href="#section5">8.312: 23 May 2024</a></li>
-  <li><a href="#section6">8.311: 08 March 2024</a></li>
-  <li><a href="#section7">8.310: 25 July 2023</a></li>
-  <li><a href="#section8">8.309: 16 February 2023</a></li>
-  <li><a href="#section9">8.308: 16 November 2022</a></li>
-  <li><a href="#section10">8.307: 25 February 2022</a></li>
-  <li><a href="#section11">8.306: 28 June 2021</a></li>
-  <li><a href="#section12">8.305: 03 May 2021</a></li>
-  <li><a href="#section13">8.304: 09 April 2021</a></li>
-  <li><a href="#section14">8.303: 01 September 2020</a></li>
-  <li><a href="#section15">8.302: 24 April 2020</a></li>
-  <li><a href="#section16">8.301: 30 October 2019</a></li>
+  <li><a href="#section0">8.318: 16 September 2026</a></li>
+  <li><a href="#section1">8.317: 20 January 2026</a></li>
+  <li><a href="#section2">8.316: 03 October 2025</a></li>
+  <li><a href="#section3">8.315: 27 May 2025</a></li>
+  <li><a href="#section4">8.314: 11 April 2025</a></li>
+  <li><a href="#section5">8.313: 10 January 2025</a></li>
+  <li><a href="#section6">8.312: 23 May 2024</a></li>
+  <li><a href="#section7">8.311: 08 March 2024</a></li>
+  <li><a href="#section8">8.310: 25 July 2023</a></li>
+  <li><a href="#section9">8.309: 16 February 2023</a></li>
+  <li><a href="#section10">8.308: 16 November 2022</a></li>
+  <li><a href="#section11">8.307: 25 February 2022</a></li>
+  <li><a href="#section12">8.306: 28 June 2021</a></li>
+  <li><a href="#section13">8.305: 03 May 2021</a></li>
+  <li><a href="#section14">8.304: 09 April 2021</a></li>
+  <li><a href="#section15">8.303: 01 September 2020</a></li>
+  <li><a href="#section16">8.302: 24 April 2020</a></li>
+  <li><a href="#section17">8.301: 30 October 2019</a></li>
 </ol>
 
  
@@ -35,6 +36,235 @@ compatibility. The main change is that C++11 is now assumed.
 The impact on existing used code should be mild, however. 
  
 <a name="section0"></a> 
+<h3>8.318: 16 September 2026</h3> 
+ 
+<ul> 
+ 
+<li>Update of the junction fragmentation framework, specifically how to 
+stop the fragmentation of the lowest-energy two legs, with the leftovers 
+combined into a diquark. If stopped too early, this diquark can have too 
+much momentum in some unwanted intermediate direction. In version 8.311 
+a code change made this more likely to happen, from 8.316 encoded by the 
+new <code>eJunctionCutoff</code> and <code>mJunctionCutoff</code> 
+parameters. These changes now are removed. Separately, but related, 
+a number of tries are made to find an acceptable stopping of the two legs 
+above, in flavour and momentum. In the past, after a maximum number of 
+tries, the last one was accepted, even if not fulfilling the desired 
+criteria. Now the loop structure has been rewritten, such that an error 
+is issued in such cases, and the fragmentation has to be started over. 
+Studies are under way to find an even more stable junction handling. 
+Thanks to Tucker Hwang for bringing the problem to our attention, 
+specifically that the rate of events with a single particle having a 
+higher transverse momentum than that of the hard process increased 
+significantly between 8.310 and 8.311.</li> 
+ 
+<li>Updated the DIS inclusive NLO matching strategy, including fixing 
+a mistake in the matrix-element corrections. Minor optimization to the 
+convolution integral expression. The NLO weight is now accessible to 
+the user through the value stored in <code>double 
+Info::weightNLO()</code>.</li> 
+ 
+<li>Further options for the <code>POWHEG:pTdef</code> mode to match 
+the choices made for the DIS process in POWHEG BOX RES. Thanks to 
+Silvia Ferrario Ravasio.</li> 
+ 
+<li>New options to reweight the individual components of the ABMST 
+elastic and diffractive cross sections ans&auml;tze, see the ABMST 
+section of the <a href="TotalCrossSections.html" target="page">Total Cross 
+Sections</a> page.</li> 
+ 
+<li>The central member of PDF4LHC21 has been added to the list of 
+internally available proton PDFs.</li> 
+ 
+<li>Interpolation routine for EPPS21 nuclear PDF modifications has 
+been added to enable using these with any proton PDF baseline. The 
+convention on nPDF error set indeces were updated to match LHAPDF 
+convention where the central set has index 0 instead of 1. Thanks for 
+Anna-Mari Lev&auml;lampi.</li> 
+ 
+<li>Some minor optimization has been performed for a modest speedup 
+without a change in physics.</li> 
+ 
+<li>Subruns can now be used with <code>PythiaParallel</code>, thanks 
+to Anatoly Solomin.</li> 
+ 
+<li>A <code>Pythia::run</code> method has been added following the 
+same syntax as <code>PythiaParallel::run</code>.</li> 
+ 
+<li>A new example <code>main235</code> has been added which allows for 
+omnibus runs.</li> 
+ 
+<li>A number of <code>Pythia8Plugins</code> header files have been 
+updated to work as runtime plugin libraries and are now built as 
+independent plugin libraries: <code>aMCatNLOHooks</code>, 
+<code>ColourReconnectionHooks</code>, <code>JetMatchingHooks</code>, 
+<code>PowhegHooks</code>, <code>ResonanceDecayFilterHooks</code>, and 
+<code>SetLHEDecayProductHooks</code>.</li> 
+ 
+<li>A simple timer class <code>Timer</code> is now available from 
+<code>Basics.h</code> and documented on the <a href="Logging.html" target="page">Logging</a> page. Examples have been updated to use 
+this timer class.</li> 
+ 
+<li>Event listings can now be highlighted with colours differentiating 
+the particle status categories using the settings 
+<code>Event:listHighlight</code> and 
+<code>Event:highlights</code>. For example, <code>Event:listHighlight 
+= 1</code> turns on high contrast highlighting.</li> 
+ 
+<li>A new event visualization tool is available via the 
+<code>Vistas</code> class in the Python interface, courtesy of the 
+MLhad collaboration. The example <code>main300.py</code> demonstrates 
+how to use this visualization.</li> 
+ 
+<li>New HepMC conversion interfaces are available. 
+<ul> 
+<li>A filtered HepMC conversion interface is now available via the 
+<code>Pythia8ToFilteredHepMC3</code> class defined in 
+<code>include/Pythia8Plugins/HepMC3.h</code>, see 
+<a href="HepMCInterface.html" target="page">HepMC Interface</a>. The example 
+<code>main137.cc</code> demonstrates how to use this interface.</li> 
+<li>The same filtered interface is also available via a pure Python 
+implementation in the <a href="PythonInterface.html" target="page">Python 
+Interface</a>. See <code>main299.py</code> for an example.</li> 
+</ul> 
+</li> 
+ 
+<li>Some improvements and fixes have been made for kinematic 
+variations in hadronization. 
+<ul> 
+<li>The needed post-hoc information for <i>p_T</i> sampling has been 
+reduced.</li> 
+<li>Clipping of weights has been improved for <i>f(z)</i> 
+variations.</li> 
+<li>The default overhead factor for <i>f(z)</i>, 
+<code>VariationFrag:zHead</code>, has been increased from 1 to 5 to 
+provide better effective statistics while balancing storage and 
+speed. This default will likely be changed again after further 
+study.</li> 
+<li>Sampling <i>f(z)</i> when weights are included is now performed 
+using only a flat distribution, which improves weight clipping.</li> 
+</ul> 
+</li> 
+ 
+<li>Fixed an infinite loop in <code>XMLTag::findXMLTags</code> that could 
+make the Les Houches reader hang indefinitely on a corrupted event file. 
+Thanks to Volodymyr Kotlyar for the bug report.</li> 
+ 
+<li>Fixed resonance finding for beam-inside-beam case, 
+e.g. photoproduction.</li> 
+ 
+<li>Some minor fixes were made to the <code>Hist::getBin*</code> 
+methods where the incorrect number of elements were returned.</li> 
+ 
+<li>Small fix for phase-space checking in <code>SigmaABMST</code>.</li> 
+ 
+<li>Three minor floating-point errors were fixed in 
+<code>SimpleTimeShower</code> and <code>JunctionSplitting</code>.</li> 
+ 
+<li>Bugfixes in nuclear geometry sampling of Harmonic Oscillator 
+Shell model and Hulthen model in <code>HINucleusModel.cc</code>. 
+<ul> 
+<li>Rejection sampler for HOS model replaced with a direct 
+sampler. The old sampler missed the spherical volume factor, biasing 
+sampled radii strongly toward the origin.</li> 
+<li>Rejection sampler for Hulthen did not guarantee coverage, 
+resulting in percent level errors. Sampler updated.</li> 
+<li>Minor changes to documentation and API for nuclear geometry.</li> 
+</ul> 
+</li> 
+ 
+<li>A number of plugin related fixes and updates were made. 
+<ul> 
+<li>Fixed inconistencies on how external 
+<code>FragmentationModel</code>s were loaded. Now, three default 
+models are always appended to the fragmentation model sequence in the 
+following order: <code>HiddenValleyFragmentation</code>, 
+<code>RHadrons</code>, and the main fragmentation model. These models 
+are skipped if <code>isHandled</code> set per colour subsystem by any 
+prior model.</li> 
+<li>Fixed issues which prevented the <code>insert(i)</code> keyword to 
+be used when loading a plugin.</li> 
+<li><code>UserHooks</code> plugins were incorrectly called multiple 
+times whenever more than one <code>UserHooks</code> object was 
+added. This has now been fixed.</li> 
+<li>The <code>RivetHooks</code> plugin made an additional incorrect 
+<code>merge</code> call when running in parallel mode.</li> 
+<li>The <code>LHAup</code> class now inherits from 
+<code>PhysicsBase</code>.</li> 
+</ul> 
+</li> 
+ 
+<li>A number of updates/fixes have been made to the Python interface. 
+<ul> 
+<li>Added the missing <code>nextBatch</code> method in the Python 
+interface for the <code>PythiaParallel</code> class. Thanks to Tanmay 
+Pani.</li> 
+<li>The <code>events.info</code> member of the returned 
+<code>events</code> from <code>nextBatch</code> now includes all 
+weights, and not just weight groups from automatic variations. Further 
+documentation has been added to the <a href="PythonInterface.html" target="page"> 
+Python Interface</a> page.</li> 
+<li>Fixed a bug in the production of Awkward arrays in Python, 
+where production vertices were incorrectly assigned to the next 
+particle in the event record. Thanks to Jan Offermann.</li> 
+<li>Corrected the search path for purely Pythonic code to include in 
+the Pythia module.</li> 
+<li>Updated the Python binding generation script to a more recent 
+version of Binder.</li> 
+</ul> 
+</li> 
+ 
+<li>Bug fix in <code>JunctionSplitting::splitJunGluons()</code>, where 
+negative squared invariant masses (caused by numerical rounding errors 
+for large near-parallel momenta) could cause an infinite-loop 
+situation that was never exited. Changed to using a cross product and 
+a half-angle relation to make the invariant-mass calculation 
+manifestly safe for large parallel momenta, with an additional 
+protection to exit if an infinite loop occurs. Thanks to Gleb Chizhik 
+and Ulrik Egede for their help to find and mitigate this bug.</li> 
+ 
+<li>Minor bug fixes in Angantyr and 
+<code>MultipartonInteractions</code>, thanks to Einar 
+El&eacute;n.</li> 
+ 
+<li>Several minor upgrades of the top threshold machinery, notably new 
+recommended option <code>TopThreshold:model = 3</code>, where setup of 
+widths for the top quark and the Green's functions is streamlined. The 
+<code>main368.cc - main372.cc</code> examples are adjusted 
+accordingly. Production via an intermediate <i>gamma^*/Z^0</i> has 
+been added, allowing also <i>e^+e^-</i> beams, exemplified by the 
+new <code>main373.cc</code>. Neither it nor the <i>qqbar</i> 
+production process currently include correlated <i>ttbar</i> decays. 
+For backwards compatibility with previous handling of above-threshold 
+top production, the <code>TopThreshold:ggSingletFrac</code> has been 
+assigned a default of 0, but for top-threshold studies the recommended 
+value is 2/7. New options allow to vary the selection of new masses in 
+the below-threshold region and to set the number of terms used in the 
+infinite series of the Green's functions. Users can also now read out 
+the current enhancement factor relative to the Born cross section and 
+the corrected colour singlet fraction taking into account the dynamic 
+enhancement. Some minor numerical issues were also addressed.</li> 
+ 
+<li>Bug fix in <code>Sigma3Process</code> <i>2 &rarr; 3</i> 
+kinematics when the last two particles are identical (or opposite). 
+Thanks to Are Raklev.</li> 
+ 
+<li>Corrected documentation for 
+<code>BeamRemnants:hardRemnantBaryon</code>.</li> 
+ 
+<li>Bug fix in Hidden Valley fragmentation for a closed loop of HV-gluons. 
+The issue arises when the endpoint flavours are used to estimate whether 
+a string system is massive enough for regular string fragmentation, or 
+whether a simplified low-multiplicity handling is required. 
+Thanks to Austin Batz.</li> 
+ 
+<li>A typo has been corrected related to the tune files in the Settings 
+and the format of the <code>Vincia:nPointsCheck</code> maximum has been 
+changed so that it gets interpreted correctly. 
+</li> 
+</ul> 
+ 
+<a name="section1"></a> 
 <h3>8.317: 20 January 2026</h3> 
 <ul> 
  
@@ -226,7 +456,7 @@ for reporting this issue.</li>
  
 </ul> 
  
-<a name="section1"></a> 
+<a name="section2"></a> 
 <h3>8.316: 03 October 2025</h3> 
 <ul> 
  
@@ -428,7 +658,7 @@ photons).  Thanks to Alexander Belyaev.</li>
  
 </ul> 
  
-<a name="section2"></a> 
+<a name="section3"></a> 
 <h3>8.315: 27 May 2025</h3> 
 <ul> 
  
@@ -512,7 +742,7 @@ caused an out-of-access memory read.</li>
  
 </ul> 
  
-<a name="section3"></a> 
+<a name="section4"></a> 
 <h3>8.314: 11 April 2025</h3> 
 <ul> 
  
@@ -637,7 +867,7 @@ incorrect. Thanks to A. Buckley.</li>
  
 </ul> 
  
-<a name="section4"></a> 
+<a name="section5"></a> 
 <h3>8.313: 10 January 2025</h3> 
 <ul> 
  
@@ -910,7 +1140,7 @@ Laurent Dufour for alerting us to this bug.
  
 </ul> 
  
-<a name="section5"></a> 
+<a name="section6"></a> 
 <h3>8.312: 23 May 2024</h3> 
 <ul> 
  
@@ -989,7 +1219,7 @@ quark mass is set to zero.</li>
  
 </ul> 
  
-<a name="section6"></a> 
+<a name="section7"></a> 
 <h3>8.311: 08 March 2024</h3> 
  
 <ul> 
@@ -1221,7 +1451,7 @@ fixed.</li>
 <code>PhaseSpace::setupSampling123</code>.</li> 
 </ul> 
  
-<a name="section7"></a> 
+<a name="section8"></a> 
 <h3>8.310: 25 July 2023</h3> 
  
 <ul> 
@@ -1356,7 +1586,7 @@ additional settings files to be directly read in.</li>
 <li>Fixed a bug in the bookkeeping the number of hadrons in the string 
 fragmentation.</li> 
  
-<a name="section8"></a> 
+<a name="section9"></a> 
 <h3>8.309: 16 February 2023</h3> 
  
 <ul> 
@@ -1414,7 +1644,7 @@ modifications to remove compiler warnings. This version is compiled
 with limited thread safety, which is sufficient if "each thread is 
 independently processing an event" and should have "essentially no 
 speed overhead". For more details see the 
-<a href="https://fastjet.fr/all-releases.html">fjcore 
+<a href="https://www.fastjet.fr/all-releases.html">fjcore 
 documentation</a>. Thanks to Matteo Cacciari, Gavin Salam and Gregory 
 Soyez.</li> 
  
@@ -1454,7 +1684,7 @@ input.</li>
 with GCC 12.2.</li> 
 </ul> 
  
-<a name="section9"></a> 
+<a name="section10"></a> 
 <h3>8.308: 16 November 2022</h3> 
  
 <ul> 
@@ -1562,7 +1792,7 @@ reference.</li>
 <li>Updating affiliation for Christian Bierlich.</li> 
 </ul> 
  
-<a name="section10"></a> 
+<a name="section11"></a> 
 <h3>8.307: 25 February 2022</h3> 
  
 <ul> 
@@ -1738,7 +1968,7 @@ events. Thanks to Giancarlo Panizzo and Marvin Flores for reporting
 the issue.</li> 
 </ul> 
  
-<a name="section11"></a> 
+<a name="section12"></a> 
 <h3>8.306: 28 June 2021</h3> 
  
 <ul> 
@@ -1770,7 +2000,7 @@ most collinear parent is the first mother.
 <li>Shortened Pythia constructor header.</li> 
 </ul> 
  
-<a name="section12"></a> 
+<a name="section13"></a> 
 <h3>8.305: 03 May 2021</h3> 
  
 <ul> 
@@ -1811,7 +2041,7 @@ small bug reported by Vittorio Zecca.</li>
 <code>main07.cc</code>. Thanks to M. Baker and A. Thamm.</li> 
 </ul> 
  
-<a name="section13"></a> 
+<a name="section14"></a> 
 <h3>8.304: 09 April 2021</h3> 
  
 <ul> 
@@ -1960,7 +2190,7 @@ called twice. Now all available cases are looped over, but easy to
 change back to study only one.</li> 
 </ul> 
  
-<a name="section14"></a> 
+<a name="section15"></a> 
 <h3>8.303: 01 September 2020</h3> 
  
 <ul> 
@@ -2194,7 +2424,7 @@ diffractive systems.</li>
 for diffraction. Thanks to Valentina Zaccolo.</li> 
 </ul> 
  
-<a name="section15"></a> 
+<a name="section16"></a> 
 <h3>8.302: 24 April 2020</h3> 
  
 <ul> 
@@ -2289,7 +2519,7 @@ with Vincia reverting to the same (in-code) way of setting tune
 presets as Dire and Pythia.</li> 
 </ul> 
  
-<a name="section16"></a> 
+<a name="section17"></a> 
 <h3>8.301: 30 October 2019</h3> 
 <ul> 
 <li>Compilation is done with a new <code>-std=c++11</code> flag.</li> 

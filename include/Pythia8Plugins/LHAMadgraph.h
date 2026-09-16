@@ -9,7 +9,7 @@
 #define Pythia8_LHAMadgraph_H
 
 #include "Pythia8/Pythia.h"
-#include "Pythia8Plugins/JetMatching.h"
+#include "Pythia8Plugins/JetMatchingHooks.h"
 #include "Pythia8Plugins/GeneratorInput.h"
 #include <unistd.h>
 #include <sys/stat.h>

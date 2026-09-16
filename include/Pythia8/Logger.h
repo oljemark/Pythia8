@@ -60,23 +60,23 @@ public:
   // These methods are thread safe.
 
   // Report messages contain information not relevant in normal runs.
-  void reportMsg(string loc, string message, string extraInfo = "",
+  bool reportMsg(string loc, string message, string extraInfo = "",
     bool showAlways = false);
 
   // Info messages are diagnostic messages that don't indicate an issue.
-  void infoMsg(string loc, string message, string extraInfo = "",
+  bool infoMsg(string loc, string message, string extraInfo = "",
     bool showAlways = false);
 
   // Warnings indicate that there might be an issue, but the run will continue.
-  void warningMsg(string loc, string message, string extraInfo = "",
+  bool warningMsg(string loc, string message, string extraInfo = "",
     bool showAlways = false);
 
   // Errors indicate an issue that might cause the current event to fail.
-  void errorMsg(string loc, string message, string extraInfo = "",
+  bool errorMsg(string loc, string message, string extraInfo = "",
     bool showAlways = false);
 
   // Aborts indicate critical issues that prevent further event generation.
-  void abortMsg(string loc, string message, string extraInfo = "",
+  bool abortMsg(string loc, string message, string extraInfo = "",
     bool showAlways = false);
 
   // If quiet, the logger will not print any messages.
@@ -94,6 +94,9 @@ public:
   // 0: no messages | 1: aborts only | 2: default | 3: debug
   void setVerbosity(int verbosityIn) { verbosity = verbosityIn; }
   int getVerbosity() const { return verbosity; }
+
+  // Shorthand for whether REPORT level is active.
+  bool doReport() { return verbosity >= REPORT; }
 
   // Add all errors from the other Logger object to the counts of this object.
   void errorCombine(const Logger& other, string prefix = "");
@@ -159,7 +162,7 @@ private:
   mutex writeMutex;
 
   // Method to print the diagnostic message. This method is thread safe.
-  void msg(int verbosityLevel, string message, string extraInfo = "",
+  bool msg(int verbosityLevel, string message, string extraInfo = "",
     bool showAlways = false);
 
 };

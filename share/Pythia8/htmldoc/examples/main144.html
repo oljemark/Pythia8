@@ -30,7 +30,6 @@ Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 #include &quot;Pythia8/Pythia.h&quot;
 #include &quot;Pythia8/HeavyIons.h&quot;
 #include &quot;Pythia8Plugins/InputParser.h&quot;
-#include &lt;chrono&gt;
 #ifdef HEPMC3
 #include &quot;Pythia8Plugins/HepMC3.h&quot;
 #endif
@@ -250,9 +249,9 @@ int main(int argc, char* argv[]) {
   if (!pythia.init()) return 1;
 
   // Loop over events.
-  auto startAllEvents = std::chrono::high_resolution_clock::now();
+  Timer timer;
+  timer.start();
   for ( int iEvent = 0; iEvent &lt; nEvent; ++iEvent ) {
-    auto startThisEvent = std::chrono::high_resolution_clock::now();
 
     // Exit if too many failures.
     if (!pythia.next()) {
@@ -265,12 +264,6 @@ int main(int argc, char* argv[]) {
       }
       continue;
     }
-
-    // Calculate the event time.
-    auto stopThisEvent = std::chrono::high_resolution_clock::now();
-    auto eventTime = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;
-      (stopThisEvent - startThisEvent);
-    double tt = eventTime.count();
 
     // Write to HEPMC file output.
 #ifdef HEPMC3
@@ -308,14 +301,12 @@ int main(int argc, char* argv[]) {
 #endif
 
   // Print timing.
-  auto stopAllEvents = std::chrono::high_resolution_clock::now();
-  auto durationAll = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;
-    (stopAllEvents - startAllEvents);
+  timer.stop();
   if (writeTime) {
     cout &lt;&lt; &quot; \n *-------  Generation time  -----------------------*\n&quot;
          &lt;&lt; &quot; | Event generation, analysis and writing to files  |\n&quot;
-         &lt;&lt; &quot; | took: &quot; &lt;&lt; double(durationAll.count()) &lt;&lt; &quot; ms or &quot;
-         &lt;&lt; double(durationAll.count())/double(nEvent)
+         &lt;&lt; &quot; | took: &quot; &lt;&lt; double(timer.elapsed()) &lt;&lt; &quot; ms or &quot;
+         &lt;&lt; double(timer.elapsed())/double(nEvent)
          &lt;&lt; &quot; ms per event     |\n&quot;
          &lt;&lt; &quot; *-------------------------------------------------*\n&quot;;
   }

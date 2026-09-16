@@ -209,8 +209,12 @@ Selection of emitted parton for FSR.
 <option value="3">Both emitted and radiator are tried.</option> 
 </modepick> 
  
-<modepick name="POWHEG:pTdef" default="0" min="0" max="2"> 
+<modepick name="POWHEG:pTdef" default="0" min="-2" max="2"> 
 Use of <ei>pT</ei> definitions. 
+<option value="-2">An alternative POWHEG <ei>pT</ei> definition used 
+in DIS process.</option> 
+<option value="-1">The default POWHEG <ei>pT</ei> definition used 
+in DIS process.</option> 
 <option value="0">The POWHEG ISR <ei>pT</ei> definition for 
 both ISR and FSR.</option> 
 <option value="1">The POWHEG ISR <ei>pT</ei> and FSR <ei>d_ij</ei> 

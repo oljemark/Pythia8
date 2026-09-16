@@ -1,6 +1,5 @@
 #include <Pythia8/LHEF3.h>
 #include <Pythia8/Streams.h>
-#include <cwchar>
 #include <ios>
 #include <iterator>
 #include <memory>
@@ -10,40 +9,33 @@
 #include <string>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
 	{ // Pythia8::DummyForStreams file:Pythia8/Streams.h line:118
 		pybind11::class_<Pythia8::DummyForStreams, std::shared_ptr<Pythia8::DummyForStreams>> cl(M("Pythia8"), "DummyForStreams", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::DummyForStreams(); } ) );
 		cl.def("xtox", (double (Pythia8::DummyForStreams::*)(double)) &Pythia8::DummyForStreams::xtox, "C++: Pythia8::DummyForStreams::xtox(double) --> double", pybind11::arg("x"));
 	}
 	{ // Pythia8::XMLTag file:Pythia8/LHEF3.h line:27
 		pybind11::class_<Pythia8::XMLTag, std::shared_ptr<Pythia8::XMLTag>> cl(M("Pythia8"), "XMLTag", "");
-		pybind11::handle cl_type = cl;
-
-		cl.def( pybind11::init( [](){ return new Pythia8::XMLTag(); } ) );
 		cl.def( pybind11::init( [](Pythia8::XMLTag const &o){ return new Pythia8::XMLTag(o); } ) );
+		cl.def( pybind11::init( [](){ return new Pythia8::XMLTag(); } ) );
 		cl.def_readwrite("name", &Pythia8::XMLTag::name);
 		cl.def_readwrite("attr", &Pythia8::XMLTag::attr);
 		cl.def_readwrite("tags", &Pythia8::XMLTag::tags);
@@ -53,14 +45,13 @@ void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &n
 		cl.def("getattr", (bool (Pythia8::XMLTag::*)(std::string, long &) const) &Pythia8::XMLTag::getattr, "C++: Pythia8::XMLTag::getattr(std::string, long &) const --> bool", pybind11::arg("n"), pybind11::arg("v"));
 		cl.def("getattr", (bool (Pythia8::XMLTag::*)(std::string, int &) const) &Pythia8::XMLTag::getattr, "C++: Pythia8::XMLTag::getattr(std::string, int &) const --> bool", pybind11::arg("n"), pybind11::arg("v"));
 		cl.def("getattr", (bool (Pythia8::XMLTag::*)(std::string, std::string &) const) &Pythia8::XMLTag::getattr, "C++: Pythia8::XMLTag::getattr(std::string, std::string &) const --> bool", pybind11::arg("n"), pybind11::arg("v"));
-		cl.def_static("findXMLTags", [](class std::basic_string<char> const & a0) -> std::vector<struct Pythia8::XMLTag *, class std::allocator<struct Pythia8::XMLTag *> > { return Pythia8::XMLTag::findXMLTags(a0); }, "", pybind11::arg("str"));
-		cl.def_static("findXMLTags", (class std::vector<struct Pythia8::XMLTag *, class std::allocator<struct Pythia8::XMLTag *> > (*)(std::string, std::string *)) &Pythia8::XMLTag::findXMLTags, "C++: Pythia8::XMLTag::findXMLTags(std::string, std::string *) --> class std::vector<struct Pythia8::XMLTag *, class std::allocator<struct Pythia8::XMLTag *> >", pybind11::arg("str"), pybind11::arg("leftover"));
-		cl.def("list", (void (Pythia8::XMLTag::*)(std::ostream &) const) &Pythia8::XMLTag::list, "C++: Pythia8::XMLTag::list(std::ostream &) const --> void", pybind11::arg("os"));
+		cl.def_static("findXMLTags", [](const std::string & a0) -> std::vector<struct Pythia8::XMLTag *> { return Pythia8::XMLTag::findXMLTags(a0); }, "", pybind11::arg("str"));
+		cl.def_static("findXMLTags", [](const std::string & a0, std::string * a1) -> std::vector<struct Pythia8::XMLTag *> { return Pythia8::XMLTag::findXMLTags(a0, a1); }, "", pybind11::arg("str"), pybind11::arg("leftover"));
+		cl.def_static("findXMLTags", (class std::vector<struct Pythia8::XMLTag *> (*)(const std::string &, std::string *, bool *)) &Pythia8::XMLTag::findXMLTags, "C++: Pythia8::XMLTag::findXMLTags(const std::string &, std::string *, bool *) --> class std::vector<struct Pythia8::XMLTag *>", pybind11::arg("str"), pybind11::arg("leftover"), pybind11::arg("malformed"));
+		cl.def("assign", (struct Pythia8::XMLTag & (Pythia8::XMLTag::*)(const struct Pythia8::XMLTag &)) &Pythia8::XMLTag::operator=, "C++: Pythia8::XMLTag::operator=(const struct Pythia8::XMLTag &) --> struct Pythia8::XMLTag &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::LHAweights file:Pythia8/LHEF3.h line:245
+	{ // Pythia8::LHAweights file:Pythia8/LHEF3.h line:263
 		pybind11::class_<Pythia8::LHAweights, std::shared_ptr<Pythia8::LHAweights>> cl(M("Pythia8"), "LHAweights", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHAweights(); } ) );
 		cl.def( pybind11::init<const struct Pythia8::XMLTag &>(), pybind11::arg("tag") );
 
@@ -68,14 +59,12 @@ void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("weights", &Pythia8::LHAweights::weights);
 		cl.def_readwrite("attributes", &Pythia8::LHAweights::attributes);
 		cl.def_readwrite("contents", &Pythia8::LHAweights::contents);
-		cl.def("list", (void (Pythia8::LHAweights::*)(std::ostream &) const) &Pythia8::LHAweights::list, "C++: Pythia8::LHAweights::list(std::ostream &) const --> void", pybind11::arg("file"));
 		cl.def("clear", (void (Pythia8::LHAweights::*)()) &Pythia8::LHAweights::clear, "C++: Pythia8::LHAweights::clear() --> void");
 		cl.def("size", (int (Pythia8::LHAweights::*)() const) &Pythia8::LHAweights::size, "C++: Pythia8::LHAweights::size() const --> int");
+		cl.def("assign", (struct Pythia8::LHAweights & (Pythia8::LHAweights::*)(const struct Pythia8::LHAweights &)) &Pythia8::LHAweights::operator=, "C++: Pythia8::LHAweights::operator=(const struct Pythia8::LHAweights &) --> struct Pythia8::LHAweights &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::LHAscales file:Pythia8/LHEF3.h line:281
+	{ // Pythia8::LHAscales file:Pythia8/LHEF3.h line:299
 		pybind11::class_<Pythia8::LHAscales, std::shared_ptr<Pythia8::LHAscales>> cl(M("Pythia8"), "LHAscales", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHAscales(); } ), "doc" );
 		cl.def( pybind11::init<double>(), pybind11::arg("defscale") );
 
@@ -89,13 +78,11 @@ void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("attributes", &Pythia8::LHAscales::attributes);
 		cl.def_readwrite("SCALUP", &Pythia8::LHAscales::SCALUP);
 		cl.def_readwrite("contents", &Pythia8::LHAscales::contents);
-		cl.def("list", (void (Pythia8::LHAscales::*)(std::ostream &) const) &Pythia8::LHAscales::list, "C++: Pythia8::LHAscales::list(std::ostream &) const --> void", pybind11::arg("file"));
 		cl.def("clear", (void (Pythia8::LHAscales::*)()) &Pythia8::LHAscales::clear, "C++: Pythia8::LHAscales::clear() --> void");
+		cl.def("assign", (struct Pythia8::LHAscales & (Pythia8::LHAscales::*)(const struct Pythia8::LHAscales &)) &Pythia8::LHAscales::operator=, "C++: Pythia8::LHAscales::operator=(const struct Pythia8::LHAscales &) --> struct Pythia8::LHAscales &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::LHAgenerator file:Pythia8/LHEF3.h line:325
+	{ // Pythia8::LHAgenerator file:Pythia8/LHEF3.h line:343
 		pybind11::class_<Pythia8::LHAgenerator, std::shared_ptr<Pythia8::LHAgenerator>> cl(M("Pythia8"), "LHAgenerator", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHAgenerator(); } ) );
 		cl.def( pybind11::init( [](const struct Pythia8::XMLTag & a0){ return new Pythia8::LHAgenerator(a0); } ), "doc" , pybind11::arg("tag"));
 		cl.def( pybind11::init<const struct Pythia8::XMLTag &, std::string>(), pybind11::arg("tag"), pybind11::arg("defname") );
@@ -105,14 +92,11 @@ void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("version", &Pythia8::LHAgenerator::version);
 		cl.def_readwrite("attributes", &Pythia8::LHAgenerator::attributes);
 		cl.def_readwrite("contents", &Pythia8::LHAgenerator::contents);
-		cl.def("list", (void (Pythia8::LHAgenerator::*)(std::ostream &) const) &Pythia8::LHAgenerator::list, "C++: Pythia8::LHAgenerator::list(std::ostream &) const --> void", pybind11::arg("file"));
 		cl.def("clear", (void (Pythia8::LHAgenerator::*)()) &Pythia8::LHAgenerator::clear, "C++: Pythia8::LHAgenerator::clear() --> void");
 		cl.def("assign", (struct Pythia8::LHAgenerator & (Pythia8::LHAgenerator::*)(const struct Pythia8::LHAgenerator &)) &Pythia8::LHAgenerator::operator=, "C++: Pythia8::LHAgenerator::operator=(const struct Pythia8::LHAgenerator &) --> struct Pythia8::LHAgenerator &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::LHAwgt file:Pythia8/LHEF3.h line:363
+	{ // Pythia8::LHAwgt file:Pythia8/LHEF3.h line:381
 		pybind11::class_<Pythia8::LHAwgt, std::shared_ptr<Pythia8::LHAwgt>> cl(M("Pythia8"), "LHAwgt", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHAwgt(); } ), "doc" );
 		cl.def( pybind11::init<double>(), pybind11::arg("defwgt") );
 
@@ -123,13 +107,11 @@ void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("id", &Pythia8::LHAwgt::id);
 		cl.def_readwrite("attributes", &Pythia8::LHAwgt::attributes);
 		cl.def_readwrite("contents", &Pythia8::LHAwgt::contents);
-		cl.def("list", (void (Pythia8::LHAwgt::*)(std::ostream &) const) &Pythia8::LHAwgt::list, "C++: Pythia8::LHAwgt::list(std::ostream &) const --> void", pybind11::arg("file"));
 		cl.def("clear", (void (Pythia8::LHAwgt::*)()) &Pythia8::LHAwgt::clear, "C++: Pythia8::LHAwgt::clear() --> void");
+		cl.def("assign", (struct Pythia8::LHAwgt & (Pythia8::LHAwgt::*)(const struct Pythia8::LHAwgt &)) &Pythia8::LHAwgt::operator=, "C++: Pythia8::LHAwgt::operator=(const struct Pythia8::LHAwgt &) --> struct Pythia8::LHAwgt &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::LHAweight file:Pythia8/LHEF3.h line:397
+	{ // Pythia8::LHAweight file:Pythia8/LHEF3.h line:415
 		pybind11::class_<Pythia8::LHAweight, std::shared_ptr<Pythia8::LHAweight>> cl(M("Pythia8"), "LHAweight", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHAweight(); } ), "doc" );
 		cl.def( pybind11::init<std::string>(), pybind11::arg("defname") );
 
@@ -140,13 +122,11 @@ void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("id", &Pythia8::LHAweight::id);
 		cl.def_readwrite("attributes", &Pythia8::LHAweight::attributes);
 		cl.def_readwrite("contents", &Pythia8::LHAweight::contents);
-		cl.def("list", (void (Pythia8::LHAweight::*)(std::ostream &) const) &Pythia8::LHAweight::list, "C++: Pythia8::LHAweight::list(std::ostream &) const --> void", pybind11::arg("file"));
 		cl.def("clear", (void (Pythia8::LHAweight::*)()) &Pythia8::LHAweight::clear, "C++: Pythia8::LHAweight::clear() --> void");
+		cl.def("assign", (struct Pythia8::LHAweight & (Pythia8::LHAweight::*)(const struct Pythia8::LHAweight &)) &Pythia8::LHAweight::operator=, "C++: Pythia8::LHAweight::operator=(const struct Pythia8::LHAweight &) --> struct Pythia8::LHAweight &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::LHAweightgroup file:Pythia8/LHEF3.h line:431
+	{ // Pythia8::LHAweightgroup file:Pythia8/LHEF3.h line:449
 		pybind11::class_<Pythia8::LHAweightgroup, std::shared_ptr<Pythia8::LHAweightgroup>> cl(M("Pythia8"), "LHAweightgroup", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHAweightgroup(); } ) );
 		cl.def( pybind11::init<const struct Pythia8::XMLTag &>(), pybind11::arg("tag") );
 
@@ -156,14 +136,12 @@ void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("weights", &Pythia8::LHAweightgroup::weights);
 		cl.def_readwrite("weightsKeys", &Pythia8::LHAweightgroup::weightsKeys);
 		cl.def_readwrite("attributes", &Pythia8::LHAweightgroup::attributes);
-		cl.def("list", (void (Pythia8::LHAweightgroup::*)(std::ostream &) const) &Pythia8::LHAweightgroup::list, "C++: Pythia8::LHAweightgroup::list(std::ostream &) const --> void", pybind11::arg("file"));
 		cl.def("clear", (void (Pythia8::LHAweightgroup::*)()) &Pythia8::LHAweightgroup::clear, "C++: Pythia8::LHAweightgroup::clear() --> void");
 		cl.def("size", (int (Pythia8::LHAweightgroup::*)() const) &Pythia8::LHAweightgroup::size, "C++: Pythia8::LHAweightgroup::size() const --> int");
+		cl.def("assign", (struct Pythia8::LHAweightgroup & (Pythia8::LHAweightgroup::*)(const struct Pythia8::LHAweightgroup &)) &Pythia8::LHAweightgroup::operator=, "C++: Pythia8::LHAweightgroup::operator=(const struct Pythia8::LHAweightgroup &) --> struct Pythia8::LHAweightgroup &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::LHArwgt file:Pythia8/LHEF3.h line:473
+	{ // Pythia8::LHArwgt file:Pythia8/LHEF3.h line:491
 		pybind11::class_<Pythia8::LHArwgt, std::shared_ptr<Pythia8::LHArwgt>> cl(M("Pythia8"), "LHArwgt", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHArwgt(); } ) );
 		cl.def( pybind11::init<const struct Pythia8::XMLTag &>(), pybind11::arg("tag") );
 
@@ -172,14 +150,12 @@ void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("wgts", &Pythia8::LHArwgt::wgts);
 		cl.def_readwrite("wgtsKeys", &Pythia8::LHArwgt::wgtsKeys);
 		cl.def_readwrite("attributes", &Pythia8::LHArwgt::attributes);
-		cl.def("list", (void (Pythia8::LHArwgt::*)(std::ostream &) const) &Pythia8::LHArwgt::list, "C++: Pythia8::LHArwgt::list(std::ostream &) const --> void", pybind11::arg("file"));
 		cl.def("clear", (void (Pythia8::LHArwgt::*)()) &Pythia8::LHArwgt::clear, "C++: Pythia8::LHArwgt::clear() --> void");
 		cl.def("size", (int (Pythia8::LHArwgt::*)() const) &Pythia8::LHArwgt::size, "C++: Pythia8::LHArwgt::size() const --> int");
+		cl.def("assign", (struct Pythia8::LHArwgt & (Pythia8::LHArwgt::*)(const struct Pythia8::LHArwgt &)) &Pythia8::LHArwgt::operator=, "C++: Pythia8::LHArwgt::operator=(const struct Pythia8::LHArwgt &) --> struct Pythia8::LHArwgt &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::LHAinitrwgt file:Pythia8/LHEF3.h line:511
+	{ // Pythia8::LHAinitrwgt file:Pythia8/LHEF3.h line:529
 		pybind11::class_<Pythia8::LHAinitrwgt, std::shared_ptr<Pythia8::LHAinitrwgt>> cl(M("Pythia8"), "LHAinitrwgt", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LHAinitrwgt(); } ) );
 		cl.def( pybind11::init<const struct Pythia8::XMLTag &>(), pybind11::arg("tag") );
 
@@ -190,16 +166,13 @@ void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &n
 		cl.def_readwrite("weightgroups", &Pythia8::LHAinitrwgt::weightgroups);
 		cl.def_readwrite("weightgroupsKeys", &Pythia8::LHAinitrwgt::weightgroupsKeys);
 		cl.def_readwrite("attributes", &Pythia8::LHAinitrwgt::attributes);
-		cl.def("list", (void (Pythia8::LHAinitrwgt::*)(std::ostream &) const) &Pythia8::LHAinitrwgt::list, "C++: Pythia8::LHAinitrwgt::list(std::ostream &) const --> void", pybind11::arg("file"));
 		cl.def("clear", (void (Pythia8::LHAinitrwgt::*)()) &Pythia8::LHAinitrwgt::clear, "C++: Pythia8::LHAinitrwgt::clear() --> void");
 		cl.def("size", (int (Pythia8::LHAinitrwgt::*)() const) &Pythia8::LHAinitrwgt::size, "C++: Pythia8::LHAinitrwgt::size() const --> int");
 		cl.def("sizeWeightGroups", (int (Pythia8::LHAinitrwgt::*)() const) &Pythia8::LHAinitrwgt::sizeWeightGroups, "C++: Pythia8::LHAinitrwgt::sizeWeightGroups() const --> int");
 		cl.def("assign", (struct Pythia8::LHAinitrwgt & (Pythia8::LHAinitrwgt::*)(const struct Pythia8::LHAinitrwgt &)) &Pythia8::LHAinitrwgt::operator=, "C++: Pythia8::LHAinitrwgt::operator=(const struct Pythia8::LHAinitrwgt &) --> struct Pythia8::LHAinitrwgt &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
-	{ // Pythia8::HEPRUP file:Pythia8/LHEF3.h line:562
+	{ // Pythia8::HEPRUP file:Pythia8/LHEF3.h line:580
 		pybind11::class_<Pythia8::HEPRUP, std::shared_ptr<Pythia8::HEPRUP>> cl(M("Pythia8"), "HEPRUP", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::HEPRUP(); } ) );
 		cl.def( pybind11::init( [](Pythia8::HEPRUP const &o){ return new Pythia8::HEPRUP(o); } ) );
 		cl.def_readwrite("IDBMUP", &Pythia8::HEPRUP::IDBMUP);
@@ -221,10 +194,8 @@ void bind_Pythia8_Streams(std::function< pybind11::module &(std::string const &n
 		cl.def("resize", (void (Pythia8::HEPRUP::*)()) &Pythia8::HEPRUP::resize, "C++: Pythia8::HEPRUP::resize() --> void");
 		cl.def("clear", (void (Pythia8::HEPRUP::*)()) &Pythia8::HEPRUP::clear, "C++: Pythia8::HEPRUP::clear() --> void");
 	}
-	{ // Pythia8::HEPEUP file:Pythia8/LHEF3.h line:671
+	{ // Pythia8::HEPEUP file:Pythia8/LHEF3.h line:689
 		pybind11::class_<Pythia8::HEPEUP, std::shared_ptr<Pythia8::HEPEUP>> cl(M("Pythia8"), "HEPEUP", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::HEPEUP(); } ) );
 		cl.def( pybind11::init( [](Pythia8::HEPEUP const &o){ return new Pythia8::HEPEUP(o); } ) );
 		cl.def_readwrite("NUP", &Pythia8::HEPEUP::NUP);

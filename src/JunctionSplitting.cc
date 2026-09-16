@@ -35,6 +35,9 @@ const double JunctionSplitting::MTHAD          = 0.9;
 // Minimum angle between two partons, to avoid problems with infinities.
 const double JunctionSplitting::MINANGLE       = 1e-7;
 
+// Maximum number of tries before declaring an infinite loop.
+const double JunctionSplitting::NLOOPMAX       = 10000;
+
 //--------------------------------------------------------------------------
 
 // Initialize the class and all the created classes.
@@ -139,7 +142,7 @@ bool JunctionSplitting::splitJunGluons(Event& event,
     }
 
     // Loop over legs.
-    for (int i = 0;i < int(iJunLegs.size()); ++i) {
+    for (int i = 0; i < int(iJunLegs.size()); ++i) {
 
       // If it is not connected to another junction, no need to do anything.
       if (iJunLegs[i].back() > 0)
@@ -224,10 +227,36 @@ bool JunctionSplitting::splitJunGluons(Event& event,
         vector<double> m2Pair;
         double m2Sum = 0.;
         for (int j = 1; j < int(iJunLegs[i].size()) - 2; ++j) {
-          double m2Now = 0.5 * event[ iJunLegs[i][j] ].p()
-            * event[ iJunLegs[i][j + 1] ].p();
-          m2Pair.push_back(m2Now);
-          m2Sum += m2Now;
+          // PZS 2026: Ensure numerical stability for near-parallel momenta
+          // by using (1 - cosTheta) = 2 sin^2(theta/2).
+          // Note: the two factors of 1/2 from half of each gluon's momentum
+          // cancel against 2 from dot product and 2 from sine rule.
+          const double e1   = event[ iJunLegs[i][j] ].e();
+          const double e2   = event[ iJunLegs[i][j + 1] ].e();
+          // Skip pairs with a vanishing energy; they carry no mass anyway
+          // and would give a division by zero below.
+          if (e1 <= 0. || e2 <= 0.) {
+            m2Pair.push_back(0.);
+            continue;
+          }
+          const Vec4 p1unit = event[ iJunLegs[i][j] ].p() / e1;
+          const Vec4 p2unit = event[ iJunLegs[i][j+1] ].p() / e2;
+          // The denominator is 4 cos^2(theta/2). It vanishes for exactly
+          // anti-parallel momenta, where the numerator vanishes too, and
+          // the ratio is already meaningless some way before that. Within
+          // MINANGLE of anti-parallel, use the limit sin^2(theta/2) -> 1.
+          const double den = (p1unit + p2unit).pAbs2();
+          const double sinThetaHalf2 = (den > MINANGLE * MINANGLE)
+            ? min( 1., cross3( p1unit, p2unit ).pAbs2() / den ) : 1.;
+          const double m2NowSafe = e1 * e2 * sinThetaHalf2;
+          m2Pair.push_back(m2NowSafe);
+          m2Sum += m2NowSafe;
+        }
+
+        // Safeguard. Written so that a not-a-number also is caught.
+        if ( !(m2Sum > 0.) ) {
+          loggerPtr->ERROR_MSG("no timelike gluon pairs on JJ string");
+          return false;
         }
 
         // Pick breakup region with probability proportional to mass-squared.
@@ -244,10 +273,15 @@ bool JunctionSplitting::splitJunGluons(Event& event,
         double m2Temp = min( JJSTRINGM2MAX, JJSTRINGM2FRAC * m2Reg);
         double xPos = 0.5;
         double xNeg = 0.5;
+        int nLoopZ  = 0;
         do {
           double zTemp = zSel.zFrag( idQ, 0, m2Temp);
           xPos = 1. - zTemp;
           xNeg = m2Temp / (zTemp * m2Reg);
+          if (++nLoopZ > NLOOPMAX) {
+            loggerPtr->ERROR_MSG("caught in infinite loop","(xNeg > 1)");
+            return false;
+          }
         } while (xNeg > 1.);
         if (rndmPtr->flat() > 0.5) swap(xPos, xNeg);
 

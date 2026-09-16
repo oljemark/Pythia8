@@ -56,7 +56,7 @@
 
 using namespace HighFive;
 
-namespace LHEH5 {
+namespace LHEH5v2 {
 
 //==========================================================================
 
@@ -301,6 +301,6 @@ class LHEFile {
 
 //==========================================================================
 
-}// end of namespace LHEH5
+}// end of namespace LHEH5v2
 
 #endif // Pythia8_LHEH5v2_H

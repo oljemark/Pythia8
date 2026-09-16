@@ -143,6 +143,11 @@ J. Phys. G31 (2005) 1, 1-19
 [<a href="https://arxiv.org/abs/hep-lat/0006022">arXiv:hep-lat/0006022</a>] 
 </dd> 
  
+<refit>Bal22</refit> 
+<dd>PDF4LHC Working Group, R.D. Ball et al., J.Phys.G 49 (2022) 8, 080501 
+[<a href="https://arxiv.org/abs/2203.05506">2203.05506 [hep-ph]</a>] 
+</dd> 
+ 
 <refit>Bar94</refit> 
 <dd>E. Barberio and Z. Was, Comput. Phys.Commun. 79 (1994) 291</dd> 
  
@@ -491,6 +496,12 @@ Eur. Phys. J. C77 (2017) 163,
 [<a href="https://arxiv.org/abs/1612.05741">arXiv:1612.05741 [hep-ph]</a>] 
 </dd> 
  
+<refit>Esk21</refit> 
+<dd>K.J. Eskola, P.Paakkinen, H. Paukkunen and C.A. Salgado, 
+Eur.Phys.J. C82 (2022), 413, 
+[<a href="https://arxiv.org/abs/2112.12462">arXiv:2112.12462 [hep-ph]</a>] 
+</dd> 
+ 
 <refit>Fad90</refit> 
 <dd>V. Fadin,  V. Khoze and T. Sjostrand, Z. Phys. C48 (1990) 613, 
 CERN-TH.5687/90</dd> 
@@ -604,6 +615,11 @@ P. Torrielli, Phys.Lett. B701 (2011) 427,
 <refit>Hel24</refit> 
 <dd>I. Helenius, J. Laulainen and C.T. Preuss, JHEP 05 (2025) 153, 
 [<a href="https://arxiv.org/abs/2410.20950">arXiv:2410.20950 [hep-ph]</a>] 
+</dd> 
+ 
+<refit>Hel26</refit> 
+<dd>I. Helenius, J. Laulainen and C.T. Preuss, 
+[<a href="https://arxiv.org/abs/2605.00502">arXiv:2605.00502 [hep-ph]</a>] 
 </dd> 
  
 <refit>Hew88</refit> 
@@ -956,6 +972,12 @@ Eur.Phys.J.C 82 (2022) 1, 21
 [<a href="https://arxiv.org/abs/2108.03481">arXiv:2108.03481 [hep-ph]</a>] 
 </dd> 
  
+<refit>Sjo25</refit> 
+<dd>T. Sj&ouml;strand, 
+PoS (QCDEX2025) 002 
+[<a href="https://arxiv.org/abs/2510.04590">arXiv:2510.04590 [hep-ph]</a>] 
+</dd> 
+ 
 <refit>Ska04</refit> 
 <dd>P. Skands et al., JHEP 07 (2004) 036, 
 [<a href="https://arxiv.org/abs/hep-ph/0311123">arXiv:hep-ph/0311123</a>] 
@@ -969,7 +991,14 @@ Eur.Phys.J.C 82 (2022) 1, 21
 <refit>Tul09</refit> 
 <dd> J. Tully, Monte Carlo simulations of hard QCD radiation, Doctoral Thesis, 
 Durham University (2009), 
-[<a href="https://etheses.dur.ac.uk/145/">Durham e-theses</a>] 
+[<a href="https://etheses.durham.ac.uk/id/eprint/145/">Durham e-theses</a>] 
+</dd> 
+ 
+<refit>Vri87</refit> 
+<dd>H. De Vries, C.W. De Jager, C. De Vries, Atomic Data and Nuclear Data 
+Tables (1987), 36, 3, 495-536 
+[<a href="https://doi.org/10.1016/0092-640X(87)90013-1"> 
+DOI:10.1016/0092-640X(87)90013-1</a>] 
 </dd> 
  
 <refit>Wha05</refit> 

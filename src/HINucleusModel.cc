@@ -458,8 +458,7 @@ bool HOShellModel::init() {
     }
   }
   // Calculate C2 prefactor.
-  C2 = 1./(5./2. - 4./A()) * (nucleusChR - protonChR);
-  rhoMax = A() < 10 ? rho(0) : rho( (sqrt((A() - 10)*sqrt(C2))/sqrt(A() - 4)));
+  C2Save = 1./(5./2. - 4./A()) * (nucleusChR - protonChR);
   NucleusModel::init();
   return true;
 }
@@ -469,10 +468,11 @@ bool HOShellModel::init() {
 // Generate the position of a single nucleon.
 
 Vec4 HOShellModel::generateNucleon() const {
-  double r = -1;
-  do {
-    r = -C2 * log(rndmPtr->flat());
-  } while (rndmPtr->flat() * 14./8. * rhoMax * exp(-r/C2) > rho(r) );
+  // With x = r^2 / C2, the radial density r^2 rho(r) is a mixture of
+  // Gamma(3/2,1) and Gamma(5/2,1), with weights 4/A and (A-4)/A.
+  double r2C2 = (rndmPtr->flat() < 4./A())
+    ? rndmPtr->gamma(1.5, 1.) : rndmPtr->gamma(2.5, 1.);
+  double r = sqrt(C2Save * r2C2);
 
   double costhe = 2.0*rndmPtr->flat() - 1.0;
   double sinthe = sqrt(max(1.0 - costhe*costhe, 0.0));
@@ -588,8 +588,8 @@ vector<Nucleon> HulthenModel::generate() const {
   // Find the distance between the nucleons.
   double r;
   do {
-    r = -hB * log(1. - rndmPtr->flat())/2./hA;
-  } while (rndmPtr->flat() * exp(-2.*hA*r/hB) > rho(r));
+    r = rndmPtr->exp() / (2. * hA);
+  } while (rndmPtr->flat() > pow2(1. - exp(-(hB - hA) * r)));
   // Add the other one on a sphere around the first one.
   double costhe = 2.0*rndmPtr->flat() - 1.0;
   double sinthe = sqrt(max(1.0 - costhe*costhe, 0.0));

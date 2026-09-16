@@ -1288,7 +1288,7 @@ bool Sigma3Process::setupForME() {
   } else if (id4Tmp != 0 && id5Tmp == id4Tmp) {
     mME[3] = sqrtpos(0.5 * (pow2(mME[3]) + pow2(mME[4]))
            - 0.25 * pow2(pow2(mME[3]) - pow2(mME[4])) / sH);
-    mME[4] = mME[2];
+    mME[4] = mME[3];
   }
 
   // Iterate rescaled three-momenta until convergence.
@@ -1473,6 +1473,301 @@ int SigmaLHAProcess::nFinal() const {
   for (int i = 3; i < lhaUpPtr->sizePart(); ++i)
     if (lhaUpPtr->mother1(i) == 1) ++nFin;
   return nFin;
+
+}
+
+//==========================================================================
+
+// TopThreshold.
+// Auxiliary class to Sigma2gg2QQbar, Sigma2qqbar2QQbar, and
+// Sigma2ffbar2FFbarsgmZ which allows simulation of top threshold
+// enhancement factors according to
+// V. Fadin,  V. Khoze and T. Sjostrand, Z. Phys. C48 (1990) 613.
+
+//--------------------------------------------------------------------------
+
+// Initialization setup - read in necessary settings.
+
+void TopThreshold::setup( int topModelIn, double mtIn, double gammatIn,
+  double gammatGreenIn, double thrRegionIn, double singletFracIn,
+  int alphasOrder, double alphasValue, int nTermsIn, Info* infoPtrIn) {
+
+  topModel    = topModelIn;
+  mt          = mtIn;
+  gammat      = gammatIn;
+  gammatGreen = gammatGreenIn;
+  gammatSum   = (topModel == 2) ? gammat + gammatGreen : gammat;
+  thrRegion   = thrRegionIn;
+  singletFrac = singletFracIn;
+  alphas.init( alphasValue, alphasOrder);
+  nTerms      = nTermsIn;
+  infoPtr     = infoPtrIn;
+
+}
+
+//--------------------------------------------------------------------------
+
+// Cross section enhancement factor.
+
+double TopThreshold::multiplySigmaBy( double mHat, double m3, double m4) {
+
+  // No rescaling where not defined.
+  if (topModel < 1 || topModel > 3) return 1.;
+
+  // Calculate key kinematics variables.
+  double rm3     = pow2(m3 / mHat);
+  double rm4     = pow2(m4 / mHat);
+  double mtAvg   = mHat * sqrt(0.5 * (rm3 + rm4) - 0.25 * pow2(rm3 - rm4));
+  double betaThr = sqrt( max(1e-12, 1. - pow2(2. * mtAvg/mHat)) );
+
+  // alpha_strong value.
+  double eThr    = infoPtr->toponiumE;
+  double q2Thr   = pow2(eThr) + pow2(gammatSum);
+  double q2alps  = mtAvg * sqrt(q2Thr);
+  alps           = alphas.alphaS(q2alps);
+
+  // Initial values.
+  double fAttr   = 0., fRepu = 0.;
+  nTermsNow      = (nTerms > 20) ? nTerms
+                 : min(1000, 20 + int(20. / sqrt(gammatGreen + abs(eThr))) );
+
+  // Coulomb threshold factors for attractive (singlet) and repulsive (octet).
+  if (topModel == 1 && eThr > 0.) {
+    double xAttr = (4. / 3.) * M_PI * alps / betaThr;
+    fAttr        = (xAttr < 100.) ? betaThr * xAttr / (1. - exp(-xAttr))
+                 : betaThr * xAttr;
+    double xRepu = (1. / 6.) * M_PI * alps / betaThr;
+    fRepu        = (xRepu < 100.) ? betaThr * xRepu / (exp(xRepu) - 1) : 0.;
+
+  // Green's function factors for attractive (singlet) and repulsive (octet).
+  } else if (topModel > 1) {
+    // Damping for eThr < -thrRegion.
+    double damp = max( 0., (eThr > -thrRegion) ? 1. : 2. + eThr / thrRegion);
+    // Recalculate kinematics relative to original quark masses.
+    if (eThr < 0.) {
+      rm3     = pow2(infoPtr->toponiumm3 / mHat);
+      rm4     = pow2(infoPtr->toponiumm4 / mHat);
+      mtAvg   = mHat * sqrt(0.5 * (rm3 + rm4) - 0.25 * pow2(rm3 - rm4));
+    }
+    // Alternative definition of eThr agrees with beta factor for Gamma_t = 0.
+    double eThrMod = mtAvg * (pow2(1. - rm3 - rm4) - 4. * rm3 * rm4);
+    fAttr = damp * imGreenSin( eThrMod, mtAvg);
+    fRepu = damp * imGreenOct( eThrMod, mtAvg);
+  }
+
+  // Mix of attractive and repulsive channels.
+  double facAR = singletFrac * fAttr + (1. - singletFrac) * fRepu;
+  infoPtr->toponiumEnhance = facAR / betaThr;
+  infoPtr->toponiumSingletFrac = (facAR > 0.)
+    ? singletFrac * fAttr / facAR : 0.;
+
+  // Since the threshold cross section contains a beta factor (with m3/m4,
+  // not m3Orig/m4Orig) this must be removed in the final answer.
+  return facAR / betaThr;
+
+}
+
+//--------------------------------------------------------------------------
+
+// Imaginary part of Green's function for singlet state.
+
+double TopThreshold::imGreenSin(double eNow, double mtNow) {
+
+  // Basic expressions.
+  double ps   = (2. / 3.) * mtNow * alps;
+  double egrt = sqrt(eNow * eNow + gammatGreen * gammatGreen);
+  double p1   = sqrt( 0.5 * mtNow * (egrt - eNow));
+  double p2   = sqrt( 0.5 * mtNow * (egrt + eNow));
+
+  // Sum over resonance contributions.
+  double ressum = 0.;
+  for (int n = 1; n <= nTermsNow; ++n)
+    ressum += (gammatGreen * ps * n + p2 * (n*n * egrt + ps * ps / mtNow))
+    / ( pow4(n) * (pow2(eNow + ps * ps / (mtNow * n*n))
+    + gammatGreen * gammatGreen) );
+
+  // Combine with non-resonant terms and done.
+  return p2 / mtNow + (2. * ps / mtNow) * atan(p2 / p1)
+    + 2. * pow2(ps / mtNow) * ressum;
+
+}
+
+//--------------------------------------------------------------------------
+
+// Imaginary part of Green's function for octet state.
+
+double TopThreshold::imGreenOct(double eNow, double mtNow) {
+
+  // Basic expressions.
+  double p8   = - (1. / 12.) * mtNow * alps;
+  double egrt = sqrt(eNow * eNow + gammatGreen * gammatGreen);
+  double p1   = sqrt( 0.5 * mtNow * (egrt - eNow));
+  double p2   = sqrt( 0.5 * mtNow * (egrt + eNow));
+
+  // Sum over resonance contributions.
+  double ressum = 0.;
+  for (int n = 1; n <= nTermsNow; ++n)
+    ressum += mtNow * p2 / (pow2(n * p1 - p8) + pow2(n * p2));
+
+  // Combine with non-resonant terms and done.
+  return p2 / mtNow + (2. * p8 / mtNow) * atan(p2 / p1)
+    + 2. * pow2(p8 / mtNow) * ressum;
+
+}
+
+//--------------------------------------------------------------------------
+
+// Set up information to handle angular distributions in toponium decay.
+
+double TopThreshold::weightTopDecay( Event& process) {
+
+  // Create working copy of process record to simplify setup.
+  Event work = process;
+  double sHat = (work[5].p() + work[6].p()).m2Calc();
+
+  // Order ttbar system and the decay products (treg = t, breg = b).
+  int itreg = (work[5].id() == 6) ? 5 : 6;
+  int itbar = 11 - itreg;
+  int iWpos = work[itreg].daughter1();
+  int ibreg = work[itreg].daughter2();
+  int iWneg = work[itbar].daughter1();
+  int ibbar = work[itbar].daughter2();
+  // The W+- decay products, ferm = fermion, anti = antifermion.
+  int iWposferm = work[iWpos].daughter1();
+  int iWposanti = work[iWpos].daughter2();
+  if (work[iWposferm].id() < 0) swap( iWposferm, iWposanti);
+  int iWnegferm = work[iWneg].daughter1();
+  int iWneganti = work[iWneg].daughter2();
+  if (work[iWnegferm].id() < 0) swap( iWnegferm, iWneganti);
+
+  // Convert massive W decay products to massless ones,
+  // along unchanged axis in the W rest frame.
+  Vec4 pPosferm = work[iWposferm].p();
+  Vec4 pPosanti = work[iWposanti].p();
+  pShift( pPosferm, pPosanti, 0., 0.);
+  work[iWposferm].p( pPosferm);
+  work[iWposanti].p( pPosanti);
+  work[iWposferm].m( 0.);
+  work[iWposanti].m( 0.);
+  Vec4 pNegferm = work[iWnegferm].p();
+  Vec4 pNeganti = work[iWneganti].p();
+  pShift( pNegferm, pNeganti, 0., 0.);
+  work[iWnegferm].p( pNegferm);
+  work[iWneganti].p( pNeganti);
+  work[iWnegferm].m( 0.);
+  work[iWneganti].m( 0.);
+
+  // Weight for pseudoscalar ttbar state.
+  double wtNow = matrixElementP2bbveevmumu(work, ibreg, ibbar,
+    iWposferm, iWposanti, iWneganti, iWnegferm);
+  double wtMax = 0.016 * pow4(sHat);
+  return wtNow / wtMax;
+
+}
+
+//--------------------------------------------------------------------------
+
+// Matrix element for decay angles in pseudoscalar toponium-like state.
+
+double TopThreshold::matrixElementP2bbveevmumu(const Event& work,
+  int ib, int ibb, int ive, int ie, int ivm, int im) {
+
+  // Four-vectors, with their squares and products.
+  const Vec4& p1 = work[ib].p();
+  const Vec4& p2 = work[ibb].p();
+  const Vec4& p3 = work[ive].p();
+  const Vec4& p4 = work[ie].p();
+  const Vec4& p5 = work[ivm].p();
+  const Vec4& p6 = work[im].p();
+  const double m1Sq = m2(p1);
+  const double m2Sq = m2(p2);
+  const double s12 = 2.*p1*p2;
+  const double s13 = 2.*p1*p3;
+  const double s14 = 2.*p1*p4;
+  const double s15 = 2.*p1*p5;
+  const double s16 = 2.*p1*p6;
+  const double s23 = 2.*p2*p3;
+  const double s24 = 2.*p2*p4;
+  const double s25 = 2.*p2*p5;
+  const double s26 = 2.*p2*p6;
+  const double s34 = 2.*p3*p4;
+  const double s35 = 2.*p3*p5;
+  const double s36 = 2.*p3*p6;
+  const double s45 = 2.*p4*p5;
+  const double s46 = 2.*p4*p6;
+  const double s56 = 2.*p5*p6;
+
+  // Note: overall factor mtSq omitted.
+  double wt = - 16*s13*s25*s46*m2Sq - 16*s13*s25*s46*m1Sq + 16*s13*s25*s45*s56
+    + 16*s13*s25*s36*s45 - 16*s13*s25*s35*s46 + 16*s13*s25*s34*s56
+    + 16*s13*s25*s34*s36 + 16*s13*s25*s26*s45 + 16*s13*s25*s26*s34
+    - 16*s13*pow2(s25)*s46 + 16*s13*s24*s25*s56 + 16*s13*s24*s25*s36
+    + 16*s13*s24*s25*s26 - 16*s13*s23*s25*s46 + 16*s13*s16*s25*s45
+    + 16*s13*s16*s25*s34 + 16*s13*s16*s24*s25 - 16*s13*s15*s25*s46
+    + 16*s13*s14*s25*s56 + 16*s13*s14*s25*s36 + 16*s13*s14*s25*s26
+    + 16*s13*s14*s16*s25 - 16*pow2(s13)*s25*s46 - 16*s12*s13*s25*s46
+    + eps4(p1,p2,p3,p4) * ( 4*s46*s56 + 4*s45*s56 - 4*s36*s56 - 4*s35*s56
+      - 4*s26*s45 - 4*s26*s35 + 4*s25*s46 + 4*s25*s36 + 4*s24*s56 - 4*s23*s56
+      - 8*s16*s45 - 8*s16*s35 - 2*s16*s25 + 8*s15*s46 + 8*s15*s36 + 2*s15*s26 )
+    + eps4(p1,p2,p3,p5) * ( 4*s46*m2Sq - 4*s46*m1Sq - 4*s46*s56 - 4*pow2(s46)
+      - 4*s45*s46 - 4*s36*s45 + 4*s35*s46 + 4*s34*s56 - 4*s34*s36 + 4*s23*s46
+      - 2*s16*s46 - 2*s15*s46 + 2*s14*s56 - 4*s14*s46 - 4*s13*s46 )
+    + eps4(p1,p2,p3,p6) * ( - 4*s45*m2Sq + 4*s45*m1Sq + 4*s45*s56 + 4*s35*s46
+      + 4*s35*s45 + 4*s34*s35 - 4*s24*s45 + 2*s16*s45 + 2*s15*s45 + 2*s14*s56
+      + 4*s14*s45 + 4*s13*s45 )
+    + eps4(p1,p2,p4,p5) * ( - 4*s36*m2Sq + 4*s36*m1Sq + 4*s36*s56 + 4*s36*s46
+      + 4*s35*s46 + 4*s34*s46 - 4*s23*s36 + 2*s16*s36 + 2*s15*s36 + 4*s14*s36
+      + 2*s13*s56 + 4*s13*s36 )
+    + eps4(p1,p2,p4,p6) * ( - 4*s36*s45 + 4*s35*m2Sq - 4*s35*m1Sq - 4*s35*s56
+      + 4*s35*s46 - 4*s35*s36 - 4*pow2(s35) + 4*s34*s56 - 4*s34*s45 + 4*s24*s35
+      - 2*s16*s35 - 2*s15*s35 - 4*s14*s35 + 2*s13*s56 - 4*s13*s35 )
+    + eps4(p1,p2,p5,p6) * (  - 8*s34*s46 - 4*s34*s45 + 4*s34*s36 + 8*s34*s35
+      + 4*s24*s34 - 4*s23*s34 - 2*s14*s36 + 2*s14*s35 + 8*s14*s34 + 2*s14*s23
+      - 2*s13*s46 + 2*s13*s45 - 8*s13*s34 - 2*s13*s24 )
+    + eps4(p1,p3,p4,p5) * ( - 8*s26*m1Sq - 8*s26*s56 + 2*s26*s46 - 2*s26*s45
+      + 6*s26*s36 + 2*s26*s35 - 8*s26*s34 - 4*pow2(s26) + 4*s25*s46 + 4*s25*s36
+      - 4*s25*s26 - 4*s24*s56 - 4*s23*s56 + 4*s23*s26 + 4*s16*m2Sq - 4*s16*s25
+      + 4*s15*s26 - 8*s14*s26 - 8*s13*s26 )
+    + eps4(p1,p3,p4,p6) * ( - 4*s26*s45 - 4*s26*s35 + 8*s25*m1Sq + 8*s25*s56
+      - 2*s25*s46 - 6*s25*s45 + 2*s25*s36 - 2*s25*s35 + 8*s25*s34 + 4*s25*s26
+      + 4*pow2(s25) + 4*s24*s56 - 4*s24*s25 + 4*s23*s56 - 4*s16*s25
+      - 4*s15*m2Sq + 4*s15*s26 + 8*s14*s25 + 8*s13*s25 )
+    + eps4(p1,p3,p5,p6) * ( 8*s34*m2Sq + 4*s26*s34 - 4*s24*m2Sq - 4*s24*m1Sq
+      - 4*s24*s56 - 2*s24*s46 - 2*s24*s45 - 2*s24*s36 - 2*s24*s35 - 8*s24*s34
+      - 4*s24*s26 - 4*s24*s25 - 4*pow2(s24) + 4*s23*s34 - 4*s23*s24 + 6*s16*s24
+      + 6*s15*s24 - 2*s14*s26 - 6*s14*s25 - 12*s14*s24 - 8*s14*s23 - 4*s13*s24
+      + 8*s12*s34 + 2*s12*s24 )
+    + eps4(p1,p4,p5,p6) * ( - 8*s34*m2Sq - 4*s25*s34 - 4*s24*s34 + 4*s23*m2Sq
+      + 4*s23*m1Sq + 4*s23*s56 + 2*s23*s46 + 2*s23*s45 + 2*s23*s36 + 2*s23*s35
+      + 8*s23*s34 + 4*s23*s26 + 4*s23*s25 + 4*s23*s24 + 4*pow2(s23) - 6*s16*s23
+      - 6*s15*s23 + 4*s14*s23 + 6*s13*s26 + 2*s13*s25 + 8*s13*s24 + 12*s13*s23
+      - 8*s12*s34 - 2*s12*s23 )
+    + eps4(p2,p3,p4,p5) * ( - 8*s56*m1Sq + 16*s46*m1Sq + 16*s36*m1Sq
+      + 24*s16*m2Sq + 8*s16*m1Sq + 8*s16*s56 - 2*s16*s46 - 2*s16*s45
+      - 6*s16*s36 - 6*s16*s35 + 8*s16*s34 + 20*s16*s26 + 4*s16*s25 + 4*s16*s24
+      - 4*pow2(s16) + 16*s15*s26 - 4*s15*s16 + 4*s14*s46 - 4*s14*s26
+      + 4*s13*s36 - 4*s13*s26 + 4*s12*s26 - 2*s12*s16 )
+    + eps4(p2,p3,p4,p6) * ( 8*s56*m1Sq - 16*s45*m1Sq - 16*s35*m1Sq - 16*s16*s25
+      - 24*s15*m2Sq - 8*s15*m1Sq - 8*s15*s56 + 6*s15*s46 + 6*s15*s45
+      + 2*s15*s36 + 2*s15*s35 - 8*s15*s34 - 4*s15*s26 - 20*s15*s25 - 4*s15*s23
+      + 4*s15*s16 + 4*pow2(s15) - 4*s14*s45 + 4*s14*s25 - 4*s13*s35 + 4*s13*s25
+      - 4*s12*s25 + 2*s12*s15 )
+    + eps4(p2,p3,p5,p6) * ( - 8*s46*m1Sq - 8*s45*m1Sq - 4*s24*m1Sq + 16*s16*s24
+      + 4*s15*s34 + 16*s15*s24 + 28*s14*m2Sq + 4*s14*m1Sq + 4*s14*s56
+      - 6*s14*s46 - 6*s14*s45 - 2*s14*s36 - 2*s14*s35 + 8*s14*s34 + 4*s14*s26
+      + 4*s14*s25 + 4*s14*s24 + 4*s14*s23 - 8*s14*s16 - 4*s14*s15 + 4*pow2(s14)
+      - 4*s13*s46 - 4*s13*s45 + 4*s13*s14 - 4*s12*s34 + 4*s12*s24 )
+    + eps4(p2,p4,p5,p6) * ( 8*s36*m1Sq + 8*s35*m1Sq + 4*s23*m1Sq - 4*s16*s34
+      - 16*s16*s23 - 16*s15*s23 + 4*s14*s36 + 4*s14*s35 - 28*s13*m2Sq
+      - 4*s13*m1Sq - 4*s13*s56 + 2*s13*s46 + 2*s13*s45 + 6*s13*s36 + 6*s13*s35
+      - 8*s13*s34 - 4*s13*s26 - 4*s13*s25 - 4*s13*s24 - 4*s13*s23 + 4*s13*s16
+      + 8*s13*s15 - 4*s13*s14 - 4*pow2(s13) + 4*s12*s34 - 4*s12*s23 )
+    + eps4(p3,p4,p5,p6) * ( - 16*s26*m1Sq - 16*s25*m1Sq + 32*s16*m2Sq
+      - 4*s16*s24 - 4*s16*s23 + 32*s15*m2Sq - 4*s15*s24 - 4*s15*s23 + 4*s14*s26
+      + 4*s14*s25 + 4*s14*s24 + 4*s13*s26 + 4*s13*s25 + 4*s13*s23 + 32*s12*m2Sq
+      - 4*s12*s46 - 4*s12*s45 - 4*s12*s36 - 4*s12*s35 );
+
+  return wt;
 
 }
 

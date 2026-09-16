@@ -1,4 +1,4 @@
-// ResonanceDecayFilterHook.h is part of the PYTHIA event generator.
+// ResonanceDecayFilterHooks.h is part of the PYTHIA event generator.
 // Copyright (C) 2026 Stephen Mrenna, Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
@@ -43,24 +43,20 @@
 #include "Pythia8/Pythia.h"
 #include "Pythia8/UserHooks.h"
 #include "Pythia8/Event.h"
+#include "Pythia8/Plugins.h"
 
 namespace Pythia8 {
 
-class ResonanceDecayFilterHook : public UserHooks {
+class ResonanceDecayFilterHooks : public UserHooks {
 public:
 
   // Constructor.
-  ResonanceDecayFilterHook(Settings &settings);
+  ResonanceDecayFilterHooks(Pythia*, Settings*, Logger*) : counter(0) {;}
 
   // Override base class methods.
   bool canVetoResonanceDecays() override {return true;}
-  bool doVetoResonanceDecays(Event& process) override {
-    return checkVetoResonanceDecays(process);}
+  bool doVetoResonanceDecays(Event& process) override;
   bool initAfterBeams() override;
-
-  // Class specific.
-  bool checkVetoResonanceDecays(const Event& process);
-  unsigned long int returnCounter() {return counter;};
 
 private:
 
@@ -79,29 +75,9 @@ private:
 
 //--------------------------------------------------------------------------
 
-// Constructor.
-
-ResonanceDecayFilterHook::ResonanceDecayFilterHook(Settings &settings) {
-  counter = 0;
-  settings.addFlag("ResonanceDecayFilter:filter", false);
-  settings.addFlag("ResonanceDecayFilter:exclusive", false);
-  settings.addFlag("ResonanceDecayFilter:eMuAsEquivalent", false);
-  settings.addFlag("ResonanceDecayFilter:eMuTauAsEquivalent", false);
-  settings.addFlag("ResonanceDecayFilter:allNuAsEquivalent", false);
-  settings.addFlag("ResonanceDecayFilter:udscAsEquivalent", false);
-  settings.addFlag("ResonanceDecayFilter:udscbAsEquivalent", false);
-  settings.addFlag("ResonanceDecayFilter:wzAsEquivalent", false);
-  settings.addMVec("ResonanceDecayFilter:mothers", vector<int>(), false,
-    false, 0, 0);
-  settings.addMVec("ResonanceDecayFilter:daughters", vector<int>(), false,
-    false, 0, 0);
-}
-
-//--------------------------------------------------------------------------
-
 // Return a particle ID given equivalence user settings.
 
-int ResonanceDecayFilterHook::idCat(int id) {
+int ResonanceDecayFilterHooks::idCat(int id) {
   id = abs(id);
   if (id == 13 && (eMuAsEquivalent || eMuTauAsEquivalent)) id = 11;
   else if (id == 15 && eMuTauAsEquivalent) id = 11;
@@ -117,23 +93,19 @@ int ResonanceDecayFilterHook::idCat(int id) {
 
 // Intialize the user hook after the beams.
 
-bool ResonanceDecayFilterHook::initAfterBeams() {
-  filter = settingsPtr->flag("ResonanceDecayFilter:filter");
-  exclusive = settingsPtr->flag("ResonanceDecayFilter:exclusive");
-  eMuAsEquivalent = settingsPtr->flag("ResonanceDecayFilter:eMuAsEquivalent");
-  eMuTauAsEquivalent = settingsPtr->
-    flag("ResonanceDecayFilter:eMuTauAsEquivalent");
-  allNuAsEquivalent = settingsPtr->flag
-    ("ResonanceDecayFilter:allNuAsEquivalent");
-  udscAsEquivalent = settingsPtr->
-    flag("ResonanceDecayFilter:udscAsEquivalent");
-  udscbAsEquivalent = settingsPtr->
-    flag("ResonanceDecayFilter:udscbAsEquivalent");
-  wzAsEquivalent = settingsPtr->flag("ResonanceDecayFilter:wzAsEquivalent");
-  auto mothersIn = settingsPtr->mvec("ResonanceDecayFilter:mothers");
+bool ResonanceDecayFilterHooks::initAfterBeams() {
+  filter                = flag("ResonanceDecayFilter:filter");
+  exclusive             = flag("ResonanceDecayFilter:exclusive");
+  eMuAsEquivalent       = flag("ResonanceDecayFilter:eMuAsEquivalent");
+  eMuTauAsEquivalent    = flag("ResonanceDecayFilter:eMuTauAsEquivalent");
+  allNuAsEquivalent     = flag("ResonanceDecayFilter:allNuAsEquivalent");
+  udscAsEquivalent      = flag("ResonanceDecayFilter:udscAsEquivalent");
+  udscbAsEquivalent     = flag("ResonanceDecayFilter:udscbAsEquivalent");
+  wzAsEquivalent        = flag("ResonanceDecayFilter:wzAsEquivalent");
+  vector<int> mothersIn = mvec("ResonanceDecayFilter:mothers");
   mothers.clear();
   mothers.insert(mothersIn.begin(), mothersIn.end());
-  daughters = settingsPtr->mvec("ResonanceDecayFilter:daughters");
+  daughters = mvec("ResonanceDecayFilter:daughters");
   requestedDaughters.clear();
 
   // Loop over the daughters.
@@ -146,11 +118,12 @@ bool ResonanceDecayFilterHook::initAfterBeams() {
 
 // Return true of the resonance decays are vetoed.
 
-bool ResonanceDecayFilterHook::checkVetoResonanceDecays(const Event &process) {
+bool ResonanceDecayFilterHooks::doVetoResonanceDecays(Event &process) {
   if (!filter) return false;
 
   // Count the number of times hook is called.
   counter++;
+  settingsPtr->mode("ResonanceDecayFilter:counter", counter);
   observedDaughters.clear();
 
   // Loop over particles and determine equivalent types.
@@ -187,8 +160,35 @@ bool ResonanceDecayFilterHook::checkVetoResonanceDecays(const Event &process) {
 
 }
 
+//--------------------------------------------------------------------------
+
+// Register settings.
+
+void resonanceSettings(Settings *settingsPtr) {
+  settingsPtr->addFlag("ResonanceDecayFilter:filter", false);
+  settingsPtr->addFlag("ResonanceDecayFilter:exclusive", false);
+  settingsPtr->addFlag("ResonanceDecayFilter:eMuAsEquivalent", false);
+  settingsPtr->addFlag("ResonanceDecayFilter:eMuTauAsEquivalent", false);
+  settingsPtr->addFlag("ResonanceDecayFilter:allNuAsEquivalent", false);
+  settingsPtr->addFlag("ResonanceDecayFilter:udscAsEquivalent", false);
+  settingsPtr->addFlag("ResonanceDecayFilter:udscbAsEquivalent", false);
+  settingsPtr->addFlag("ResonanceDecayFilter:wzAsEquivalent", false);
+  settingsPtr->addMVec("ResonanceDecayFilter:mothers", {}, false, false, 0, 0);
+  settingsPtr->addMVec("ResonanceDecayFilter:daughters", {},
+    false, false, 0, 0);
+  settingsPtr->addMode("ResonanceDecayFilter:counter", 0, false, false, 0, 0);
+}
+
+//--------------------------------------------------------------------------
+
+// Declare the plugin.
+
+PYTHIA8_PLUGIN_CLASS(UserHooks, ResonanceDecayFilterHooks, false, false, false)
+PYTHIA8_PLUGIN_SETTINGS(resonanceSettings)
+PYTHIA8_PLUGIN_VERSIONS(PYTHIA_VERSION_INTEGER)
+
 //==========================================================================
 
 } // end namespace Pythia8
 
-#endif // end Pythia8_ResonanceDecayHooks_H
+#endif // end Pythia8_ResonanceDecayFilterHooks_H

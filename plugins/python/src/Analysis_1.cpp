@@ -14,30 +14,27 @@
 #include <string>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::SlowJetHook file:Pythia8/Analysis.h line:371
 struct PyCallBack_Pythia8_SlowJetHook : public Pythia8::SlowJetHook {
 	using Pythia8::SlowJetHook::SlowJetHook;
 
-	bool include(int a0, const class Pythia8::Event & a1, class Pythia8::Vec4 & a2, double & a3) override { 
+	bool include(int a0, const class Pythia8::Event & a1, class Pythia8::Vec4 & a2, double & a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SlowJetHook *>(this), "include");
 		if (overload) {
@@ -46,7 +43,7 @@ struct PyCallBack_Pythia8_SlowJetHook : public Pythia8::SlowJetHook {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		pybind11::pybind11_fail("Tried to call pure virtual function \"SlowJetHook::include\"");
 	}
@@ -56,7 +53,7 @@ struct PyCallBack_Pythia8_SlowJetHook : public Pythia8::SlowJetHook {
 struct PyCallBack_Pythia8_SlowJet : public Pythia8::SlowJet {
 	using Pythia8::SlowJet::SlowJet;
 
-	bool doStep() override { 
+	bool doStep() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SlowJet *>(this), "doStep");
 		if (overload) {
@@ -65,11 +62,11 @@ struct PyCallBack_Pythia8_SlowJet : public Pythia8::SlowJet {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SlowJet::doStep();
 	}
-	void findNext() override { 
+	void findNext() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SlowJet *>(this), "findNext");
 		if (overload) {
@@ -78,7 +75,7 @@ struct PyCallBack_Pythia8_SlowJet : public Pythia8::SlowJet {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return SlowJet::findNext();
 	}
@@ -88,16 +85,12 @@ void bind_Pythia8_Analysis_1(std::function< pybind11::module &(std::string const
 {
 	{ // Pythia8::SlowJetHook file:Pythia8/Analysis.h line:371
 		pybind11::class_<Pythia8::SlowJetHook, std::shared_ptr<Pythia8::SlowJetHook>, PyCallBack_Pythia8_SlowJetHook> cl(M("Pythia8"), "SlowJetHook", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new PyCallBack_Pythia8_SlowJetHook(); } ) );
 		cl.def("include", (bool (Pythia8::SlowJetHook::*)(int, const class Pythia8::Event &, class Pythia8::Vec4 &, double &)) &Pythia8::SlowJetHook::include, "C++: Pythia8::SlowJetHook::include(int, const class Pythia8::Event &, class Pythia8::Vec4 &, double &) --> bool", pybind11::arg("iSel"), pybind11::arg("event"), pybind11::arg("pSel"), pybind11::arg("mSel"));
 		cl.def("assign", (class Pythia8::SlowJetHook & (Pythia8::SlowJetHook::*)(const class Pythia8::SlowJetHook &)) &Pythia8::SlowJetHook::operator=, "C++: Pythia8::SlowJetHook::operator=(const class Pythia8::SlowJetHook &) --> class Pythia8::SlowJetHook &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::SingleSlowJet file:Pythia8/Analysis.h line:395
 		pybind11::class_<Pythia8::SingleSlowJet, std::shared_ptr<Pythia8::SingleSlowJet>> cl(M("Pythia8"), "SingleSlowJet", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::SingleSlowJet(); } ), "doc" );
 		cl.def( pybind11::init( [](class Pythia8::Vec4 const & a0){ return new Pythia8::SingleSlowJet(a0); } ), "doc" , pybind11::arg("pIn"));
 		cl.def( pybind11::init( [](class Pythia8::Vec4 const & a0, double const & a1){ return new Pythia8::SingleSlowJet(a0, a1); } ), "doc" , pybind11::arg("pIn"), pybind11::arg("pT2In"));
@@ -116,8 +109,6 @@ void bind_Pythia8_Analysis_1(std::function< pybind11::module &(std::string const
 	}
 	{ // Pythia8::SlowJet file:Pythia8/Analysis.h line:422
 		pybind11::class_<Pythia8::SlowJet, std::shared_ptr<Pythia8::SlowJet>, PyCallBack_Pythia8_SlowJet> cl(M("Pythia8"), "SlowJet", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](int const & a0, double const & a1){ return new Pythia8::SlowJet(a0, a1); }, [](int const & a0, double const & a1){ return new PyCallBack_Pythia8_SlowJet(a0, a1); } ), "doc");
 		cl.def( pybind11::init( [](int const & a0, double const & a1, double const & a2){ return new Pythia8::SlowJet(a0, a1, a2); }, [](int const & a0, double const & a1, double const & a2){ return new PyCallBack_Pythia8_SlowJet(a0, a1, a2); } ), "doc");
 		cl.def( pybind11::init( [](int const & a0, double const & a1, double const & a2, double const & a3){ return new Pythia8::SlowJet(a0, a1, a2, a3); }, [](int const & a0, double const & a1, double const & a2, double const & a3){ return new PyCallBack_Pythia8_SlowJet(a0, a1, a2, a3); } ), "doc");
@@ -178,8 +169,8 @@ void bind_Pythia8_Analysis_1(std::function< pybind11::module &(std::string const
 		cl.def("dNext", (double (Pythia8::SlowJet::*)() const) &Pythia8::SlowJet::dNext, "C++: Pythia8::SlowJet::dNext() const --> double");
 		cl.def("list", [](Pythia8::SlowJet const &o) -> void { return o.list(); }, "");
 		cl.def("list", (void (Pythia8::SlowJet::*)(bool) const) &Pythia8::SlowJet::list, "C++: Pythia8::SlowJet::list(bool) const --> void", pybind11::arg("listAll"));
-		cl.def("constituents", (class std::vector<int, class std::allocator<int> > (Pythia8::SlowJet::*)(int)) &Pythia8::SlowJet::constituents, "C++: Pythia8::SlowJet::constituents(int) --> class std::vector<int, class std::allocator<int> >", pybind11::arg("j"));
-		cl.def("clusConstituents", (class std::vector<int, class std::allocator<int> > (Pythia8::SlowJet::*)(int)) &Pythia8::SlowJet::clusConstituents, "C++: Pythia8::SlowJet::clusConstituents(int) --> class std::vector<int, class std::allocator<int> >", pybind11::arg("j"));
+		cl.def("constituents", (class std::vector<int> (Pythia8::SlowJet::*)(int)) &Pythia8::SlowJet::constituents, "C++: Pythia8::SlowJet::constituents(int) --> class std::vector<int>", pybind11::arg("j"));
+		cl.def("clusConstituents", (class std::vector<int> (Pythia8::SlowJet::*)(int)) &Pythia8::SlowJet::clusConstituents, "C++: Pythia8::SlowJet::clusConstituents(int) --> class std::vector<int>", pybind11::arg("j"));
 		cl.def("jetAssignment", (int (Pythia8::SlowJet::*)(int)) &Pythia8::SlowJet::jetAssignment, "C++: Pythia8::SlowJet::jetAssignment(int) --> int", pybind11::arg("i"));
 		cl.def("removeJet", (void (Pythia8::SlowJet::*)(int)) &Pythia8::SlowJet::removeJet, "C++: Pythia8::SlowJet::removeJet(int) --> void", pybind11::arg("i"));
 		cl.def("findNext", (void (Pythia8::SlowJet::*)()) &Pythia8::SlowJet::findNext, "C++: Pythia8::SlowJet::findNext() --> void");

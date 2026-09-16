@@ -22,8 +22,10 @@
 #ifndef Pythia8_ColourReconnectionHooks_H
 #define Pythia8_ColourReconnectionHooks_H
 
-// Includes
+// Includes.
 #include "Pythia8/Pythia.h"
+#include "Pythia8/Plugins.h"
+
 namespace Pythia8 {
 
 //==========================================================================
@@ -34,7 +36,11 @@ class MBReconUserHooks : public UserHooks {
 
 public:
 
-  // Constructor and destructor.
+  // Constructor.
+  MBReconUserHooks(Pythia*, Settings*, Logger*) {}
+
+  // Initialization. The following settings, prefixed with
+  // "MBRecon:", are available.
   // mode = 0: no reconnection (dummy option, does nothing);
   //      = 1: swap gluons to minimize lambda.
   //      = 2: move gluons to minimize lambda.
@@ -44,16 +50,20 @@ public:
   // dLamCut: smallest -delta-lambda value for which to swap/mode (positive).
   // fracGluon: the fraction of gluons that will be studied for reconnection.
   // m2Ref   : squared reference mass scale for lambda measure calculation.
-  MBReconUserHooks(int modeIn = 0, int flipIn = 0, double dLamCutIn = 0.,
-    double fracGluonIn = 1.) : mode(modeIn), flip(flipIn), dLamCut(dLamCutIn),
-    fracGluon(fracGluonIn) { m2Ref = 1.; dLamCut = max(0., dLamCut); }
-  ~MBReconUserHooks() {}
+  bool initAfterBeams() override {
+    mode      = settingsPtr->mode("MBRecon:mode");
+    flip      = settingsPtr->mode("MBRecon:flip");
+    dLamCut   = settingsPtr->parm("MBRecon:dLamCut");
+    fracGluon = settingsPtr->parm("MBRecon:fracGluon");
+    m2Ref     = settingsPtr->parm("MBRecon:m2Ref");
+    return true;
+  }
 
   // Allow colour reconnection after resonance decays (early or late)...
-  virtual bool canReconnectResonanceSystems() {return true;}
+  virtual bool canReconnectResonanceSystems() override {return true;}
 
   // ...which gives access to the event, for modification.
-  virtual bool doReconnectResonanceSystems( int, Event& event) {
+  virtual bool doReconnectResonanceSystems(int, Event& event) override {
 
     // Return without action for relevant mode numbers.
     if (mode <= 0 || mode > 2) return true;
@@ -81,8 +91,8 @@ public:
   }
 
   // Return number of reconnections for current event.
-  //int numberReconnections() {return nRec;}
-  //double dLambdaReconnections() {return -dLamTot;}
+  int numberReconnections() {return nRec;}
+  double dLambdaReconnections() {return -dLamTot;}
 
 private:
 
@@ -613,14 +623,17 @@ private:
 
 //==========================================================================
 
-
 // Class for colour reconnection models specifically aimed at top decays.
 
 class TopReconUserHooks : public UserHooks {
 
 public:
 
-  // Constructor and destructor.
+  // Constructor.
+  TopReconUserHooks(Pythia*, Settings*, Logger*) {}
+
+  // Initialization. The following settings, prefixed with
+  // "TopRecon:", are available.
   // mode = 0: no reconnection of tops (dummy option, does nothing);
   //      = 1: reconnect with random background gluon;
   //      = 2: reconnect with nearest (smallest-mass) background gluon;
@@ -633,17 +646,20 @@ public:
   // m2Ref: squared reference mass scale for lambda measure calculation.
   // Possible variants for the future: swap with nearest in angle, not mass,
   // and/or only allow a background gluon to swap colours once.
-
-  TopReconUserHooks(int modeIn = 0, double strengthIn = 1.) : mode(modeIn),
-    strength(strengthIn) { iList = 0; nList = 0; pTolerance = 0.01;
-    m2Ref = 1.;}
-  ~TopReconUserHooks() {}
+  bool initAfterBeams() override {
+    mode       = settingsPtr->mode("TopRecon:mode");
+    strength   = settingsPtr->parm("TopRecon:strength");
+    nList      = settingsPtr->mode("TopRecon:nList");
+    pTolerance = settingsPtr->parm("TopRecon:pTolerance");
+    m2Ref      = settingsPtr->parm("TopRecon:m2Ref");
+    return true;
+  }
 
   // Allow colour reconnection after resonance decays (early or late)...
-  virtual bool canReconnectResonanceSystems() {return true;}
+  virtual bool canReconnectResonanceSystems() override {return true;}
 
   // ...which gives access to the event, for modification.
-  virtual bool doReconnectResonanceSystems( int, Event& event) {
+  virtual bool doReconnectResonanceSystems(int, Event& event)  override {
 
     // Return without action for relevant mode numbers.
     if (mode <= 0 || mode > 5) return true;
@@ -670,7 +686,7 @@ public:
   }
 
   // Return number of reconnections for current event.
-  //int numberReconnections() {return nRec;}
+  int numberReconnections() {return nRec;}
 
 private:
 
@@ -956,6 +972,32 @@ private:
   }
 
 };
+
+//--------------------------------------------------------------------------
+
+// Register settings.
+
+void reconSettings(Settings *settingsPtr) {
+  settingsPtr->addMode("MBRecon:mode", 0, true, true, 0, 2);
+  settingsPtr->addMode("MBRecon:flip", 0, true, true, 0, 2);
+  settingsPtr->addParm("MBRecon:dLamCut", 0, true, false, 0, 0);
+  settingsPtr->addParm("MBRecon:fracGluon", 1, true, false, 1, 0);
+  settingsPtr->addParm("MBRecon:m2Ref", 1, true, false, 0, 0);
+  settingsPtr->addMode("TopRecon:mode", 0, true, true, 0, 5);
+  settingsPtr->addParm("TopRecon:strength", 0, true, false, 0, 0);
+  settingsPtr->addMode("TopRecon:nList", 0, true, false, 0, 0);
+  settingsPtr->addParm("TopRecon:pTolerance", 0.01, true, false, 0, 0);
+  settingsPtr->addParm("TopRecon:m2Ref", 1, true, false, 0, 0);
+}
+
+//--------------------------------------------------------------------------
+
+// Declare the plugin.
+
+PYTHIA8_PLUGIN_CLASS(UserHooks, MBReconUserHooks, false, false, false)
+PYTHIA8_PLUGIN_CLASS(UserHooks, TopReconUserHooks, false, false, false)
+PYTHIA8_PLUGIN_SETTINGS(reconSettings)
+PYTHIA8_PLUGIN_VERSIONS(PYTHIA_VERSION_INTEGER)
 
 //==========================================================================
 

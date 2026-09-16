@@ -75,7 +75,7 @@ public:
 // LHAup is base class for initialization and event information
 // from an external parton-level generator.
 
-class LHAup {
+class LHAup : public PhysicsBase {
 
 public:
 
@@ -310,7 +310,7 @@ protected:
   char dateNow[12];
   char timeNow[9];
 
-private:
+protected:
 
   // Event weighting and mixing strategy.
   int strategySave;

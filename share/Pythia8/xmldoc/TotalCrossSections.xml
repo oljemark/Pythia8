@@ -505,11 +505,26 @@ narrow the rapidity region over which the suppression sets in.
 <h3>Modify the ABMST cross sections</h3> 
  
 The ABMST model provides a detailed description of the total, elastic 
-and single diffractive cross sections. The former two components are 
+and single diffractive cross sections. The former two components 
+by default are 
 accepted as is, while we have allowed alternative shapes for single 
 diffraction, notably to enforce a rapidity gap. The ABMST model does 
 not address double and central diffraction, so we have extended it on 
 our own, as described below. 
+ 
+<p/> 
+Furthermore, for (re)tuning purposes, we have made many of the 
+internal ABMST tuned values available for external modification. 
+The parameter list below therefore is quite extensive, well beyond 
+the need of beginning users. The most important ones are the main 
+(<code>SigmaDiffractive:</code>) <code>ABMSTmodeSD</code>, 
+<code>ABMSTmodeDD</code> and <code>ABMSTmodeCD</code> switches, 
+and the <code>ABMSTdampenGap</code> and <code>ABMSTuseBMin</code> 
+auxiliary ones. Each of these is associated with a few further 
+parameters, offering a second level of variability. A third level 
+begins with <code>ABMSTnPointsTSD</code>, and contains parameters 
+related to the numerical integration statistics, and the rescaling 
+of individual elastic and diffractive components. 
  
 <modepick name="SigmaDiffractive:ABMSTmodeSD" default="1" min="0" max="3"> 
 Setup of single diffraction in the ABMST scenario. 
@@ -520,17 +535,17 @@ Setup of single diffraction in the ABMST scenario.
 <ei>|t|</ei> cut, but instead an exponential fall-off that gives the same 
 integrated diffractive rate and average <ei>|t|</ei> value. In addition 
 the low-mass background term is modified as a combination of a linear and 
-a quadratic term, instead of a qudratic only. 
+a quadratic term, instead of a quadratic only. 
 </option> 
 <option value="2"> Option 0, with a scaling factor of 
 <ei>k * (s / m_p^2)^q</ei>, 
-where <ei>k</ei> is <code>SigmaDiffractive:multSD</code> and 
-<ei>q</ei> is <code>SigmaDiffractive:powSD</code> 
+where <ei>k</ei> is <code>SigmaDiffractive:ABMSTmultSD</code> and 
+<ei>q</ei> is <code>SigmaDiffractive:ABMSTpowSD</code>. 
 </option> 
 <option value="3"> Option 1, with a scaling factor of 
 <ei>k * (s / m_p^2)^q</ei>, 
-where <ei>k</ei> is <code>SigmaDiffractive:multSD</code> and 
-<ei>q</ei> is <code>SigmaDiffractive:powSD</code> 
+where <ei>k</ei> is <code>SigmaDiffractive:ABMSTmultSD</code> and 
+<ei>q</ei> is <code>SigmaDiffractive:ABMSTpowSD</code>. 
 </option> 
 <note>Note:</note> also the <code>SigmaDiffractive:ABMSTdampenGap</code> 
 and <code>SigmaDiffractive:ABMSTuseBMin</code> flags below very much affect 
@@ -571,8 +586,8 @@ choice made for <code>SigmaDiffractive:ABMSTmodeSD</code>.
 </option> 
 <option value="1">The double diffractive 
 cross section can be rescaled by a factor <ei>k * (s / m_p^2)^q</ei>, 
-where <ei>k</ei> is <code>SigmaDiffractive:multDD</code> and 
-<ei>q</ei> is <code>SigmaDiffractive:powDD</code>. 
+where <ei>k</ei> is <code>SigmaDiffractive:ABMSTmultDD</code> and 
+<ei>q</ei> is <code>SigmaDiffractive:ABMSTpowDD</code>. 
 </option> 
 <note>Note:</note> also the <code>SigmaDiffractive:ABMSTdampenGap</code> 
 and <code>SigmaDiffractive:ABMSTuseBMin</code> flags below very much affect 
@@ -607,8 +622,8 @@ choice made for <code>SigmaDiffractive:ABMSTmodeSD</code>.
 </option> 
 <option value="1">In addition to option 0, the central diffractive 
 cross section can be rescaled by a factor <ei>k * (s / m_p^2)^q</ei>, 
-where <ei>k</ei> is <code>SigmaDiffractive:multCD</code> and 
-<ei>q</ei> is <code>SigmaDiffractive:powCD</code>. 
+where <ei>k</ei> is <code>SigmaDiffractive:ABMSTmultCD</code> and 
+<ei>q</ei> is <code>SigmaDiffractive:ABMSTpowCD</code>. 
 </option> 
 <note>Note:</note> also the <code>SigmaDiffractive:ABMSTdampenGap</code> 
 and <code>SigmaDiffractive:ABMSTuseBMin</code> flags below very much affect 
@@ -704,6 +719,108 @@ Assume a minimal fall-off <ei>exp(b_min * (t_1 + t_2))</ei> in the extension
 of the ABMST model to central diffraction, as described above. 
 </parm> 
  
+<p/> 
+The next three settings relate to the numerical precision of 
+diffractive cross sections, and should normally not be touched. 
+ 
+<modeopen name="SigmaDiffractive:ABMSTnPointsTSD" default="200" min="1"> 
+Number of points used for the technical numerical integration over 
+<ei>t</ei> in the ABMST single diffractive cross section. This is a 
+strictly technical integration knob that users should normally not touch. 
+</modeopen> 
+ 
+<modeopen name="SigmaDiffractive:ABMSTnPointsMCDD" default="200000" min="1"> 
+Number of random points used for the technical Monte Carlo integration of 
+the ABMST double diffractive cross section. This is a strictly technical 
+integration knob that users should normally not touch. 
+</modeopen> 
+ 
+<modeopen name="SigmaDiffractive:ABMSTnPointsMCCD" default="200000" min="1"> 
+Number of random points used for the technical Monte Carlo integration of 
+the ABMST central diffractive cross section. This is a strictly technical 
+integration knob that users should normally not touch. 
+</modeopen> 
+ 
+<p/> 
+Though rarely used for event generation, it is nevertheless possible to 
+change the parameters for the hadronic exchange part of the elastic amplitude 
+giving a <ei>-t</ei> dependence of the elastic cross section. This part of the 
+model has a total of 15 parameters. 
+ 
+<p/> 
+The amplitude consists of five parts. A triple-gluon amplitude, essential 
+for describing the dip, and four Regge trajectories: a hard Pomeron, a soft 
+Pomeron, the f2, a2 trajectory and the rho, omega trajectory. 
+ 
+<p/> 
+The triple-gluon amplitude is proportional to <ei>a/t^4</ei> for 
+<ei>abs(t) &gt; abs(t_0)</ei> and <ei>a/t_0^4 * exp(4 - 4*abs(t)/t_1)</ei> for 
+<ei>abs(t) &lt; abs(t_1)</ei>, with <ei>t_0</ei> and 
+<ei>a</ei> as adjustable parameters: 
+ 
+<parm name="SigmaElastic:ABMSTaGluon" default="0.3" min="0" max="1.0"> 
+The triple-gluon <ei>a</ei> parameter. 
+</parm> 
+ 
+<parm name="SigmaElastic:ABMSTtzero" default="5.03" min="0" max="20.0"> 
+The triple-gluon <ei>t_0</ei> parameter. 
+</parm> 
+ 
+<p/> 
+The Regge trajectories are all of the form: 
+<ei>alpha_i = 1 + epsilon_i + alpha'_i * t</ei>, with the following 
+parameters: 
+<pvec name="SigmaElastic:ABMSTepsi" 
+default="{0.106231,0.0972043,-0.510662,-0.302082}" min="-1.0" max="1.0"> 
+The <ei>epsilon_i</ei> parameters. 
+</pvec> 
+ 
+<pvec name="SigmaElastic:ABMSTalphapi" 
+default="{0.0449029, 0.278037, 0.821595, 0.904556}" min="0." max="1."> 
+The <ei>alpha'_i</ei> parameters. 
+</pvec> 
+ 
+<p/> 
+The sub-amplitudes related to the Regge trajectories are individually 
+normalized. 
+<pvec name="SigmaElastic:ABMSTnormXi" 
+default="{228.359, 193.811, 518.686, 10.7843}" min="0."> 
+The normalization constant <ei>X_i</ei> for each Regge amplitude. 
+</pvec> 
+ 
+<p/> 
+The ABMST elastic model also includes a double exchange term, e.g. two 
+Pomerons, which introduces another parameter: 
+<parm name="SigmaElastic:ABMSTlambda" default="0.521223" min="0." max="1."> 
+The parameter <ei>lambda</ei> scales the double exchange term by a factor, 
+to account for neglected higher order terms. 
+</parm> 
+ 
+<p/> 
+A final set of ABMST-related parameters allows a separate rescaling of 
+the six parts that go into diffractive cross sections. 
+ 
+<flag name="SigmaDiffractive:ABMSTrescale" default="off"> 
+allows a further level of modification, by separately rescaling each 
+of the six different components that combine into the single diffractive 
+cross section, see the parameters immediately below this. Double and 
+central diffraction also are affected, since single diffraction 
+expressions are used to construct them. 
+</flag> 
+ 
+<parm name="SigmaDiffractive:ABMSTfacPPP" default="1." min="0."/> 
+<parmmore name="SigmaDiffractive:ABMSTfacPPR" default="1." min="0."/> 
+<parmmore name="SigmaDiffractive:ABMSTfacRRP" default="1." min="0."/> 
+<parmmore name="SigmaDiffractive:ABMSTfacRRR" default="1." min="0."/> 
+<parmmore name="SigmaDiffractive:ABMSTfacPi"  default="1." min="0."/> 
+<parmmore name="SigmaDiffractive:ABMSTfacRes" default="1." min="0."> 
+rescaling factors for the separate components when the switch above is 
+<code>ABMSTrescale = on</code>. The four first terms are named according 
+to the number of pomerons and reggeons in the triple vertex, while 
+<code>facPi</code> is the pion term and <code>facRes</code> 
+the low-mass resonance one. 
+</parmmore> 
+ 
 <h3>Modify the RPP cross sections</h3> 
  
 The RPP approach only addresses total and (differential) elastic 
@@ -718,7 +835,7 @@ owing to the <ei>1/t^2</ei> singularity of <ei>t</ei>-channel photon
 exchange. You can switch on Coulomb corrections below, however, including 
 interference with the conventional strong-interaction term. 
 The own, SaS/DL and MBR models share a common machinery to evaluate the 
-interference <ref>Ber87</ref>, while ABMST and RPP use a slighly 
+interference <ref>Ber87</ref>, while ABMST and RPP use a slightly 
 different expression for the (poorly known) difference in phases 
 between the hadronic and the electromagnetic amplitudes. 
  

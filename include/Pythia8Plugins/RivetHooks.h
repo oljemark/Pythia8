@@ -184,7 +184,6 @@ public:
           toString(iPtr));
         return;
       }
-      rivetMain->merge(*rivetNow);
     }
 
     // Write the data with the main Rivet hook.

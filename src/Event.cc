@@ -136,9 +136,10 @@ int Particle::iTopCopyId( bool simplify) const {
   }
 
   // Else full solution where all mothers are studied.
+  vector<int> mothersTmp;
   for ( ; ; ) {
     int iUpTmp  = 0;
-    vector<int> mothersTmp = (*evtPtr)[iUp].motherList();
+    (*evtPtr)[iUp].motherList(mothersTmp);
     for (unsigned int i = 0; i < mothersTmp.size(); ++i)
     if ( (*evtPtr)[mothersTmp[i]].id() == idSave) {
       if (iUpTmp != 0) return iUp;
@@ -168,9 +169,10 @@ int Particle::iBotCopyId( bool simplify) const {
   }
 
   // Else full solution where all daughters are studied.
+  vector<int> daughtersTmp;
   for ( ; ; ) {
     int iDnTmp  = 0;
-    vector<int> daughtersTmp = (*evtPtr)[iDn].daughterList();
+    (*evtPtr)[iDn].daughterList(daughtersTmp);
     for (unsigned int i = 0; i < daughtersTmp.size(); ++i)
     if ( (*evtPtr)[daughtersTmp[i]].id() == idSave) {
       if (iDnTmp != 0) return iDn;
@@ -188,9 +190,22 @@ int Particle::iBotCopyId( bool simplify) const {
 
 vector<int> Particle::motherList() const {
 
-  // Vector of all the mothers; created empty. Done if no event pointer.
+  // Vector of all the mothers.
   vector<int> motherVec;
-  if (evtPtr == 0) return motherVec;
+  motherList(motherVec);
+  return motherVec;
+
+}
+
+//--------------------------------------------------------------------------
+
+// Fill complete list of mothers in a caller-provided vector.
+
+void Particle::motherList(vector<int>& motherVec) const {
+
+  // Clear the vector and return if no event pointer.
+  motherVec.clear();
+  if (evtPtr == 0) return;
 
   // Special cases in the beginning, where the meaning of zero is unclear.
   int statusSaveAbs = abs(statusSave);
@@ -213,9 +228,6 @@ vector<int> Particle::motherList() const {
     motherVec.push_back( max(mother1Save, mother2Save) );
   }
 
-  // Done.
-  return motherVec;
-
 }
 
 //--------------------------------------------------------------------------
@@ -224,9 +236,22 @@ vector<int> Particle::motherList() const {
 
 vector<int> Particle::daughterList() const {
 
-  // Vector of all the daughters; created empty. Done if no event pointer.
+  // Vector of all the daughters.
   vector<int> daughterVec;
-  if (evtPtr == 0) return daughterVec;
+  daughterList(daughterVec);
+  return daughterVec;
+
+}
+
+//--------------------------------------------------------------------------
+
+// Fill complete list of daughters in a caller-provided vector.
+
+void Particle::daughterList(vector<int>& daughterVec) const {
+
+  // Clear the vector and return if no event pointer.
+  daughterVec.clear();
+  if (evtPtr == 0) return;
 
   // Simple cases: no or one daughter.
   if (daughter1Save == 0 && daughter2Save == 0) ;
@@ -257,9 +282,6 @@ vector<int> Particle::daughterList() const {
     }
   }
 
-  // Done.
-  return daughterVec;
-
 }
 
 //--------------------------------------------------------------------------
@@ -278,10 +300,11 @@ vector<int> Particle::daughterListRecursive() const {
 
   // Recursively add daughters of unstable particles.
   int size = daughterVec.size();
+  vector<int> grandDauVec;
   for (int iDau = 0; iDau < size; ++iDau) {
     Particle& partNow = (*evtPtr)[daughterVec[iDau]];
     if (!partNow.isFinal()) {
-      vector<int> grandDauVec = partNow.daughterList();
+      partNow.daughterList(grandDauVec);
       for (int i = 0; i < int(grandDauVec.size()); ++i)
         daughterVec.push_back( grandDauVec[i] );
       size += grandDauVec.size();
@@ -634,24 +657,17 @@ Event& Event::operator=( const Event& oldEvent) {
   // Do not copy if same.
   if (this != &oldEvent) {
 
-    // Reset all current info in the event.
-    clear();
+    // Copy particle data table first so particle pointers can be restored.
+    particleDataPtr = oldEvent.particleDataPtr;
 
-    // Copy particle data table; needed for individual particles.
-    particleDataPtr     = oldEvent.particleDataPtr;
+    // Copy all event containers in bulk.
+    entry    = oldEvent.entry;
+    junction = oldEvent.junction;
+    hvCols   = oldEvent.hvCols;
 
-    // Copy all the particles one by one.
-    maxColTag = 100;
-    for (int i = 0; i < oldEvent.size(); ++i) append( oldEvent[i] );
-
-    // Copy all the junctions one by one.
-    for (int i = 0; i < oldEvent.sizeJunction(); ++i)
-      appendJunction( oldEvent.getJunction(i) );
-
-    // Copy the Hidden Valley colour information.
-    for (int i = 0; i < int(oldEvent.hvCols.size()); ++i)
-      hvCols.push_back( HVcols(oldEvent.hvCols[i].iHV,
-      oldEvent.hvCols[i].colHV, oldEvent.hvCols[i].acolHV) );
+    // Particles store back pointers to the owning Event without PDE update.
+    for (int i = 0; i < int(entry.size()); ++i)
+      entry[i].setEvtPtr(this, false);
 
     // Copy all other values.
     startColTag          = oldEvent.startColTag;
@@ -775,6 +791,15 @@ void Event::list(bool showScaleAndVertex, bool showMothersAndDaughters,
   for (int i = 0; i < int(entry.size()); ++i) {
     const Particle& pt = entry[i];
 
+    // Set highlighting color if requested (RGB vector must be length 11).
+    if (highlights.size() == 11) {
+      int statusAbs   = pt.statusAbs();
+      int statusGroup = (statusAbs - 11) / 10;
+      if (statusAbs < 11 || statusAbs > 200) statusGroup = 10;
+      else if (statusAbs > 100) statusGroup = 9;
+      cout << "\033[38;5;" << highlights[statusGroup] << "m";
+    }
+
     // Basic line for a particle, always printed.
     cout << setw(6) << i << setw(11) << pt.id() << "  " << left
          << setw(18) << pt.nameWithStatus(18) << right << setw(4)
@@ -827,6 +852,9 @@ void Event::list(bool showScaleAndVertex, bool showMothersAndDaughters,
       pSum += entry[i].p();
       chargeSum += entry[i].charge();
     }
+
+    // Reset color highlighting.
+    if (highlights.size() == 11) cout << "\033[0m";
   }
 
   // Line with sum charge, momentum, energy and invariant mass.

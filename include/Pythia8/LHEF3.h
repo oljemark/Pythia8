@@ -96,9 +96,11 @@ struct XMLTag {
   }
 
   // Scan the given string and return all XML tags found as a vector
-  // of pointers to XMLTag objects.
-  static vector<XMLTag*> findXMLTags(string str,
-    string * leftover = 0) {
+  // of pointers to XMLTag objects. If malformed is supplied, it is set to
+  // true when a tag is found that cannot be parsed at all, so that the
+  // caller may reject the input rather than act on a partial result.
+  static vector<XMLTag*> findXMLTags(const string& str,
+    string* leftover = nullptr, bool* malformed = nullptr) {
     vector<XMLTag*> tags;
     pos_t curr = 0;
 
@@ -178,7 +180,17 @@ struct XMLTag {
         if ( tend == end || tend >= close ) break;
 
         string name = str.substr(curr, tend - curr);
-        curr = str.find("=", curr) + 1;
+
+        // An attribute name must be followed by "=". If it is not, the tag
+        // is malformed. Note that without this check curr would be set to
+        // npos + 1 = 0 below, i.e. the scan would restart from the
+        // beginning of the string and never terminate.
+        pos_t equals = str.find("=", curr);
+        if ( equals == end || equals >= close ) {
+          if ( malformed ) *malformed = true;
+          break;
+        }
+        curr = equals + 1;
 
         // OK now find the beginning and end of the attribute.
         curr = str.find("\"", curr);
@@ -188,9 +200,14 @@ struct XMLTag {
         while ( curr != end && str[curr - 1] == '\\' )
           curr = str.find("\"", curr + 1);
 
-        string value = str.substr(bega, curr == end? end: curr - bega);
+        // An attribute value must be terminated by a second quote. If it is
+        // not, the tag is malformed, and ++curr below would again wrap to 0.
+        if ( curr == end ) {
+          if ( malformed ) *malformed = true;
+          break;
+        }
 
-        tags.back()->attr[name] = value;
+        tags.back()->attr[name] = str.substr(bega, curr - bega);
 
         ++curr;
 
@@ -209,7 +226,8 @@ struct XMLTag {
       }
 
       string leftovers;
-      tags.back()->tags = findXMLTags(tags.back()->contents, &leftovers);
+      tags.back()->tags = findXMLTags(tags.back()->contents, &leftovers,
+        malformed);
       if ( leftovers.find_first_not_of(" \t\n") == end ) leftovers="";
       tags.back()->contents = leftovers;
 
@@ -825,14 +843,16 @@ public:
   // filename: the name of the file to read from.
   //
   Reader(string filenameIn)
-    : filename(filenameIn), intstream(nullptr), file(nullptr), version() {
+    : filename(filenameIn), intstream(nullptr), file(nullptr),
+      readError(false), version() {
     intstream = new igzstream(filename.c_str());
     file = intstream;
     isGood = init();
   }
 
   Reader(istream* is)
-    : filename(""), intstream(nullptr), file(is), version() {
+    : filename(""), intstream(nullptr), file(is), readError(false),
+      version() {
     isGood = init();
   }
 
@@ -910,6 +930,11 @@ public:
 
   // Save if the initialisation worked.
   bool isGood;
+
+  // Set by readEvent() when it fails because the event block is malformed
+  // or truncated, as opposed to the file simply having ended. Reset at the
+  // beginning of each readEvent() call.
+  bool readError;
 
   // XML file version
   int version;

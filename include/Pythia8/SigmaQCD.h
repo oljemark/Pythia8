@@ -393,55 +393,6 @@ public:
 
 //==========================================================================
 
-// Auxiliary class for top threshold corrections, based on
-// V. Fadin,  V. Khoze and T. Sjostrand, Z. Phys. C48 (1990) 613.
-
-class TopThreshold {
-
-public:
-
-  // Trivial constructor and destructor.
-  TopThreshold()  {}
-  ~TopThreshold() {}
-
-  // Initialization setup - read in necessary settings.
-  void setup( int topModelIn, double mtIn, double gammatIn,
-    double gammatGreenIn, double thresholdRegionIn, double singletFracIn,
-    int alphasOrder, double alphasValue);
-
-  // Cross section enhancement factor, combined.
-  double multiplySigmaBy( double mHat, double m3, double m4,
-    double m3Orig, double m4Orig, double eThr);
-
-  // Imaginary part of Green's function for singlet state.
-  double imGreenSin(double eNow, double mtNow);
-
-  // Imaginary part of Green's function for octet state.
-  double imGreenOct(double eNow, double mtNow);
-
-  // Set up information to handle angular distributions in toponium decay.
-  double weightTopDecay( Event& process);
-
-  // Matrix element for decay angles in pseudoscalar toponium-like state.
-  double matrixElementP2bbveevmumu(const Event& work,
-    int ib, int ibb, int ive, int ie, int ivm, int im);
-
-private:
-
-  // Commonly available variables.
-  int    topModel;
-  double mt, gammat, gammatGreen, thrRegion, singletFrac, alps;
-
-  // Need alphaStrong with special scale.
-  AlphaStrong alphas;
-
-  // Debug.
-  Hist wtRat;
-
-};
-
-//==========================================================================
-
 // A derived class for g g -> Q Qbar (Q = c, b or t).
 
 class Sigma2gg2QQbar : public Sigma2Process {
@@ -500,8 +451,7 @@ public:
 
   // Constructor.
   Sigma2qqbar2QQbar(int idIn, int codeIn) : idNew(idIn), codeSave(codeIn),
-    topModel(), topAngles(), topAnglesNow(), nameSave(), sigma(),
-    openFracPair(), qqSingletFrac(), eBegDamp(), eEndDamp() {}
+    topModel(), nameSave(), sigma(), openFracPair(), qqSingletFrac() {}
 
   // Initialize process.
   virtual void initProc();
@@ -529,9 +479,8 @@ public:
 
   // Values stored for process type.
   int    idNew, codeSave, topModel;
-  bool   topAngles, topAnglesNow;
   string nameSave;
-  double sigma, openFracPair, qqSingletFrac, eBegDamp, eEndDamp;
+  double sigma, openFracPair, qqSingletFrac;
 
   // Class for top threshold corrections.
   TopThreshold topThreshold;

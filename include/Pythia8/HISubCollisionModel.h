@@ -613,9 +613,9 @@ private:
       pow(-expm1(-1.0/sig), alpha) : 1.0;
   }
 
-  // Get the minus the log of 1-T0 safely even when T0 close to 1.
-  double log1mT0(double sig) const {
-    double T0 = opacity(sig);
+  // Return minus the log of 1-T0 safely even when T0 close to 1.
+  // Warning, T0 should correspond to opacity(sig).
+  double log1mT0(double sig, double T0) const {
     if ( 1.0 - T0 > 1.0e6*numeric_limits<double>::epsilon() )
         return -log(1.0 - T0);
     if ( opacityMode == 1 )
@@ -624,14 +624,14 @@ private:
       return sigd/sig -log(alpha);
   }
 
-  /// Calculate the overlap of two nucleons.
+  // Calculate the overlap of two nucleons.
   double getOverlap(double b, double rt, double rp) const {
     double sig = M_PI*pow2(rp+rt);
     double T0  = opacity(sig);
     // *** TODO *** check that T0 is never 0.
     rt/=sqrt(2*T0);
     rp/=sqrt(2*T0);
-    return (b>(rt+rp))? 0.0: 2.0*log1mT0(sig)/(2.0*T0 - pow2(T0));
+    return (b>(rt+rp)) ? 0.0 : 2.0*log1mT0(sig, T0)/(2.0*T0 - pow2(T0));
   }
 
   // Return the elastic amplitude for a projectile and target state
@@ -780,8 +780,6 @@ public:
 
   // Virtual destructor.
   virtual ~LogNormalSubCollisionModel() {}
-
-  //virtual SigEst getSig() const override;
 
   // Get the minimum and maximum allowed parameter values for this model.
   vector<double> minParm() const override {

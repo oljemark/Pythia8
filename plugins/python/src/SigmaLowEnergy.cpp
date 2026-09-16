@@ -37,7 +37,6 @@
 #include <Pythia8/SusyCouplings.h>
 #include <Pythia8/UserHooks.h>
 #include <Pythia8/Weights.h>
-#include <cwchar>
 #include <functional>
 #include <ios>
 #include <istream>
@@ -52,30 +51,27 @@
 #include <utility>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::SigmaCombined file:Pythia8/SigmaLowEnergy.h line:135
 struct PyCallBack_Pythia8_SigmaCombined : public Pythia8::SigmaCombined {
 	using Pythia8::SigmaCombined::SigmaCombined;
 
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaCombined *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -84,11 +80,11 @@ struct PyCallBack_Pythia8_SigmaCombined : public Pythia8::SigmaCombined {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaCombined *>(this), "onBeginEvent");
 		if (overload) {
@@ -97,11 +93,11 @@ struct PyCallBack_Pythia8_SigmaCombined : public Pythia8::SigmaCombined {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaCombined *>(this), "onEndEvent");
 		if (overload) {
@@ -110,11 +106,11 @@ struct PyCallBack_Pythia8_SigmaCombined : public Pythia8::SigmaCombined {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaCombined *>(this), "onStat");
 		if (overload) {
@@ -123,11 +119,11 @@ struct PyCallBack_Pythia8_SigmaCombined : public Pythia8::SigmaCombined {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SigmaCombined *>(this), "onStat");
 		if (overload) {
@@ -136,7 +132,7 @@ struct PyCallBack_Pythia8_SigmaCombined : public Pythia8::SigmaCombined {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -146,7 +142,7 @@ struct PyCallBack_Pythia8_SigmaCombined : public Pythia8::SigmaCombined {
 struct PyCallBack_Pythia8_LowEnergyProcess : public Pythia8::LowEnergyProcess {
 	using Pythia8::LowEnergyProcess::LowEnergyProcess;
 
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LowEnergyProcess *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -155,11 +151,11 @@ struct PyCallBack_Pythia8_LowEnergyProcess : public Pythia8::LowEnergyProcess {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LowEnergyProcess *>(this), "onBeginEvent");
 		if (overload) {
@@ -168,11 +164,11 @@ struct PyCallBack_Pythia8_LowEnergyProcess : public Pythia8::LowEnergyProcess {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LowEnergyProcess *>(this), "onEndEvent");
 		if (overload) {
@@ -181,11 +177,11 @@ struct PyCallBack_Pythia8_LowEnergyProcess : public Pythia8::LowEnergyProcess {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LowEnergyProcess *>(this), "onStat");
 		if (overload) {
@@ -194,11 +190,11 @@ struct PyCallBack_Pythia8_LowEnergyProcess : public Pythia8::LowEnergyProcess {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::LowEnergyProcess *>(this), "onStat");
 		if (overload) {
@@ -207,7 +203,7 @@ struct PyCallBack_Pythia8_LowEnergyProcess : public Pythia8::LowEnergyProcess {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -217,7 +213,7 @@ struct PyCallBack_Pythia8_LowEnergyProcess : public Pythia8::LowEnergyProcess {
 struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 	using Pythia8::PartonVertex::PartonVertex;
 
-	void init() override { 
+	void init() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "init");
 		if (overload) {
@@ -226,11 +222,11 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PartonVertex::init();
 	}
-	void vertexBeam(int a0, class std::vector<int, class std::allocator<int> > & a1, class std::vector<int, class std::allocator<int> > & a2, class Pythia8::Event & a3) override { 
+	void vertexBeam(int a0, class std::vector<int> & a1, class std::vector<int> & a2, class Pythia8::Event & a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "vertexBeam");
 		if (overload) {
@@ -239,11 +235,11 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PartonVertex::vertexBeam(a0, a1, a2, a3);
 	}
-	void vertexMPI(int a0, int a1, double a2, class Pythia8::Event & a3) override { 
+	void vertexMPI(int a0, int a1, double a2, class Pythia8::Event & a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "vertexMPI");
 		if (overload) {
@@ -252,11 +248,11 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PartonVertex::vertexMPI(a0, a1, a2, a3);
 	}
-	void vertexFSR(int a0, class Pythia8::Event & a1) override { 
+	void vertexFSR(int a0, class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "vertexFSR");
 		if (overload) {
@@ -265,11 +261,11 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PartonVertex::vertexFSR(a0, a1);
 	}
-	void vertexISR(int a0, class Pythia8::Event & a1) override { 
+	void vertexISR(int a0, class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "vertexISR");
 		if (overload) {
@@ -278,11 +274,11 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PartonVertex::vertexISR(a0, a1);
 	}
-	void vertexHadrons(int a0, class Pythia8::Event & a1) override { 
+	void vertexHadrons(int a0, class Pythia8::Event & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "vertexHadrons");
 		if (overload) {
@@ -291,11 +287,11 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PartonVertex::vertexHadrons(a0, a1);
 	}
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -304,11 +300,11 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "onBeginEvent");
 		if (overload) {
@@ -317,11 +313,11 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "onEndEvent");
 		if (overload) {
@@ -330,11 +326,11 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "onStat");
 		if (overload) {
@@ -343,11 +339,11 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::PartonVertex *>(this), "onStat");
 		if (overload) {
@@ -356,7 +352,7 @@ struct PyCallBack_Pythia8_PartonVertex : public Pythia8::PartonVertex {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -366,11 +362,9 @@ void bind_Pythia8_SigmaLowEnergy(std::function< pybind11::module &(std::string c
 {
 	{ // Pythia8::SigmaCombined file:Pythia8/SigmaLowEnergy.h line:135
 		pybind11::class_<Pythia8::SigmaCombined, std::shared_ptr<Pythia8::SigmaCombined>, PyCallBack_Pythia8_SigmaCombined, Pythia8::PhysicsBase> cl(M("Pythia8"), "SigmaCombined", "");
-		pybind11::handle cl_type = cl;
-
-		cl.def( pybind11::init( [](){ return new Pythia8::SigmaCombined(); }, [](){ return new PyCallBack_Pythia8_SigmaCombined(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Pythia8_SigmaCombined const &o){ return new PyCallBack_Pythia8_SigmaCombined(o); } ) );
 		cl.def( pybind11::init( [](Pythia8::SigmaCombined const &o){ return new Pythia8::SigmaCombined(o); } ) );
+		cl.def( pybind11::init( [](){ return new Pythia8::SigmaCombined(); }, [](){ return new PyCallBack_Pythia8_SigmaCombined(); } ) );
 		cl.def("init", (void (Pythia8::SigmaCombined::*)(class Pythia8::SigmaLowEnergy *)) &Pythia8::SigmaCombined::init, "C++: Pythia8::SigmaCombined::init(class Pythia8::SigmaLowEnergy *) --> void", pybind11::arg("sigmaLowPtrIn"));
 		cl.def("sigmaTotal", [](Pythia8::SigmaCombined &o, int const & a0, int const & a1, double const & a2, double const & a3, double const & a4) -> double { return o.sigmaTotal(a0, a1, a2, a3, a4); }, "", pybind11::arg("id1"), pybind11::arg("id2"), pybind11::arg("eCM12"), pybind11::arg("m1"), pybind11::arg("m2"));
 		cl.def("sigmaTotal", (double (Pythia8::SigmaCombined::*)(int, int, double, double, double, int)) &Pythia8::SigmaCombined::sigmaTotal, "C++: Pythia8::SigmaCombined::sigmaTotal(int, int, double, double, double, int) --> double", pybind11::arg("id1"), pybind11::arg("id2"), pybind11::arg("eCM12"), pybind11::arg("m1"), pybind11::arg("m2"), pybind11::arg("mixLoHi"));
@@ -380,8 +374,6 @@ void bind_Pythia8_SigmaLowEnergy(std::function< pybind11::module &(std::string c
 	}
 	{ // Pythia8::LowEnergyProcess file:Pythia8/LowEnergyProcess.h line:28
 		pybind11::class_<Pythia8::LowEnergyProcess, std::shared_ptr<Pythia8::LowEnergyProcess>, PyCallBack_Pythia8_LowEnergyProcess, Pythia8::PhysicsBase> cl(M("Pythia8"), "LowEnergyProcess", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::LowEnergyProcess(); }, [](){ return new PyCallBack_Pythia8_LowEnergyProcess(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Pythia8_LowEnergyProcess const &o){ return new PyCallBack_Pythia8_LowEnergyProcess(o); } ) );
 		cl.def( pybind11::init( [](Pythia8::LowEnergyProcess const &o){ return new Pythia8::LowEnergyProcess(o); } ) );
@@ -397,8 +389,6 @@ void bind_Pythia8_SigmaLowEnergy(std::function< pybind11::module &(std::string c
 	}
 	{ // Pythia8::PartonSystem file:Pythia8/PartonSystems.h line:22
 		pybind11::class_<Pythia8::PartonSystem, std::shared_ptr<Pythia8::PartonSystem>> cl(M("Pythia8"), "PartonSystem", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::PartonSystem(); } ) );
 		cl.def( pybind11::init( [](Pythia8::PartonSystem const &o){ return new Pythia8::PartonSystem(o); } ) );
 		cl.def_readwrite("hard", &Pythia8::PartonSystem::hard);
@@ -412,8 +402,6 @@ void bind_Pythia8_SigmaLowEnergy(std::function< pybind11::module &(std::string c
 	}
 	{ // Pythia8::PartonSystems file:Pythia8/PartonSystems.h line:42
 		pybind11::class_<Pythia8::PartonSystems, std::shared_ptr<Pythia8::PartonSystems>> cl(M("Pythia8"), "PartonSystems", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::PartonSystems(); } ) );
 		cl.def( pybind11::init( [](Pythia8::PartonSystems const &o){ return new Pythia8::PartonSystems(o); } ) );
 		cl.def("clear", (void (Pythia8::PartonSystems::*)()) &Pythia8::PartonSystems::clear, "C++: Pythia8::PartonSystems::clear() --> void");
@@ -447,14 +435,15 @@ void bind_Pythia8_SigmaLowEnergy(std::function< pybind11::module &(std::string c
 		cl.def("getIndexOfOut", (int (Pythia8::PartonSystems::*)(int, int) const) &Pythia8::PartonSystems::getIndexOfOut, "C++: Pythia8::PartonSystems::getIndexOfOut(int, int) const --> int", pybind11::arg("iSys"), pybind11::arg("iPos"));
 		cl.def("list", (void (Pythia8::PartonSystems::*)() const) &Pythia8::PartonSystems::list, "C++: Pythia8::PartonSystems::list() const --> void");
 		cl.def("popBack", (void (Pythia8::PartonSystems::*)()) &Pythia8::PartonSystems::popBack, "C++: Pythia8::PartonSystems::popBack() --> void");
+		cl.def("assign", (class Pythia8::PartonSystems & (Pythia8::PartonSystems::*)(const class Pythia8::PartonSystems &)) &Pythia8::PartonSystems::operator=, "C++: Pythia8::PartonSystems::operator=(const class Pythia8::PartonSystems &) --> class Pythia8::PartonSystems &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::PartonVertex file:Pythia8/PartonVertex.h line:24
 		pybind11::class_<Pythia8::PartonVertex, std::shared_ptr<Pythia8::PartonVertex>, PyCallBack_Pythia8_PartonVertex, Pythia8::PhysicsBase> cl(M("Pythia8"), "PartonVertex", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::PartonVertex(); }, [](){ return new PyCallBack_Pythia8_PartonVertex(); } ) );
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_PartonVertex const &o){ return new PyCallBack_Pythia8_PartonVertex(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::PartonVertex const &o){ return new Pythia8::PartonVertex(o); } ) );
 		cl.def("init", (void (Pythia8::PartonVertex::*)()) &Pythia8::PartonVertex::init, "C++: Pythia8::PartonVertex::init() --> void");
-		cl.def("vertexBeam", (void (Pythia8::PartonVertex::*)(int, class std::vector<int, class std::allocator<int> > &, class std::vector<int, class std::allocator<int> > &, class Pythia8::Event &)) &Pythia8::PartonVertex::vertexBeam, "C++: Pythia8::PartonVertex::vertexBeam(int, class std::vector<int, class std::allocator<int> > &, class std::vector<int, class std::allocator<int> > &, class Pythia8::Event &) --> void", pybind11::arg("iBeam"), pybind11::arg("iRemn"), pybind11::arg("iInit"), pybind11::arg("event"));
+		cl.def("vertexBeam", (void (Pythia8::PartonVertex::*)(int, class std::vector<int> &, class std::vector<int> &, class Pythia8::Event &)) &Pythia8::PartonVertex::vertexBeam, "C++: Pythia8::PartonVertex::vertexBeam(int, class std::vector<int> &, class std::vector<int> &, class Pythia8::Event &) --> void", pybind11::arg("iBeam"), pybind11::arg("iRemn"), pybind11::arg("iInit"), pybind11::arg("event"));
 		cl.def("vertexMPI", (void (Pythia8::PartonVertex::*)(int, int, double, class Pythia8::Event &)) &Pythia8::PartonVertex::vertexMPI, "C++: Pythia8::PartonVertex::vertexMPI(int, int, double, class Pythia8::Event &) --> void", pybind11::arg("iBeg"), pybind11::arg("nAdd"), pybind11::arg("bNowIn"), pybind11::arg("event"));
 		cl.def("vertexFSR", (void (Pythia8::PartonVertex::*)(int, class Pythia8::Event &)) &Pythia8::PartonVertex::vertexFSR, "C++: Pythia8::PartonVertex::vertexFSR(int, class Pythia8::Event &) --> void", pybind11::arg("iNow"), pybind11::arg("event"));
 		cl.def("vertexISR", (void (Pythia8::PartonVertex::*)(int, class Pythia8::Event &)) &Pythia8::PartonVertex::vertexISR, "C++: Pythia8::PartonVertex::vertexISR(int, class Pythia8::Event &) --> void", pybind11::arg("iNow"), pybind11::arg("event"));

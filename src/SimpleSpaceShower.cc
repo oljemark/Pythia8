@@ -1027,6 +1027,10 @@ void SimpleSpaceShower::pT2nextQCD( double pT2begDip, double pT2endDip) {
   double enhanceNow = 1.;
   string nameNow = "";
   bool canEnhanceETnow = canEnhanceET;
+  bool hasXMotherRescCorr = !dipEndNow->normalRecoil;
+  double xMotherRescCorr = 0.0;
+  if (hasXMotherRescCorr)
+    xMotherRescCorr = (sideA) ? m2Rec / (x2Now * sCM) : m2Rec / (x1Now * sCM);
 
   // Begin evolution loop towards smaller pT values.
   int    loopTinyPDFdau = 0;
@@ -1437,10 +1441,7 @@ void SimpleSpaceShower::pT2nextQCD( double pT2begDip, double pT2endDip) {
     xMother = xDaughter / z;
 
     // Correction to x for massive recoiler from rescattering.
-    if (!dipEndNow->normalRecoil) {
-      if (sideA) xMother += (m2Rec / (x2Now * sCM)) * (1. / z - 1.);
-      else       xMother += (m2Rec / (x1Now * sCM)) * (1. / z - 1.);
-    }
+    if (hasXMotherRescCorr) xMother += xMotherRescCorr * (1. / z - 1.);
     if (pdfMode == 0 && xMother > xMaxAbs) { wt = 0.; continue; }
 
     // Forbidden emission if outside allowed z range for given pT2.
@@ -1455,15 +1456,10 @@ void SimpleSpaceShower::pT2nextQCD( double pT2begDip, double pT2endDip) {
     }
     if (pT2corr < TINYPT2) { wt = 0.; continue; }
 
-    // For emissions in the hard scattering system, optionally veto
-    // emissions not ordered in rapidity (= angle).
-    if ( iSysNow == 0 && doRapidityOrder && dipEndNow->nBranch > 0
-      && pT2 > pow2( (1. - z) / (z * (1. - dipEndNow->zOld)) )
-      * dipEndNow->pT2Old ) { wt = 0.; continue; }
-
-    // For emissions in any secondary scattering system, optionally veto
-    // emissions not ordered in rapidity (= angle).
-    if ( iSysNow != 0 && doRapidityOrderMPI && dipEndNow->nBranch > 0
+    // Optionally veto emissions not ordered in rapidity (= angle).
+    if (dipEndNow->nBranch > 0
+      && ((iSysNow == 0 && doRapidityOrder)
+      || (iSysNow != 0 && doRapidityOrderMPI))
       && pT2 > pow2( (1. - z) / (z * (1. - dipEndNow->zOld)) )
       * dipEndNow->pT2Old ) { wt = 0.; continue; }
 
@@ -2081,7 +2077,9 @@ void SimpleSpaceShower::pT2nextQED( double pT2begDip, double pT2endDip) {
 
         // Parton density of daughter at current scale.
         pdfScale2 = (useFixedFacScale) ? fixedFacScale2 : factorMultFac * pT2;
-        xPDFdaughter = beam.xfISR(iSysNow, idDaughter, xDaughter, pdfScale2);
+        xfModPrepData xfData2 = beam.xfModPrep(iSysNow, pdfScale2);
+        xPDFdaughter = beam.xfISR(iSysNow, idDaughter, xDaughter, pdfScale2,
+          xfData2);
         if (xPDFdaughter < TINYPDF) {
           xPDFdaughter  = TINYPDF;
           hasTinyPDFdau = true;
@@ -2097,7 +2095,6 @@ void SimpleSpaceShower::pT2nextQED( double pT2begDip, double pT2endDip) {
         // Charge-weighted parton density of potential quark mothers.
         xPDFmotherSum  = 0.;
         xPDFmother[10] = 0.;
-        xfModPrepData xfData2 = beam.xfModPrep(iSysNow, pdfScale2);
         for (int i = -nFlavour; i <= nFlavour; ++i) {
           if (i == 0) continue;
            xPDFmother[i+10] = pow2((abs(i+1) % 2 + 1)/3.0)
@@ -2193,15 +2190,16 @@ void SimpleSpaceShower::pT2nextQED( double pT2begDip, double pT2endDip) {
 
       // Evaluation of new daughter PDF
       pdfScale2 = (useFixedFacScale) ? fixedFacScale2 : factorMultFac * pT2;
+      xfModPrepData xfData3 = beam.xfModPrep(iSysNow, pdfScale2);
       double xPDFdaughterNew = beam.xfISR(iSysNow, idDaughter, xDaughter,
-        pdfScale2);
+        pdfScale2, xfData3);
       if (xPDFdaughterNew < TINYPDF) {
         xPDFdaughterNew = TINYPDF;
       }
 
       // Evaluation of new charge-weighted mother PDF
       double xPDFmotherNew = pow2( (abs(idMother+1) % 2 + 1)/3.0 )
-        * beam.xfISR(iSysNow, idMother, xMother, pdfScale2);
+        * beam.xfISR(iSysNow, idMother, xMother, pdfScale2, xfData3);
 
       // Trial weight: divide out old pdf ratio
       wt *= xPDFdaughter / xPDFmother[idMother + 10];
@@ -2350,7 +2348,9 @@ void SimpleSpaceShower::pT2nextWeak( double pT2begDip, double pT2endDip) {
   // Check if daughter estimate is 0, return in that case.
   // Only write warning if u, d or g is the daughter.
   pdfScale2 = (useFixedFacScale) ? fixedFacScale2 : factorMultFac * pT2begDip;
-  double xPDFdaughter = beam.xfISR(iSysNow, idDaughter, xDaughter, pdfScale2);
+  xfModPrepData xfData = beam.xfModPrep(iSysNow, pdfScale2);
+  double xPDFdaughter = beam.xfISR(iSysNow, idDaughter, xDaughter, pdfScale2,
+    xfData);
   if (xPDFdaughter < TINYPDF) {
     if (abs(idDaughter) == 1 || abs(idDaughter) == 2 || abs(idDaughter) == 21)
       loggerPtr->WARNING_MSG("very small PDF");
@@ -2360,7 +2360,6 @@ void SimpleSpaceShower::pT2nextWeak( double pT2begDip, double pT2endDip) {
   // PDF and CKM upper estimate needed for W emission.
   double overEstimatePDFCKM = 0.;
   if (dipEndNow->weakType == 1) {
-    xfModPrepData xfData = beam.xfModPrep(iSysNow, pdfScale2);
     for (unsigned int i = 0; i < possibleMothers.size(); i++)
       overEstimatePDFCKM += coupSMPtr->V2CKMid(idDaughter, possibleMothers[i])
         * beam.xfISR(iSysNow, possibleMothers[i], xDaughter, pdfScale2, xfData)
@@ -3836,10 +3835,10 @@ int SimpleSpaceShower::findMEtype( int iSys, Event& event,
     int idIn2 = event[partonSystemsPtr->getInB(iSys)].id();
 
     // q + gamma -> q + g or g + gamma -> q + qbar.
-    if ( ((abs(idIn1) < 10 || idIn1 == 21)
+    if ( infoPtr->nFinal() < 3 && ( ((abs(idIn1) < 10 || idIn1 == 21)
         && (abs(idIn2) < 20 && abs(idIn2) > 10))
       || ((abs(idIn2) < 10 || idIn2 == 21)
-        && (abs(idIn1) < 20 && abs(idIn1) > 10)) ) MEtype = 4;
+        && (abs(idIn1) < 20 && abs(idIn1) > 10))) ) MEtype = 4;
   }
 
   // Weak ME corrections.
@@ -3866,6 +3865,9 @@ double SimpleSpaceShower::calcMEmax( int MEtype, int idMother,
 
   // Main non-unity case: g(gamma) f -> V f'.
   if (MEtype == 1 && idMother > 20 && idDaughterIn < 20) return 3.;
+
+  // NC DIS corrections, q + gamma -> q + g, and g + gamma -> q + qbar.
+  if (MEtype == 4) return 2.;
 
   // Added a case for t-channel W/Z exchange, since the PS is not an
   // overestimate. This does not help fully, but it should only be small
@@ -3936,11 +3938,10 @@ double SimpleSpaceShower::calcMEcorr(int MEtype, int idMother,
     // q + gamma -> q + g.
     if (idMabs < 10) {
       return ( (pow2(z1) + pow2(x)) + 2. * (1. + 3. * x * z1)
-               * ( (1. - x) * (1. - z1) ) ) / (1. + pow2(x));
+        * (1. - x) * (1. - z1) ) / (1. + pow2(x));
     // g + gamma -> q + qbar.
     } else if (idMabs == 21) {
-      return ( pow2(z1) + pow2(1. - z1) )
-        / z1 + 8. * x * (1. - x) * (1. - z1) / (pow2(x) + pow2(1.-x));
+      return z1 + ( 4. * x * (1. - x) * (1. - z1)) / (pow2(x) + pow2(1. - x));
     }
 
   // Corrections for f -> f' + W/Z (s-channel).

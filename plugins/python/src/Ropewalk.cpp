@@ -39,7 +39,6 @@
 #include <Pythia8/TimeShower.h>
 #include <Pythia8/UserHooks.h>
 #include <Pythia8/Weights.h>
-#include <cwchar>
 #include <functional>
 #include <ios>
 #include <istream>
@@ -54,30 +53,27 @@
 #include <utility>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::RopeFragPars file:Pythia8/Ropewalk.h line:304
 struct PyCallBack_Pythia8_RopeFragPars : public Pythia8::RopeFragPars {
 	using Pythia8::RopeFragPars::RopeFragPars;
 
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopeFragPars *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -86,11 +82,11 @@ struct PyCallBack_Pythia8_RopeFragPars : public Pythia8::RopeFragPars {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopeFragPars *>(this), "onBeginEvent");
 		if (overload) {
@@ -99,11 +95,11 @@ struct PyCallBack_Pythia8_RopeFragPars : public Pythia8::RopeFragPars {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopeFragPars *>(this), "onEndEvent");
 		if (overload) {
@@ -112,11 +108,11 @@ struct PyCallBack_Pythia8_RopeFragPars : public Pythia8::RopeFragPars {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopeFragPars *>(this), "onStat");
 		if (overload) {
@@ -125,11 +121,11 @@ struct PyCallBack_Pythia8_RopeFragPars : public Pythia8::RopeFragPars {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopeFragPars *>(this), "onStat");
 		if (overload) {
@@ -138,7 +134,7 @@ struct PyCallBack_Pythia8_RopeFragPars : public Pythia8::RopeFragPars {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -148,7 +144,7 @@ struct PyCallBack_Pythia8_RopeFragPars : public Pythia8::RopeFragPars {
 struct PyCallBack_Pythia8_FlavourRope : public Pythia8::FlavourRope {
 	using Pythia8::FlavourRope::FlavourRope;
 
-	bool init() override { 
+	bool init() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::FlavourRope *>(this), "init");
 		if (overload) {
@@ -157,11 +153,11 @@ struct PyCallBack_Pythia8_FlavourRope : public Pythia8::FlavourRope {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return FlavourRope::init();
 	}
-	bool doChangeFragPar(class Pythia8::StringFlav * a0, class Pythia8::StringZ * a1, class Pythia8::StringPT * a2, double a3, class std::vector<int, class std::allocator<int> > a4, int a5) override { 
+	bool doChangeFragPar(class Pythia8::StringFlav * a0, class Pythia8::StringZ * a1, class Pythia8::StringPT * a2, double a3, class std::vector<int> a4, int a5) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::FlavourRope *>(this), "doChangeFragPar");
 		if (overload) {
@@ -170,11 +166,11 @@ struct PyCallBack_Pythia8_FlavourRope : public Pythia8::FlavourRope {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return FlavourRope::doChangeFragPar(a0, a1, a2, a3, a4, a5);
 	}
-	bool initEvent(class Pythia8::Event & a0, class Pythia8::ColConfig & a1) override { 
+	bool initEvent(class Pythia8::Event & a0, class Pythia8::ColConfig & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::FlavourRope *>(this), "initEvent");
 		if (overload) {
@@ -183,11 +179,11 @@ struct PyCallBack_Pythia8_FlavourRope : public Pythia8::FlavourRope {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return FlavourRope::initEvent(a0, a1);
 	}
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::FlavourRope *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -196,11 +192,11 @@ struct PyCallBack_Pythia8_FlavourRope : public Pythia8::FlavourRope {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return FlavourRope::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::FlavourRope *>(this), "onBeginEvent");
 		if (overload) {
@@ -209,11 +205,11 @@ struct PyCallBack_Pythia8_FlavourRope : public Pythia8::FlavourRope {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::FlavourRope *>(this), "onEndEvent");
 		if (overload) {
@@ -222,11 +218,11 @@ struct PyCallBack_Pythia8_FlavourRope : public Pythia8::FlavourRope {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::FlavourRope *>(this), "onStat");
 		if (overload) {
@@ -235,11 +231,11 @@ struct PyCallBack_Pythia8_FlavourRope : public Pythia8::FlavourRope {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::FlavourRope *>(this), "onStat");
 		if (overload) {
@@ -248,7 +244,7 @@ struct PyCallBack_Pythia8_FlavourRope : public Pythia8::FlavourRope {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -258,7 +254,7 @@ struct PyCallBack_Pythia8_FlavourRope : public Pythia8::FlavourRope {
 struct PyCallBack_Pythia8_RopewalkShover : public Pythia8::RopewalkShover {
 	using Pythia8::RopewalkShover::RopewalkShover;
 
-	bool stringRepulsion(class Pythia8::Event & a0, class Pythia8::ColConfig & a1) override { 
+	bool stringRepulsion(class Pythia8::Event & a0, class Pythia8::ColConfig & a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopewalkShover *>(this), "stringRepulsion");
 		if (overload) {
@@ -267,11 +263,11 @@ struct PyCallBack_Pythia8_RopewalkShover : public Pythia8::RopewalkShover {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return RopewalkShover::stringRepulsion(a0, a1);
 	}
-	bool init() override { 
+	bool init() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopewalkShover *>(this), "init");
 		if (overload) {
@@ -280,11 +276,11 @@ struct PyCallBack_Pythia8_RopewalkShover : public Pythia8::RopewalkShover {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return StringRepulsionBase::init();
 	}
-	bool hadronRepulsion(class Pythia8::Event & a0) override { 
+	bool hadronRepulsion(class Pythia8::Event & a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopewalkShover *>(this), "hadronRepulsion");
 		if (overload) {
@@ -293,11 +289,11 @@ struct PyCallBack_Pythia8_RopewalkShover : public Pythia8::RopewalkShover {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return StringRepulsionBase::hadronRepulsion(a0);
 	}
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopewalkShover *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -306,11 +302,11 @@ struct PyCallBack_Pythia8_RopewalkShover : public Pythia8::RopewalkShover {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopewalkShover *>(this), "onBeginEvent");
 		if (overload) {
@@ -319,11 +315,11 @@ struct PyCallBack_Pythia8_RopewalkShover : public Pythia8::RopewalkShover {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopewalkShover *>(this), "onEndEvent");
 		if (overload) {
@@ -332,11 +328,11 @@ struct PyCallBack_Pythia8_RopewalkShover : public Pythia8::RopewalkShover {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopewalkShover *>(this), "onStat");
 		if (overload) {
@@ -345,11 +341,11 @@ struct PyCallBack_Pythia8_RopewalkShover : public Pythia8::RopewalkShover {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::RopewalkShover *>(this), "onStat");
 		if (overload) {
@@ -358,7 +354,7 @@ struct PyCallBack_Pythia8_RopewalkShover : public Pythia8::RopewalkShover {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -368,7 +364,7 @@ struct PyCallBack_Pythia8_RopewalkShover : public Pythia8::RopewalkShover {
 struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 	using Pythia8::ShowerModel::ShowerModel;
 
-	bool init(class std::shared_ptr<class Pythia8::Merging> a0, class std::shared_ptr<class Pythia8::MergingHooks> a1, class std::shared_ptr<class Pythia8::PartonVertex> a2, class Pythia8::WeightContainer * a3) override { 
+	bool init(class std::shared_ptr<class Pythia8::Merging> a0, class std::shared_ptr<class Pythia8::MergingHooks> a1, class std::shared_ptr<class Pythia8::PartonVertex> a2, class Pythia8::WeightContainer * a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "init");
 		if (overload) {
@@ -377,11 +373,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		pybind11::pybind11_fail("Tried to call pure virtual function \"ShowerModel::init\"");
 	}
-	bool initAfterBeams() override { 
+	bool initAfterBeams() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "initAfterBeams");
 		if (overload) {
@@ -390,11 +386,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		pybind11::pybind11_fail("Tried to call pure virtual function \"ShowerModel::initAfterBeams\"");
 	}
-	class std::shared_ptr<class Pythia8::TimeShower> getTimeShower() const override { 
+	class std::shared_ptr<class Pythia8::TimeShower> getTimeShower() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "getTimeShower");
 		if (overload) {
@@ -403,11 +399,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<class std::shared_ptr<class Pythia8::TimeShower>> caster;
 				return pybind11::detail::cast_ref<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o));
+			return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o));
 		}
 		return ShowerModel::getTimeShower();
 	}
-	class std::shared_ptr<class Pythia8::TimeShower> getTimeDecShower() const override { 
+	class std::shared_ptr<class Pythia8::TimeShower> getTimeDecShower() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "getTimeDecShower");
 		if (overload) {
@@ -416,11 +412,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<class std::shared_ptr<class Pythia8::TimeShower>> caster;
 				return pybind11::detail::cast_ref<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o));
+			return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o));
 		}
 		return ShowerModel::getTimeDecShower();
 	}
-	class std::shared_ptr<class Pythia8::SpaceShower> getSpaceShower() const override { 
+	class std::shared_ptr<class Pythia8::SpaceShower> getSpaceShower() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "getSpaceShower");
 		if (overload) {
@@ -429,11 +425,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<class std::shared_ptr<class Pythia8::SpaceShower>> caster;
 				return pybind11::detail::cast_ref<class std::shared_ptr<class Pythia8::SpaceShower>>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::SpaceShower>>(std::move(o));
+			return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::SpaceShower>>(std::move(o));
 		}
 		return ShowerModel::getSpaceShower();
 	}
-	class std::shared_ptr<class Pythia8::Merging> getMerging() const override { 
+	class std::shared_ptr<class Pythia8::Merging> getMerging() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "getMerging");
 		if (overload) {
@@ -442,11 +438,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<class std::shared_ptr<class Pythia8::Merging>> caster;
 				return pybind11::detail::cast_ref<class std::shared_ptr<class Pythia8::Merging>>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::Merging>>(std::move(o));
+			return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::Merging>>(std::move(o));
 		}
 		return ShowerModel::getMerging();
 	}
-	class std::shared_ptr<class Pythia8::MergingHooks> getMergingHooks() const override { 
+	class std::shared_ptr<class Pythia8::MergingHooks> getMergingHooks() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "getMergingHooks");
 		if (overload) {
@@ -455,11 +451,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<class std::shared_ptr<class Pythia8::MergingHooks>> caster;
 				return pybind11::detail::cast_ref<class std::shared_ptr<class Pythia8::MergingHooks>>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::MergingHooks>>(std::move(o));
+			return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::MergingHooks>>(std::move(o));
 		}
 		return ShowerModel::getMergingHooks();
 	}
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -468,11 +464,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "onBeginEvent");
 		if (overload) {
@@ -481,11 +477,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "onEndEvent");
 		if (overload) {
@@ -494,11 +490,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "onStat");
 		if (overload) {
@@ -507,11 +503,11 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ShowerModel *>(this), "onStat");
 		if (overload) {
@@ -520,7 +516,7 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -530,7 +526,7 @@ struct PyCallBack_Pythia8_ShowerModel : public Pythia8::ShowerModel {
 struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel {
 	using Pythia8::SimpleShowerModel::SimpleShowerModel;
 
-	bool init(class std::shared_ptr<class Pythia8::Merging> a0, class std::shared_ptr<class Pythia8::MergingHooks> a1, class std::shared_ptr<class Pythia8::PartonVertex> a2, class Pythia8::WeightContainer * a3) override { 
+	bool init(class std::shared_ptr<class Pythia8::Merging> a0, class std::shared_ptr<class Pythia8::MergingHooks> a1, class std::shared_ptr<class Pythia8::PartonVertex> a2, class Pythia8::WeightContainer * a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "init");
 		if (overload) {
@@ -539,11 +535,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SimpleShowerModel::init(a0, a1, a2, a3);
 	}
-	bool initAfterBeams() override { 
+	bool initAfterBeams() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "initAfterBeams");
 		if (overload) {
@@ -552,11 +548,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<bool> caster;
 				return pybind11::detail::cast_ref<bool>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<bool>(std::move(o));
+			return pybind11::detail::cast_safe<bool>(std::move(o));
 		}
 		return SimpleShowerModel::initAfterBeams();
 	}
-	class std::shared_ptr<class Pythia8::TimeShower> getTimeShower() const override { 
+	class std::shared_ptr<class Pythia8::TimeShower> getTimeShower() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "getTimeShower");
 		if (overload) {
@@ -565,11 +561,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<class std::shared_ptr<class Pythia8::TimeShower>> caster;
 				return pybind11::detail::cast_ref<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o));
+			return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o));
 		}
 		return ShowerModel::getTimeShower();
 	}
-	class std::shared_ptr<class Pythia8::TimeShower> getTimeDecShower() const override { 
+	class std::shared_ptr<class Pythia8::TimeShower> getTimeDecShower() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "getTimeDecShower");
 		if (overload) {
@@ -578,11 +574,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<class std::shared_ptr<class Pythia8::TimeShower>> caster;
 				return pybind11::detail::cast_ref<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o));
+			return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::TimeShower>>(std::move(o));
 		}
 		return ShowerModel::getTimeDecShower();
 	}
-	class std::shared_ptr<class Pythia8::SpaceShower> getSpaceShower() const override { 
+	class std::shared_ptr<class Pythia8::SpaceShower> getSpaceShower() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "getSpaceShower");
 		if (overload) {
@@ -591,11 +587,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<class std::shared_ptr<class Pythia8::SpaceShower>> caster;
 				return pybind11::detail::cast_ref<class std::shared_ptr<class Pythia8::SpaceShower>>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::SpaceShower>>(std::move(o));
+			return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::SpaceShower>>(std::move(o));
 		}
 		return ShowerModel::getSpaceShower();
 	}
-	class std::shared_ptr<class Pythia8::Merging> getMerging() const override { 
+	class std::shared_ptr<class Pythia8::Merging> getMerging() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "getMerging");
 		if (overload) {
@@ -604,11 +600,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<class std::shared_ptr<class Pythia8::Merging>> caster;
 				return pybind11::detail::cast_ref<class std::shared_ptr<class Pythia8::Merging>>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::Merging>>(std::move(o));
+			return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::Merging>>(std::move(o));
 		}
 		return ShowerModel::getMerging();
 	}
-	class std::shared_ptr<class Pythia8::MergingHooks> getMergingHooks() const override { 
+	class std::shared_ptr<class Pythia8::MergingHooks> getMergingHooks() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "getMergingHooks");
 		if (overload) {
@@ -617,11 +613,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<class std::shared_ptr<class Pythia8::MergingHooks>> caster;
 				return pybind11::detail::cast_ref<class std::shared_ptr<class Pythia8::MergingHooks>>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::MergingHooks>>(std::move(o));
+			return pybind11::detail::cast_safe<class std::shared_ptr<class Pythia8::MergingHooks>>(std::move(o));
 		}
 		return ShowerModel::getMergingHooks();
 	}
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -630,11 +626,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "onBeginEvent");
 		if (overload) {
@@ -643,11 +639,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "onEndEvent");
 		if (overload) {
@@ -656,11 +652,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "onStat");
 		if (overload) {
@@ -669,11 +665,11 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::SimpleShowerModel *>(this), "onStat");
 		if (overload) {
@@ -682,7 +678,7 @@ struct PyCallBack_Pythia8_SimpleShowerModel : public Pythia8::SimpleShowerModel 
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -692,23 +688,21 @@ void bind_Pythia8_Ropewalk(std::function< pybind11::module &(std::string const &
 {
 	{ // Pythia8::RopeFragPars file:Pythia8/Ropewalk.h line:304
 		pybind11::class_<Pythia8::RopeFragPars, std::shared_ptr<Pythia8::RopeFragPars>, PyCallBack_Pythia8_RopeFragPars, Pythia8::PhysicsBase> cl(M("Pythia8"), "RopeFragPars", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::RopeFragPars(); }, [](){ return new PyCallBack_Pythia8_RopeFragPars(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Pythia8_RopeFragPars const &o){ return new PyCallBack_Pythia8_RopeFragPars(o); } ) );
 		cl.def( pybind11::init( [](Pythia8::RopeFragPars const &o){ return new Pythia8::RopeFragPars(o); } ) );
 		cl.def("init", (bool (Pythia8::RopeFragPars::*)()) &Pythia8::RopeFragPars::init, "C++: Pythia8::RopeFragPars::init() --> bool");
-		cl.def("getEffectiveParameters", (class std::map<std::string, double, struct std::less<std::string >, class std::allocator<struct std::pair<const std::string, double> > > (Pythia8::RopeFragPars::*)(double)) &Pythia8::RopeFragPars::getEffectiveParameters, "C++: Pythia8::RopeFragPars::getEffectiveParameters(double) --> class std::map<std::string, double, struct std::less<std::string >, class std::allocator<struct std::pair<const std::string, double> > >", pybind11::arg("h"));
+		cl.def("getEffectiveParameters", (class std::map<std::string, double> (Pythia8::RopeFragPars::*)(double)) &Pythia8::RopeFragPars::getEffectiveParameters, "C++: Pythia8::RopeFragPars::getEffectiveParameters(double) --> class std::map<std::string, double>", pybind11::arg("h"));
 		cl.def("assign", (class Pythia8::RopeFragPars & (Pythia8::RopeFragPars::*)(const class Pythia8::RopeFragPars &)) &Pythia8::RopeFragPars::operator=, "C++: Pythia8::RopeFragPars::operator=(const class Pythia8::RopeFragPars &) --> class Pythia8::RopeFragPars &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::FlavourRope file:Pythia8/Ropewalk.h line:374
 		pybind11::class_<Pythia8::FlavourRope, std::shared_ptr<Pythia8::FlavourRope>, PyCallBack_Pythia8_FlavourRope, Pythia8::FragmentationModifierBase> cl(M("Pythia8"), "FlavourRope", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init<class Pythia8::Ropewalk &>(), pybind11::arg("rwIn") );
 
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_FlavourRope const &o){ return new PyCallBack_Pythia8_FlavourRope(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::FlavourRope const &o){ return new Pythia8::FlavourRope(o); } ) );
 		cl.def("init", (bool (Pythia8::FlavourRope::*)()) &Pythia8::FlavourRope::init, "C++: Pythia8::FlavourRope::init() --> bool");
-		cl.def("doChangeFragPar", (bool (Pythia8::FlavourRope::*)(class Pythia8::StringFlav *, class Pythia8::StringZ *, class Pythia8::StringPT *, double, class std::vector<int, class std::allocator<int> >, int)) &Pythia8::FlavourRope::doChangeFragPar, "C++: Pythia8::FlavourRope::doChangeFragPar(class Pythia8::StringFlav *, class Pythia8::StringZ *, class Pythia8::StringPT *, double, class std::vector<int, class std::allocator<int> >, int) --> bool", pybind11::arg("flavPtr"), pybind11::arg("zPtr"), pybind11::arg("pTPtr"), pybind11::arg("m2Had"), pybind11::arg("iParton"), pybind11::arg("endId"));
+		cl.def("doChangeFragPar", (bool (Pythia8::FlavourRope::*)(class Pythia8::StringFlav *, class Pythia8::StringZ *, class Pythia8::StringPT *, double, class std::vector<int>, int)) &Pythia8::FlavourRope::doChangeFragPar, "C++: Pythia8::FlavourRope::doChangeFragPar(class Pythia8::StringFlav *, class Pythia8::StringZ *, class Pythia8::StringPT *, double, class std::vector<int>, int) --> bool", pybind11::arg("flavPtr"), pybind11::arg("zPtr"), pybind11::arg("pTPtr"), pybind11::arg("m2Had"), pybind11::arg("iParton"), pybind11::arg("endId"));
 		cl.def("setEnhancement", (void (Pythia8::FlavourRope::*)(double)) &Pythia8::FlavourRope::setEnhancement, "C++: Pythia8::FlavourRope::setEnhancement(double) --> void", pybind11::arg("hIn"));
 		cl.def("setEventPtr", (void (Pythia8::FlavourRope::*)(class Pythia8::Event &)) &Pythia8::FlavourRope::setEventPtr, "C++: Pythia8::FlavourRope::setEventPtr(class Pythia8::Event &) --> void", pybind11::arg("event"));
 		cl.def("initEvent", (bool (Pythia8::FlavourRope::*)(class Pythia8::Event &, class Pythia8::ColConfig &)) &Pythia8::FlavourRope::initEvent, "C++: Pythia8::FlavourRope::initEvent(class Pythia8::Event &, class Pythia8::ColConfig &) --> bool", pybind11::arg("event"), pybind11::arg("colConfig"));
@@ -717,18 +711,17 @@ void bind_Pythia8_Ropewalk(std::function< pybind11::module &(std::string const &
 	}
 	{ // Pythia8::RopewalkShover file:Pythia8/Ropewalk.h line:457
 		pybind11::class_<Pythia8::RopewalkShover, std::shared_ptr<Pythia8::RopewalkShover>, PyCallBack_Pythia8_RopewalkShover, Pythia8::StringRepulsionBase> cl(M("Pythia8"), "RopewalkShover", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init<class Pythia8::Ropewalk &>(), pybind11::arg("rwIn") );
 
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_RopewalkShover const &o){ return new PyCallBack_Pythia8_RopewalkShover(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::RopewalkShover const &o){ return new Pythia8::RopewalkShover(o); } ) );
 		cl.def("stringRepulsion", (bool (Pythia8::RopewalkShover::*)(class Pythia8::Event &, class Pythia8::ColConfig &)) &Pythia8::RopewalkShover::stringRepulsion, "C++: Pythia8::RopewalkShover::stringRepulsion(class Pythia8::Event &, class Pythia8::ColConfig &) --> bool", pybind11::arg("event"), pybind11::arg("colConfig"));
 		cl.def("assign", (class Pythia8::RopewalkShover & (Pythia8::RopewalkShover::*)(const class Pythia8::RopewalkShover &)) &Pythia8::RopewalkShover::operator=, "C++: Pythia8::RopewalkShover::operator=(const class Pythia8::RopewalkShover &) --> class Pythia8::RopewalkShover &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::ShowerModel file:Pythia8/ShowerModel.h line:28
 		pybind11::class_<Pythia8::ShowerModel, std::shared_ptr<Pythia8::ShowerModel>, PyCallBack_Pythia8_ShowerModel, Pythia8::PhysicsBase> cl(M("Pythia8"), "ShowerModel", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new PyCallBack_Pythia8_ShowerModel(); } ) );
+		cl.def(pybind11::init<PyCallBack_Pythia8_ShowerModel const &>());
 		cl.def_readwrite("timesPtr", &Pythia8::ShowerModel::timesPtr);
 		cl.def_readwrite("timesDecPtr", &Pythia8::ShowerModel::timesDecPtr);
 		cl.def_readwrite("spacePtr", &Pythia8::ShowerModel::spacePtr);
@@ -745,17 +738,15 @@ void bind_Pythia8_Ropewalk(std::function< pybind11::module &(std::string const &
 	}
 	{ // Pythia8::SimpleShowerModel file:Pythia8/ShowerModel.h line:81
 		pybind11::class_<Pythia8::SimpleShowerModel, std::shared_ptr<Pythia8::SimpleShowerModel>, PyCallBack_Pythia8_SimpleShowerModel, Pythia8::ShowerModel> cl(M("Pythia8"), "SimpleShowerModel", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::SimpleShowerModel(); }, [](){ return new PyCallBack_Pythia8_SimpleShowerModel(); } ) );
+		cl.def( pybind11::init( [](PyCallBack_Pythia8_SimpleShowerModel const &o){ return new PyCallBack_Pythia8_SimpleShowerModel(o); } ) );
+		cl.def( pybind11::init( [](Pythia8::SimpleShowerModel const &o){ return new Pythia8::SimpleShowerModel(o); } ) );
 		cl.def("init", (bool (Pythia8::SimpleShowerModel::*)(class std::shared_ptr<class Pythia8::Merging>, class std::shared_ptr<class Pythia8::MergingHooks>, class std::shared_ptr<class Pythia8::PartonVertex>, class Pythia8::WeightContainer *)) &Pythia8::SimpleShowerModel::init, "C++: Pythia8::SimpleShowerModel::init(class std::shared_ptr<class Pythia8::Merging>, class std::shared_ptr<class Pythia8::MergingHooks>, class std::shared_ptr<class Pythia8::PartonVertex>, class Pythia8::WeightContainer *) --> bool", pybind11::arg("mergPtrIn"), pybind11::arg("mergHooksPtrIn"), pybind11::arg("partonVertexPtrIn"), pybind11::arg("weightContainerPtrIn"));
 		cl.def("initAfterBeams", (bool (Pythia8::SimpleShowerModel::*)()) &Pythia8::SimpleShowerModel::initAfterBeams, "C++: Pythia8::SimpleShowerModel::initAfterBeams() --> bool");
 		cl.def("assign", (class Pythia8::SimpleShowerModel & (Pythia8::SimpleShowerModel::*)(const class Pythia8::SimpleShowerModel &)) &Pythia8::SimpleShowerModel::operator=, "C++: Pythia8::SimpleShowerModel::operator=(const class Pythia8::SimpleShowerModel &) --> class Pythia8::SimpleShowerModel &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::SpaceDipoleEnd file:Pythia8/SimpleSpaceShower.h line:22
 		pybind11::class_<Pythia8::SpaceDipoleEnd, std::shared_ptr<Pythia8::SpaceDipoleEnd>> cl(M("Pythia8"), "SpaceDipoleEnd", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::SpaceDipoleEnd(); } ), "doc" );
 		cl.def( pybind11::init( [](int const & a0){ return new Pythia8::SpaceDipoleEnd(a0); } ), "doc" , pybind11::arg("systemIn"));
 		cl.def( pybind11::init( [](int const & a0, int const & a1){ return new Pythia8::SpaceDipoleEnd(a0, a1); } ), "doc" , pybind11::arg("systemIn"), pybind11::arg("sideIn"));

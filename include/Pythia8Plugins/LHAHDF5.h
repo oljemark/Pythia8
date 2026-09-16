@@ -58,7 +58,7 @@ class LHAupH5 : public Pythia8::LHAup {
     // Check if version supports multiweights. (Starting from 1.0.0.)
     hasMultiWts = !(versionSav=="0.1.0" || versionSav=="0.2.0");
     cout << " LHAupH5 file format "
-         << (hasMultiWts?"supports":"does not support")
+         << (hasMultiWts ? "supports" : "does not support")
          << " multi-weights." << endl;
 
     hid_t dspace;
@@ -84,6 +84,10 @@ class LHAupH5 : public Pythia8::LHAup {
       auto attr_keys = weights.listAttributeNames();
       Attribute a = weights.getAttribute(attr_keys[0]);
       a.read(weightsNames);
+    // Files without multiweight support still carry exactly one weight
+    // per event (see mkEventHeader()).
+    } else {
+      weightsNames = vector<string>(1, "nominal");
     }
 
     // This reads and holds the information of readSize events,
@@ -203,10 +207,11 @@ bool LHAupH5::setEvent(int idProc) {
     weightsSav = evtHeader.weights;
     nTrialsSav   += evtHeader.trials;
   }
-  // Communicate event weight to Info.
+  // Communicate event weight to Info. Only book the LHEF weight vector
+  // when the file actually carries distinct extra weights.
   infoPtr->weightContainerPtr->setWeightNominal( weightsSav[0] );
-  infoPtr->weightContainerPtr->weightsLHEF.bookVectors(
-    weightsSav, weightsNames );
+  if ( weightsSav.size() > 1 ) infoPtr->weightContainerPtr->
+    weightsLHEF.bookVectors( weightsSav, weightsNames );
 
   xwgtupSave = weightsSav[0];
   idprupSave = evtHeader.pid;
@@ -233,6 +238,11 @@ bool LHAupH5::setEvent(int idProc) {
         ptcl.lifetime, ptcl.spin, scalein);
   }
   nupSave = nPtcls;
+  // Flavour and x values of hard-process initiators.
+  int id1In= particles[0].id;
+  int id2In= particles[1].id;
+  double x1In= (eBeamASave > 0.) ? particles[0].e / eBeamASave : 0.;
+  double x2In= (eBeamBSave > 0.) ? particles[1].e / eBeamBSave : 0.;
 
   // Scale setting
   scalesNow.clear();
@@ -240,6 +250,8 @@ bool LHAupH5::setEvent(int idProc) {
   scalesNow.mur   = evtHeader.rscale;
   scalesNow.mups  = evtHeader.scale;
   infoPtr->scales = &scalesNow;
+  setIdX( id1In, id2In, x1In, x2In);
+  setPdf( id1In, id2In, x1In, x2In, scalesNow.muf, 0., 0., true);
   ++nRead;
   return true;
 

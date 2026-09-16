@@ -5,7 +5,7 @@
 
 // Authors: Stefan Prestel, Christian T. Preuss
 
-// Contact: Christian T. Preuss <christian.preuss@uni-goettingen.de>
+// Contact: Christian T. Preuss <preuss@physik.rwth-aachen.de>
 
 // Keywords: matching; merging; leading order; NLO; powheg; madgraph; aMC@NLO;
 //           CKKW-L; UMEPS; NL3; UNLOPS; FxFx; MLM;
@@ -27,6 +27,7 @@
 
 #include "Pythia8/Pythia.h"
 #include "Pythia8Plugins/InputParser.h"
+#include "Pythia8Plugins/CombineMatchingInput.h"
 #if defined(HEPMC3)
 #include "Pythia8Plugins/HepMC3.h"
 #elif defined(HEPMC2)
@@ -35,14 +36,6 @@
 #ifdef HDF5
 #include "Pythia8Plugins/LHAHDF5v2.h"
 #endif
-
-// Include UserHooks for POWHEG vetos.
-#include "Pythia8Plugins/PowhegHooks.h"
-// Include UserHooks for Jet Matching.
-#include "Pythia8Plugins/CombineMatchingInput.h"
-// Include UserHooks for randomly choosing between integrated and
-// non-integrated treatment for unitarised merging.
-#include "Pythia8Plugins/aMCatNLOHooks.h"
 
 using namespace Pythia8;
 
@@ -122,7 +115,6 @@ int main(int argc, char** argv){
   }
 
   // Set UserHooks for POWHEG vetos.
-  shared_ptr<PowhegHooks> powhegHooks;
   int nVetoISR = 0, nVetoFSR = 0;
   if (doPowhegMatching) {
     // Set showers to start at the kinematical limit.
@@ -139,8 +131,8 @@ int main(int argc, char** argv){
     if (pwhgVetoModeMPI > 0)
       pythia.readString("MultipartonInteractions:pTmaxMatch = 2");
     // Load POWHEG hooks.
-    powhegHooks = make_shared<PowhegHooks>();
-    pythia.setUserHooksPtr((UserHooksPtr)powhegHooks);
+    pythia.readString("Init:plugins += {libpythia8powhegHooks.so"
+      "::PowhegHooks}");
   }
 
   // Set UserHooks for jet matching.
@@ -148,21 +140,9 @@ int main(int argc, char** argv){
   if (doJetMatching) jetMatchingHook.setHook(pythia);
 
   // Set UserHooks for unitarised merging schemes.
-  shared_ptr<amcnlo_unitarised_interface> mergingHooks;
   if (doMerging) {
-    // Store merging scheme.
-    int scheme = ( pythia.flag("Merging:doUMEPSTree")
-                || pythia.flag("Merging:doUMEPSSubt")) ?
-                1 :
-                 ( ( pythia.flag("Merging:doUNLOPSTree")
-                || pythia.flag("Merging:doUNLOPSSubt")
-                || pythia.flag("Merging:doUNLOPSLoop")
-                || pythia.flag("Merging:doUNLOPSSubtNLO")) ?
-                2 :
-                0 );
-    // Load merging hooks.
-    mergingHooks = make_shared<amcnlo_unitarised_interface>(scheme);
-    pythia.setUserHooksPtr(mergingHooks);
+    pythia.readString("Init:plugins += {libpythia8amcatnloHooks.so"
+      "::aMCatNLOHooks}");
   }
 
   // Get number of subruns and information about external events.
@@ -238,8 +218,8 @@ int main(int argc, char** argv){
 
       // For POWHEG matching, count vetos.
       if (doPowhegMatching) {
-        nVetoISR += powhegHooks->getNISRveto();
-        nVetoFSR += powhegHooks->getNFSRveto();
+        nVetoISR += pythia.settings.mode("POWHEG:nISRveto");
+        nVetoFSR += pythia.settings.mode("POWHEG:nFSRveto");
       }
 
       // Get event weight.

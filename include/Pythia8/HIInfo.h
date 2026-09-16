@@ -372,8 +372,8 @@ public:
 
   // A user-supplied method of adding a diffractive excitation event
   // to another event, optionally connecting their colours.
-  bool canAddNucleonExcitation() const { return false; }
-  bool addNucleonExcitation(EventInfo &, EventInfo &, bool) const {
+  virtual bool canAddNucleonExcitation() const { return false; }
+  virtual bool addNucleonExcitation(EventInfo &, EventInfo &, bool) const {
     return false; }
 
   // A user supplied wrapper around the Pythia::forceHadronLevel()

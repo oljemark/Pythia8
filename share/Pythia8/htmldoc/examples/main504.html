@@ -3,7 +3,7 @@
 <link rel="shortcut icon" href="../pythia32.gif"/></head><body><h2>main504</h2>
 Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 <pre><code class="language-c++">
-// main505.cc is a part of the PYTHIA event generator.
+// main504.cc is a part of the PYTHIA event generator.
 // Copyright (C) 2026 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
@@ -14,8 +14,6 @@ Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 
 // Kaluza-Klein gamma*/Z resonances in TeV-sized extra dimensions.
 
-#include &lt;assert.h&gt;
-#include &lt;time.h&gt;
 #include &lt;sstream&gt;
 
 #include &quot;Pythia8/Pythia.h&quot;
@@ -102,14 +100,9 @@ int main() {
 
   vector&lt;int&gt; moms;
 
-  // Measure the cpu runtime.
-  clock_t start, stop;
-  double t = 0.0;
-  // Depending on operating system, either of lines below gives warning.
-  //assert((start = clock()) != -1); // Start timer; clock_t signed.
-  //assert((start = clock()) != -1u); // Start timer; clock_t unsigned.
-  // Simpler option, not using assert.
-  start = clock();
+  // Measure the CPU runtime.
+  Timer timer(Timer::CPU);
+  timer.start();
 
   // Begin event loop. Generate event. Skip if error. List first one.
   for (int iEvent = 0 ; iEvent &lt; 500 ; ++iEvent) {
@@ -146,16 +139,13 @@ int main() {
     if(iEvent%10 == 0) cout &lt;&lt; &quot;Event: &quot; &lt;&lt; iEvent &lt;&lt; endl &lt;&lt; std::flush;
   } // end for iEvent&lt;500
 
-  // Done. Print results.
-  stop = clock(); // Stop timer
-  t = (double) (stop-start)/CLOCKS_PER_SEC;
-
+  // Done. Stop the timer and get the CPU runtime in seconds. Print results.
+  timer.stop();
   pythia.stat();
   cout &lt;&lt; mHatHisto;
   cout &lt;&lt; pTmuHisto;
-
   cout &lt;&lt; &quot;\n&quot; &lt;&lt; &quot;|----------------------------------------|&quot; &lt;&lt; endl;
-  cout &lt;&lt; &quot;| CPU Runtime = &quot; &lt;&lt; t &lt;&lt; &quot; sec&quot; &lt;&lt; endl;
+  cout &lt;&lt; &quot;| CPU Runtime = &quot; &lt;&lt; timer.elapsed() / 1000. &lt;&lt; &quot; sec&quot; &lt;&lt; endl;
   cout &lt;&lt; &quot;|----------------------------------------|&quot; &lt;&lt; &quot;\n&quot; &lt;&lt; endl;
 
   return 0;

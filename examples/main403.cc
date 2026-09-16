@@ -12,7 +12,6 @@
 // in a command file, and measures the run time (eg to compare options
 // and/or compare with Pythia).
 
-#include <time.h>
 #include "Pythia8/Pythia.h"
 using namespace Pythia8;
 
@@ -59,10 +58,9 @@ int main() {
   Hist ytt(modelName + " y(tt)", 20, -5.0, 5.0, false, true);
   Hist mtt(modelName + " m(tt)", 100, 0.0, 1000.0, false, true);
 
-  // Measure the cpu runtime.
-  clock_t start, stop;
-  double t = 0.0;
-  start = clock();
+  // Measure the CPU runtime.
+  Timer timer(Timer::CPU);
+  timer.start();
 
   // Begin event loop. Generate event. Abort if error.
   for (int iEvent = 0; iEvent < nEvent; ++iEvent) {
@@ -108,9 +106,8 @@ int main() {
 
   }
 
-  // End of event loop. Determine run time.
-  stop = clock(); // Stop timer
-  t = (double) (stop-start)/CLOCKS_PER_SEC;
+  // End of event loop. Determine run time in seconds.
+  timer.stop();
 
   // Statistics. Histograms.
   pythia.stat();
@@ -120,7 +117,7 @@ int main() {
 
   // Print runtime
   cout << "\n" << "|----------------------------------------|" << endl;
-  cout << "| CPU Runtime = " << t << " sec" << endl;
+  cout << "| CPU Runtime = " << timer.elapsed() / 1000. << " sec" << endl;
   cout << "|----------------------------------------|" << "\n" << endl;
 
   // Done.

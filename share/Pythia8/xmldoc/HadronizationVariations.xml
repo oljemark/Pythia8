@@ -47,7 +47,7 @@ Same as for <ei>z</ei> but now for the sampling of <ei>p_T</ei> which
 depends on <code>ptSigma</code>. 
 </flag> 
  
-<parm name="VariationFrag:zHead" default="1.0" 
+<parm name="VariationFrag:zHead" default="5.0" 
 min="0.0" max="100.0"> 
 When sampling variations in <ei>z</ei> the maximum for the sampling 
 function can be increased by this multiplicatve factor. This parameter 

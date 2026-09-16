@@ -70,7 +70,7 @@ $(LOCAL_INCLUDE)/Pythia8%.h: $(TOP_INCLUDE)/Pythia8%.h
 
 # Build the objects.
 $(LOCAL_TMP)/%.o: $(LOCAL_SRC)/%.cpp $(LOCAL_TMP)/version
-	$(eval OBJ_COMMON=-MD $(CXX_COMMON) -Iinclude\
+	$(eval OBJ_COMMON=-MD $(CXX_COMMON) -DNOPLUGIN -Iinclude\
 	 -Iinclude/$(shell $(LOCAL_TMP)/version) $(PYTHON_INCLUDE)\
 	 -w -fpermissive)
 	$(CXX) $< -o $@ -c $(OBJ_COMMON)
@@ -81,8 +81,7 @@ $(TOP_LIB)/pythia8.so: $(PYTHIA) $(HEADERS) $(OBJECTS)
 	 $(CXX_SONAME)$(notdir $@) $(LIB_COMMON) -L$(TOP_LIB)\
 	 -Wl,-rpath,$(PREFIX_LIB) -lpythia8 -Wl,-undefined,dynamic_lookup
 	@mkdir -p $(TOP_LIB)/python
-	if test -e $(LOCAL_EXTRA)/*.py; then\
-	 cp $(LOCAL_EXTRA)/*.py $(TOP_LIB)/python; fi
+	find $(LOCAL_EXTRA) -name '*.py' -exec cp {} $(TOP_LIB)/python/ \;
 
 # Clean.
 clean:

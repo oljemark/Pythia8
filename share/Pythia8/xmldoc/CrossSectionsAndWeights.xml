@@ -133,6 +133,19 @@ printed by <code>Info::sigmaGen()</code> includes the effect of CKKW-L
 merging. 
 </flag> 
  
+<h3>NLO Matching Weights</h3> 
+ 
+<method name="double Info::weightNLO()"> 
+NLO matching weight assigned to the current event if reweighting by 
+inclusive NLO K-factor is attempted. If the flag 
+<code>SigmaProcess:reweightNLO</code> is on, this weight is included 
+in the unweighting process, the final event weight 
+<code>Info::weight()</code> is unity, and the cross section printed by 
+<code>Info::sigmaGen()</code> includes the effect of inclusive NLO 
+matching.  If no NLO corrections are included, this method returns 
+unity. 
+</method> 
+ 
 <h3>User Hooks Weight</h3> 
  
 <method name="virtual double UserHooks::biasedSelectionWeight()"> 

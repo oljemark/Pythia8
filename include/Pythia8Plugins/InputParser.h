@@ -34,7 +34,7 @@ public:
   // aliases: Aliases for the help flag.
   InputParser(string usage = "", vector<string> examples = {},
     string extra = "", ostream* stream = &cout,
-    string optName = "h", set<string> aliases = {"-help","H"}) :
+    string optName = "h", set<string> aliases = {"-help"}) :
     usageText(usage), examplesText(examples), extraText(extra),
       streamPtr(stream), helpFlag(optName) {
     add(optName, "false", "Show this help message and exit.", aliases);
@@ -157,7 +157,7 @@ public:
             "Unknown option '" + string(arg) + "'.\n");
           return false;
         }
-      }
+      } else arguments.push_back(arg);
     }
     return true;
   }
@@ -224,6 +224,9 @@ public:
     return values;
   }
 
+  // Method to get all arguments that are not options.
+  vector<string> getArguments() {return arguments;}
+
   // Method to generate the help text for all options.
   // Returns a formatted string containing the help text.
   const string help() const {
@@ -284,6 +287,8 @@ private:
   map<string, OptionInfo> options;
   // Map to store aliases with aliases as keys and option names as values.
   map<string, string> aliasMap;
+  // Vector of other arguments.
+  vector<string> arguments;
 
 };
 

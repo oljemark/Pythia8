@@ -192,7 +192,7 @@ int main() {
   double mNow, eNow, sigmaN, sigmaO, sigmaAr, sigmaPick, sigmaNow,
          zNow, dzds, logR, zNext;
   Vec4   pNow, vDec, vInt, dirNow, pSumAll[nCases];
-  clock_t timeBeg, timeEnd;
+  Timer timer(Timer::CPU);
   double timeSec[nCases];
 
   // Pythia object for performing individual Angantyr collisions with
@@ -242,7 +242,7 @@ int main() {
 
   // Begin loop over two beam options.
   for (int iCase = 0; iCase < nCases; ++iCase) {
-    timeBeg = clock();
+    timer.start();
     cout << "Starting " << legend[iCase] << " run..." << endl;
     ProgressLog logger(nEvent);
 
@@ -654,8 +654,8 @@ int main() {
       // End loops over events and over Angantyr/PythiaCascade cases.
       pSumAll[iCase] += pSumEvt;
     }
-    timeEnd = clock();
-    timeSec[iCase] = double(timeEnd - timeBeg) / double(CLOCKS_PER_SEC);
+    timer.stop();
+    timeSec[iCase] = timer.elapsed() / 1000.;
   }
 
 //========== Final statistics and histograms ==========

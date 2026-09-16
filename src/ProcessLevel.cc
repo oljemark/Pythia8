@@ -1235,7 +1235,7 @@ void ProcessLevel::findJunctions( Event& junEvent) {
     // final state. Also ignore shower branchings.
     if (abs(junEvent[i].status()) <= 21 || junEvent[i].colType() == 0
       || (junEvent[i].status() >= 40 && junEvent[i].status() <= 59) ) continue;
-    vector<int> motherList   = junEvent[i].motherList();
+    vector<int> motherList = junEvent[i].motherList();
     int iMot1 = motherList[0];
     vector<int> sisterList = junEvent[iMot1].daughterList();
 

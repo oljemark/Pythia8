@@ -34,15 +34,26 @@ bool PythiaParallel::readFile(string fileName, bool warn, int subrun) {
     return false;
   }
   // Hand over real work to next method.
-  return readFile( is, warn, subrun);
+  return readFile(is, warn, subrun);
 }
 
 bool PythiaParallel::readFile(istream& is, bool warn, int subrun) {
-  if (isInit) {
-    logger.ERROR_MSG("cannot change further settings after constructing");
-    return false;
+  bool valid = true;
+  // Read in the stream for reuse.
+  std::stringstream ss;
+  ss << is.rdbuf();
+  // Loop over the Pythia instances.
+  for (int i = 0; i < (int)pythiaObjects.size(); ++i) {
+    if (pythiaObjects[i] == nullptr) continue;
+    // Return to the beginning of the stream and read the file.
+    ss.clear();
+    ss.seekg(0);
+    valid = valid && pythiaObjects[i]->readFile(ss, warn, subrun);
   }
-  return pythiaHelper.readFile(is, warn, subrun);
+  // Return to the beginining of the stream and read the file.
+  ss.clear();
+  ss.seekg(0);
+  return valid && pythiaHelper.readFile(ss, warn, subrun);
 }
 
 //--------------------------------------------------------------------------
@@ -103,15 +114,17 @@ bool PythiaParallel::init(function<bool(Pythia*)> customInit) {
   }
 
   // Create instances in parallel.
-  pythiaObjects = vector<unique_ptr<Pythia>>(numThreads);
+  pythiaObjects.resize(numThreads);
 
   vector<thread> initThreads;
   bool initSuccess = true;
 
   for (int iPythia = 0; iPythia < numThreads; iPythia += 1) {
     initThreads.emplace_back([=, &seeds, &initSuccess]() {
-      Pythia* pythiaPtr = new Pythia(settings, particleData, false);
-      pythiaObjects[iPythia] = unique_ptr<Pythia>(pythiaPtr);
+      if (pythiaObjects[iPythia] == nullptr) {
+        Pythia* pythiaPtr = new Pythia(settings, particleData, false);
+        pythiaObjects[iPythia] = unique_ptr<Pythia>(pythiaPtr);
+      }
       pythiaObjects[iPythia]->infoPrivate.mutexPtr = &mainMutex;
       pythiaObjects[iPythia]->settings.flag("Print:quiet", true);
       pythiaObjects[iPythia]->settings.flag("Random:setSeed", true);

@@ -9,30 +9,27 @@
 #include <string>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::Particle file:Pythia8/Event.h line:32
 struct PyCallBack_Pythia8_Particle : public Pythia8::Particle {
 	using Pythia8::Particle::Particle;
 
-	int index() const override { 
+	int index() const override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::Particle *>(this), "index");
 		if (overload) {
@@ -41,7 +38,7 @@ struct PyCallBack_Pythia8_Particle : public Pythia8::Particle {
 				static pybind11::detail::override_caster_t<int> caster;
 				return pybind11::detail::cast_ref<int>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<int>(std::move(o));
+			return pybind11::detail::cast_safe<int>(std::move(o));
 		}
 		return Particle::index();
 	}
@@ -51,8 +48,6 @@ void bind_Pythia8_Event(std::function< pybind11::module &(std::string const &nam
 {
 	{ // Pythia8::Particle file:Pythia8/Event.h line:32
 		pybind11::class_<Pythia8::Particle, std::shared_ptr<Pythia8::Particle>, PyCallBack_Pythia8_Particle> cl(M("Pythia8"), "Particle", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::Particle(); }, [](){ return new PyCallBack_Pythia8_Particle(); } ) );
 		cl.def( pybind11::init( [](int const & a0){ return new Pythia8::Particle(a0); }, [](int const & a0){ return new PyCallBack_Pythia8_Particle(a0); } ), "doc");
 		cl.def( pybind11::init( [](int const & a0, int const & a1){ return new Pythia8::Particle(a0, a1); }, [](int const & a0, int const & a1){ return new PyCallBack_Pythia8_Particle(a0, a1); } ), "doc");
@@ -94,7 +89,8 @@ void bind_Pythia8_Event(std::function< pybind11::module &(std::string const &nam
 		cl.def_readwrite("tauSave", &Pythia8::Particle::tauSave);
 		cl.def_readwrite("pdePtr", &Pythia8::Particle::pdePtr);
 		cl.def("assign", (class Pythia8::Particle & (Pythia8::Particle::*)(const class Pythia8::Particle &)) &Pythia8::Particle::operator=, "C++: Pythia8::Particle::operator=(const class Pythia8::Particle &) --> class Pythia8::Particle &", pybind11::return_value_policy::reference, pybind11::arg("pt"));
-		cl.def("setEvtPtr", (void (Pythia8::Particle::*)(class Pythia8::Event *)) &Pythia8::Particle::setEvtPtr, "C++: Pythia8::Particle::setEvtPtr(class Pythia8::Event *) --> void", pybind11::arg("evtPtrIn"));
+		cl.def("setEvtPtr", [](Pythia8::Particle &o, class Pythia8::Event * a0) -> void { return o.setEvtPtr(a0); }, "", pybind11::arg("evtPtrIn"));
+		cl.def("setEvtPtr", (void (Pythia8::Particle::*)(class Pythia8::Event *, bool)) &Pythia8::Particle::setEvtPtr, "C++: Pythia8::Particle::setEvtPtr(class Pythia8::Event *, bool) --> void", pybind11::arg("evtPtrIn"), pybind11::arg("updatePDEPtr"));
 		cl.def("setPDEPtr", [](Pythia8::Particle &o) -> void { return o.setPDEPtr(); }, "");
 		cl.def("setPDEPtr", (void (Pythia8::Particle::*)(class std::shared_ptr<class Pythia8::ParticleDataEntry>)) &Pythia8::Particle::setPDEPtr, "C++: Pythia8::Particle::setPDEPtr(class std::shared_ptr<class Pythia8::ParticleDataEntry>) --> void", pybind11::arg("pdePtrIn"));
 		cl.def("id", (void (Pythia8::Particle::*)(int)) &Pythia8::Particle::id, "C++: Pythia8::Particle::id(int) --> void", pybind11::arg("idIn"));
@@ -195,11 +191,13 @@ void bind_Pythia8_Event(std::function< pybind11::module &(std::string const &nam
 		cl.def("iTopCopyId", (int (Pythia8::Particle::*)(bool) const) &Pythia8::Particle::iTopCopyId, "C++: Pythia8::Particle::iTopCopyId(bool) const --> int", pybind11::arg("simplify"));
 		cl.def("iBotCopyId", [](Pythia8::Particle const &o) -> int { return o.iBotCopyId(); }, "");
 		cl.def("iBotCopyId", (int (Pythia8::Particle::*)(bool) const) &Pythia8::Particle::iBotCopyId, "C++: Pythia8::Particle::iBotCopyId(bool) const --> int", pybind11::arg("simplify"));
-		cl.def("motherList", (class std::vector<int, class std::allocator<int> > (Pythia8::Particle::*)() const) &Pythia8::Particle::motherList, "C++: Pythia8::Particle::motherList() const --> class std::vector<int, class std::allocator<int> >");
-		cl.def("daughterList", (class std::vector<int, class std::allocator<int> > (Pythia8::Particle::*)() const) &Pythia8::Particle::daughterList, "C++: Pythia8::Particle::daughterList() const --> class std::vector<int, class std::allocator<int> >");
-		cl.def("daughterListRecursive", (class std::vector<int, class std::allocator<int> > (Pythia8::Particle::*)() const) &Pythia8::Particle::daughterListRecursive, "C++: Pythia8::Particle::daughterListRecursive() const --> class std::vector<int, class std::allocator<int> >");
-		cl.def("sisterList", [](Pythia8::Particle const &o) -> std::vector<int, class std::allocator<int> > { return o.sisterList(); }, "");
-		cl.def("sisterList", (class std::vector<int, class std::allocator<int> > (Pythia8::Particle::*)(bool) const) &Pythia8::Particle::sisterList, "C++: Pythia8::Particle::sisterList(bool) const --> class std::vector<int, class std::allocator<int> >", pybind11::arg("traceTopBot"));
+		cl.def("motherList", (class std::vector<int> (Pythia8::Particle::*)() const) &Pythia8::Particle::motherList, "C++: Pythia8::Particle::motherList() const --> class std::vector<int>");
+		cl.def("daughterList", (class std::vector<int> (Pythia8::Particle::*)() const) &Pythia8::Particle::daughterList, "C++: Pythia8::Particle::daughterList() const --> class std::vector<int>");
+		cl.def("motherList", (void (Pythia8::Particle::*)(class std::vector<int> &) const) &Pythia8::Particle::motherList, "C++: Pythia8::Particle::motherList(class std::vector<int> &) const --> void", pybind11::arg("motherVec"));
+		cl.def("daughterList", (void (Pythia8::Particle::*)(class std::vector<int> &) const) &Pythia8::Particle::daughterList, "C++: Pythia8::Particle::daughterList(class std::vector<int> &) const --> void", pybind11::arg("daughterVec"));
+		cl.def("daughterListRecursive", (class std::vector<int> (Pythia8::Particle::*)() const) &Pythia8::Particle::daughterListRecursive, "C++: Pythia8::Particle::daughterListRecursive() const --> class std::vector<int>");
+		cl.def("sisterList", [](Pythia8::Particle const &o) -> std::vector<int> { return o.sisterList(); }, "");
+		cl.def("sisterList", (class std::vector<int> (Pythia8::Particle::*)(bool) const) &Pythia8::Particle::sisterList, "C++: Pythia8::Particle::sisterList(bool) const --> class std::vector<int>", pybind11::arg("traceTopBot"));
 		cl.def("isAncestor", (bool (Pythia8::Particle::*)(int) const) &Pythia8::Particle::isAncestor, "C++: Pythia8::Particle::isAncestor(int) const --> bool", pybind11::arg("iAncestor"));
 		cl.def("statusHepMC", (int (Pythia8::Particle::*)() const) &Pythia8::Particle::statusHepMC, "C++: Pythia8::Particle::statusHepMC() const --> int");
 		cl.def("isFinalPartonLevel", (bool (Pythia8::Particle::*)() const) &Pythia8::Particle::isFinalPartonLevel, "C++: Pythia8::Particle::isFinalPartonLevel() const --> bool");

@@ -106,7 +106,8 @@ bool MiniStringFragmentation::fragment(int iSub, ColConfig& colConfig,
 
     // If a diquark is involved we need to create two hadrons.
     else {
-      if (minijunction2two( nTryMass, event)) return true;
+      if (minijunction2two( nTryMass, event))
+        return colConfig[iSub].isHandled = true;
       loggerPtr->ERROR_MSG("minijunction2Hadrons failed");
       return false;
     }
@@ -124,21 +125,27 @@ bool MiniStringFragmentation::fragment(int iSub, ColConfig& colConfig,
   int nTryFirst = (isDiff) ? NTRYDIFFRACTIVE : nTryMass;
 
   // First try to produce two hadrons from the system.
-  if (ministring2two( nTryFirst, event, false)) return true;
+  if (ministring2two( nTryFirst, event, false))
+    return colConfig[iSub].isHandled = true;
 
   // If this fails, then form one hadron and shuffle momentum.
-  if (ministring2one( iSub, colConfig, event, false)) return true;
+  if (ministring2one( iSub, colConfig, event, false))
+    return colConfig[iSub].isHandled = true;
 
   // If also this fails, try to produce two hadrons with lower mass.
-  if (ministring2two( NTRYLASTRESORT, event, true)) return true;
+  if (ministring2two( NTRYLASTRESORT, event, true))
+    return colConfig[iSub].isHandled = true;
 
   // If also this fails, try to form a hadron with lower mass.
-  if (ministring2one( iSub, colConfig, event, true)) return true;
+  if (ministring2one( iSub, colConfig, event, true))
+    return colConfig[iSub].isHandled = true;
 
   // For low-energy systems may also search for a single hadron recoiler.
   if (!systemRecoil) {
-    if (ministring2one( iSub, colConfig, event, false, false)) return true;
-    if (ministring2one( iSub, colConfig, event, true,  false)) return true;
+    if (ministring2one( iSub, colConfig, event, false, false))
+      return colConfig[iSub].isHandled = true;
+    if (ministring2one( iSub, colConfig, event, true,  false))
+      return colConfig[iSub].isHandled = true;
   }
 
   // Else complete failure.

@@ -252,6 +252,9 @@ NNLO rather than NLO.
 <br/><code>option </code><strong> 24</strong> : SU (2021). This is a simple parameterization based on the 
 same approach as other SU21 sets. It is intended for comparison with those 
 sets, but is too inaccurate to use for practical applications.    
+<br/><code>option </code><strong> 25</strong> : PDF4LHC21 NNLO combination of CT18, MSHT20 and 
+NNPDF3.1, central member of the Monte Carlo replicas [<a href="Bibliography.html#refBal22" target="page">Bal22</a>]. 
+   
 <br/><code>option </code><strong> LHAPDF5:set/member</strong> : Use an external LHAPDF set 
 where <code>set</code> is the name of the set to use 
 and <code>member</code> is the member of the set to use. The value 
@@ -401,7 +404,7 @@ beam B.
  
 <a name="anchor12"></a>
 <p/><code>mode&nbsp; </code><strong> PDF:nPDFSetA &nbsp;</strong> 
- (<code>default = <strong>1</strong></code>; <code>minimum = 0</code>; <code>maximum = 3</code>)<br/>
+ (<code>default = <strong>1</strong></code>; <code>minimum = 0</code>; <code>maximum = 4</code>)<br/>
 The nuclear modication to be used for beam A if enabled with the switch above. 
 <br/><code>option </code><strong> 0</strong> :  Only Isospin effect.   
 <br/><code>option </code><strong> 1</strong> :  EPS09, LO [<a href="Bibliography.html#refEsk09" target="page">Esk09</a>].   
@@ -416,16 +419,22 @@ found from
 <a href="https://research.hip.fi/qcdtheory/nuclear-pdfs/epps16/"> 
 here</a>. 
    
+<br/><code>option </code><strong> 4</strong> :  EPPS21, NLO [<a href="Bibliography.html#refEsk21" target="page">Esk21</a>]. The grid files can be 
+found from 
+<a href="https://research.hip.fi/qcdtheory/nuclear-pdfs/epps21/"> 
+here</a>. 
+   
    
  
 <a name="anchor13"></a>
 <p/><code>mode&nbsp; </code><strong> PDF:nPDFSetB &nbsp;</strong> 
- (<code>default = <strong>1</strong></code>; <code>minimum = 0</code>; <code>maximum = 3</code>)<br/>
+ (<code>default = <strong>1</strong></code>; <code>minimum = 0</code>; <code>maximum = 4</code>)<br/>
 The nuclear modication to be used for beam B. Same options as above. 
 <br/><code>option </code><strong> 0</strong> :  Only Isospin effect.   
 <br/><code>option </code><strong> 1</strong> :  EPS09, LO.    
 <br/><code>option </code><strong> 2</strong> :  EPS09, NLO.   
 <br/><code>option </code><strong> 3</strong> :  EPPS16, NLO.   
+<br/><code>option </code><strong> 4</strong> :  EPPS21, NLO.   
    
  
 <a name="anchor14"></a>

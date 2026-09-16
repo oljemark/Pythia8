@@ -170,15 +170,15 @@ public:
 private:
 
   // Return gamma element for the helicity matrix element.
-  complex calculateGammaME(vector<int>);
+  complex calculateGammaME(const vector<int>&);
 
   // Return Z/Z' element for helicity matrix element.
-  complex calculateZME(vector<int>, double, double, double, double,
+  complex calculateZME(const vector<int>&, double, double, double, double,
     double, double);
 
   // Return Z/Z' element, assuming massless fermions.
-  complex calculateZMEMasslessFermions(vector<int>, double, double, double,
-    double, double, double);
+  complex calculateZMEMasslessFermions(const vector<int>&, double, double,
+    double, double, double, double);
 
   // Return the Z' vector or axial coupling for a fermion.
   double zpCoupling(int id, string type);

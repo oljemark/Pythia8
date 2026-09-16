@@ -532,9 +532,9 @@ public:
 
   // Constructor.
   Sigma2ffbar2FFbarsgmZ(int idIn, int codeIn) : idNew(idIn),
-    codeSave(codeIn), gmZmode(), isPhysical(), ef(), vf(), af(), mRes(),
-    GammaRes(), m2Res(), GamMRat(), thetaWRat(), mr(), betaf(), cosThe(),
-    gamProp(), intProp(), resProp(), openFracPair() {}
+    codeSave(codeIn), gmZmode(), topModel(), isPhysical(), ef(), vf(), af(),
+    mRes(), GammaRes(), m2Res(), GamMRat(), thetaWRat(), mr(), betaf(),
+    cosThe(), gamProp(), intProp(), resProp(), openFracPair() {}
 
   // Initialize process.
   virtual void initProc();
@@ -562,12 +562,18 @@ public:
 
 private:
 
+  // Constants: override SigmaProcess::MASSMARGIN for threshold studies.
+  static const double MASSMARGIN;
+
   // Values stored for process type. Z parameters for propagator.
-  int    idNew, codeSave, gmZmode;
+  int    idNew, codeSave, gmZmode, topModel;
   string nameSave;
   bool   isPhysical;
   double ef, vf, af, mRes, GammaRes, m2Res, GamMRat, thetaWRat,
          mr, betaf, cosThe, gamProp, intProp, resProp, openFracPair;
+
+  // Class for top threshold corrections.
+  TopThreshold topThreshold;
 
 };
 

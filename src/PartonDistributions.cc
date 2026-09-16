@@ -6,8 +6,8 @@
 // Function definitions (not found in the header) for the PDF, LHAPDF,
 // LHAGrid1, GRV94L, CTEQ5L,  MSTWpdf, CTEQ6pdf, ProtonPoint, GRVpiL, PomFix,
 // PomH1FitAB, // PomH1Jets, PomHISASD, Lepton, LeptonPoint, NeutrinoPoint,
-// CJKL, Lepton2gamma, GammaPoint, EPAexternal, nPDF, Isopsin, EPS09 and
-// EPPS16 classes.
+// CJKL, Lepton2gamma, GammaPoint, EPAexternal, nPDF, Isopsin, EPS09,
+// EPPS16 and EPPS21 classes.
 
 #include "Pythia8/PartonDistributions.h"
 
@@ -446,6 +446,8 @@ void LHAGrid1::init(string pdfWord, string pdfdataPath, Logger* loggerPtr) {
     + "GJR07LOproton.dat";
   else if (pdfSet == 24) dataFile = pdfdataPath
     + "SU21proton.dat";
+  else if (pdfSet == 25) dataFile = pdfdataPath
+    + "PDF4LHC21_mc_0000.dat";
 
   // Pomeron PDFs, currently the GKG18 sets.
   else if (pdfSet == 112) dataFile = pdfdataPath
@@ -3964,328 +3966,218 @@ void nPDF::xfUpdate(int id, double x, double Q2) {
 
 //==========================================================================
 
-// Nuclear modifications of the PDFs from EPS09 fit, either LO or NLO.
-// Ref: K.J. Eskola, H. Paukkunen and C.A. Salgado, JHEP 0904 (2009) 065.
-// Links to grids files of different nuclei can be found from
-// https://research.hip.fi/qcdtheory/nuclear-pdfs/
+// Nuclear modifications from the EPS09, EPPS16 and EPPS21 PDF sets.
+//
+// EPS09:  K.J. Eskola, H. Paukkunen and C.A. Salgado,
+//         JHEP 0904 (2009) 065 [arXiv:0902.4154]
+// EPPS16: K.J. Eskola, P. Paakkinen, H. Paukkunen and C.A. Salgado,
+//         Eur.Phys.J. C77 (2017) no.3, 163 [arXiv:1612.05741]
+// EPPS21: K.J. Eskola, P. Paakkinen, H. Paukkunen and C.A. Salgado,
+//         Eur.Phys.J. C82 (2022) no.5, 413 [arXiv:2112.12462]
 
-// Constants related to the fit.
-const double EPS09::Q2MIN = 1.69;
-const double EPS09::Q2MAX = 1000000.;
-const double EPS09::XMIN  = 0.000001;
-const double EPS09::XMAX  = 1.;
-const double EPS09::XCUT  = 0.1;
-const int EPS09::XSTEPS   = 50;
-const int EPS09::Q2STEPS  = 50;
+// PDF set configurations, matching Set enum order.
+// {name, file, nFlav, nMem, nQ2Steps, nX, nXSteps, nIntQ2, nIntX,
+//  q2Min, q2Max, xMin, xMax, xCut, xShift,
+//  ixOff, ixOffSea, clamp, iQ2C, iQ2B, mB, clip}
 
-//--------------------------------------------------------------------------
-
-// Initialize EPS09 nPDFs with given order (1=LO, 2=NLO) and error set.
-
-void EPS09::init(int iOrderIn, int iSetIn, string pdfdataPath) {
-
-  // Save the order and error set number.
-  iOrder = iOrderIn;
-  iSet   = iSetIn;
-
-  // Select which data file to read for current fit.
-  if (pdfdataPath[ pdfdataPath.length() - 1 ] != '/') pdfdataPath += "/";
-  stringstream fileSS;
-
-  if (iOrder == 1) fileSS << pdfdataPath << "EPS09LOR_" << getA();
-  if (iOrder == 2) fileSS << pdfdataPath << "EPS09NLOR_" << getA();
-  string gridFile = fileSS.str();
-
-  // Open grid file.
-  ifstream fileStream( gridFile.c_str() );
-  if (!fileStream.good()) {
-    printErr("EPS09::init", "did not find grid file " + gridFile, loggerPtr);
-    isSet = false;
-    return;
-  }
-
-  // Dump additional grid information here.
-  double dummy;
-
-  // Read in the interpolation grid.
-  for (int i = 0;i < 31; ++i) {
-    for (int j = 0;j < 51; ++j) {
-      fileStream >> dummy;
-      for (int k = 0;k < 51; ++k) {
-        for (int l = 0;l < 8; ++l) fileStream >> grid[i][j][k][l];
-      }
-    }
-  }
-  fileStream.close();
-
-}
+const EPPS::Cfg EPPS::CFGS[EPPS::Set::NSET] = {
+  {"EPS09 LO", "EPS09LOR_", 8, 31, 50, 51, 50, 3, 4,
+    1.69, 1000000., 0.000001, 1., 0.1, 0.,
+    5, 8, false, 0, 0, 0., true},
+  {"EPS09 NLO", "EPS09NLOR_", 8, 31, 50, 51, 50, 3, 4,
+   1.69, 1000000., 0.000001, 1., 0.1, 0.,
+   5, 8, false, 0, 0, 0., true},
+  {"EPPS16 NLO", "EPPS16NLOR_", 8, 41, 30, 80, 80, 4, 4,
+   1.69, 100000000., 0.0000001, 1., 0., 2.,
+   4, 6, true, 2, 17, 4.75, false},
+  {"EPPS21 NLO", "EPPS21NLOR_", 8, 107, 30, 250, 250, 4, 4,
+   1.69, 100000000., 0.0000001, 1., 0., 5.,
+   4, 4, true, 2, 17, 4.75, false}
+};
 
 //--------------------------------------------------------------------------
 
 // Interpolation from the grid.
 
-void EPS09::rUpdate(int , double x, double Q2) {
+void EPPS::rUpdate(int, double x, double Q2) {
 
-  // Freeze the x and Q2 values if outside the grid.
-  if( x  < XMIN )  x  = XMIN;
-  if( x  > XMAX )  x  = XMAX;
-  if( Q2 < Q2MIN ) Q2 = Q2MIN;
-  if( Q2 > Q2MAX ) Q2 = Q2MAX;
+  // The modifications in the flavour order used by the grid files.
+  double* rPtr[8] = {&ruv, &rdv, &ru, &rd, &rs, &rc, &rb, &rg};
 
-  // Calculate the position in log(log Q^2) grid:
-  double dQ2 = Q2STEPS * log( log(Q2) / log(Q2MIN) )
-    / log( log(Q2MAX) / log(Q2MIN) );
-  int iQ2 = int(dQ2);
-
-  // Set the Q2 index to interval [1,...,49].
-  if      ( iQ2 < 1 )           iQ2 = 1;
-  else if ( iQ2 > Q2STEPS - 1 ) iQ2 = Q2STEPS - 1;
-
-  // Calculate the three nearest points in log(log Q^2) grid.
-  double Q2Near[3];
-  Q2Near[0] = iQ2 - 1;
-  Q2Near[1] = iQ2 + 0;
-  Q2Near[2] = iQ2 + 1;
-
-  // Interpolate the grid values.
-  for ( int iFlavour = 0; iFlavour < 8; ++iFlavour) {
-
-    // Calculate the position in log(x) or x grid.
-    int ix;
-    int nxlog = XSTEPS/2;
-    int nxlin = XSTEPS - nxlog;
-    if ( x <= XCUT ) ix = int( nxlog * log(x / XMIN) / log( XCUT / XMIN ) );
-    else ix = int( ( x - XCUT ) * nxlin / ( XMAX - XCUT ) + nxlog );
-
-    // Set the x-index to interval [1,...,48].
-    if ( ix < 1 ) ix = 1;
-
-    // Do not use the last grid points for interpolation.
-    if ( iFlavour == 0 || iFlavour == 1 || iFlavour == 7)
-      if ( ix >= XSTEPS - 4 ) ix = XSTEPS - 4;
-    if ( iFlavour > 1 && iFlavour < 7 )
-      if ( ix >= XSTEPS - 7 ) ix = XSTEPS - 7;
-
-    // Calculate the four nearest points in log-x or lin-x grid.
-    double xNear[4];
-    for(int i = 0;i < 4;i++) {
-      if ( ix - 1 + i < nxlog ) {
-        xNear[i] = XMIN * exp( ( double( ix - 1 + i ) / nxlog )
-          * log( XCUT / XMIN ) );
-      } else {
-        xNear[i] = ( double( ix - 1 + i - nxlog) / nxlin )
-          * ( XMAX - XCUT ) + XCUT;
-      }
-    }
-
-    // Grid points used for interpolation.
-    double xGrid[4];
-    double Q2Grid[3];
-
-    // Read in the relevant values from table and interpolate in x.
-    for ( int j = 0; j < 3; ++j) {
-      xGrid[0]  = grid[iSet - 1][iQ2 - 1 + j][ix - 1][iFlavour];
-      xGrid[1]  = grid[iSet - 1][iQ2 - 1 + j][ix][iFlavour];
-      xGrid[2]  = grid[iSet - 1][iQ2 - 1 + j][ix + 1][iFlavour];
-      xGrid[3]  = grid[iSet - 1][iQ2 - 1 + j][ix + 2][iFlavour];
-      Q2Grid[j] = polInt(xGrid, xNear, 4, x);
-    }
-
-    // Interpolate in Q2.
-    double result = polInt(Q2Grid, Q2Near, 3, dQ2);
-
-    // Save the values.
-    if (iFlavour == 0) ruv = max(result, 0.);
-    if (iFlavour == 1) rdv = max(result, 0.);
-    if (iFlavour == 2) ru  = max(result, 0.);
-    if (iFlavour == 3) rd  = max(result, 0.);
-    if (iFlavour == 4) rs  = max(result, 0.);
-    if (iFlavour == 5) rc  = max(result, 0.);
-    if (iFlavour == 6) rb  = max(result, 0.);
-    if (iFlavour == 7) rg  = max(result, 0.);
-
-  }
-
-}
-
-//--------------------------------------------------------------------------
-
-// Polynomial interpolation with Newton's divided difference method.
-
-double EPS09::polInt(double* fi, double* xi, int n, double x) {
-
-  for(int i = 1;i < n;i++) {
-    for(int j = n-1;j > i - 1;j--) {
-      fi[j] = (fi[j] - fi[j-1])/(xi[j] - xi[j-i]);
-    }
-  }
-  double f = fi[n-1];
-  for(int i = n-2;i > -1;i--) {
-    f = (x - xi[i])*f + fi[i];
-  }
-
-  return f;
-
-}
-
-//==========================================================================
-
-// Nuclear modifications of the PDFs from EPPS16 NLO fit.
-// Ref: K.J. Eskola, P. Paakkinen, H. Paukkunen and C.A. Salgado,
-// Eur.Phys.J. C77 (2017) no.3, 163 [arXiv:1612.05741]
-// Links to grids files for different nuclei can be found from
-// https://research.hip.fi/qcdtheory/nuclear-pdfs/
-
-// Constants related to the fit.
-const double EPPS16::Q2MIN = 1.69;
-const double EPPS16::Q2MAX = 100000000.;
-const double EPPS16::XMIN  = 0.0000001;
-const double EPPS16::XMAX  = 1.;
-const int EPPS16::XSTEPS   = 80;
-const int EPPS16::Q2STEPS  = 30;
-const int EPPS16::NINTQ2   = 4;
-const int EPPS16::NINTX    = 4;
-const int EPPS16::NSETS    = 41;
-
-//--------------------------------------------------------------------------
-
-// Initialize EPPS16 nPDFs with given order (1=LO, 2=NLO) and error set.
-
-void EPPS16::init(int iSetIn, string pdfdataPath) {
-
-  // Save the error set number and derive useful values.
-  iSet           = iSetIn;
-  logQ2min       = log(Q2MIN);
-  loglogQ2maxmin = log( log(Q2MAX)/logQ2min );
-  logX2min       = log(XMIN) - 2. * (1. - XMIN);
-
-  // Select which data file to read for current fit.
-  if (pdfdataPath[ pdfdataPath.length() - 1 ] != '/') pdfdataPath += "/";
-  stringstream fileSS;
-  fileSS << pdfdataPath << "EPPS16NLOR_" << getA();
-  string gridFile = fileSS.str();
-
-  // Open grid file.
-  ifstream fileStream( gridFile.c_str() );
-  if (!fileStream.good()) {
-    printErr("EPPS16::init", "did not find grid file " + gridFile, loggerPtr);
-    printErr("EPPS16::init", "grids can be downloaded from "
-      "https://research.hip.fi/qcdtheory/nuclear-pdfs/", loggerPtr);
-    isSet = false;
+  // Return if not valid.
+  if (!isSet) {
+    for (int iFlav = 0; iFlav < cfgPtr->nFlav; ++iFlav) *rPtr[iFlav] = 0;
     return;
   }
 
-  // Dump additional grid information here.
-  double dummy;
-
-  // Read in the interpolation grid.
-  for (int i = 0;i < NSETS; ++i) {
-    for (int j = 0;j < Q2STEPS+1; ++j) {
-      fileStream >> dummy;
-      for (int k = 0;k < XSTEPS; ++k) {
-        for (int l = 0;l < 8; ++l) fileStream >> grid[i][j][k][l];
-      }
-    }
-  }
-  fileStream.close();
-
-}
-
-//--------------------------------------------------------------------------
-
-// Interpolation from the grid.
-
-void EPPS16::rUpdate(int , double x, double Q2) {
-
   // Freeze the x and Q2 values if outside the grid.
-  if (x  < XMIN)  x  = XMIN;
-  if (x  > XMAX)  x  = XMAX;
-  if (Q2 < Q2MIN) Q2 = Q2MIN;
-  if (Q2 > Q2MAX) Q2 = Q2MAX;
+  if (x  < cfgPtr->xMin)  x  = cfgPtr->xMin;
+  if (x  > cfgPtr->xMax)  x  = cfgPtr->xMax;
+  if (Q2 < cfgPtr->q2Min) Q2 = cfgPtr->q2Min;
+  if (Q2 > cfgPtr->q2Max) Q2 = cfgPtr->q2Max;
 
-  // Do not use the points at mass threshold for interpolation.
-  int cThreshold = 0;
-  int bThreshold = 0;
+  // Position in the log(log Q^2) grid, kept away from the grid edges.
+  double dQ2 = cfgPtr->nQ2Steps*log(log(Q2)/logQ2min)/loglogQ2maxmin;
+  int    iQ2 = max(1, min( int(dQ2), nQ2() - cfgPtr->nIntQ2 + 1 ));
 
-  // Calculate the position in log(log Q^2) grid.
-  double dQ2 = Q2STEPS * log( log(Q2) / logQ2min ) / loglogQ2maxmin;
-  int    iQ2 = int(dQ2);
+  // Position in the x grid.
+  int    ixRaw;
+  double xAbs;
+  // Logarithmic/linear position.
+  if (cfgPtr->xCut > 0.) {
+    int nXlog = cfgPtr->nXSteps/2;
+    int nXlin = cfgPtr->nXSteps - nXlog;
+    ixRaw = (x <= cfgPtr->xCut)
+      ? int( nXlog * log(x / cfgPtr->xMin)
+             / log(cfgPtr->xCut / cfgPtr->xMin) )
+      : int( (x - cfgPtr->xCut) * nXlin / (cfgPtr->xMax - cfgPtr->xCut)
+             + nXlog );
+    xAbs  = x;
+  // Smooth shift.
+  } else {
+    double dx = cfgPtr->nXSteps
+      * ( 1. - ( log(x) - cfgPtr->xShift * (1. - x) ) / logXmin );
+    ixRaw = int(dx);
+    xAbs  = dx;
+  }
 
-  // Set the Q2 index to interval [1,...,28].
-  if      (iQ2 < 1)           iQ2 = 1;
-  else if (iQ2 > Q2STEPS - 3) iQ2 = Q2STEPS - 2;
-
-  // Calculate the position in x grid.
-  double dx = XSTEPS * ( 1. - (log(x) - 2. * (1. - x) ) / logX2min );
-  int    ix = int(dx);
-
-  // Set the x-index interval.
-  if (ix < 1) ix = 1;
+  // Value carried between flavours where the fit requires it, see below.
+  int ixCarry = ixRaw;
 
   // Interpolate the grid values.
-  for (int iFlavour = 0; iFlavour < 8; ++iFlavour) {
+  for (int iFlav = 0; iFlav < cfgPtr->nFlav; ++iFlav) {
 
-    // Do not use the last grid points for interpolation.
-    if ( (iFlavour > 1) && (iFlavour < 7) ) {
-      if ( ix > XSTEPS - 6 ) ix = XSTEPS - 6;
-    } else if ( ix > XSTEPS - 4 ) ix = XSTEPS - 4;
+    // Do not use the last grid points, fewer of them for sea and gluon.
+    bool isSea = (iFlav > 1) && (iFlav < 7);
+    int  ixMax = cfgPtr->nX - (isSea ? cfgPtr->ixOffSea : cfgPtr->ixOff);
+    int  ix    = max(1, min( cfgPtr->clamp ? ixCarry : ixRaw, ixMax));
+    ixCarry    = ix;
 
-    // Calculate the four nearest points in x grid.
+    // The nearest points in the x grid.
     double xNear[4];
-    for (int i = 0; i < 4; i++) xNear[i] = ix - 1 + i;
+    for (int i = 0; i < cfgPtr->nIntX; ++i)
+      xNear[i] = (cfgPtr->xCut > 0.) ? xVal(ix - 1 + i) : double(ix - 1 + i);
 
-    // Reject point Q=1.3 GeV from interpolation for charm.
-    if ( (iFlavour == 5) && (iQ2 == 1) ) {
-      cThreshold = iQ2;
-      iQ2        = 2;
-    }
+    // Do not interpolate across the c and b mass thresholds.
+    int iQ2Use = iQ2;
+    if (iFlav == 5 && cfgPtr->iQ2C > 0 && iQ2 == 1)
+      iQ2Use = cfgPtr->iQ2C;
+    if (iFlav == 6 && cfgPtr->iQ2B > 0 && iQ2 > 1 && iQ2 < cfgPtr->iQ2B)
+      iQ2Use = cfgPtr->iQ2B;
 
-    // Reject points Q<4.75 GeV from interpolation for bottom.
-    if ( (iFlavour == 6) && (iQ2 < 17) && (iQ2 > 1) ) {
-      bThreshold = iQ2;
-      iQ2        = 17;
-    }
-
-    // Calculate the three nearest points in log(log Q^2) grid.
+    // The nearest points in the log(log Q^2) grid.
     double Q2Near[4];
-    for (int i = 0;i < 4;i++) Q2Near[i] = iQ2 - 1 + i;
+    for (int i = 0; i < cfgPtr->nIntQ2; ++i) Q2Near[i] = iQ2Use - 1 + i;
 
-    // Grid points used for interpolation.
-    double xGrid[4];
-    double Q2Grid[4];
-
-    // Read in the relevant values from table and interpolate in x.
-    for (int j = 0; j < 4; ++j) {
-      xGrid[0]  = grid[iSet - 1][iQ2 - 1 + j][ix - 1][iFlavour];
-      xGrid[1]  = grid[iSet - 1][iQ2 - 1 + j][ix][iFlavour];
-      xGrid[2]  = grid[iSet - 1][iQ2 - 1 + j][ix + 1][iFlavour];
-      xGrid[3]  = grid[iSet - 1][iQ2 - 1 + j][ix + 2][iFlavour];
-      Q2Grid[j] = polInt(xGrid, xNear, NINTX, dx);
+    // Read the relevant values from the grid and interpolate in x.
+    double xGrid[4], Q2Grid[4];
+    for (int j = 0; j < cfgPtr->nIntQ2; ++j) {
+      for (int i = 0; i < cfgPtr->nIntX; ++i)
+        xGrid[i] = gridVal(iQ2Use - 1 + j, ix - 1 + i, iFlav);
+      Q2Grid[j] = polInt(xGrid, xNear, cfgPtr->nIntX, xAbs);
     }
 
-    // Interpolate in Q2.
-    double result = polInt(Q2Grid, Q2Near, NINTQ2, dQ2);
-
-    // Save the values, for b non-zero only above the mass threshold.
-    if (iFlavour == 0) ruv = result;
-    if (iFlavour == 1) rdv = result;
-    if (iFlavour == 2) ru  = result;
-    if (iFlavour == 3) rd  = result;
-    if (iFlavour == 4) rs  = result;
-    if (iFlavour == 5) rc  = result;
-    if (iFlavour == 6) rb  = ( sqrt(Q2) < 4.75 ) ? 0. : result;
-    if (iFlavour == 7) rg  = result;
-
-    // Revert back to original interpolation points.
-    if (cThreshold > 0) {
-      iQ2        = cThreshold;
-      cThreshold = 0;
-    } else if (bThreshold > 0) {
-      iQ2        = bThreshold;
-      bThreshold = 0;
-    }
-
+    // Interpolate in Q2, and apply the limits specific to the PDF.
+    double result = polInt(Q2Grid, Q2Near, cfgPtr->nIntQ2, dQ2);
+    if (cfgPtr->clip) result = max(result, 0.);
+    if (iFlav == 6 && cfgPtr->mB > 0. && sqrt(Q2) < cfgPtr->mB) result = 0.;
+    *rPtr[iFlav] = result;
   }
+
+}
+
+//--------------------------------------------------------------------------
+
+// Set the PDF member.
+
+void EPPS::setMem(int iMemIn) {
+
+  if (!isInit)
+    isSet = false;
+  else if (iMemIn < 0 || iMemIn >= cfgPtr->nMem) {
+    printErr("EPPS::setMem", "member " + to_string(iMemIn)
+      + " outside the range of " + cfgPtr->name, loggerPtr);
+    isSet = false;
+  } else {
+    iMem = iMemIn;
+    isSet = true;
+  }
+
+}
+
+//--------------------------------------------------------------------------
+
+// The x value of a grid point, used for EPS09-style grid.
+
+double EPPS::xVal(int ix) const {
+
+  int nXlog = cfgPtr->nXSteps/2;
+  int nXlin = cfgPtr->nXSteps - nXlog;
+  if (ix < nXlog) return cfgPtr->xMin
+    *exp((double(ix)/nXlog)*log(cfgPtr->xCut/cfgPtr->xMin));
+  return (double(ix - nXlog)/nXlin)*(cfgPtr->xMax - cfgPtr->xCut)
+    + cfgPtr->xCut;
+
+}
+
+//--------------------------------------------------------------------------
+
+// Initialize the PDF set.
+
+void EPPS::init(int iMemIn, string pdfdataPath) {
+
+  // Only flag as initialized and set until end of init.
+  isInit = isSet = false;
+
+  // Derived x and Q2 mappings.
+  logQ2min       = log(cfgPtr->q2Min);
+  loglogQ2maxmin = log(log(cfgPtr->q2Max)/logQ2min);
+  logXmin        = log(cfgPtr->xMin) - cfgPtr->xShift*(1. - cfgPtr->xMin);
+
+  // Construct the name of the grid file for the current nucleus.
+  if (pdfdataPath[ pdfdataPath.length() - 1 ] != '/') pdfdataPath += "/";
+  stringstream fileSS;
+  fileSS << pdfdataPath << cfgPtr->file << getA();
+  string gridFile = fileSS.str();
+
+  // Open the grid file.
+  ifstream fileStream(gridFile.c_str());
+  if (!fileStream.good()) {
+    printErr("EPPS::init", "did not find grid file " + gridFile, loggerPtr);
+    printErr("EPPS::init", "grids can be downloaded from "
+      "https://research.hip.fi/qcdtheory/nuclear-pdfs/", loggerPtr);
+    return;
+  }
+
+  // Read in all PDF members.
+  grid.resize(cfgPtr->nMem*nQ2()*cfgPtr->nX*cfgPtr->nFlav);
+  double dummy;
+  int iVal = 0;
+  for (int iMemNow = 0; iMemNow < cfgPtr->nMem; ++iMemNow) {
+    for (int iQ2 = 0; iQ2 < nQ2(); ++iQ2) {
+      fileStream >> dummy;
+      for (int ix = 0; ix < cfgPtr->nX; ++ix)
+        for (int iFlav = 0; iFlav < cfgPtr->nFlav; ++iFlav)
+          fileStream >> grid[iVal++];
+    }
+  }
+
+  // Check if file is too small.
+  if (!fileStream) {
+    printErr("EPPS::init", gridFile + " is too small", loggerPtr);
+    return;
+  }
+  // Check if file is too big.
+  string token;
+  if (fileStream >> token) {
+    printErr("EPPS::init", gridFile + " is too big", loggerPtr);
+    return;
+  }
+  fileStream.close();
+
+  // Set the initialization flag and member.
+  isInit = true;
+  setMem(iMemIn);
 
 }
 
@@ -4293,18 +4185,14 @@ void EPPS16::rUpdate(int , double x, double Q2) {
 
 // Polynomial interpolation with Newton's divided difference method.
 
-double EPPS16::polInt(double* fi, double* xi, int n, double x) {
+double EPPS::polInt(double* fi, double* xi, int n, double x) {
 
-  for(int i = 1;i < n;i++) {
-    for(int j = n-1;j > i - 1;j--) {
+  for (int i = 1; i < n; i++) {
+    for (int j = n - 1; j > i - 1; j--)
       fi[j] = (fi[j] - fi[j-1])/(xi[j] - xi[j-i]);
-    }
   }
-  double f = fi[n-1];
-  for(int i = n-2;i > -1;i--) {
-    f = (x - xi[i])*f + fi[i];
-  }
-
+  double f = fi[n - 1];
+  for (int i = n - 2; i > -1; i--) f = (x - xi[i])*f + fi[i];
   return f;
 
 }

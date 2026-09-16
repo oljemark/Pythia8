@@ -808,7 +808,7 @@ bool MultipartonInteractions::init( bool doMPIinit, int iDiffSysIn,
         mpis[iPA].probLowBSave[iStep]     = probLowB;
         mpis[iPA].fracAhighSave[iStep]    = fracAhigh;
         mpis[iPA].fracBhighSave[iStep]    = fracBhigh;
-        mpis[iPA].fracChighSave[iStep]    = fracBhigh;
+        mpis[iPA].fracChighSave[iStep]    = fracChigh;
         mpis[iPA].fracABChighSave[iStep]  = fracABChigh;
         mpis[iPA].cDivSave[iStep]         = cDiv;
         mpis[iPA].cMaxSave[iStep]         = cMax;

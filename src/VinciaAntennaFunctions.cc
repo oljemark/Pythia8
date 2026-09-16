@@ -4115,44 +4115,47 @@ double MECs::getME2(const vector<Particle>& state, int ) {
       // NC DIS 2->2 and 2->3.
       if ((isLeptonA && isPartonB) || (isPartonA && isLeptonB)) {
         int iIn = isPartonB ? 1 : 0;
-        Vec4 p = state[iIn].p();
+        Vec4 pa = state[iIn].p();
         if (idOut.size() == 2) {
           // gamma^* q -> q.
           bool isParton1 = abs(idOut[1]) >= 1 && abs(idOut[1]) <= 6;
-          Vec4 pK = (isParton1) ? state[3].p() : state[2].p();
-          return 2.*p*pK;
+          Vec4 pk = (isParton1) ? state[3].p() : state[2].p();
+          return 2.*pa*pk;
         }
         if (idOut.size() == 3) {
           if (idIn[iIn] == 21) {
             // gamma^* g -> q qbar.
             int iq = -1, iqb = -1;
-            for (int j=0; j<(int)idOut.size(); ++j) {
-              if (idOut[j] >= 1 && idOut[j] <= 6) iq = j;
-              if (idOut[j] <= -1 && idOut[j] >= -6) iqb = j;
+            for (int j = 0; j < (int)idOut.size(); ++j) {
+              if (idOut[j] >= 1 && idOut[j] <= 6) iq = 2+j;
+              if (idOut[j] <= -1 && idOut[j] >= -6) iqb = 2+j;
               if (iq >= 0 && iqb >= 0) break;
             }
             if (iq < 0 && iqb < 0) return -1.;
-            // Calculate matrix element squared,
-            // cf. Eq. (4.25) in arXiv:hep-ph/0612257.
-            double s = m2(state[2+iq].p() + state[2+iqb].p());
-            double t = m2(state[iIn].p() - state[2+iq].p());
-            double u = m2(state[iIn].p() - state[2+iqb].p());
-            return 2.*s/t + 2.*s/u + 2*pow2(s)/t/u + u/t + t/u;
+            // Eq. (4.25) in arXiv:hep-ph/0612257.
+            double saj = 2.*pa*state[iq].p();
+            double sak = 2.*pa*state[iqb].p();
+            double sjk = 2.*state[iq].p()*state[iqb].p();
+            double x  = 1.-sjk/(saj+sak);
+            double z1 = 1.-saj/(saj+sak);
+            return TR*(z1 + (4.*x*(1-x)*(1-z1))/(pow2(x) + pow2(1-x)));
           } else {
             // gamma^* q(bar) -> q(bar) g.
             int iq = -1, ig = -1;
             for (int j=0; j<(int)idOut.size(); ++j) {
-              if (abs(idOut[j]) >= 1 && abs(idOut[j]) <= 6) iq = j;
-              if (idOut[j] == 21) ig = j;
+              if (abs(idOut[j]) >= 1 && abs(idOut[j]) <= 6) iq = 2+j;
+              if (idOut[j] == 21) ig = 2+j;
               if (iq >= 0 && ig >= 0) break;
             }
             if (iq < 0 && ig < 0) return -1.;
-            // Calculate matrix element squared,
-            // cf. Eq. (4.15) in arXiv:hep-ph/0612257.
-            double s = m2(state[2+ig].p() + state[2+iq].p());
-            double t = m2(state[iIn].p() - state[2+ig].p());
-            double u = m2(state[iIn].p() - state[2+iq].p());
-            return -(2.*u/s + 2.*u/t + 2*pow2(u)/s/t + t/s + s/t);
+            // Eq. (4.15) in arXiv:hep-ph/0612257.
+            double saj = 2.*pa*state[ig].p();
+            double sak = 2.*pa*state[iq].p();
+            double sjk = 2.*state[iq].p()*state[ig].p();
+            double x  = 1.-sjk/(saj+sak);
+            double z1 = 1.-saj/(saj+sak);
+            // Match VINCIA definition of colour factor.
+            return CF*((pow2(x) + pow2(z1))/(1.-x)/(1.-z1) + 2.*(1.+3.*x*z1));
           }
         }
       }

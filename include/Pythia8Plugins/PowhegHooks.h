@@ -36,7 +36,7 @@ public:
   //--------------------------------------------------------------------------
 
   // Initialize settings, detailing merging strategy to use.
-  bool initAfterBeams() {
+  bool initAfterBeams() override {
     nFinal      = settingsPtr->mode("POWHEG:nFinal");
     vetoMode    = settingsPtr->mode("POWHEG:veto");
     vetoCount   = settingsPtr->mode("POWHEG:vetoCount");
@@ -47,6 +47,9 @@ public:
     MPIvetoMode = settingsPtr->mode("POWHEG:MPIveto");
     QEDvetoMode = settingsPtr->mode("POWHEG:QEDveto");
     showerModel = settingsPtr->mode("PartonShowers:model");
+    // Add counters.
+    settingsPtr->addMode("POWHEG:nISRveto", 0, false, false, 0, 0);
+    settingsPtr->addMode("POWHEG:nFSRveto", 0, false, false, 0, 0);
     return true;
   }
 
@@ -189,21 +192,57 @@ public:
 
     // pT value for FSR and ISR
     double pTnow = 0.;
-    if (FSR) {
-      // POWHEG d_ij (in CM frame). Note that the incoming beams have not
-      // been updated in the parton systems pointer yet (i.e. prior to any
-      // potential recoil).
-      int iInA = partonSystemsPtr->getInA(0);
-      int iInB = partonSystemsPtr->getInB(0);
-      double betaZ = - ( e[iInA].pz() + e[iInB].pz() ) /
-                       ( e[iInA].e()  + e[iInB].e()  );
-      Vec4 iVecBst(e[i].p()), jVecBst(e[j].p());
+
+    // Note that the incoming beams have not been updated in the
+    // parton systems pointer yet (i.e. prior to any potential recoil).
+    int iInA = partonSystemsPtr->getInA(0);
+    int iInB = partonSystemsPtr->getInB(0);
+    double betaZ = - ( e[iInA].pz() + e[iInB].pz() ) /
+      ( e[iInA].e()  + e[iInB].e()  );
+    Vec4 iVecBst(e[i].p()), jVecBst(e[j].p());
+
+    // pT definition used in the DIS process, see arXiv:2309.02127.
+    if (pTdefMode < 0) {
+      // Pre-branching total momentum: the beams have not yet been updated.
+      Vec4 pIn = e[iInA].p()+e[iInB].p();
+
+      // Post-branching total momentum, obtained by summing over
+      // the final-state partons.
+      Vec4 pOut(0.,0.,0.,0.);
+      for (int ii = 0; ii<e.size(); ++ii)
+        if (e[ii].isFinal()) pOut += e[ii].p();
+
+      // Underlying born squared mass.
+      double stilde = pIn.m2Calc();
+      // (Twice) energy fraction of the radiated partons in the event frame.
+      double Ej = (e[j].p()*pOut)/sqrt(pOut.m2Calc());
+      double Ei = (e[i].p()*pOut)/sqrt(pOut.m2Calc());
+      double xi = 2.*e[j].p()*pOut/(pOut.m2Calc());
+      // For final-state g2gg and g2qqbar take as xi is always the softer
+      // fraction.
+      if (FSR && ((e[i].id()==21 && e[j].id()==21) || e[j].id()+e[i].id()==0))
+        xi = min(xi, 2.*e[i].p()*pOut/(pOut.m2Calc()));
+
+      // 1-cthTh, with Th between emitter and spectator in the event frame.
+      // NB: if i is in the initial state, e[i] and Ei are not correct, but
+      // their ratio is, and here we use e[i]/Ei.
+      double omy = (e[i].p()*e[j].p())/Ei/Ej;
+
+      // FSR: scalup^2 = xi^2 sTilde (1-y)/2.
+      // ISR: scalup^2 = xi^2 sTilde (1-y)/(2-xi(2-(1-y))).
+      pTnow = sqrt(stilde*omy)*xi;
+      if (FSR) pTnow = pTnow / sqrt(2.);
+      else {
+        if (pTdefMode == -1) pTnow /= sqrt(2.-xi*(2.-omy));
+        else pTnow *= sqrt((2.-omy)/(4.*(1.-xi*(1.-omy)*(1.-omy))));
+      }
+    } else if (FSR) {
+      // POWHEG d_ij (in CM frame).
       iVecBst.bst(0., 0., betaZ);
       jVecBst.bst(0., 0., betaZ);
       pTnow = sqrt( (iVecBst + jVecBst).m2Calc() *
-                    iVecBst.e() * jVecBst.e() /
-                    pow2(iVecBst.e() + jVecBst.e()) );
-
+        iVecBst.e() * jVecBst.e() /
+        pow2(iVecBst.e() + jVecBst.e()) );
     } else {
       // POWHEG pT_ISR is just kinematic pT
       pTnow = e[j].pT();
@@ -359,9 +398,9 @@ public:
   // at the end of the event and the final entry is the POWHEG emission.
   // If there is no POWHEG emission, then pThard is set to SCALUP.
 
-  inline bool canVetoMPIStep()    { return true; }
-  inline int  numberVetoMPIStep() { return 1; }
-  inline bool doVetoMPIStep(int nMPI, const Event &e) {
+  inline bool canVetoMPIStep() override    { return true; }
+  inline int  numberVetoMPIStep() override { return 1; }
+  inline bool doVetoMPIStep(int nMPI, const Event &e) override {
     // Extra check on nMPI
     if (nMPI > 1) return false;
     int iEmt = -1;
@@ -449,6 +488,8 @@ public:
     // Initialise other variables.
     accepted   = false;
     nAcceptSeq = nISRveto = nFSRveto = 0;
+    settingsPtr->mode("POWHEG:nISRveto", 0);
+    settingsPtr->mode("POWHEG:nFSRveto", 0);
 
     // Do not veto the event
     return false;
@@ -458,8 +499,9 @@ public:
 
   // ISR veto.
 
-  inline bool canVetoISREmission() { return (vetoMode == 0) ? false : true; }
-  inline bool doVetoISREmission(int, const Event &e, int iSys) {
+  inline bool canVetoISREmission() override {
+    return (vetoMode == 0) ? false : true; }
+  inline bool doVetoISREmission(int, const Event &e, int iSys) override {
     // Must be radiation from the hard system
     if (iSys != 0) return false;
 
@@ -511,6 +553,7 @@ public:
       } else {
         nAcceptSeq = 0;
         nISRveto++;
+        settingsPtr->mode("POWHEG:nISRveto", nISRveto);
         return true;
       }
     }
@@ -525,8 +568,9 @@ public:
 
   // FSR veto.
 
-  inline bool canVetoFSREmission() { return (vetoMode == 0) ? false : true; }
-  inline bool doVetoFSREmission(int, const Event &e, int iSys, bool) {
+  inline bool canVetoFSREmission() override {
+    return (vetoMode == 0) ? false : true; }
+  inline bool doVetoFSREmission(int, const Event &e, int iSys, bool) override {
     // Must be radiation from the hard system.
     if (iSys != 0) return false;
 
@@ -601,6 +645,7 @@ public:
       } else {
         nAcceptSeq = 0;
         nFSRveto++;
+        settingsPtr->mode("POWHEG:nFSRveto", nFSRveto);
         return true;
       }
     }
@@ -615,8 +660,9 @@ public:
 
   // MPI veto.
 
-  inline bool canVetoMPIEmission() {return (MPIvetoMode == 0) ? false : true;}
-  inline bool doVetoMPIEmission(int, const Event &e) {
+  inline bool canVetoMPIEmission() override {
+    return (MPIvetoMode == 0) ? false : true;}
+  inline bool doVetoMPIEmission(int, const Event &e) override {
     if (MPIvetoMode == 1) {
       if (e[e.size() - 1].pT() > pTMPI) return true;
     }

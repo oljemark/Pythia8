@@ -39,6 +39,7 @@ int main() {
   string setName_lha;
 
   // For timing checks.
+  Timer timer(Timer::CPU);
   int const nq = 500;
   int const nx = 500;
   int const iqMax = sizeof( xlha )/sizeof( xlha[0] );
@@ -96,7 +97,7 @@ int main() {
     cout << "\n Checking timings " << endl;
 
     // Internal timing.
-    clock_t tBegin = clock();
+    timer.start();
     for (int f = -4; f < 4; f++) {
       for (int iq = 0; iq < nq; iq++) {
         double qq2 = 2.0 * pow( 1e6 / 2.0, double(iq)/nq);
@@ -106,12 +107,12 @@ int main() {
         }
       }
     }
-    clock_t tEnd = clock();
-    double tUsed = double(tEnd - tBegin) / double(CLOCKS_PER_SEC);
+    timer.stop();
+    double tUsed = timer.elapsed() / 1000.;
     cout << " NNPDF internal timing = " << tUsed << endl;
 
     // External timing.
-    tBegin = clock();
+    timer.start();
     for (int f = -4; f < 4; f++) {
       for (int iq = 0; iq < nq; iq++) {
         double qq2 = 2.0 * pow(1e6 / 2.0, double(iq)/nq);
@@ -121,8 +122,8 @@ int main() {
         }
       }
     }
-    tEnd = clock();
-    tUsed = double(tEnd - tBegin) / double(CLOCKS_PER_SEC);
+    timer.stop();
+    tUsed = timer.elapsed() / 1000.;
     cout << " NNPDF LHAPDF   timing = " << tUsed << endl;
 
   } // End loop over NNPDF internal sets

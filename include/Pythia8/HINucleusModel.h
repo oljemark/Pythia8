@@ -378,14 +378,14 @@ public:
   // Generate all the nucleons.
   vector<Nucleon> generate() const override;
 
+  // Generate the position of a single nucleon. (The time component
+  // is always zero).
+  Vec4 generateNucleon() const;
+
   // Accessor functions.
   double a() const { return aSave; }
 
 protected:
-
-  // Generate the position of a single nucleon. (The time component
-  // is always zero).
-  Vec4 generateNucleon() const;
 
   // Calculate overestimates for sampling.
   void overestimates() {
@@ -439,7 +439,7 @@ class HOShellModel : public HardCoreModel {
 public:
 
   // Default constructor.
-  HOShellModel(): nucleusChR(), protonChR(), C2() {}
+  HOShellModel(): nucleusChR(), protonChR(), C2Save() {}
 
   // Destructor.
   virtual ~HOShellModel() {}
@@ -451,16 +451,20 @@ public:
   // for a nucleus given by the PDG number.
   virtual vector<Nucleon> generate() const override;
 
-protected:
-
   // Generate the position of a single nucleon. (The time component
   // is always zero).
   virtual Vec4 generateNucleon() const;
 
+  // The C2 parameter of the density function.
+  double C2() const { return C2Save; }
+
+protected:
+
   // The density function.
   double rho(double r) const {
-    double pref = 4./(pow(sqrt(M_PI * C2),3)) * (1 + (A() - 4.)/6. * r*r/C2);
-    return pref * exp(-r*r / C2);
+    double pref = 4./(pow(sqrt(M_PI * C2Save),3)) *
+      (1 + (A() - 4.)/6. * r*r/C2Save);
+    return pref * exp(-r*r / C2Save);
   };
 
   // Nucleus charge radius.
@@ -470,10 +474,7 @@ protected:
   double protonChR;
 
   // C2 parameter.
-  double C2;
-
-  // Maximum rho for these parameters.
-  double rhoMax;
+  double C2Save;
 
 };
 
@@ -495,6 +496,10 @@ public:
 
   // Generate a vector of nucleons according to the Hulthen potential.
   virtual vector<Nucleon> generate() const override;
+
+  // Accessor functions.
+  double a() const { return hA; }
+  double b() const { return hB; }
 
 protected:
 
@@ -531,11 +536,14 @@ public:
   // for a nucleus given by the PDG number.
   virtual vector<Nucleon> generate() const override;
 
-protected:
-
   // Generate the position of a single nucleon. (The time component
   // is always zero).
   virtual Vec4 generateNucleon() const;
+
+  // Accessor function.
+  double chargeRadius() const { return nucleusChR; }
+
+protected:
 
   // Nucleus charge radius.
   double nucleusChR;

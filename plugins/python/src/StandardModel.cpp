@@ -14,30 +14,27 @@
 #include <utility>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::AlphaStrong file:Pythia8/StandardModel.h line:23
 struct PyCallBack_Pythia8_AlphaStrong : public Pythia8::AlphaStrong {
 	using Pythia8::AlphaStrong::AlphaStrong;
 
-	void init(double a0, int a1, int a2, bool a3, double a4, double a5) override { 
+	void init(double a0, int a1, int a2, bool a3, double a4, double a5) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::AlphaStrong *>(this), "init");
 		if (overload) {
@@ -46,11 +43,11 @@ struct PyCallBack_Pythia8_AlphaStrong : public Pythia8::AlphaStrong {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return AlphaStrong::init(a0, a1, a2, a3, a4, a5);
 	}
-	void setThresholds(double a0, double a1, double a2) override { 
+	void setThresholds(double a0, double a1, double a2) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::AlphaStrong *>(this), "setThresholds");
 		if (overload) {
@@ -59,7 +56,7 @@ struct PyCallBack_Pythia8_AlphaStrong : public Pythia8::AlphaStrong {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return AlphaStrong::setThresholds(a0, a1, a2);
 	}
@@ -69,7 +66,7 @@ struct PyCallBack_Pythia8_AlphaStrong : public Pythia8::AlphaStrong {
 struct PyCallBack_Pythia8_AlphaSUN : public Pythia8::AlphaSUN {
 	using Pythia8::AlphaSUN::AlphaSUN;
 
-	void initAlpha(int a0, int a1, int a2, double a3, double a4) override { 
+	void initAlpha(int a0, int a1, int a2, double a3, double a4) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::AlphaSUN *>(this), "initAlpha");
 		if (overload) {
@@ -78,11 +75,11 @@ struct PyCallBack_Pythia8_AlphaSUN : public Pythia8::AlphaSUN {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return AlphaSUN::initAlpha(a0, a1, a2, a3, a4);
 	}
-	void initLambda(int a0, int a1, int a2, double a3) override { 
+	void initLambda(int a0, int a1, int a2, double a3) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::AlphaSUN *>(this), "initLambda");
 		if (overload) {
@@ -91,7 +88,7 @@ struct PyCallBack_Pythia8_AlphaSUN : public Pythia8::AlphaSUN {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return AlphaSUN::initLambda(a0, a1, a2, a3);
 	}
@@ -101,8 +98,6 @@ void bind_Pythia8_StandardModel(std::function< pybind11::module &(std::string co
 {
 	{ // Pythia8::AlphaStrong file:Pythia8/StandardModel.h line:23
 		pybind11::class_<Pythia8::AlphaStrong, std::shared_ptr<Pythia8::AlphaStrong>, PyCallBack_Pythia8_AlphaStrong> cl(M("Pythia8"), "AlphaStrong", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::AlphaStrong(); }, [](){ return new PyCallBack_Pythia8_AlphaStrong(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Pythia8_AlphaStrong const &o){ return new PyCallBack_Pythia8_AlphaStrong(o); } ) );
 		cl.def( pybind11::init( [](Pythia8::AlphaStrong const &o){ return new Pythia8::AlphaStrong(o); } ) );
@@ -149,8 +144,6 @@ void bind_Pythia8_StandardModel(std::function< pybind11::module &(std::string co
 	}
 	{ // Pythia8::AlphaEM file:Pythia8/StandardModel.h line:113
 		pybind11::class_<Pythia8::AlphaEM, std::shared_ptr<Pythia8::AlphaEM>> cl(M("Pythia8"), "AlphaEM", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::AlphaEM(); } ) );
 		cl.def( pybind11::init( [](Pythia8::AlphaEM const &o){ return new Pythia8::AlphaEM(o); } ) );
 		cl.def("init", (void (Pythia8::AlphaEM::*)(int, class Pythia8::Settings *)) &Pythia8::AlphaEM::init, "C++: Pythia8::AlphaEM::init(int, class Pythia8::Settings *) --> void", pybind11::arg("orderIn"), pybind11::arg("settingsPtr"));
@@ -159,8 +152,6 @@ void bind_Pythia8_StandardModel(std::function< pybind11::module &(std::string co
 	}
 	{ // Pythia8::CoupSM file:Pythia8/StandardModel.h line:142
 		pybind11::class_<Pythia8::CoupSM, std::shared_ptr<Pythia8::CoupSM>> cl(M("Pythia8"), "CoupSM", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::CoupSM(); } ) );
 		cl.def( pybind11::init( [](Pythia8::CoupSM const &o){ return new Pythia8::CoupSM(o); } ) );
 		cl.def_readwrite("s2tW", &Pythia8::CoupSM::s2tW);
@@ -202,8 +193,6 @@ void bind_Pythia8_StandardModel(std::function< pybind11::module &(std::string co
 	}
 	{ // Pythia8::AlphaSUN file:Pythia8/StandardModel.h line:233
 		pybind11::class_<Pythia8::AlphaSUN, std::shared_ptr<Pythia8::AlphaSUN>, PyCallBack_Pythia8_AlphaSUN> cl(M("Pythia8"), "AlphaSUN", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::AlphaSUN(); }, [](){ return new PyCallBack_Pythia8_AlphaSUN(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Pythia8_AlphaSUN const &o){ return new PyCallBack_Pythia8_AlphaSUN(o); } ) );
 		cl.def( pybind11::init( [](Pythia8::AlphaSUN const &o){ return new Pythia8::AlphaSUN(o); } ) );
@@ -222,8 +211,6 @@ void bind_Pythia8_StandardModel(std::function< pybind11::module &(std::string co
 	}
 	{ // Pythia8::DecayChannel file:Pythia8/ParticleData.h line:35
 		pybind11::class_<Pythia8::DecayChannel, std::shared_ptr<Pythia8::DecayChannel>> cl(M("Pythia8"), "DecayChannel", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::DecayChannel(); } ), "doc" );
 		cl.def( pybind11::init( [](int const & a0){ return new Pythia8::DecayChannel(a0); } ), "doc" , pybind11::arg("onModeIn"));
 		cl.def( pybind11::init( [](int const & a0, double const & a1){ return new Pythia8::DecayChannel(a0, a1); } ), "doc" , pybind11::arg("onModeIn"), pybind11::arg("bRatioIn"));

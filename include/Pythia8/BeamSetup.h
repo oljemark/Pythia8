@@ -159,6 +159,7 @@ protected:
     registerSubObject(beamGamB);
     registerSubObject(beamVMDA);
     registerSubObject(beamVMDB);
+    if (doLHA && lhaUpPtr) registerSubObject(*lhaUpPtr);
   }
 
 private:

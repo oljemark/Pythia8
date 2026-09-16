@@ -33,7 +33,6 @@ Back to <a href="../ExampleKeywords.html" target="page">index.</a>
 // should be set up to operate as intended.
 
 #include &quot;Pythia8/Pythia.h&quot;
-#include &quot;Pythia8Plugins/ColourReconnectionHooks.h&quot;
 
 using namespace Pythia8;
 
@@ -113,9 +112,12 @@ int main() {
              pythia.readString(&quot;MultipartonInteractions:pT0Ref = 2.15&quot;);
         else pythia.readString(&quot;MultipartonInteractions:pT0Ref = 2.25&quot;);
       }
-      myUserHooks = make_shared&lt;MBReconUserHooks&gt;(mode, flip, dLamCut,
-        fracGluon);
-      pythia.setUserHooksPtr( myUserHooks);
+      pythia.readString(&quot;Init:plugins = {libpythia8colourReconnectionHooks.so&quot;
+        &quot;::MBReconUserHooks}&quot;);
+      pythia.settings.mode(&quot;MBRecon:mode&quot;, mode);
+      pythia.settings.mode(&quot;MBRecon:flip&quot;, flip);
+      pythia.settings.parm(&quot;MBRecon:dLamCut&quot;, dLamCut);
+      pythia.settings.parm(&quot;MBRecon:fracGluon&quot;, fracGluon);
 
     // New scenaros that do top reconnections separately from normal one.
     // =  9: reconnect with random background gluon;
@@ -128,8 +130,10 @@ int main() {
       pythia.readString(&quot;PartonLevel:earlyResDec = off&quot;);
       // Possibility with reduced reconnection strength.
       double strength = ( mLoop == 13 ) ? 1. : 0.075;
-      myUserHooks = make_shared&lt;TopReconUserHooks&gt;(mLoop - 8, strength);
-      pythia.setUserHooksPtr( myUserHooks);
+      pythia.readString(&quot;Init:plugins = {libpythia8colourReconnectionHooks.so&quot;
+        &quot;::TopReconUserHooks}&quot;);
+      pythia.settings.mode(&quot;TopRecon:mode&quot;, mLoop - 8);
+      pythia.settings.parm(&quot;TopRecon:strength&quot;, strength);
     }
 
     // Simplify generation. For tryout only.

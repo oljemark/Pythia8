@@ -35,11 +35,9 @@ int main() {
   Pythia pythiaS;
   pythiaS.readFile(&quot;main225.cmnd&quot;, 1);
   if (!pythiaS.init()) return 1;
-  int nEvent = pythiaS.mode(&quot;Main:numberOfEvents&quot;);
-  int iEvent = 0;
-  while (iEvent &lt; nEvent)
-    if (pythiaS.next()) ++iEvent;
+  pythiaS.run([&amp;](Pythia*){});
   pythiaS.stat();
+
   return 0;
 
 }

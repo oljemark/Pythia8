@@ -2704,6 +2704,11 @@ void SimpleTimeShower::pT2nextQCD(double pT2begDip, double pT2sel,
   double emitCoefTot   = 0.;
   double wt            = 0.;
   bool   mustFindRange = true;
+  static const string kFsrQ2QG("fsr:Q2QG");
+  static const string kFsrG2GG("fsr:G2GG");
+  static const string kFsrG2QQ("fsr:G2QQ");
+  static const string kFsrG2CC("fsr:G2CC");
+  static const string kFsrG2BB("fsr:G2BB");
 
   // Add more headRoom if doing uncertainty variations
   // (to ensure at least a minimal number of failed branchings).
@@ -2732,7 +2737,7 @@ void SimpleTimeShower::pT2nextQCD(double pT2begDip, double pT2sel,
     // Default values for current tentative emission.
     isEnhancedQ2QG = isEnhancedG2QQ = isEnhancedG2GG = false;
     enhanceNow = enhanceLocal = 1.;
-    nameNow = "";
+    nameNow.clear();
 
     // Initialize evolution coefficients at the beginning and
     // reinitialize when crossing c and b flavour thresholds.
@@ -2769,9 +2774,9 @@ void SimpleTimeShower::pT2nextQCD(double pT2begDip, double pT2sel,
       emitCoefGlue = overFac * overFacEmit * wtPSglue * colFac * zLog;
       // Optionally enhanced branching rate.
       if (canEnhanceETnow && colTypeAbs == 2)
-        emitCoefGlue *= enhanceFactor("fsr:G2GG");
+        emitCoefGlue *= enhanceFactor(kFsrG2GG);
       if (canEnhanceETnow && colTypeAbs == 1)
-        emitCoefGlue *= enhanceFactor("fsr:Q2QG");
+        emitCoefGlue *= enhanceFactor(kFsrQ2QG);
 
       // For dipole recoil: no g -> g g branching, since in SpaceShower.
       if (doDipoleRecoil && dip.isrType != 0 && colTypeAbs == 2)
@@ -2779,17 +2784,18 @@ void SimpleTimeShower::pT2nextQCD(double pT2begDip, double pT2sel,
 
       // Find emission coefficient for g -> q qbar.
       emitCoefTot  = emitCoefGlue;
-      if (colTypeAbs == 2 && event[dip.iRadiator].id() == 21) {
+      if (colTypeAbs == 2 && event[dip.iRadiator].id() == 21
+        && wtPSqqbar > 0) {
         overFacSplit  = 1. + overFacLinQ / wtPSqqbar;
         emitCoefQqbar = overFac * overFacSplit * wtPSqqbar
           * (1. - 2. * zMinAbs);
         // Optionally enhanced branching rate.
         if (canEnhanceETnow) {
-          enhanceFacQqbar = enhanceFactor("fsr:G2QQ");
+          enhanceFacQqbar = enhanceFactor(kFsrG2QQ);
           if (nFlavour > 3)
-            enhanceFacQqbar = max(enhanceFactor("fsr:G2CC"), enhanceFacQqbar);
+            enhanceFacQqbar = max(enhanceFactor(kFsrG2CC), enhanceFacQqbar);
           if (nFlavour > 4)
-            enhanceFacQqbar = max(enhanceFactor("fsr:G2BB"), enhanceFacQqbar);
+            enhanceFacQqbar = max(enhanceFactor(kFsrG2BB), enhanceFacQqbar);
           emitCoefQqbar *= enhanceFacQqbar;
         }
         emitCoefTot  += emitCoefQqbar;
@@ -2864,7 +2870,7 @@ void SimpleTimeShower::pT2nextQCD(double pT2begDip, double pT2sel,
 
         if (dip.flavour == 21
           && (colTypeAbs == 1 || colTypeAbs == 3) ) {
-          nameNow = "fsr:Q2QG";
+          nameNow = kFsrQ2QG;
           // Optionally enhanced branching rate.
           if (canEnhanceETnow) {
             double enhance = enhanceFactor(nameNow);
@@ -2874,7 +2880,7 @@ void SimpleTimeShower::pT2nextQCD(double pT2begDip, double pT2sel,
             }
           }
         } else if (dip.flavour == 21) {
-          nameNow = "fsr:G2GG";
+          nameNow = kFsrG2GG;
           // Optionally enhanced branching rate.
           if (canEnhanceETnow) {
             double enhance = enhanceFactor(nameNow);
@@ -2884,9 +2890,9 @@ void SimpleTimeShower::pT2nextQCD(double pT2begDip, double pT2sel,
             }
           }
         } else {
-          nameNow = "fsr:G2QQ";
-          if (dip.flavour == 5 && nFlavour > 4) nameNow = "fsr:G2BB";
-          else if (dip.flavour == 4 && nFlavour > 3) nameNow = "fsr:G2CC";
+          nameNow = kFsrG2QQ;
+          if (dip.flavour == 5 && nFlavour > 4) nameNow = kFsrG2BB;
+          else if (dip.flavour == 4 && nFlavour > 3) nameNow = kFsrG2CC;
 
           // Compensation if that flavor is NOT meant to be enhanced.
           double enhance = enhanceFactor(nameNow);
@@ -2900,10 +2906,11 @@ void SimpleTimeShower::pT2nextQCD(double pT2begDip, double pT2sel,
           }
         }
         // Check if ME corrections should apply to this branching.
-        bool applyMECsNow = applyMECorrections(event, &dip, dip.system);
+        bool applyMECsNow
+          = (dip.MEtype > 0) && applyMECorrections(event, &dip, dip.system);
 
         // No z weight, except threshold, if to do ME corrections later on.
-        if (applyMECsNow && dip.MEtype > 0) {
+        if (applyMECsNow) {
           wt = 1.;
           if (dip.flavour < 10 && dip.m2 < THRESHM2 * pow2(dip.mFlavour))
             wt = 0.;
@@ -3825,10 +3832,11 @@ void SimpleTimeShower::pT2nextOnium(double pT2begDip, double pT2sel,
         int idRec = event[dip.iRecoiler].id();
         pdfScale2 = (useFixedFacScale) ? fixedFacScale2
           : factorMultFac * dip.pT2;
+        xfModPrepData xfData = beam.xfModPrep(iSysRec, pdfScale2);
         double pdfOld = max(TINYPDF,
-          beam.xfISR(iSysRec, idRec, xOld, pdfScale2));
-        double pdfNew =
-          beam.xfISR(iSysRec, idRec, xNew, pdfScale2);
+          beam.xfISR(iSysRec, idRec, xOld, pdfScale2, xfData));
+        double pdfNew
+          = beam.xfISR(iSysRec, idRec, xNew, pdfScale2, xfData);
         wt *= min( 1., pdfNew / pdfOld);
       }
 
@@ -3912,7 +3920,8 @@ bool SimpleTimeShower::branch( Event& event, bool isInterleaved) {
                      ? mergingHooksPtr->canVetoEmission() : false;
 
   // Check if ME corrections should apply to this branching.
-  bool applyMECsNow = applyMECorrections(event, dipSel, dipSel->system);
+  bool applyMECsNow = (dipSel->MEtype > 0)
+    && applyMECorrections(event, dipSel, dipSel->system);
 
   // Find initial radiator and recoiler particles in dipole branching.
   int iRadBef      = dipSel->iRadiator;
@@ -4071,6 +4080,13 @@ bool SimpleTimeShower::branch( Event& event, bool isInterleaved) {
   if (abs(idEmt) == 24) {
     if (rndmPtr->flat() > coupSMPtr->V2CKMsum(idRad)) return false;
     idRad = coupSMPtr->V2CKMpick(idRad);
+  }
+
+  // Veto branching if the dipole mass vanishes, since it is used as a
+  // denominator below. Written so that a not-a-number also is caught.
+  if ( !(dipSel->mDip > 0.) ) {
+    loggerPtr->WARNING_MSG("zero dipole mass");
+    return false;
   }
 
   // Construct kinematics in dipole rest frame:
@@ -4249,7 +4265,7 @@ bool SimpleTimeShower::branch( Event& event, bool isInterleaved) {
   double pAccept = dipSel->pAccept;
 
   // ME corrections can lead to branching being rejected.
-  if (applyMECsNow && dipSel->MEtype > 0) {
+  if (applyMECsNow) {
     Particle& partner = (dipSel->iMEpartner == iRecBef)
       ? rec : event[dipSel->iMEpartner];
     double pMEC = findMEcorr( dipSel, rad, partner, emt);

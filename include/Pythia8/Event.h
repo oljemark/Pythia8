@@ -81,7 +81,9 @@ public:
   virtual ~Particle() {}
 
   // Member functions to set the Event and ParticleDataEntry pointers.
-  void setEvtPtr(Event* evtPtrIn) { evtPtr = evtPtrIn; setPDEPtr();}
+  void setEvtPtr(Event* evtPtrIn, bool updatePDEPtr = true) {
+    evtPtr = evtPtrIn;
+    if (updatePDEPtr || pdePtr == nullptr) setPDEPtr();}
   void setPDEPtr(ParticleDataEntryPtr pdePtrIn = nullptr);
 
   // Member functions for input.
@@ -200,6 +202,8 @@ public:
   int iBotCopyId(bool simplify = false) const;
   vector<int> motherList()   const;
   vector<int> daughterList() const;
+  void motherList(vector<int>& motherVec) const;
+  void daughterList(vector<int>& daughterVec) const;
   vector<int> daughterListRecursive() const;
   vector<int> sisterList(bool traceTopBot = false) const;
   bool isAncestor(int iAncestor) const;
@@ -502,8 +506,9 @@ public:
   }
 
   // Set pointer to the event for a particle, by default latest one.
-  void setEvtPtr(int iSet = -1) {if (iSet < 0) iSet = entry.size() - 1;
-    entry[iSet].setEvtPtr( this);}
+  void setEvtPtr(int iSet = -1, bool updatePDEPtr = true) {
+    if (iSet < 0) iSet = entry.size() - 1;
+    entry[iSet].setEvtPtr( this, updatePDEPtr);}
 
   // Add a copy of an existing particle at the end of the event record.
   int copy(int iCopy, int newStatus = 0);
@@ -614,6 +619,10 @@ public:
   // List any junctions in the event; for debug mainly.
   void listJunctions() const;
 
+  // Set RGB colours for highlighting the event listing.
+  void setHighlights(vector<int> highlightsIn = {}) {
+    highlights = highlightsIn;}
+
   // Tell whether event has Hidden Valley colours stored.
   bool hasHVcols() const {
     for (const HVcols& col: hvCols) {if (at(col.iHV).isFinal()) return true;}
@@ -685,6 +694,9 @@ private:
   // Pointer to the particle data table.
   // The //! below is ROOT notation that this member should not be saved.
   ParticleData* particleDataPtr;  //!
+
+  // RGB colours for highlighting the event listing.
+  vector<int> highlights;
 
 };
 

@@ -14,6 +14,33 @@ code updates. The xml rules are provided after the coding rules.
 
 -----------------------------------------------------------------------
 
+Preliminary LLM Policy
+
+LLMs have become widely used tools in software development. LLMs
+may be responsibly used for Pythia8 code development, but should
+follow the guidelines below.
+
+ 1. All LLM usage by developers should be transparently reported.
+
+ 2. LLMs should not have interactive access to non-forked Pythia8 code
+    resources, e.g., git repositories. This means LLMs should not
+    automatically create commits, merge requests, etc.
+
+ 3. Before any code is committed to non-forked Pythia8 code resources,
+    all LLM generated code should be reviewed by the responsible
+    developer.
+
+ 4. All code must be fully understood by the developer providing the
+    code. This means the developer should be able to explain to a
+    reviewer any line of the proposed code.
+ 
+ 5. Review of code by LLMs can be a useful part of the code review
+    process, but reviewers should be able to fully understand the code
+    they are reviewing, independent of the LLM. If reviewers perform
+    an LLM review, they must first perform an LLM independent review.
+
+-----------------------------------------------------------------------
+
 For the Pythia8 code some principles have been used, some by
 deliberate decision, while others evolved organically.
 An incomplete list is as follows.

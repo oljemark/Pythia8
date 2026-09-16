@@ -244,6 +244,9 @@ public:
   string getGroupName(int iGN) const;
   double getGroupWeight(int iGW) const;
 
+  // NLO weight when reweighting LO events via multiplicative matching.
+  double weightNLO()          const {return weightNLOSave;}
+
   // Number of times other steps have been carried out.
   int    nISR()               const {return nISRSave;}
   int    nFSRinProc()         const {return nFSRinProcSave;}
@@ -577,6 +580,9 @@ public:
          eCMsubSave{}, thetaLepton1{}, thetaLepton2{}, sHatNewSave{},
          mVMDASave{}, mVMDBSave{}, scaleVMDASave{}, scaleVMDBSave{};
 
+  // NLO weight used in reweighting LO events.
+  double weightNLOSave{1.};
+
   // Vector of various loop counters.
   int    counters[50];
 
@@ -616,6 +622,9 @@ public:
     {isVMDstateBEvent = isVMDBIn; idVMDBSave = idBIn; mVMDBSave = mBIn;
     scaleVMDBSave = scaleBIn;}
 
+  // Set NLO weight.
+  void setWeightNLO(double wIn) {weightNLOSave = wIn;}
+
   // Reset info for current event: only from Pythia class.
   void clear() {
     isRes = isDiffA = isDiffB = isDiffC = isND = isLH = bIsSet
@@ -624,7 +633,7 @@ public:
     codeSave = nFinalSave = nTotal = nMPISave = nISRSave = nFSRinProcSave
       = nFSRinResSave = 0;
     bMPISave = enhanceMPISave = enhanceMPIavgSave = bMPIoldSave
-      = enhanceMPIoldSave = enhanceMPIoldavgSave = 1.;
+      = enhanceMPIoldSave = enhanceMPIoldavgSave = weightNLOSave = 1.;
     pTmaxMPISave = pTmaxISRSave = pTmaxFSRSave = pTnowSave = zNowISRSave
       = pT2NowISRSave = 0.;
     nameSave = " ";
@@ -782,7 +791,8 @@ public:
   void readRandomState(string fileName="EventRandomState.dat") const;
 
   // Special variables for (below-threshold) toponium production.
-  double toponiumE, toponiumm3, toponiumm4;
+  double toponiumE, toponiumm3, toponiumm4, toponiumEnhance,
+    toponiumSingletFrac;
 
 };
 

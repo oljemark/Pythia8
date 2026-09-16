@@ -10,9 +10,9 @@
 // Plot ttbar system properties contrasting five different scenarios:
 // 0 : pure Born baseline.
 // 1 : Coulomb enhancement.
-// 2 : Green's function, full top width in Breit-Wigner and matrix element.
-// 3 :  Green's function, reduced top width in Breit-Wigner.
-// 4 :  Green's function, reduced top width in matrix elements.
+// 2 : broad top quark and broad Green's function, giving doublecounting.
+// 3 : Green's function, reduced top width in Breit-Wigner.
+// 4 : Green's function, reduced Green's function width.
 // Plots all scenarios in one frame, which may be too much.
 
 // This main is the same as main369, but demonstrates how the run
@@ -61,10 +61,12 @@ int main() {
   for (int scenario = 0; scenario < 5; ++scenario) {
 
     // Scenario-specific settings choices.
-    int    topModel    = min( scenario, 2);
-    double gammat      = (scenario != 3) ? 1.34 : 0.2;
+    int    topModel    = min( scenario, 3);
+    double gammat      = 1.34;
     // Warning:  a small gammatGreen may lead to event weights above unity.
-    double gammatGreen = (scenario != 4) ? 1.34 : 0.2;
+    double gammatGreen = 1.34;
+    if (scenario == 3) gammatGreen = 1.24;
+    if (scenario == 4) gammatGreen = 0.1;
 
     // Generator.
     PythiaParallel pythia;

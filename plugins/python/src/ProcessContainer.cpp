@@ -35,7 +35,6 @@
 #include <Pythia8/SusyCouplings.h>
 #include <Pythia8/UserHooks.h>
 #include <Pythia8/Weights.h>
-#include <cwchar>
 #include <functional>
 #include <ios>
 #include <istream>
@@ -50,30 +49,27 @@
 #include <utility>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <functional>
+#include <pybind11/pybind11.h>
 #include <string>
-#include <Pythia8/UserHooks.h>
 #include <Pythia8/SplittingsOnia.h>
-#include <Pythia8/HeavyIons.h>
-#include <Pythia8/BeamShape.h>
-#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl.h>
 
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
-	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
-	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
-	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
+	PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>, false)
+	PYBIND11_DECLARE_HOLDER_TYPE(T, T*, false)
+	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>)
 #endif
 
 // Pythia8::ProcessContainer file:Pythia8/ProcessContainer.h line:39
 struct PyCallBack_Pythia8_ProcessContainer : public Pythia8::ProcessContainer {
 	using Pythia8::ProcessContainer::ProcessContainer;
 
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ProcessContainer *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -82,11 +78,11 @@ struct PyCallBack_Pythia8_ProcessContainer : public Pythia8::ProcessContainer {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ProcessContainer *>(this), "onBeginEvent");
 		if (overload) {
@@ -95,11 +91,11 @@ struct PyCallBack_Pythia8_ProcessContainer : public Pythia8::ProcessContainer {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ProcessContainer *>(this), "onEndEvent");
 		if (overload) {
@@ -108,11 +104,11 @@ struct PyCallBack_Pythia8_ProcessContainer : public Pythia8::ProcessContainer {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ProcessContainer *>(this), "onStat");
 		if (overload) {
@@ -121,11 +117,11 @@ struct PyCallBack_Pythia8_ProcessContainer : public Pythia8::ProcessContainer {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ProcessContainer *>(this), "onStat");
 		if (overload) {
@@ -134,7 +130,7 @@ struct PyCallBack_Pythia8_ProcessContainer : public Pythia8::ProcessContainer {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -144,7 +140,7 @@ struct PyCallBack_Pythia8_ProcessContainer : public Pythia8::ProcessContainer {
 struct PyCallBack_Pythia8_ProcessLevel : public Pythia8::ProcessLevel {
 	using Pythia8::ProcessLevel::ProcessLevel;
 
-	void onInitInfoPtr() override { 
+	void onInitInfoPtr() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ProcessLevel *>(this), "onInitInfoPtr");
 		if (overload) {
@@ -153,11 +149,11 @@ struct PyCallBack_Pythia8_ProcessLevel : public Pythia8::ProcessLevel {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return ProcessLevel::onInitInfoPtr();
 	}
-	void onBeginEvent() override { 
+	void onBeginEvent() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ProcessLevel *>(this), "onBeginEvent");
 		if (overload) {
@@ -166,11 +162,11 @@ struct PyCallBack_Pythia8_ProcessLevel : public Pythia8::ProcessLevel {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onBeginEvent();
 	}
-	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override { 
+	void onEndEvent(enum Pythia8::PhysicsBase::Status a0) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ProcessLevel *>(this), "onEndEvent");
 		if (overload) {
@@ -179,11 +175,11 @@ struct PyCallBack_Pythia8_ProcessLevel : public Pythia8::ProcessLevel {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onEndEvent(a0);
 	}
-	void onStat() override { 
+	void onStat() override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ProcessLevel *>(this), "onStat");
 		if (overload) {
@@ -192,11 +188,11 @@ struct PyCallBack_Pythia8_ProcessLevel : public Pythia8::ProcessLevel {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat();
 	}
-	void onStat(class std::vector<class Pythia8::PhysicsBase *, class std::allocator<class Pythia8::PhysicsBase *> > a0, class Pythia8::Pythia * a1) override { 
+	void onStat(class std::vector<class Pythia8::PhysicsBase *> a0, class Pythia8::Pythia * a1) override {
 		pybind11::gil_scoped_acquire gil;
 		pybind11::function overload = pybind11::get_overload(static_cast<const Pythia8::ProcessLevel *>(this), "onStat");
 		if (overload) {
@@ -205,7 +201,7 @@ struct PyCallBack_Pythia8_ProcessLevel : public Pythia8::ProcessLevel {
 				static pybind11::detail::override_caster_t<void> caster;
 				return pybind11::detail::cast_ref<void>(std::move(o), caster);
 			}
-			else return pybind11::detail::cast_safe<void>(std::move(o));
+			return pybind11::detail::cast_safe<void>(std::move(o));
 		}
 		return PhysicsBase::onStat(a0, a1);
 	}
@@ -215,8 +211,6 @@ void bind_Pythia8_ProcessContainer(std::function< pybind11::module &(std::string
 {
 	{ // Pythia8::ProcessContainer file:Pythia8/ProcessContainer.h line:39
 		pybind11::class_<Pythia8::ProcessContainer, std::shared_ptr<Pythia8::ProcessContainer>, PyCallBack_Pythia8_ProcessContainer, Pythia8::PhysicsBase> cl(M("Pythia8"), "ProcessContainer", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::ProcessContainer(); }, [](){ return new PyCallBack_Pythia8_ProcessContainer(); } ), "doc");
 		cl.def( pybind11::init( [](class std::shared_ptr<class Pythia8::SigmaProcess> const & a0){ return new Pythia8::ProcessContainer(a0); }, [](class std::shared_ptr<class Pythia8::SigmaProcess> const & a0){ return new PyCallBack_Pythia8_ProcessContainer(a0); } ), "doc");
 		cl.def( pybind11::init<class std::shared_ptr<class Pythia8::SigmaProcess>, class std::shared_ptr<class Pythia8::PhaseSpace>>(), pybind11::arg("sigmaProcessPtrIn"), pybind11::arg("phaseSpacePtrIn") );
@@ -281,20 +275,18 @@ void bind_Pythia8_ProcessContainer(std::function< pybind11::module &(std::string
 	}
 	{ // Pythia8::SetupContainers file:Pythia8/ProcessContainer.h line:237
 		pybind11::class_<Pythia8::SetupContainers, std::shared_ptr<Pythia8::SetupContainers>> cl(M("Pythia8"), "SetupContainers", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::SetupContainers(); } ) );
-		cl.def("init", (bool (Pythia8::SetupContainers::*)(class std::vector<class Pythia8::ProcessContainer *, class std::allocator<class Pythia8::ProcessContainer *> > &, class Pythia8::Info *)) &Pythia8::SetupContainers::init, "C++: Pythia8::SetupContainers::init(class std::vector<class Pythia8::ProcessContainer *, class std::allocator<class Pythia8::ProcessContainer *> > &, class Pythia8::Info *) --> bool", pybind11::arg("containerPtrs"), pybind11::arg("infoPtr"));
-		cl.def("init2", (bool (Pythia8::SetupContainers::*)(class std::vector<class Pythia8::ProcessContainer *, class std::allocator<class Pythia8::ProcessContainer *> > &, class Pythia8::Info *)) &Pythia8::SetupContainers::init2, "C++: Pythia8::SetupContainers::init2(class std::vector<class Pythia8::ProcessContainer *, class std::allocator<class Pythia8::ProcessContainer *> > &, class Pythia8::Info *) --> bool", pybind11::arg("container2Ptrs"), pybind11::arg("infoPtr"));
+		cl.def( pybind11::init( [](Pythia8::SetupContainers const &o){ return new Pythia8::SetupContainers(o); } ) );
+		cl.def("init", (bool (Pythia8::SetupContainers::*)(class std::vector<class Pythia8::ProcessContainer *> &, class Pythia8::Info *)) &Pythia8::SetupContainers::init, "C++: Pythia8::SetupContainers::init(class std::vector<class Pythia8::ProcessContainer *> &, class Pythia8::Info *) --> bool", pybind11::arg("containerPtrs"), pybind11::arg("infoPtr"));
+		cl.def("init2", (bool (Pythia8::SetupContainers::*)(class std::vector<class Pythia8::ProcessContainer *> &, class Pythia8::Info *)) &Pythia8::SetupContainers::init2, "C++: Pythia8::SetupContainers::init2(class std::vector<class Pythia8::ProcessContainer *> &, class Pythia8::Info *) --> bool", pybind11::arg("container2Ptrs"), pybind11::arg("infoPtr"));
+		cl.def("assign", (class Pythia8::SetupContainers & (Pythia8::SetupContainers::*)(const class Pythia8::SetupContainers &)) &Pythia8::SetupContainers::operator=, "C++: Pythia8::SetupContainers::operator=(const class Pythia8::SetupContainers &) --> class Pythia8::SetupContainers &", pybind11::return_value_policy::reference, pybind11::arg(""));
 	}
 	{ // Pythia8::ProcessLevel file:Pythia8/ProcessLevel.h line:36
 		pybind11::class_<Pythia8::ProcessLevel, std::shared_ptr<Pythia8::ProcessLevel>, PyCallBack_Pythia8_ProcessLevel, Pythia8::PhysicsBase> cl(M("Pythia8"), "ProcessLevel", "");
-		pybind11::handle cl_type = cl;
-
 		cl.def( pybind11::init( [](){ return new Pythia8::ProcessLevel(); }, [](){ return new PyCallBack_Pythia8_ProcessLevel(); } ) );
 		cl.def( pybind11::init( [](PyCallBack_Pythia8_ProcessLevel const &o){ return new PyCallBack_Pythia8_ProcessLevel(o); } ) );
 		cl.def( pybind11::init( [](Pythia8::ProcessLevel const &o){ return new Pythia8::ProcessLevel(o); } ) );
-		cl.def("init", (bool (Pythia8::ProcessLevel::*)(bool, class Pythia8::SLHAinterface *, class std::vector<class std::shared_ptr<class Pythia8::SigmaProcess>, class std::allocator<class std::shared_ptr<class Pythia8::SigmaProcess> > > &, class std::vector<class std::shared_ptr<class Pythia8::PhaseSpace>, class std::allocator<class std::shared_ptr<class Pythia8::PhaseSpace> > > &)) &Pythia8::ProcessLevel::init, "C++: Pythia8::ProcessLevel::init(bool, class Pythia8::SLHAinterface *, class std::vector<class std::shared_ptr<class Pythia8::SigmaProcess>, class std::allocator<class std::shared_ptr<class Pythia8::SigmaProcess> > > &, class std::vector<class std::shared_ptr<class Pythia8::PhaseSpace>, class std::allocator<class std::shared_ptr<class Pythia8::PhaseSpace> > > &) --> bool", pybind11::arg("doLHAin"), pybind11::arg("slhaInterfacePtrIn"), pybind11::arg("sigmaPtrs"), pybind11::arg("phaseSpacePtrs"));
+		cl.def("init", (bool (Pythia8::ProcessLevel::*)(bool, class Pythia8::SLHAinterface *, class std::vector<class std::shared_ptr<class Pythia8::SigmaProcess> > &, class std::vector<class std::shared_ptr<class Pythia8::PhaseSpace> > &)) &Pythia8::ProcessLevel::init, "C++: Pythia8::ProcessLevel::init(bool, class Pythia8::SLHAinterface *, class std::vector<class std::shared_ptr<class Pythia8::SigmaProcess> > &, class std::vector<class std::shared_ptr<class Pythia8::PhaseSpace> > &) --> bool", pybind11::arg("doLHAin"), pybind11::arg("slhaInterfacePtrIn"), pybind11::arg("sigmaPtrs"), pybind11::arg("phaseSpacePtrs"));
 		cl.def("setLHAPtr", (void (Pythia8::ProcessLevel::*)(class std::shared_ptr<class Pythia8::LHAup>)) &Pythia8::ProcessLevel::setLHAPtr, "C++: Pythia8::ProcessLevel::setLHAPtr(class std::shared_ptr<class Pythia8::LHAup>) --> void", pybind11::arg("lhaUpPtrIn"));
 		cl.def("updateBeamIDs", (void (Pythia8::ProcessLevel::*)()) &Pythia8::ProcessLevel::updateBeamIDs, "C++: Pythia8::ProcessLevel::updateBeamIDs() --> void");
 		cl.def("next", [](Pythia8::ProcessLevel &o, class Pythia8::Event & a0) -> bool { return o.next(a0); }, "", pybind11::arg("process"));

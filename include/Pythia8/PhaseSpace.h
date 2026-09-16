@@ -72,8 +72,10 @@ public:
   // is to be constructed in the derived class.
   virtual bool finalKin() = 0;
 
-  // Allow for nonisotropic decays when ME's available.
-  void   decayKinematics( Event& process);
+  // Allow for nonisotropic decays when ME's available, possible beam offset
+  // for identifying resonances in case of beam-inside-beam cases.
+  void decayKinematics( Event& process);
+  void setBeamOffset(int beamOffsetIn) {nBeamOffset = beamOffsetIn;}
 
   // Give back current or maximum cross section, or set latter.
   double sigmaNow() const {return sigmaNw;}
@@ -134,8 +136,8 @@ protected:
     mHatGlobalMin(), mHatGlobalMax(), pTHatGlobalMin(),
     pTHatGlobalMax(), Q2GlobalMin(), Q2GlobalMax(), pTHatMinDiverge(),
     minWidthBreitWigners(), minWidthNarrowBW(), idA(), idB(),
-    idAold(), idBold(), idAgm(), idBgm(), mA(), mB(), eCM(), s(),
-    sigmaMxGm(), hasLeptonBeamA(), hasLeptonBeamB(),
+    idAold(), idBold(), idAgm(), idBgm(), nBeamOffset(), mA(), mB(), eCM(),
+    s(), sigmaMxGm(), hasLeptonBeamA(), hasLeptonBeamB(),
     hasOneLeptonBeam(), hasTwoLeptonBeams(), hasPointGammaA(),
     hasPointGammaB(), hasOnePointParticle(), hasTwoPointParticles(),
     hasGamma(), hasVMD(), newSigmaMx(), canModifySigma(),
@@ -160,7 +162,8 @@ protected:
     sLower(), sUpper(), fracFlatS(), fracFlatM(), fracInv(),
     fracInv2(), atanLower(), atanUpper(), intBW(), intFlatS(),
     intFlatM(), intInv(), intInv2(), doTopPair(), topThresholdModel(),
-    topThresholdRegion(), eThreshold(), m3Threshold(), m4Threshold() {}
+    topThresholdMassSel(), topThresholdRegion(), topThresholdShrink(),
+    eThreshold(), m3Threshold(), m4Threshold(), mTopMin() {}
 
   // Constants: could only be changed in the code itself.
   static const int    NMAXTRY, NTRY3BODY;
@@ -188,7 +191,7 @@ protected:
          minWidthNarrowBW;
 
   // Information on incoming beams.
-  int    idA, idB, idAold, idBold, idAgm, idBgm;
+  int    idA, idB, idAold, idBold, idAgm, idBgm, nBeamOffset;
   double mA, mB, eCM, s, sigmaMxGm;
   bool   hasLeptonBeamA, hasLeptonBeamB, hasOneLeptonBeam, hasTwoLeptonBeams,
          hasPointGammaA, hasPointGammaB, hasOnePointParticle,
@@ -265,10 +268,12 @@ protected:
          fracFlatM[6], fracInv[6], fracInv2[6], atanLower[6], atanUpper[6],
          intBW[6], intFlatS[6], intFlatM[6], intInv[6], intInv2[6];
 
-  // Properties specific to top threshold enhancement.
+  // Properties and method specific to top threshold enhancement.
   bool   doTopPair;
-  int    topThresholdModel;
-  double topThresholdRegion, eThreshold, m3Threshold, m4Threshold;
+  int    topThresholdModel, topThresholdMassSel;
+  double topThresholdRegion, topThresholdShrink, eThreshold, m3Threshold,
+         m4Threshold, mTopMin;
+  void   selectTopThreshold();
 
   // Setup mass selection for one resonance at a time. Split in two parts.
   void   setupMass1(int iM);

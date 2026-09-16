@@ -372,7 +372,11 @@ bool ProcessContainer::trialProcess() {
     double sigmaNow = phaseSpacePtr->sigmaNow();
 
     // Optionally reweight to inclusive NLO cross section.
-    if (reweightNLO) sigmaNow *= sigmaProcessPtr->weightNLO();
+    if (reweightNLO) {
+      double wtNLO = sigmaProcessPtr->weightNLO();
+      sigmaNow *= wtNLO;
+      infoPtr->setWeightNLO(wtNLO);
+    }
 
     // For photons with external flux correct the cross section but not
     // if event externally generated as then cross section fixed.
@@ -573,10 +577,10 @@ bool ProcessContainer::constructProcess( Event& process, bool isHardest) {
   process.append( idB, -12, 0, 0, 0, 0, 0, 0,
     Vec4(0., 0., infoPtr->pzB(), infoPtr->eB()), infoPtr->mB(), 0. );
 
-  // Add intermediate gammas for lepton -> gamma -> parton processes
+  // Add intermediate photons for beam -> gamma -> parton processes
   // for both non-diffractive and hard processes, including direct-resolved.
-  // Add a copy of hadron beam when e->gamma + p.
-  int nOffsetGamma = 0;
+  // Add a copy of hadron beam when beam -> gamma + hadron.
+  nBeamOffset = 0;
   bool isGammaHadronDir = (beamAgammaMode == 2 && beamBgammaMode == 0)
                        || (beamAgammaMode == 0 && beamBgammaMode == 2);
   if ( beamHasResGamma || (isGammaHadronDir && beamHasGamma) ) {
@@ -589,7 +593,7 @@ bool ProcessContainer::constructProcess( Event& process, bool isHardest) {
         Vec4(0., 0., xGm1*infoPtr->pzA(), xGm1*infoPtr->eA()), 0, 0. );
     }
     process[1].daughter1(3);
-    ++nOffsetGamma;
+    ++nBeamOffset;
     double xGm2 = beamBPtr->xGamma();
     if ( !(beamBPtr->gammaInBeam()) ) {
       process.append( beamBPtr->id(), -13, 2, 0, 0, 0, 0, 0,
@@ -598,8 +602,8 @@ bool ProcessContainer::constructProcess( Event& process, bool isHardest) {
       process.append( 22, -13, 2, 0, 0, 0, 0, 0,
         Vec4(0., 0., xGm2*infoPtr->pzB(), xGm2*infoPtr->eB()), 0, 0. );
     }
-    process[1 + nOffsetGamma].daughter1(3 + nOffsetGamma);
-    ++nOffsetGamma;
+    process[1 + nBeamOffset].daughter1(3 + nBeamOffset);
+    ++nBeamOffset;
   }
 
   // For nondiffractive process no interaction selected so far, so done.
@@ -607,8 +611,8 @@ bool ProcessContainer::constructProcess( Event& process, bool isHardest) {
 
   // Entries 3 and 4, now to be added, come from 1 and 2.
   // Offset from normal locations possible due to intermediate photons.
-  process[1 + nOffsetGamma].daughter1(3 + nOffsetGamma);
-  process[2 + nOffsetGamma].daughter1(4 + nOffsetGamma);
+  process[1 + nBeamOffset].daughter1(3 + nBeamOffset);
+  process[2 + nBeamOffset].daughter1(4 + nBeamOffset);
   double scale  = 0.;
   double scalup = 0.;
 
@@ -660,10 +664,10 @@ bool ProcessContainer::constructProcess( Event& process, bool isHardest) {
       if ( beamAhasResGamma || beamBhasResGamma
          || (beamAgammaMode == 2 && beamBgammaMode == 0)
          || (beamAgammaMode == 0 && beamBgammaMode == 2) ) {
-        mother1 += nOffsetGamma;
-        if (mother2 > 0)   mother2   += nOffsetGamma;
-        if (daughter1 > 0) daughter1 += nOffsetGamma;
-        if (daughter2 > 0) daughter2 += nOffsetGamma;
+        mother1 += nBeamOffset;
+        if (mother2 > 0)   mother2   += nBeamOffset;
+        if (daughter1 > 0) daughter1 += nBeamOffset;
+        if (daughter2 > 0) daughter2 += nBeamOffset;
       }
 
       // Append to process record.
@@ -720,26 +724,26 @@ bool ProcessContainer::constructProcess( Event& process, bool isHardest) {
     if (isSoftQCD() && (infoPtr->isVMDstateA()
       || infoPtr->isVMDstateB())) {
       int id3orig = sigmaProcessPtr->id(3);
-      int status3 = (id3orig == process[1+nOffsetGamma].id()) ? 14 : 15;
+      int status3 = (id3orig == process[1+nBeamOffset].id()) ? 14 : 15;
       int id3     = (status3 == 14 && infoPtr->isVMDstateA())
                   ? infoPtr->idVMDA() : id3orig;
-      process.append( id3, status3, 1 + nOffsetGamma, 0, 0, 0, 0, 0,
+      process.append( id3, status3, 1 + nBeamOffset, 0, 0, 0, 0, 0,
         phaseSpacePtr->p(3), phaseSpacePtr->m(3));
       int id4orig = sigmaProcessPtr->id(4);
-      int status4 = (id4orig == process[2+nOffsetGamma].id()) ? 14 : 15;
+      int status4 = (id4orig == process[2+nBeamOffset].id()) ? 14 : 15;
       int id4     = (status4 == 14 && infoPtr->isVMDstateB())
                   ? infoPtr->idVMDB() : id4orig;
-      process.append( id4, status4, 2 + nOffsetGamma, 0, 0, 0, 0, 0,
+      process.append( id4, status4, 2 + nBeamOffset, 0, 0, 0, 0, 0,
         phaseSpacePtr->p(4), phaseSpacePtr->m(4));
 
     } else {
       int id3     = sigmaProcessPtr->id(3);
-      int status3 = (id3 == process[1].id()) ? 14 : 15;
-      process.append( id3, status3, 1 + nOffsetGamma, 0, 0, 0, 0, 0,
+      int status3 = (id3 == process[1+nBeamOffset].id()) ? 14 : 15;
+      process.append( id3, status3, 1 + nBeamOffset, 0, 0, 0, 0, 0,
         phaseSpacePtr->p(3), phaseSpacePtr->m(3));
       int id4     = sigmaProcessPtr->id(4);
-      int status4 = (id4 == process[2].id()) ? 14 : 15;
-      process.append( id4, status4, 2 + nOffsetGamma, 0, 0, 0, 0, 0,
+      int status4 = (id4 == process[2+nBeamOffset].id()) ? 14 : 15;
+      process.append( id4, status4, 2 + nBeamOffset, 0, 0, 0, 0, 0,
         phaseSpacePtr->p(4), phaseSpacePtr->m(4));
     }
 
@@ -881,11 +885,11 @@ bool ProcessContainer::constructProcess( Event& process, bool isHardest) {
 
       // Store Les Houches Accord partons. Boost to CM frame if not already.
       // Possibly an offset for mother/daugther list in photoproduction.
-      if (nOffsetGamma > 0) {
-        mother1 += nOffsetGamma;
-        if(mother2 > 0)   mother2 += nOffsetGamma;
-        if(daughter1 > 0) daughter1 += nOffsetGamma;
-        if(daughter2 > 0) daughter2 += nOffsetGamma;
+      if (nBeamOffset > 0) {
+        mother1 += nBeamOffset;
+        if(mother2 > 0)   mother2 += nBeamOffset;
+        if(daughter1 > 0) daughter1 += nBeamOffset;
+        if(daughter2 > 0) daughter2 += nBeamOffset;
       }
       int iNow = process.append( id, status, mother1, mother2, daughter1,
         daughter2, col1, col2, Vec4(px, py, pz, e), m, scaleNow, pol);
@@ -1031,12 +1035,12 @@ bool ProcessContainer::constructProcess( Event& process, bool isHardest) {
       }
       e1 = min( e1, 0.5 * process[0].e());
       e2 = min( e2, 0.5 * process[0].e());
-      process[3 + nOffsetGamma].pz( e1);
-      process[3 + nOffsetGamma].e(  e1);
-      process[3 + nOffsetGamma].m(  0.);
-      process[4 + nOffsetGamma].pz(-e2);
-      process[4 + nOffsetGamma].e(  e2);
-      process[4 + nOffsetGamma].m(  0.);
+      process[3 + nBeamOffset].pz( e1);
+      process[3 + nBeamOffset].e(  e1);
+      process[3 + nBeamOffset].m(  0.);
+      process[4 + nBeamOffset].pz(-e2);
+      process[4 + nBeamOffset].e(  e2);
+      process[4 + nBeamOffset].m(  0.);
     }
   }
 
@@ -1054,8 +1058,8 @@ bool ProcessContainer::constructProcess( Event& process, bool isHardest) {
   }
 
   // Further info on process. Reset quantities that may or may not be known.
-  int    id1Now  = process[3 + nOffsetGamma].id();
-  int    id2Now  = process[4 + nOffsetGamma].id();
+  int    id1Now  = process[3 + nBeamOffset].id();
+  int    id2Now  = process[4 + nBeamOffset].id();
   int    id1pdf  = 0;
   int    id2pdf  = 0;
   double x1pdf   = 0.;
@@ -1365,7 +1369,9 @@ bool ProcessContainer::decayResonances( Event& process) {
     // Loop back where required to generate new decays with new flavours.
     } while (newFlavours);
 
-    // Correct to nonisotropic decays.
+    // Correct to nonisotropic decays, store beam offset in case of
+    // beam-inside-beam cases.
+    phaseSpacePtr->setBeamOffset( nBeamOffset);
     phaseSpacePtr->decayKinematics( process);
 
     // Optionally user hooks check/veto on decay chain.

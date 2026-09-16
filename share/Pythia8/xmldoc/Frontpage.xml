@@ -123,10 +123,10 @@ MS 234, Batavia, IL 60510, USA<br/>
 e-mail: mrenna@fnal.gov 
  
 <p/> 
-<b>Christian Preuss</b><br/> 
-Institute for Theoretical Physics, University of G&ouml;ttingen,, 
-Friedrich-Hund-Platz 1, 37077 G&ouml;ttingen, Germany<br/> 
-e-mail: christian.preuss@uni-goettingen.de 
+<b>Christian T. Preuss</b><br/> 
+Institute for Theoretical Particle Physics and Cosmology, 
+RWTH Aachen University, 52074 Aachen, Germany<br/> 
+e-mail: preuss@physik.rwth-aachen.de 
  
 <p/> 
 <b>Torbj&ouml;rn Sj&ouml;strand</b><br/> 
@@ -217,6 +217,8 @@ href="https://uchep.gitlab.io/mlhad-docs/">MLhad team</a></b>.
 reconnection model by <b>Harsh Shah</b>. 
 <br/>Python batch interface using Awkward arrays by <b>Aartem Havryliuk</b> 
 and <b>Jim Pivarski</b>. 
+<br/> Alternative treatment of secondary absorptive sub-collisions in 
+Angantyr by <b>Carl Rosenkvist</b>. 
 <br/> 
  
 <br/><b>Note</b>: in several cases modifications have been made to 
@@ -229,8 +231,8 @@ the blame for any mistakes has to rest with the regular authors.
  
 If you want to be alerted whenever a new public version is released, 
 you can subscribe on 
-<a href="https://lists.hepforge.org/mailman3/lists/pythia8-announce.projects.hepforge.org/"> 
-  pythia8-announce</a>. Expect a 
+<a href="https://lists.hepforge.org/mailman3/lists/ 
+pythia8-announce.projects.hepforge.org/">pythia8-announce</a>. Expect a 
 handful of such messages per year. There is no fixed schedule; new 
 versions can appear either because a sufficient amount of changes have 
 been accumulated over time, or because some crucial new feature or bug 
@@ -241,7 +243,7 @@ fix prompts action.
 No code is perfect, and we rely on PYTHIA users to report suspect 
 behaviour to us. We are starting to collect common questions and 
 problems with our <a 
-href="https://gitlab.com/Pythia8/releases/-/issues" 
+href="https://gitlab.com/Pythia8/releases/-/work_items" 
 target="_blank">issue tracker</a>. Please check this resource first for 
 answered questions. New questions and issues can be either opened with 
 a freely available <a href="https://gitlab.com/users/sign_up" 
@@ -296,7 +298,7 @@ directly to the email, which has a unique return address of the form
 <a href="mailto:authors@pythia.org">authors@pythia.org</a>. Please 
 consider allowing your correspondence to be made publicly available to 
 other users via our <a 
-href="https://gitlab.com/Pythia8/releases/-/issues" 
+href="https://gitlab.com/Pythia8/releases/-/work_items" 
 target="_blank">issue tracker</a>, by replying at any point with your 
 express permission, e.g. "this correspondence can be made public". 
  

@@ -205,11 +205,11 @@ is well approximated by: <br/>
 These values are used for all nuclei when this model is selected. 
  
 <h4>Harmonic Oscillator Shell</h4> 
-For lighter nuclei, a two-parameter Harmonic Oscillator Shell model 
-is implemented. Here: <br/> 
+For lighter nuclei, a two-parameter Harmonic Oscillator Shell <ref>Vri87</ref> 
+model is implemented. Here: <br/> 
 <ei>rho(r) = 4/(pi^(3/2)C^3)(1 + (A - 4)/6 * (r/C)^2)exp(-r^2/C^2)</ei> 
 with:<br/> 
-<ei>C = (5/2 - 4/A)^(-1) (&lt; r^2&gt;_A - &lt;r^2&gt;_p)</ei>.<br/> 
+<ei>C^2 = (5/2 - 4/A)^(-1) (&lt; r^2&gt;_A - &lt;r^2&gt;_p)</ei>.<br/> 
 The two model paramters are <ei>&lt; r^2&gt;_A</ei> (nuclear charge radius 
 squared) and <ei>&lt;r^2&gt;_p</ei> (proton charge radius squared). These can 
 be set, in units of fm^2. 
@@ -311,7 +311,7 @@ value gives a reasonable description of O16.
  
 <h4>Hulth&eacute;n model</h4> 
 The Hulth&eacute;n distribution <ref>Hul42</ref> is given by:<br/> 
-<ei>rho(r) = rho_0(exp(-a r) - exp(-b r))</ei><br/> 
+<ei>rho(r) = rho_0(exp(-a r) - exp(-b r))^2</ei><br/> 
 where <ei>b</ei> term regulates the <ei>a</ei> term at small distances so 
 that <ei>rho(0) = 0</ei>. The <ei>a</ei> term can be written as <ei>sqrt(m 
 E)</ei>, where <ei>m</ei> is the mass of the nucleon and <ei>E</ei> is 

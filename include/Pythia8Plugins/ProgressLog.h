@@ -6,9 +6,9 @@
 #ifndef PROGRESSLOG_H
 #define PROGRESSLOG_H
 
-#include <ctime>
-#include <sys/times.h>
+#include "Pythia8/Basics.h"
 #include <unistd.h>
+#include <ctime>
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -50,24 +50,27 @@ public:
   void tick(long i, long n) {
     if ( !statusTime(i, n) ) return;
 
-    double fcpui = fclock();
+    // Wall-clock and CPU time in seconds since the start, and the date now.
+    double walli = wallTimer.elapsed() / 1000.;
+    double cpui = cpuTimer.elapsed() / 1000.;
     time_t timei = time(0);
-    double ftime0 = time0;
-    double ftime1 = time1;
-    double ftimei = timei;
+
+    // CPU efficiency since the last status line and since the start.
     double eff = 1.0;
-    if ( ftimei > ftime1 && fcpui > fcpu1 )
-      eff = (fcpui-fcpu1)/(ftimei-ftime1);
+    if ( walli > wall1 && cpui > cpu1 )
+      eff = (cpui-cpu1)/(walli-wall1);
     if ( eff >= 1.0 ) eff = 0.999999;
     int ieff = 100*eff;
     double eff0 = 1.0;
-    if ( ftimei > ftime0 && fcpui > fcpu0 )
-      eff0 = (fcpui-fcpu0)/(ftimei-ftime0);
+    if ( walli > 0. && cpui > 0. )
+      eff0 = cpui/walli;
     if ( eff0 >= 1.0 ) eff0 = 0.999999;
     int ieff0 = 100*eff0;
-    double fcpun = fcpu0 + (n*(fcpui-fcpu0))/i;
-    time_t timen = (time_t)(ftimei + (fcpun-fcpui)/eff + 30.0);
-    time_t timen0 = (time_t)(ftimei + (fcpun-fcpui)/eff0 + 30.0);
+
+    // Estimated remaining CPU time and expected time of completion.
+    double cpuRem = (cpui*(n-i))/i;
+    time_t timen = (time_t)(timei + cpuRem/eff + 30.0);
+    time_t timen0 = (time_t)(timei + cpuRem/eff0 + 30.0);
     char date[1024];
     char daten[1024];
     char daten0[1024];
@@ -98,19 +101,9 @@ public:
          << host << ":" << pid << endl << flush;
     }
 
-    fcpu1 = fcpui;
-    time1 = timei;
+    cpu1 = cpui;
+    wall1 = walli;
 
-  }
-
-  // Interface to the system time information.
-  double fclock() {
-    struct tms tmsbuf;
-    times(&tmsbuf);
-    double d =
-      tmsbuf.tms_utime+tmsbuf.tms_stime+tmsbuf.tms_cutime+tmsbuf.tms_cstime;
-    d /= sysconf(_SC_CLK_TCK);
-    return d;
   }
 
   // Check if this is a good time to print out a status line.
@@ -120,16 +113,17 @@ public:
     if ( i > n/2 ) i = n-i;
     while ( i >= 10 && !(i%10) ) i /= 10;
     if ( i == 1 || i == 2 || i == 5 ) return true;
-    if ( secstep > 0 && time(0) > time1 + secstep ) return true;
-    return false;
+    return secstep > 0 && wallTimer.elapsed()/1000. > wall1 + secstep;
   }
 
   // Initialise the basic engine.
   void init(long n) {
     N = n;
     count = 0;
-    fcpu0 = fcpu1 = fclock();
-    time0 = time1 = time(0);
+    wallTimer.start();
+    cpuTimer.start();
+    wall1 = cpu1 = 0.;
+    time_t time0 = time(0);
     char name[1024];
     gethostname(name,1024);
     host = name;
@@ -153,17 +147,11 @@ private:
   // second.
   int secstep;
 
-  // The clock when the run was started.
-  time_t time0;
+  // Timers for the wall-clock and CPU time since the run was started.
+  Timer wallTimer{Timer::WALL}, cpuTimer{Timer::CPU};
 
-  // The cpu clock when the run was started.
-  double fcpu0;
-
-  // The clock the last time a status line was written out.
-  time_t time1;
-
-  // The cpu clock the last time a status line was written out.
-  double fcpu1;
+  // The wall-clock and CPU time, in seconds since last status line.
+  double wall1, cpu1;
 
   // The host on which we are running.
   string host;
